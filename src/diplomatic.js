@@ -132,3 +132,9 @@ fetch('../data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml')
 	    }
 	}
     })
+
+
+
+if (DEV) {
+    new EventSource('/esbuild').addEventListener('change', () => location.reload())
+}
