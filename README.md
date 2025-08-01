@@ -1,6 +1,8 @@
 # document-view-sandbox
 Sandbox for trying out document view capabilities (IIIF + Transcriptions + Annotations)
 
+![viewer](https://github.com/user-attachments/assets/de58e21c-f25c-4613-a1b9-3337988f37df)
+
 
 # Diplomatic view
 
