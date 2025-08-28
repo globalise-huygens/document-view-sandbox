@@ -30,14 +30,15 @@ def make_manifest(df, navdate):
         ),
     )
 
-    # Set logo and provider
-    globalise_logo = "https://globalise.huygens.knaw.nl/wp-content/uploads/2023/10/cropped-GLOBALISE_fuchsia-1200x630-1.png"
+    globalise_logo = (
+        "https://globalise-huygens.github.io/document-view-sandbox/globalise.png"
+    )
 
     logo = iiif_prezi3.ResourceItem(
         id=globalise_logo,
         type="Image",
         format="image/png",
-        height=630,
+        height=182,
         width=1200,
     )
 
@@ -59,6 +60,63 @@ def make_manifest(df, navdate):
     manifest.create_thumbnail_from_iiif(
         "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/75fbe126-7735-410e-ba4f-4f4a7a9a06e7.jp2"
     )
+
+    ## Document metadata
+    manifest.metadata = [
+        iiif_prezi3.KeyValueString(
+            label="Title",
+            value={
+                "none": [
+                    "Notitie van alle soo van als na Batavia alhier ten handel komende vaertuijgen te weeten t zedert primo October Anno passato tot ultimo deses namentlijk etc."
+                ]
+            },
+        ),
+        # Description
+        iiif_prezi3.KeyValueString(
+            label="Description",
+            value={
+                "en": [
+                    "This is a list of which sea faring vessels called at or left Batavia, who their captains or owners were, who the passengers on the ship were and which commodities were carried aboard the ship."
+                ]
+            },
+        ),
+        iiif_prezi3.KeyValueString(
+            label="Date",
+            value={"none": ["1781-09-30"]},
+        ),
+        iiif_prezi3.KeyValueString(
+            label="Type",
+            value={"none": ["Letter"]},
+        ),
+        iiif_prezi3.KeyValueString(
+            label="Inventory number",
+            value={"none": ["3598"]},
+        ),
+        iiif_prezi3.KeyValueString(
+            label="TANAP-id",
+            value={"none": ["96500"]},
+        ),
+        iiif_prezi3.KeyValueString(
+            label="Description (TANAP)",
+            value={
+                "nl": [
+                    "Twee afschriften van in 1781 door gouverneur Barend Reijke en raad tot Makasser aan de hoge regering tot Batavia verzonden brieven."
+                ]
+            },
+        ),
+        iiif_prezi3.KeyValueString(
+            label="Type (TANAP)",
+            value={
+                "nl": [
+                    "Correspondentie met de Gouverneur-Generaal of de Hoge Regering met bijlagen of registers der marginalen"
+                ]
+            },
+        ),
+        iiif_prezi3.KeyValueString(
+            label="Identifier",
+            value={"none": ["8548bbb9-11d4-4530-8098-12354f2dbdc2"]},
+        ),
+    ]
 
     for i in df.itertuples():
         index = i.index
@@ -92,7 +150,7 @@ def make_manifest(df, navdate):
 def main(selection_filepath="selection.csv", output_filepath="manifest.json"):
     df = pd.read_csv(selection_filepath)
 
-    manifest = make_manifest(df, navdate="1781-01-01T00:00:00Z")
+    manifest = make_manifest(df, navdate="1781-09-30T00:00:00Z")
 
     with open(output_filepath, "w", encoding="utf-8") as f:
         s = manifest.json(indent=2)
