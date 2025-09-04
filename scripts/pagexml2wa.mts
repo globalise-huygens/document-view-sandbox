@@ -222,7 +222,9 @@ const convertPageXmlToWebAnnotations = (
       "http://iiif.io/api/presentation/3/context.json",
     ],
     type: "AnnotationPage",
-    id: baseId,
+    id: `https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/${(
+      pageFilename ?? ""
+    ).replace(/\.jpg$/i, ".json")}`,
     label: `Transcription of ${pageFilename}`,
     ...(canvasId && width && height
       ? { partOf: { id: canvasId, type: "Canvas", height, width } }

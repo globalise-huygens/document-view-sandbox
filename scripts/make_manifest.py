@@ -1,3 +1,4 @@
+import os
 import json
 import pandas as pd
 import iiif_prezi3
@@ -7,7 +8,7 @@ iiif_prezi3.config.configs["helpers.auto_fields.AutoLang"].auto_lang = "en"
 PREFIX = "https://globalise-huygens.github.io/document-view-sandbox/iiif/"
 
 
-def make_manifest(df, navdate):
+def make_manifest(df, navdate, output_folder):
     manifest = iiif_prezi3.Manifest(
         id=f"{PREFIX}manifest.json",
         label="Demo Manifest for the GLOBALISE Document View Sandbox",
@@ -126,7 +127,7 @@ def make_manifest(df, navdate):
         canvas_id = i.canvas_id
         url = i.archive_url
 
-        manifest.make_canvas_from_iiif(
+        canvas = manifest.make_canvas_from_iiif(
             url=iiif_info_url,
             id=canvas_id,
             anno_page_id=f"{PREFIX}manifest.json/{index}/p1/page",
@@ -144,15 +145,31 @@ def make_manifest(df, navdate):
             ],
         )
 
+        ap_path = os.path.join(output_folder, "annotations")
+
+        # Transcriptions
+        ap_transcriptions = os.path.join(
+            ap_path, "transcriptions", f"{i.filename}.json"
+        )
+        if os.path.exists(ap_transcriptions):
+            with open(ap_transcriptions, "r", encoding="utf-8") as f:
+                ap = json.load(f)
+
+            canvas.annotations = [
+                {"id": ap["id"], "type": "AnnotationPage", "label": ap["label"]}
+            ]
+
     return manifest
 
 
-def main(selection_filepath="selection.csv", output_filepath="manifest.json"):
+def main(selection_filepath="selection.csv", output_folder="manifest.json"):
     df = pd.read_csv(selection_filepath)
 
-    manifest = make_manifest(df, navdate="1781-09-30T00:00:00Z")
+    manifest = make_manifest(
+        df, navdate="1781-09-30T00:00:00Z", output_folder=output_folder
+    )
 
-    with open(output_filepath, "w", encoding="utf-8") as f:
+    with open(os.path.join(output_folder, "manifest.json"), "w", encoding="utf-8") as f:
         s = manifest.json(indent=2)
 
         js = json.loads(s)
@@ -168,5 +185,5 @@ def main(selection_filepath="selection.csv", output_filepath="manifest.json"):
 if __name__ == "__main__":
     main(
         selection_filepath="static/data/selection.csv",
-        output_filepath="static/iiif/manifest.json",
+        output_folder="static/iiif/",
     )
