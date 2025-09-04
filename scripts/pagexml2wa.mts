@@ -245,6 +245,6 @@ const convertPageXmlToWebAnnotations = (
   const annotationPage = convertPageXmlToWebAnnotations(xmlString, canvasId);
 
   const outputPath =
-    "static/data/3598_selection/NL-HaNA_1.04.02_3598_0797.json";
+    "static/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json";
   fs.writeFileSync(outputPath, JSON.stringify(annotationPage, null, 2));
 })();
