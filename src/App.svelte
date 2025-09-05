@@ -52,7 +52,7 @@
     if (size === "thumb") {
       return imageId.replace(
         "full/full/0/default.jpg",
-        "full/122,/0/default.jpg"
+        "full/,150/0/default.jpg"
       );
     }
     return imageId.replace("full/full/0/default.jpg", "info.json");
