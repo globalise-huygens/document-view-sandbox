@@ -46,21 +46,6 @@
     selectedCanvas = canvas;
     selectedCanvas["partOf"] = manifest["id"];
   };
-
-  const getImageUrl = (canvas: any, size = "full") => {
-    const imageId = canvas.items[0].items[0].body.id;
-    if (size === "thumb") {
-      return imageId.replace(
-        "full/full/0/default.jpg",
-        "full/,150/0/default.jpg"
-      );
-    }
-    return imageId.replace("full/full/0/default.jpg", "info.json");
-  };
-
-  const getCanvasLabel = (canvas: any) => {
-    return canvas?.label?.en?.[0] || canvas?.label?.none?.[0] || "Untitled";
-  };
 </script>
 
 <NavBar onViewerChange={handleViewerChange} bind:selectedViewer />
@@ -73,17 +58,13 @@
       </div>
       <div class="min-h-[512px]">
         {#if selectedViewer === "openseadragon"}
-          <OSDViewer
-            infoJsonUrl={selectedCanvas ? getImageUrl(selectedCanvas) : null}
-          />
+          <OSDViewer canvasData={selectedCanvas} />
         {:else if selectedViewer === "openlayers"}
-          <OLViewer
-            infoJsonUrl={selectedCanvas ? getImageUrl(selectedCanvas) : null}
-          />
+          <OLViewer canvasData={selectedCanvas} />
         {:else if selectedViewer === "canvaspanel"}
           <CanvasPanelViewer canvasData={selectedCanvas} />
         {:else if selectedViewer === "clover"}
-          <CloverViewer />
+          <CloverViewer canvasData={selectedCanvas} />
         {/if}
       </div>
       <div class="p-4 border border-gray-300 font-mono leading-6">
@@ -97,8 +78,6 @@
       items={manifest.items}
       selectedId={selectedCanvas?.id}
       onSelect={handleCanvasSelect}
-      {getImageUrl}
-      {getCanvasLabel}
     />
   {/if}
 </main>

@@ -3,15 +3,13 @@
     items = [],
     selectedId = undefined,
     onSelect = (_item: any) => {},
-    getImageUrl = (_canvas: any, _size?: string) => "",
-    getCanvasLabel = (_canvas: any) => "",
   } = $props<{
     items?: any[];
     selectedId?: string | undefined;
     onSelect?: (item: any) => void;
-    getImageUrl?: (canvas: any, size?: string) => string;
-    getCanvasLabel?: (canvas: any) => string;
   }>();
+
+  import { getImageUrl, getCanvasLabel } from "../utils";
 
   const selectedIndex = $derived(
     Math.max(

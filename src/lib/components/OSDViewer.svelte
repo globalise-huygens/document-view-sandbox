@@ -2,9 +2,11 @@
   import { onMount } from "svelte";
   import OpenSeadragon from "openseadragon";
 
-  const { infoJsonUrl = null } = $props<{
-    infoJsonUrl?: string | null;
-  }>();
+  import { getImageUrl } from "../utils";
+
+  const { canvasData = null } = $props();
+
+  const infoJsonUrl = getImageUrl(canvasData);
 
   let viewer: OpenSeadragon.Viewer;
   let container: HTMLDivElement;
