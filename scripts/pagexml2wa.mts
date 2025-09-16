@@ -112,7 +112,7 @@ const Annotation = ({
   return anno;
 };
 
-const convertPageXmlToWebAnnotations = (
+export const convertPageXmlToWebAnnotations = (
   xmlString: string,
   canvasId: string
 ) => {
@@ -235,18 +235,23 @@ const convertPageXmlToWebAnnotations = (
   return annotationPage;
 };
 
-// Simple local read/write runner for a single PAGE-XML file in this repo
-(() => {
-  const inputPath = "static/data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml";
-  if (!fs.existsSync(inputPath)) return;
+if (import.meta.main) {
+  const [, , inputPath, canvasId, outputPath] = process.argv;
+
+  if (!inputPath || !canvasId || !outputPath) {
+    console.error(
+      "Usage: node pagexml2wa.mjs <inputPath> <canvasId> <outputPath>"
+    );
+    process.exit(1);
+  }
+
+  if (!fs.existsSync(inputPath)) {
+    console.error(`Input file not found: ${inputPath}`);
+    process.exit(1);
+  }
 
   const xmlString = fs.readFileSync(inputPath, "utf-8");
-  const canvasId =
-    "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json/canvas/p797";
-
   const annotationPage = convertPageXmlToWebAnnotations(xmlString, canvasId);
-
-  const outputPath =
-    "static/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json";
   fs.writeFileSync(outputPath, JSON.stringify(annotationPage, null, 2));
-})();
+  console.log(`AnnotationPage written to ${outputPath}`);
+}
