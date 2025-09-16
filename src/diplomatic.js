@@ -1,11 +1,19 @@
 import {parseXml} from '@rgrove/parse-xml';
 import SVGPathCommander from 'svg-path-commander';
 import {select} from "d3-selection"
+import {polygonHull} from "d3-polygon"
+import {line, curveLinearClosed} from "d3-shape"
 
-// const canvas = document.createElement("CANVAS")
-// document.body.appendChild(canvas)
-// canvas.style.width = "400px"
-// canvas.style.height = "600px"
+//import { pointsOnPath } from 'points-on-path';
+
+
+var svgbody = select("body")
+    .append("svg")
+    .attr("id", "svgbody")
+    .attr("width", (4000))
+    .attr("height", (10000))
+
+
 
 // const ctx = canvas.getContext("2d");
 // ctx.fillStyle = "black";
@@ -13,8 +21,25 @@ import {select} from "d3-selection"
 
 const renderWord = (text, coords, container) => {
 
-    let scale = 0.3
+    let scale = 1
+    //document.getElementById("svgbody").style.transform = "scale(0.3)"
+
+
+    
     const path = "M" + coords + "Z"
+
+
+    
+
+    
+    const coordarr = []
+    for (const pair of coords.split(" ")){
+	coordarr.push(pair.split(","))
+    }
+
+    const hull = polygonHull(coordarr)
+
+    
     let pathcom = new SVGPathCommander(path)
     
     let c = document.createElement("DIV")
@@ -26,7 +51,8 @@ const renderWord = (text, coords, container) => {
     c.style.top = (pathcom.bbox.y * scale) + "px"
     c.style.width = (pathcom.bbox.width * scale) + "px"
     c.style.height = (pathcom.bbox.height * scale) + "px"
-    
+    c.style.transform= "rotate(0deg)";
+   
     let s = document.createElement("DIV")
     c.appendChild(s)
 
@@ -39,12 +65,16 @@ const renderWord = (text, coords, container) => {
     
     s.style.display = "block"
     s.style.fontSize = "20px"
-	    
-    //const svg = select("body").append("svg")
-    //	  .append("path")
-    //	  .attr("d", path)
-    //	  .attr("stroke-width", 2)
-    //		  .attr("stroke", "red")
+
+    const cur = line().curve(curveLinearClosed)
+
+    svgbody.append("path")
+	.attr("d", cur(hull))
+	.attr("stroke", "black")
+	.attr("fill", "white")
+	.attr("stroke-width", 1)
+
+    
     
     //ctx.stroke(new Path2D(path))
     //ctx.rect(pathcom.bbox.x, pathcom.bbox.y, pathcom.bbox.width, pathcom.bbox.height)
@@ -81,8 +111,6 @@ const resizeText = (el, minSize = 1, maxSize = 150, step = 1, unit = 'px') => {
 
       const verticalAdjust = (parent.clientHeight / 2) -  (el.clientHeight / 2)
       el.style.marginTop = `${verticalAdjust}${unit}`
-
-      
   }
 }
 
@@ -104,7 +132,7 @@ document.body.appendChild(container)
 
 observer.observe(container, { attributes: false, childList: true, subtree: true })
 
-fetch('.//data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml')
+fetch('./data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml')
     .then(response => response.text())
     .then((data) => {
 
@@ -118,6 +146,7 @@ fetch('.//data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml')
 	    const lines = region.children.filter( (x => x["name"] == "TextLine"))
 	    
 	    for (const line of lines){
+
 		const words = line.children.filter((x => x["name"] == "Word"))
 		for (const word of words) {
 
@@ -129,6 +158,7 @@ fetch('.//data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml')
 		    
 		    renderWord(text, coords, container)
 		}
+		
 	    }
 	}
     })
