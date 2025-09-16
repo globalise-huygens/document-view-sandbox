@@ -52,7 +52,7 @@
   });
 </script>
 
-<div class="border border-gray-300 p-3 mx-4 my-4">
+<div class="border border-gray-300 p-3 mx-4 mt-2 mb-2">
   <div class="flex items-center gap-3">
     <button
       type="button"

@@ -28,7 +28,6 @@
       const response = await fetch(manifestUrl);
       manifest = await response.json();
 
-      // Select first canvas by default
       if (manifest?.items?.length > 0) {
         selectedCanvas = manifest.items[0];
         selectedCanvas["partOf"] = manifest["id"];
@@ -48,36 +47,51 @@
   };
 </script>
 
-<NavBar onViewerChange={handleViewerChange} bind:selectedViewer />
+<div class="flex flex-col min-h-screen w-full">
+  <div class="shrink-0">
+    <NavBar onViewerChange={handleViewerChange} bind:selectedViewer />
+  </div>
 
-<main>
-  {#if !loaded}{:else}
-    <div class="grid gap-4 p-4 md:grid-cols-2">
-      <div class="md:col-span-2 p-4 border border-gray-300 text-sm">
+  <div class="flex flex-col flex-1 min-h-0">
+    {#if !loaded}{:else}
+      <div class="p-4 border border-gray-300 text-sm shrink-0">
         <Metadata />
       </div>
-      <div class="min-h-[512px]">
-        {#if selectedViewer === "openseadragon"}
-          <OSDViewer canvasData={selectedCanvas} />
-        {:else if selectedViewer === "openlayers"}
-          <OLViewer canvasData={selectedCanvas} />
-        {:else if selectedViewer === "canvaspanel"}
-          <CanvasPanelViewer canvasData={selectedCanvas} />
-        {:else if selectedViewer === "clover"}
-          <CloverViewer canvasData={selectedCanvas} />
-        {/if}
+
+      <div class="flex flex-1 min-h-0 flex-col md:flex-row gap-4 p-4">
+        <div
+          class="flex-1 min-h-[420px] min-w-0 border border-gray-300 relative flex flex-col"
+        >
+          <div class="absolute inset-0">
+            {#if selectedViewer === "openseadragon"}
+              <OSDViewer canvasData={selectedCanvas} />
+            {:else if selectedViewer === "openlayers"}
+              <OLViewer canvasData={selectedCanvas} />
+            {:else if selectedViewer === "canvaspanel"}
+              <CanvasPanelViewer canvasData={selectedCanvas} />
+            {:else if selectedViewer === "clover"}
+              <CloverViewer canvasData={selectedCanvas} />
+            {/if}
+          </div>
+        </div>
+
+        <div
+          class="flex-1 min-h-[420px] min-w-0 flex flex-col border border-gray-300 font-mono leading-6"
+        >
+          <div class="flex-1 overflow-auto p-4">
+            <Transcription />
+          </div>
+        </div>
       </div>
-      <div class="p-4 border border-gray-300 font-mono leading-6">
-        <Transcription />
-      </div>
+    {/if}
+  </div>
+  {#if manifest?.items}
+    <div class="mt-auto">
+      <Carousel
+        items={manifest.items}
+        selectedId={selectedCanvas?.id}
+        onSelect={handleCanvasSelect}
+      />
     </div>
   {/if}
-
-  {#if manifest?.items}
-    <Carousel
-      items={manifest.items}
-      selectedId={selectedCanvas?.id}
-      onSelect={handleCanvasSelect}
-    />
-  {/if}
-</main>
+</div>
