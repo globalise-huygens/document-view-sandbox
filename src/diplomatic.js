@@ -1,17 +1,16 @@
 import {parseXml} from '@rgrove/parse-xml';
 import SVGPathCommander from 'svg-path-commander';
-import {select} from "d3-selection"
+//import {select} from "d3-selection";
 import {polygonHull} from "d3-polygon"
 import {line, curveLinearClosed} from "d3-shape"
 
 //import { pointsOnPath } from 'points-on-path';
 
-
-var svgbody = select("body")
-    .append("svg")
-    .attr("id", "svgbody")
-    .attr("width", (4000))
-    .attr("height", (10000))
+//var svgbody = select("body")
+//    .append("svg")
+//    .attr("id", "svgbody")
+//    .attr("width", (4000))
+//    .attr("height", (10000))
 
 
 
@@ -21,17 +20,13 @@ var svgbody = select("body")
 
 const renderWord = (text, coords, container) => {
 
-    let scale = 1
+    let scale = 0.3
     //document.getElementById("svgbody").style.transform = "scale(0.3)"
-
 
     
     const path = "M" + coords + "Z"
 
 
-    
-
-    
     const coordarr = []
     for (const pair of coords.split(" ")){
 	coordarr.push(pair.split(","))
@@ -58,9 +53,7 @@ const renderWord = (text, coords, container) => {
 
     s.innerText = text
     s.className= "text"
-    //s.style.border = "dashed 1px red"
-    
-    //s.style.fontFamily =  "Times, Georgia, serif"
+    //s.style.border = "dashed 1px red"    
     s.style.fontFamily = "monospace"
     
     s.style.display = "block"
@@ -68,11 +61,11 @@ const renderWord = (text, coords, container) => {
 
     const cur = line().curve(curveLinearClosed)
 
-    svgbody.append("path")
-	.attr("d", cur(hull))
-	.attr("stroke", "black")
-	.attr("fill", "white")
-	.attr("stroke-width", 1)
+    //svgbody.append("path")
+    //	.attr("d", cur(hull))
+    //	.attr("stroke", "black")
+    //  .attr("fill", "white")
+    //  .attr("stroke-width", 1)
 
     
     
