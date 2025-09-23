@@ -16,7 +16,18 @@ let opacity
 let wOpacity
 let imageStyle
 
-const renderWord = (text, coords, container) => {
+let curWord = 0
+let curPos = 0
+const posIndex = []
+const plainTextWords = []
+let plainText
+
+const findTarget = (f, t) => {
+  const [fw, fp] = posIndex[f]
+  const [tw, tp] = posIndex[t]
+}
+
+const renderWord = (text, curWord, coords, container) => {
   const path = "M" + coords + "Z"
   let pathcom = new SVGPathCommander(path)
 
@@ -33,6 +44,7 @@ const renderWord = (text, coords, container) => {
   c.className = "textdiv"
 
   let s = document.createElement("DIV")
+  s.setAttribute("wi", `${curWord}`)
   c.appendChild(s)
 
   s.innerText = text
@@ -152,6 +164,10 @@ document.addEventListener("DOMContentLoaded", () => {
         width: ${scale * imageWidth}px;
         height: ${scale * imageHeight}px;
       `
+      curWord = 0
+      curPos = 0
+      posIndex.clear()
+      plainTextWords.clear()
 
       const regions = page.children.filter(x => x["name"] == "TextRegion")
 
@@ -168,10 +184,19 @@ document.addEventListener("DOMContentLoaded", () => {
               .filter(x => x["name"] == "TextEquiv")[0]
               .children.filter(x => x["name"] == "Unicode")[0].children[0].text
 
-            renderWord(text, coords, container)
+            renderWord(text, curWord, coords, container)
+            textLen = text.length
+
+            for (i = 0; i < textLen; i++) {
+              posIndex.push([curWord, i])
+            }
+            posIndex.push([curWord, textLen])
+            plainTextWords.push(text)
+            curWord++
           }
         }
       }
+      plainText = plainTextWords.join(" ")
       imageEl.src = `images/${docSelection}/${imageFilename}`
       imageEl.style = imageStyle
 
