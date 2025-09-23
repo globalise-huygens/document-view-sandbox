@@ -1,16 +1,16 @@
 import {parseXml} from '@rgrove/parse-xml';
-import SVGPathCommander from 'svg-path-commander';
-//import {select} from "d3-selection";
+
+import {select} from "d3-selection";
 import {polygonHull} from "d3-polygon"
 import {line, curveLinearClosed} from "d3-shape"
+import { pointsOnPath } from 'points-on-path';
 
-//import { pointsOnPath } from 'points-on-path';
-
-//var svgbody = select("body")
-//    .append("svg")
-//    .attr("id", "svgbody")
-//    .attr("width", (4000))
-//    .attr("height", (10000))
+var svgbody = select("body")
+    .append("svg")
+    .attr("id", "svgbody")
+    .attr("width", 4000)
+    .attr("height", 5500)
+    //.attr("viewbox", "0 0 20 10")
 
 
 
@@ -18,11 +18,44 @@ import {line, curveLinearClosed} from "d3-shape"
 // ctx.fillStyle = "black";
 // ctx.font = "23px monospace";
 
+
+const boundingBox = points => {
+
+    // find the x and y bounds from a set of points
+
+    let max_x = null
+    let min_x = null
+    let max_y = null
+    let min_y = null
+
+    points.forEach(p => {
+
+	const x = parseInt(p[0])
+	const y = parseInt(p[1])
+
+	max_x = x > max_x ? x : max_x
+	max_y = y > max_y ? y : max_y
+	
+	min_x = min_x == null || x < min_x ? x : min_x
+	min_y = min_y == null || y < min_y ? y : min_y
+
+    })
+    
+    return {
+	"x" : min_x,
+	"y": min_y,
+	"x2": max_x,
+	"y2": max_y,
+	"width" : max_x - min_x,
+	"height": max_y - min_y
+    }    
+}
+
+
 const renderWord = (text, coords, container) => {
 
-    let scale = 0.3
+    let scale = 1 //0.3
     //document.getElementById("svgbody").style.transform = "scale(0.3)"
-
     
     const path = "M" + coords + "Z"
 
@@ -33,23 +66,23 @@ const renderWord = (text, coords, container) => {
     }
 
     const hull = polygonHull(coordarr)
-
-    
-    let pathcom = new SVGPathCommander(path)
+    const bbox = boundingBox(hull)
     
     let c = document.createElement("DIV")
     container.appendChild(c)
     c.style.position = "absolute"
-    //c.style.border = "dashed 1px blue"
+    c.style.border = "dashed 1px blue"
 
-    c.style.left = (pathcom.bbox.x * scale) + "px"
-    c.style.top = (pathcom.bbox.y * scale) + "px"
-    c.style.width = (pathcom.bbox.width * scale) + "px"
-    c.style.height = (pathcom.bbox.height * scale) + "px"
+    c.style.left = (bbox.x * scale) + "px"
+    c.style.top = (bbox.y * scale) + "px"
+    c.style.width = (bbox.width * scale) + "px"
+    c.style.height = (bbox.height * scale) + "px"
+
+    
     c.style.transform= "rotate(0deg)";
    
     let s = document.createElement("DIV")
-    c.appendChild(s)
+    //c.appendChild(s)
 
     s.innerText = text
     s.className= "text"
@@ -61,13 +94,12 @@ const renderWord = (text, coords, container) => {
 
     const cur = line().curve(curveLinearClosed)
 
-    //svgbody.append("path")
-    //	.attr("d", cur(hull))
-    //	.attr("stroke", "black")
-    //  .attr("fill", "white")
-    //  .attr("stroke-width", 1)
+    svgbody.append("path")
+    	.attr("d", cur(hull))
+     	.attr("stroke", "black")
+    	.attr("fill", "white")
+    	.attr("stroke-width", 1)
 
-    
     
     //ctx.stroke(new Path2D(path))
     //ctx.rect(pathcom.bbox.x, pathcom.bbox.y, pathcom.bbox.width, pathcom.bbox.height)
