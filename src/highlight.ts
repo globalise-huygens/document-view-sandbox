@@ -1,22 +1,18 @@
-import {debounce} from 'lodash'
+import {debounce, keyBy} from 'lodash'
 
 main();
 
 function main() {
-  if (!CSS.highlights) {
-    console.error('CSS.highlights not supported.');
-    return;
-  }
-
   const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
 
   const annotations: Annotation[] = [
     {begin: 6, end: 17, body: {id: 'p1', type: 'person'}}, // "ipsum dolor"
-    {begin: 12, end: 26, body: {id: 'p2', type: 'person'}}, // "dolor sit amet"
+    {begin: 12, end: 12, body: {id: 'n2', type: 'note', note: 'A note here'}},
     {begin: 12, end: 21, body: {id: 'p3', type: 'person'}}, // "dolor sit"
+    {begin: 12, end: 26, body: {id: 'p2', type: 'person'}}, // "dolor sit amet"
+    {begin: 18, end: 39, body: {id: 'e1', type: 'event'}}, // "sit amet, consectetur"
     {begin: 28, end: 50, body: {id: 'l1', type: 'location'}}, // "consectetur adipiscing"
     {begin: 40, end: 55, body: {id: 'l2', type: 'location'}}, // "adipiscing elit"
-    {begin: 18, end: 39, body: {id: 'e1', type: 'event'}}, // "sit amet, consectetur"
   ];
 
   const $app = document.querySelector<HTMLDivElement>('#app')
@@ -25,30 +21,14 @@ function main() {
   const $text = document.createElement('div');
   $app.appendChild($text);
 
-  const textNode = document.createTextNode(text);
-  $text.replaceChildren(textNode);
-
   const $style = document.createElement('style');
   document.head.appendChild($style);
 
-  CSS.highlights.clear();
+  const rangesById = createRanges(text, annotations);
+  const annotationById = keyBy(annotations, a => a.body.id);
 
-  renderText($style, annotations, textNode);
-  handleHovering($text, textNode, annotations);
-}
-
-function renderText(
-  $style: HTMLStyleElement,
-  annotations: Annotation[],
-  textNode: Text
-) {
-  const slicedByOffset = createRanges(textNode, annotations);
-  createHighlightStyles(slicedByOffset, annotations, $style);
-
-  for (const [combinationKey, rangeData] of slicedByOffset.entries()) {
-    const highlight = new Highlight(...rangeData.ranges);
-    CSS.highlights.set(combinationKey, highlight);
-  }
+  renderText($style, $text, text, [...rangesById.values()], annotationById);
+  handleHovering($text, rangesById, annotationById);
 }
 
 /**
@@ -58,140 +38,220 @@ function renderText(
  * that apply.
  */
 function createRanges(
-  textNode: Text,
+  text: string,
   annotations: Annotation[]
-): Map<string, AnnotationsRange> {
-  const offsets: Offset[] = [];
-  for (const annotation of annotations) {
-    offsets.push({charIndex: annotation.begin, type: 'begin', annotation});
-    offsets.push({charIndex: annotation.end, type: 'end', annotation});
-  }
-  offsets.sort((a, b) => a.charIndex - b.charIndex);
+): Map<RangeId, Range> {
+  const ranges = new Map<RangeId, Range>();
+  let rangeCounter = 0;
 
-  const rangesByAnnotationIds = new Map<string, AnnotationsRange>();
-  let activeAnnotations: Annotation[] = [];
-  let lastIndex = 0;
+  const offsetMap = new Map<number, Offset>();
 
-  for (const offset of offsets) {
-    const currentIndex = offset.charIndex;
-    if (currentIndex > lastIndex && activeAnnotations.length > 0) {
-
-      const annotationIds = activeAnnotations
-        .map(a => a.body.id)
-        .sort();
-
-      const idsKey = annotationIds.join('-');
-
-      if (!rangesByAnnotationIds.has(idsKey)) {
-        rangesByAnnotationIds.set(idsKey, {
-          ranges: [],
-          annotationIds: annotationIds
-        });
-      }
-
-      const range = new Range();
-      range.setStart(textNode, lastIndex);
-      range.setEnd(textNode, currentIndex);
-      rangesByAnnotationIds.get(idsKey)!.ranges.push(range);
+  const getOrCreateOffset = (charIndex: number) => {
+    if (offsetMap.has(charIndex)) {
+      return offsetMap.get(charIndex)!;
     }
-    if (offset.type === 'begin') {
-      activeAnnotations.push(offset.annotation);
+    const newOffset = {charIndex, starting: [], ending: [], markers: []}
+    offsetMap.set(charIndex, newOffset);
+    return newOffset;
+  }
+
+  getOrCreateOffset(0);
+  getOrCreateOffset(text.length);
+
+  annotations.forEach(a => {
+    if (a.begin === a.end) {
+      getOrCreateOffset(a.begin).markers.push(a);
     } else {
-      activeAnnotations = activeAnnotations.filter(a => a !== offset.annotation);
+      getOrCreateOffset(a.begin).starting.push(a);
+      getOrCreateOffset(a.end).ending.push(a);
     }
-    lastIndex = currentIndex;
-  }
-  return rangesByAnnotationIds;
+  });
 
+  const sortedOffsets = [...offsetMap.values()]
+    .sort((a, b) => a.charIndex - b.charIndex);
+
+  const activeAnnotations = new Set<AnnotationId>();
+  let lastOffset = 0;
+  for (const offset of sortedOffsets) {
+    if (offset.charIndex > lastOffset) {
+      const id = `${rangeCounter++}` as RangeId;
+      ranges.set(id, {
+        id,
+        begin: lastOffset,
+        end: offset.charIndex,
+        annotations: [...activeAnnotations],
+      });
+    }
+
+    for (const marker of offset.markers) {
+      const range = `${rangeCounter++}` as RangeId;
+      ranges.set(range, {
+        id: range,
+        begin: offset.charIndex,
+        end: offset.charIndex,
+        annotations: [marker.body.id, ...activeAnnotations],
+      });
+    }
+
+    offset.starting.forEach(a => activeAnnotations.add(a.body.id));
+    offset.ending.forEach(a => activeAnnotations.delete(a.body.id));
+    lastOffset = offset.charIndex;
+  }
+
+  return ranges;
+}
+
+function renderText(
+  $style: HTMLStyleElement,
+  $container: HTMLDivElement,
+  text: string,
+  ranges: Range[],
+  annotations: Record<AnnotationId, Annotation>
+) {
+  createHighlightStyles(annotations, ranges, $style);
+
+  const sortedByBegin = [...ranges]
+    .sort((a, b) => a.begin - b.begin);
+
+  for (const range of sortedByBegin) {
+    const $span = document.createElement('span');
+    $span.textContent = text.substring(range.begin, range.end);
+    $span.dataset.range = range.id;
+
+    const classList: string[] = [];
+    if (range.begin !== range.end && range.annotations.length) {
+      const key = createHighlightClass(range.annotations, annotations);
+      classList.push(`highlight-${key}`);
+    }
+    range.annotations.forEach(id => classList.push(id));
+
+    if (range.begin === range.end) {
+      classList.push('marker-range');
+    }
+
+    $span.className = classList.join(' ');
+    $container.appendChild($span);
+  }
 }
 
 function createHighlightStyles(
-  rangeByIds: Map<string, AnnotationsRange>,
-  annotations: Annotation[],
+  annotationsById: Record<AnnotationId, Annotation>,
+  ranges: Range[],
   styleElement: HTMLStyleElement
 ) {
-  let cssRules = `::highlight(hover-highlight) {
-      background-color: rgba(0, 0, 0, 0.2);
+  let cssRules = `.highlight-hover {
+      background-color: rgba(0, 0, 0, 0.2) !important;
       cursor: pointer;
     }
+    
+    .marker-range {
+      display: inline-block;
+      width: 0;
+      position: relative;
+    }
+    .marker-range::before {
+      content: '📍';
+      position: absolute;
+      left: -0.8em;
+      top:-1.5em
+    }
   `;
-
-  const annotationById = new Map<AnnotationId, Annotation>();
-  for (const annotation of annotations) {
-    annotationById.set(annotation.body.id, annotation);
-  }
 
   const pink = {r: 255, g: 182, b: 193};
   const blue = {r: 173, g: 216, b: 230};
   const yellow = {r: 255, g: 255, b: 224};
-  const typeColors = {person: pink, location: blue, event: yellow};
+  const colors = {person: pink, location: blue, event: yellow, note: yellow}
 
-  for (const [key, ranges] of rangeByIds.entries()) {
-    const types = ranges.annotationIds.map(id =>
-      annotationById.get(id)?.body.type ?? orThrow(`id ${id} not found`)
-    )
-    const color = mergeTypeColors(types, typeColors);
+  const rangeToColors = new Map<string, string>();
+  for (const range of ranges) {
 
+    if (!range.annotations.length) {
+      continue;
+    }
+    if (range.begin === range.end) {
+      continue;
+    }
+
+    const {key, color} = createHighlight(
+      range.annotations,
+      annotationsById,
+      colors
+    );
+    rangeToColors.set(key, color);
+  }
+
+  for (const [key, color] of rangeToColors) {
     cssRules += `
-      ::highlight(${key}) {
+      .highlight-${key} {
         background-color: ${color};
         border-radius: 2px;
       }
     `;
   }
+
   styleElement.textContent = cssRules;
 }
 
 function handleHovering(
   $text: HTMLDivElement,
-  textNode: Text,
-  annotations: Annotation[]
+  textRanges: Map<RangeId, Range>,
+  annotations: Record<AnnotationId, Annotation>
 ) {
-  let hoveredAnnotationId: string | null = null;
+  let currentHoveredAnnotation: AnnotationId | null = null;
 
-  const updateHoverHighlight = (newHoverId: string | null) => {
-    if (!newHoverId) {
-      CSS.highlights.delete('hover-highlight');
-      return;
+  const setHoverHighlight = (annotationId: AnnotationId | null) => {
+    $text.querySelectorAll('.highlight-hover').forEach(el => {
+      el.classList.remove('highlight-hover');
+    });
+
+    if (annotationId) {
+      $text.querySelectorAll(`.${annotationId}`).forEach(el => {
+        el.classList.add('highlight-hover');
+      });
     }
-    const toHighlight = annotations.find(a => a.body.id === newHoverId);
-    if (!toHighlight) {
-      return;
-    }
-
-    const range = new Range();
-    range.setStart(textNode, toHighlight.begin);
-    range.setEnd(textNode, toHighlight.end);
-
-    const hoverHighlight = new Highlight(range);
-    CSS.highlights.set('hover-highlight', hoverHighlight);
+    currentHoveredAnnotation = annotationId;
   };
 
-  const handleAnnotationIdChange = debounce((
-    targetAnnotationId: string | null
-  ) => {
-    if (hoveredAnnotationId !== targetAnnotationId) {
-      hoveredAnnotationId = targetAnnotationId;
-      updateHoverHighlight(hoveredAnnotationId);
+  const handleRangeHover = debounce((range: RangeId | null) => {
+    if (!range) {
+      setHoverHighlight(null);
+      return;
+    }
+
+    const textRange = textRanges.get(range);
+    if (!textRange?.annotations.length) {
+      setHoverHighlight(null);
+      return;
+    }
+
+    const candidateAnnotations = textRange.annotations
+      .map(id => annotations[id])
+      .filter((a): a is Annotation => a !== undefined);
+
+    const found = findHoveredAnnotation(candidateAnnotations, textRange.begin);
+    const foundId = found?.body.id;
+
+    if (foundId !== currentHoveredAnnotation) {
+      setHoverHighlight(foundId);
     }
   }, 25);
 
-  $text.addEventListener('mousemove', (event) => {
-    const caretInfo = getCaretFromCursor(event.clientX, event.clientY);
-    if (caretInfo && caretInfo.node === textNode) {
-      const found = findHoveredAnnotation(annotations, caretInfo.offset);
-      const targetAnnotationId = found ? found.body.id : null;
-      handleAnnotationIdChange(targetAnnotationId);
+  $text.addEventListener('mouseover', (event) => {
+    const target = event.target as HTMLElement;
+    if (target.tagName !== 'SPAN') {
+      return;
     }
+    const range = target.dataset.range ?? null
+    handleRangeHover(range);
   });
 
   $text.addEventListener('mouseleave', () => {
-    handleAnnotationIdChange(null);
+    handleRangeHover(null);
   });
 }
 
 /**
- * Pick an annotation that:
+ * Find annotation that:
  * 1. contains the character index
  * 2. has the shortest length
  * 3. starts earliest
@@ -200,70 +260,83 @@ function findHoveredAnnotation(
   annotations: Annotation[],
   charIndex: number
 ): Annotation | null {
-  const candidates = annotations.filter(a => charIndex >= a.begin && charIndex < a.end);
-
+  const candidates = annotations.filter(a => {
+    const marker = a.begin === a.end && charIndex === a.begin;
+    const annotation = charIndex >= a.begin && charIndex < a.end;
+    return marker || annotation
+  });
   if (candidates.length === 0) {
     return null;
   }
-
   return candidates.reduce((best, current) => {
     const shortest = best.end - best.begin;
     const currentLength = current.end - current.begin;
-
     if (currentLength < shortest) {
       return current;
     }
-
     if (currentLength === shortest && current.begin < best.begin) {
       return current;
     }
-
     return best;
   });
 }
 
-function getCaretFromCursor(
-  x: number,
-  y: number
-): { node: Node; offset: number } | undefined {
-  const position = document.caretPositionFromPoint(x, y);
-  if (!position) {
-    return;
+function createHighlightClass(
+  annotationIds: AnnotationId[],
+  annotations: Record<AnnotationId, Annotation>,
+  sortedTypes: AnnotationType[] = ['event', 'location', 'note', 'person']
+) {
+  const {typeCounts} = countTypes(annotationIds, annotations);
+  const parts: string[] = [];
+
+  for (const type of sortedTypes) {
+    const count = typeCounts.get(type);
+    if (count) {
+      const typeKey = type.charAt(0);
+      parts.push(`${count}${typeKey}`);
+    }
   }
-  return {
-    node: position.offsetNode,
-    offset: position.offset
-  };
+  return parts.join('-');
 }
 
-export type AnnotationId = string;
-export type AnnotationType = 'location' | 'person' | 'event';
-type AnnotationBody = {
-  id: AnnotationId;
-  type: AnnotationType;
-};
+function createHighlight(
+  annotationIds: AnnotationId[],
+  annotations: Record<AnnotationId, Annotation>,
+  baseColors: Record<AnnotationType, Rgb>
+) {
+  const {types} = countTypes(annotationIds, annotations);
+  const color = mergeTypeColors(types, baseColors);
+  const key = createHighlightClass(annotationIds, annotations);
+  return {key, color};
+}
 
-export type Annotation = {
-  begin: number;
-  end: number;
-  body: AnnotationBody;
-};
-type AnnotationsRange = {
-  ranges: Range[];
-  annotationIds: AnnotationId[];
-};
+function countTypes(
+  annotationIds: AnnotationId[],
+  annotations: Record<AnnotationId, Annotation>
+): { types: AnnotationType[], typeCounts: Map<AnnotationType, number> } {
 
-type Offset = {
-  charIndex: number;
-  type: "begin" | "end";
-  annotation: Annotation
-};
+  const typeCounts = new Map<AnnotationType, number>();
+  const types: AnnotationType[] = [];
+
+  for (const id of annotationIds) {
+    const annotation = annotations[id];
+    if (!annotation) {
+      continue;
+    }
+    const type = annotation.body.type;
+    typeCounts.set(type, (typeCounts.get(type) || 0) + 1);
+    types.push(type);
+  }
+
+  if (types.includes('note')) {
+    throw new Error('Notes are not part of ranges with a stylable length');
+  }
+  return {types, typeCounts};
+}
 
 function orThrow(msg: string): never {
   throw new Error(msg);
 }
-
-// ---
 
 function mergeTypeColors(
   types: AnnotationType[],
@@ -271,13 +344,11 @@ function mergeTypeColors(
 ) {
   const baseAlpha = 0.4;
   const uniqueTypes = new Set(types);
-
   let rSum = 0;
   let gSum = 0;
   let bSum = 0;
   for (const type of uniqueTypes) {
-    const color = baseColors[type]
-      ?? orThrow(`type ${type} not found`);
+    const color = baseColors[type] ?? orThrow(`type ${type} not found`);
     rSum += color.r;
     gSum += color.g;
     bSum += color.b;
@@ -288,6 +359,45 @@ function mergeTypeColors(
   const alpha = Math.min(1, baseAlpha + (0.1 * types.length));
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
+
+type AnnotationId = string;
+type AnnotationType = 'location' | 'person' | 'event' | 'note';
+type AnnotationBody = EntityBody | NoteBody;
+type EntityBody = {
+  id: AnnotationId;
+  type: 'location' | 'person' | 'event';
+};
+
+type NoteBody = {
+  id: AnnotationId;
+  type: 'note';
+  note: string;
+};
+
+type Annotation = {
+  begin: number;
+  end: number;
+  body: AnnotationBody;
+};
+
+type RangeId = string;
+type Range = {
+  id: RangeId;
+  begin: number;
+  end: number;
+  annotations: AnnotationId[];
+};
+
+
+type Offset = {
+  charIndex: number;
+  starting: Annotation[]
+  ending: Annotation[]
+  /**
+   * Annotations with a location, without content
+   */
+  markers: Annotation[]
+};
 
 type Rgb = {
   r: number,
