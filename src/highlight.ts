@@ -50,7 +50,7 @@ function createRanges(
     if (offsetMap.has(charIndex)) {
       return offsetMap.get(charIndex)!;
     }
-    const newOffset = {charIndex, starting: [], ending: [], markers: []}
+    const newOffset = {charIndex, starting: [], ending: []}
     offsetMap.set(charIndex, newOffset);
     return newOffset;
   }
@@ -59,12 +59,8 @@ function createRanges(
   getOrCreateOffset(text.length);
 
   annotations.forEach(a => {
-    if (a.begin === a.end) {
-      getOrCreateOffset(a.begin).markers.push(a);
-    } else {
-      getOrCreateOffset(a.begin).starting.push(a);
-      getOrCreateOffset(a.end).ending.push(a);
-    }
+    getOrCreateOffset(a.begin).starting.push(a);
+    getOrCreateOffset(a.end).ending.push(a);
   });
 
   const sortedOffsets = [...offsetMap.values()]
@@ -83,7 +79,11 @@ function createRanges(
       });
     }
 
-    for (const marker of offset.markers) {
+    /**
+     * marker: annotation with a location and without any content
+     */
+    const markers = offset.starting.filter(a => offset.ending.includes(a));
+    for (const marker of markers) {
       const range = `${rangeCounter++}` as RangeId;
       ranges.set(range, {
         id: range,
@@ -212,23 +212,21 @@ function handleHovering(
     currentHoveredAnnotation = annotationId;
   };
 
-  const handleRangeHover = debounce((range: RangeId | null) => {
-    if (!range) {
+  const handleRangeHover = debounce((rangeId: RangeId | null) => {
+    if (!rangeId) {
       setHoverHighlight(null);
       return;
     }
 
-    const textRange = textRanges.get(range);
-    if (!textRange?.annotations.length) {
+    const range = textRanges.get(rangeId);
+    if (!range?.annotations.length) {
       setHoverHighlight(null);
       return;
     }
 
-    const candidateAnnotations = textRange.annotations
-      .map(id => annotations[id])
-      .filter((a): a is Annotation => a !== undefined);
+    const rangeAnnotations = range.annotations.map(id => annotations[id])
 
-    const found = findHoveredAnnotation(candidateAnnotations, textRange.begin);
+    const found = findHoveredAnnotation(rangeAnnotations, range.begin);
     const foundId = found?.body.id;
 
     if (foundId !== currentHoveredAnnotation) {
@@ -393,10 +391,6 @@ type Offset = {
   charIndex: number;
   starting: Annotation[]
   ending: Annotation[]
-  /**
-   * Annotations with a location, without content
-   */
-  markers: Annotation[]
 };
 
 type Rgb = {
