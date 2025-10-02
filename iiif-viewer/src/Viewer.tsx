@@ -10,6 +10,7 @@ function Viewer(props: ViewerProps) {
   const viewerRef = React.useRef<OpenSeadragon.Viewer | null>(null);
   const osdContainerRef = React.useRef<HTMLDivElement | null>(null);
   const setViewer = useViewerStore((s) => s.setViewer);
+  const setViewerReady = useViewerStore((s) => s.setViewerReady);
 
   React.useEffect(() => {
     if (osdContainerRef.current) {
@@ -20,6 +21,8 @@ function Viewer(props: ViewerProps) {
         tileSources: props.tileSource,
       });
       setViewer(viewerRef.current);
+      const onOpen = () => setViewerReady(true);
+      viewerRef.current?.addOnceHandler("open", onOpen);
     }
 
     return () => {
