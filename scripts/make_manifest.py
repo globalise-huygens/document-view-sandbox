@@ -35,26 +35,26 @@ def make_manifest(df, navdate, output_folder):
         "https://globalise-huygens.github.io/document-view-sandbox/globalise.png"
     )
 
-    logo = iiif_prezi3.ResourceItem(
-        id=globalise_logo,
-        type="Image",
-        format="image/png",
-        height=182,
-        width=1200,
-    )
-
-    provider = iiif_prezi3.ProviderItem(
+    provider = iiif_prezi3.Provider(
         id="https://globalise.huygens.knaw.nl",
         label="GLOBALISE Project",
         homepage=[
-            iiif_prezi3.HomepageItem(
+            iiif_prezi3.Homepage(
                 id="https://globalise.huygens.knaw.nl",
                 type="Text",
                 format="text/html",
                 label="GLOBALISE Project",
             )
         ],
-        logo=[logo],
+        logo=[
+            {
+                "id": "https://globalise-huygens.github.io/document-view-sandbox/globalise.png",
+                "type": "Image",
+                "height": 182,
+                "width": 1200,
+                "format": "image/png",
+            }
+        ],
     )
     manifest.provider = [provider]
 
@@ -62,63 +62,7 @@ def make_manifest(df, navdate, output_folder):
         "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/75fbe126-7735-410e-ba4f-4f4a7a9a06e7.jp2"
     )
 
-    ## Document metadata
-    manifest.metadata = [
-        iiif_prezi3.KeyValueString(
-            label="Title",
-            value={
-                "none": [
-                    "Notitie van alle soo van als na Batavia alhier ten handel komende vaertuijgen te weeten t zedert primo October Anno passato tot ultimo deses namentlijk etc."
-                ]
-            },
-        ),
-        # Description
-        iiif_prezi3.KeyValueString(
-            label="Description",
-            value={
-                "en": [
-                    "This is a list of which sea faring vessels called at or left Batavia, who their captains or owners were, who the passengers on the ship were and which commodities were carried aboard the ship."
-                ]
-            },
-        ),
-        iiif_prezi3.KeyValueString(
-            label="Date",
-            value={"none": ["1781-09-30"]},
-        ),
-        iiif_prezi3.KeyValueString(
-            label="Type",
-            value={"none": ["Letter"]},
-        ),
-        iiif_prezi3.KeyValueString(
-            label="Inventory number",
-            value={"none": ["3598"]},
-        ),
-        iiif_prezi3.KeyValueString(
-            label="TANAP-id",
-            value={"none": ["96500"]},
-        ),
-        iiif_prezi3.KeyValueString(
-            label="Description (TANAP)",
-            value={
-                "nl": [
-                    "Twee afschriften van in 1781 door gouverneur Barend Reijke en raad tot Makasser aan de hoge regering tot Batavia verzonden brieven."
-                ]
-            },
-        ),
-        iiif_prezi3.KeyValueString(
-            label="Type (TANAP)",
-            value={
-                "nl": [
-                    "Correspondentie met de Gouverneur-Generaal of de Hoge Regering met bijlagen of registers der marginalen"
-                ]
-            },
-        ),
-        iiif_prezi3.KeyValueString(
-            label="Identifier",
-            value={"none": ["8548bbb9-11d4-4530-8098-12354f2dbdc2"]},
-        ),
-    ]
-
+    # Canvases
     for i in df.itertuples():
         index = i.index
 
@@ -159,10 +103,138 @@ def make_manifest(df, navdate, output_folder):
                 {"id": ap["id"], "type": "AnnotationPage", "label": ap["label"]}
             ]
 
+    # Ranges
+    toc = manifest.make_range(
+        id=f"{PREFIX}manifest.json/range/top",
+        label={"en": ["Table of Contents"], "nl": ["Inhoudsopgave"]},
+    )
+
+    toc_items = []
+    current_doc_id = None
+    current_subdoc_id = None
+    current_doc_range = None
+    current_subdoc_range = None
+
+    for i in df.itertuples():
+        canvas_ref = iiif_prezi3.Reference(
+            id=i.canvas_id,
+            type="Canvas",
+        )
+
+        doc_id = i.document_identifier
+        subdoc_id = i.subdocument_identifier
+
+        # Single Canvas
+        if pd.isna(doc_id):
+            current_doc_id = None
+            current_subdoc_id = None
+            current_doc_range = None
+            current_subdoc_range = None
+            continue
+
+        # Document
+        if doc_id != current_doc_id:
+            current_doc_id = doc_id
+            current_subdoc_id = None
+            current_subdoc_range = None
+            current_doc_range = iiif_prezi3.Range(
+                id=f"{PREFIX}manifest.json/range/{doc_id}",
+                label={"en": [f"Document {doc_id}"]},
+                items=[],
+            )
+
+            # For sandbox
+            if doc_id == "96500":
+                current_doc_range.label = {
+                    "none": [
+                        "Notitie van alle soo van als na Batavia alhier ten handel komende vaertuijgen te weeten t zedert primo October Anno passato tot ultimo deses namentlijk etc."
+                    ]
+                }
+                current_doc_range.metadata = [
+                    iiif_prezi3.KeyValueString(
+                        label="Title",
+                        value={
+                            "none": [
+                                "Notitie van alle soo van als na Batavia alhier ten handel komende vaertuijgen te weeten t zedert primo October Anno passato tot ultimo deses namentlijk etc."
+                            ]
+                        },
+                    ),
+                    # Description
+                    iiif_prezi3.KeyValueString(
+                        label="Description",
+                        value={
+                            "en": [
+                                "This is a list of which sea faring vessels called at or left Batavia, who their captains or owners were, who the passengers on the ship were and which commodities were carried aboard the ship."
+                            ]
+                        },
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="Date",
+                        value={"none": ["1781-09-30"]},
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="Type",
+                        value={"none": ["Letter"]},
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="Inventory number",
+                        value={"none": ["3598"]},
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="TANAP-id",
+                        value={"none": ["96500"]},
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="Description (TANAP)",
+                        value={
+                            "nl": [
+                                "Twee afschriften van in 1781 door gouverneur Barend Reijke en raad tot Makasser aan de hoge regering tot Batavia verzonden brieven."
+                            ]
+                        },
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="Type (TANAP)",
+                        value={
+                            "nl": [
+                                "Correspondentie met de Gouverneur-Generaal of de Hoge Regering met bijlagen of registers der marginalen"
+                            ]
+                        },
+                    ),
+                    iiif_prezi3.KeyValueString(
+                        label="Identifier",
+                        value={"none": ["8548bbb9-11d4-4530-8098-12354f2dbdc2"]},
+                    ),
+                ]
+
+            toc_items.append(current_doc_range)
+
+        # Subdocument
+        if pd.notna(subdoc_id):
+            if subdoc_id != current_subdoc_id:
+                current_subdoc_id = subdoc_id
+                current_subdoc_range = iiif_prezi3.Range(
+                    id=f"{PREFIX}manifest.json/range/{doc_id}/{subdoc_id}",
+                    label={"en": [f"Subdocument {subdoc_id}"]},
+                    items=[],
+                )
+                current_doc_range.items.append(current_subdoc_range)
+            current_subdoc_range.items.append(canvas_ref)
+
+        # 4. Canvas in Document
+        else:
+            current_subdoc_id = None
+            current_subdoc_range = None
+            current_doc_range.items.append(canvas_ref)
+
+    toc.items = toc_items
+
     return manifest
 
 
 def main(selection_filepath="selection.csv", output_folder="manifest.json"):
+
+    INVENTORY_DATE = "1782-01-01T00:00:00Z"  # TODO
+
     df = pd.read_csv(selection_filepath)
 
     manifest = make_manifest(
