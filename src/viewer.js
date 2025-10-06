@@ -71,6 +71,7 @@ const createThumbnails = (manifest) => {
     img.src = `${serviceId}/full/,150/0/default.jpg`;
     img.alt = canvas.label.en[0];
     img.title = canvas.label.en[0];
+    img.loading = "lazy";
 
     const label = document.createElement("div");
     label.className = "thumbnail-label";
