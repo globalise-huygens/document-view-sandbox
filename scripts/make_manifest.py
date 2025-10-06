@@ -154,7 +154,7 @@ def make_manifest(df, navdate, output_folder):
                     iiif_prezi3.KeyValueString(
                         label="Title",
                         value={
-                            "none": [
+                            "en": [
                                 "Notitie van alle soo van als na Batavia alhier ten handel komende vaertuijgen te weeten t zedert primo October Anno passato tot ultimo deses namentlijk etc."
                             ]
                         },
