@@ -57,14 +57,52 @@ const loadManifest = async (url) => {
   return manifest;
 };
 
+const loadTableOfContents = (manifest) => {
+  const tocContainer = document.getElementById("toc-content");
+  tocContainer.innerHTML = "";
+
+  manifest.structures.forEach((range) => {
+    const tocItems = getTableOfContentsItems(range);
+    tocItems.forEach((tocItem) => tocContainer.appendChild(tocItem));
+  });
+};
+
+const getTableOfContentsItems = (range, level = 0) => {
+  const items = [];
+
+  const tocItem = document.createElement("div");
+  tocItem.className = "toc-item";
+  tocItem.textContent = range.label.en[0] || range.label.none[0];
+
+  tocItem.setAttribute("data-level", level);
+
+  items.push(tocItem);
+
+  tocItem.addEventListener("click", () => {
+    const canvasItem = (range.items || []).find((i) => i.type === "Canvas");
+    if (canvasItem && canvasItem.id) {
+      loadCanvasById(canvasItem.id);
+    }
+  });
+
+  if (range.items && range.items.length > 0) {
+    range.items.forEach((subRange) => {
+      if (subRange.type === "Range") {
+        items.push(...getTableOfContentsItems(subRange, level + 1));
+      }
+    });
+  }
+
+  return items;
+};
+
 const createThumbnails = (manifest) => {
   const thumbnailsContainer = document.getElementById("thumbnails");
   thumbnailsContainer.innerHTML = "";
 
-  manifest.items.forEach((canvas, index) => {
+  manifest.items.forEach((canvas) => {
     const thumbnailDiv = document.createElement("div");
     thumbnailDiv.className = "thumbnail";
-    thumbnailDiv.setAttribute("data-index", index);
 
     const img = document.createElement("img");
     const serviceId = canvas.items[0].items[0].body.service[0]["@id"];
@@ -81,7 +119,7 @@ const createThumbnails = (manifest) => {
     thumbnailDiv.appendChild(label);
 
     thumbnailDiv.addEventListener("click", () => {
-      loadCanvas(index);
+      loadCanvasById(canvas.id);
     });
 
     thumbnailsContainer.appendChild(thumbnailDiv);
@@ -176,7 +214,9 @@ const loadTranscription = async (annotationPageUrl) => {
     });
 };
 
-const loadCanvas = (index) => {
+const loadCanvasById = (canvasId) => {
+  const index = manifest.items.findIndex((c) => c.id === canvasId);
+
   currentCanvasIndex = index;
   const selectedCanvas = manifest.items[index];
   const infoJsonUrl =
@@ -214,13 +254,13 @@ const updateActiveThumbnail = (index) => {
 
 const navigateToNext = () => {
   if (currentCanvasIndex < manifest.items.length - 1) {
-    loadCanvas(currentCanvasIndex + 1);
+    loadCanvasById(manifest.items[currentCanvasIndex + 1].id);
   }
 };
 
 const navigateToPrevious = () => {
   if (currentCanvasIndex > 0) {
-    loadCanvas(currentCanvasIndex - 1);
+    loadCanvasById(manifest.items[currentCanvasIndex - 1].id);
   }
 };
 
@@ -259,6 +299,8 @@ const load = async () => {
     tileSources: [infoJsonUrl],
     crossOriginPolicy: "Anonymous",
   });
+
+  loadTableOfContents(manifest);
 
   createThumbnails(manifest);
 
