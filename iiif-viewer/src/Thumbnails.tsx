@@ -60,6 +60,7 @@ function Thumbnails(props: ThumbnailsProps) {
             src={thumb.serviceId + thumbParams}
             alt={thumb.label}
             title={thumb.label}
+            loading="lazy"
           ></img>
           <div className="thumbnail-label">{thumb.label}</div>
         </div>
