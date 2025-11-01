@@ -63,7 +63,7 @@ const Annotation = ({
   bodyClassification,
 }: {
   id: string;
-  granularity?: "block" | "line" | "word";
+  granularity?: "page" | "block" | "line" | "word";
   canvasId?: string;
   svgPath?: string;
   targets?: string[];
@@ -138,6 +138,9 @@ export const convertPageXmlToWebAnnotations = (
   let lineIdx = 0;
   let wordIdx = 0;
 
+  const pageAnnoId = `${baseId}#page`;
+  let fullText: string[] = [];
+
   // Regions
   const pageTextRegions = findAll(page, "TextRegion");
 
@@ -158,6 +161,7 @@ export const convertPageXmlToWebAnnotations = (
           canvasId,
           svgPath: regionSVG,
           bodyClassification: getRegionType(region),
+          targets: [pageAnnoId],
         })
       );
     }
@@ -173,6 +177,8 @@ export const convertPageXmlToWebAnnotations = (
       const lineText = extractText(line);
       const lineIdRaw = getAttr(line, "id") || `line${lineIdx}`;
       const lineAnnoId = `${baseId}#${encodeURIComponent(lineIdRaw)}`;
+
+      fullText.push(lineText);
 
       if (lineSVG || lineText) {
         annotations.push(
@@ -214,6 +220,16 @@ export const convertPageXmlToWebAnnotations = (
       }
     }
   }
+
+  // Page
+  annotations.push(
+    Annotation({
+      id: pageAnnoId,
+      granularity: "page",
+      canvasId,
+      bodyText: fullText.join("\n"),
+    })
+  );
 
   // Minimal AnnotationPage wrapper
   const annotationPage = {
