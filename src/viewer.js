@@ -1,7 +1,8 @@
 import OpenSeadragon from "openseadragon";
 
-const URL =
-  "https://globalise-huygens.github.io/document-view-sandbox/iiif/manifest.json";
+import { createTextAnnotator, W3CTextFormat } from "@recogito/text-annotator";
+
+const URL = "iiif/manifest.json";
 
 let viewer;
 let currentCanvasIndex = 0;
@@ -151,6 +152,10 @@ const loadTranscription = async (annotationPageUrl) => {
 
       const text = textual.value;
 
+      if (annotation.textGranularity === "page") {
+        return;
+      }
+
       if (annotation.textGranularity === "line") {
         transcriptionContent.innerHTML += `<span>${text}</span><br/>`;
       }
@@ -214,6 +219,79 @@ const loadTranscription = async (annotationPageUrl) => {
     });
 };
 
+const loadEntities = async (annotationPageUrl) => {
+  if (!annotationPageUrl) return;
+
+  const response = await fetch(annotationPageUrl);
+  // const response = await fetch(
+  //   "iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json"
+  // );
+  const ap = await response.json();
+
+  const style = (annotation, state, z) => {
+    const colorMapping = {
+      // Names and identifiers
+      "gan:DATE": "#005f73", // Date (teal)
+      "gan:DOC": "#4a90e2", // Document (blue)
+      "gan:LOC_NAME": "#f7b32b", // Location Name (yellow)
+      "gan:LOC_ADJ": "#f9d67a", // Location Adjective (light yellow)
+      "gan:PER_NAME": "#e4572e", // Person Name (red)
+      "gan:ORG_NAME": "#29335c", // Organization Name (dark blue)
+      "gan:SHIP": "#3498db", // Ship name (blue)
+
+      // Classifications and types
+      "gan:SHIP_TYPE": "#5dade2", // Ship type (light blue)
+      "gan:STATUS": "#9b59b6", // Civic status (purple)
+      "gan:PER_ATTR": "#e74c3c", // Person attributes (red-orange)
+      "gan:ETH_REL": "#d68910", // Ethno-religious (orange)
+
+      // Commodities and quantities
+      "gan:CMTY_NAME": "#27ae60", // Commodity name (green)
+      "gan:CMTY_QUAL": "#52be80", // Commodity qualifier (light green)
+      "gan:CMTY_QUANT": "#76b041", // Quantity (green)
+
+      // Default fallback
+    };
+
+    const classified = annotation?.bodies?.[0]?.classified_as?.id;
+    const color = colorMapping[classified] || "#00b1ff";
+
+    return {
+      fill: color,
+      fillOpacity: state.hovered || state.selected ? 0.5 : 0.15,
+      underlineColor: color,
+      underlineOffset: z * 3.5 || 0,
+      underlineThickness: 2,
+    };
+  };
+
+  const transcriptionContent = document.getElementById("transcription-content");
+
+  const anno = createTextAnnotator(transcriptionContent, {
+    adapter: W3CTextFormat(
+      "urn:example:placeholder/contents",
+      transcriptionContent
+    ),
+    allowModifierSelect: true,
+    renderer: "SPANS",
+    annotatingEnabled: false,
+    selectionMode: "all",
+    style,
+  });
+
+  for (let annotation of ap.items) {
+    if (annotation.motivation !== "classifying") continue;
+
+    console.log("Adding entity annotation", annotation);
+
+    anno.addAnnotation({
+      id: annotation.id,
+      body: annotation.body,
+      target: [annotation.target[0]],
+    });
+  }
+};
+
 const loadCanvasById = (canvasId) => {
   const index = manifest.items.findIndex((c) => c.id === canvasId);
 
@@ -228,12 +306,22 @@ const loadCanvasById = (canvasId) => {
   viewer.open(infoJsonUrl);
   updateActiveThumbnail(index);
 
-  viewer.addOnceHandler("open", () => {
+  viewer.addOnceHandler("open", async () => {
     const apUrlTranscriptions =
       selectedCanvas.annotations && selectedCanvas.annotations[0]
         ? selectedCanvas.annotations[0].id
         : null;
-    loadTranscription(apUrlTranscriptions);
+
+    const apUrlEntities =
+      selectedCanvas.annotations && selectedCanvas.annotations[1]
+        ? selectedCanvas.annotations[1].id
+        : null;
+
+    console.log(selectedCanvas.annotations);
+
+    // Ensure entities load only after transcription has fully rendered
+    await loadTranscription(apUrlTranscriptions);
+    await loadEntities(apUrlEntities);
   });
 };
 
@@ -303,12 +391,6 @@ const load = async () => {
   loadTableOfContents(manifest);
 
   createThumbnails(manifest);
-
-  const apUrlTranscriptions =
-    selectedCanvas.annotations && selectedCanvas.annotations[0]
-      ? selectedCanvas.annotations[0].id
-      : null;
-  loadTranscription(apUrlTranscriptions);
 
   setupKeyboardNavigation();
 };
