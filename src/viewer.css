@@ -40,6 +40,9 @@ body {
   border-bottom: 1px solid #999;
   padding: 15px 20px;
   flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 #toc-header h3,
@@ -47,6 +50,37 @@ body {
   margin: 0;
   color: #333;
   font-size: 16px;
+}
+
+#view-toggle {
+  display: flex;
+  gap: 0;
+  border: 1px solid black;
+  overflow: hidden;
+}
+
+.toggle-btn {
+  background-color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #000;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+  border-right: 1px solid black;
+}
+
+.toggle-btn:last-child {
+  border-right: none;
+}
+
+.toggle-btn:hover {
+  background-color: #f5f5f5;
+}
+
+.toggle-btn.active {
+  background-color: black;
+  color: white;
 }
 
 #toc-content {

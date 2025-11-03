@@ -7,6 +7,7 @@ const URL = "iiif/manifest.json";
 let viewer;
 let currentCanvasIndex = 0;
 let manifest;
+let currentView = "standard";
 
 let annotationTooltip;
 const ensureTooltip = () => {
@@ -144,6 +145,20 @@ const loadTranscription = async (annotationPageUrl) => {
   const size = item.getContentSize();
   const imageRect = item.imageToViewportRectangle(0, 0, size.x, size.y);
 
+  if (currentView === "diplomatic") {
+    renderDiplomaticView(ap, transcriptionContent);
+  } else {
+    renderStandardView(ap, transcriptionContent, item, size, imageRect);
+  }
+};
+
+const renderStandardView = (
+  ap,
+  transcriptionContent,
+  item,
+  size,
+  imageRect
+) => {
   ap.items
     .filter((a) => a.motivation === "supplementing")
     .forEach((annotation) => {
@@ -217,6 +232,15 @@ const loadTranscription = async (annotationPageUrl) => {
         location: imageRect,
       });
     });
+};
+
+const renderDiplomaticView = (ap, transcriptionContent) => {
+  const diplomaticContent = document.createElement("div");
+  diplomaticContent.className = "diplomatic-view";
+  diplomaticContent.innerHTML =
+    "<p><em>Diplomatic view coming soon...</em></p>";
+
+  transcriptionContent.appendChild(diplomaticContent);
 };
 
 const loadEntities = async (annotationPageUrl) => {
@@ -374,6 +398,26 @@ const setupKeyboardNavigation = () => {
   });
 };
 
+const setupViewToggle = () => {
+  const toggleButtons = document.querySelectorAll(".toggle-btn");
+
+  toggleButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      // Update active state
+      toggleButtons.forEach((btn) => btn.classList.remove("active"));
+      button.classList.add("active");
+
+      // Update current view
+      currentView = button.dataset.view;
+
+      // Reload the current canvas to apply new view
+      if (manifest && manifest.items[currentCanvasIndex]) {
+        loadCanvasById(manifest.items[currentCanvasIndex].id);
+      }
+    });
+  });
+};
+
 const load = async () => {
   manifest = await loadManifest(URL);
 
@@ -393,6 +437,8 @@ const load = async () => {
   createThumbnails(manifest);
 
   setupKeyboardNavigation();
+
+  setupViewToggle();
 };
 
 document.addEventListener("DOMContentLoaded", async function () {
