@@ -1,15 +1,19 @@
 # document-view-sandbox
 Sandbox for trying out document view capabilities (IIIF + Transcriptions + Annotations)
 
-# Image & transcription viewer
+## Image & transcription viewer
 
 https://globalise-huygens.github.io/document-view-sandbox/viewer.html
 
-# Diplomatic view
+## Diplomatic view
 
 https://globalise-huygens.github.io/document-view-sandbox/diplomatic.html
 
-# Local
+## Highlights
+
+https://globalise-huygens.github.io/document-view-sandbox/highlight.html
+
+## Local
 To run locally:
 - npm install
 - npm run dev
