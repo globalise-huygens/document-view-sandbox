@@ -170,6 +170,8 @@ const renderStandardView = (
       if (annotation.textGranularity === "page") {
         transcriptionContent.innerHTML = `<div class="page-view">${text}</div>`;
         return;
+      } else if (annotation.textGranularity === "page-htr") {
+        return;
       }
 
       if (annotation.textGranularity === "line") {
