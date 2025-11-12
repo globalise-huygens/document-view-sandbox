@@ -1,31 +1,36 @@
-import {debounce, keyBy} from 'lodash'
+import { debounce, keyBy } from "lodash";
 
 main();
 
 function main() {
-  const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
+  const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
   const annotations: Annotation[] = [
-    {begin: 6, end: 17, body: {id: 'p1', type: 'person'}}, // "ipsum dolor"
-    {begin: 12, end: 12, body: {id: 'n2', type: 'note', note: 'A note here'}},
-    {begin: 12, end: 21, body: {id: 'p3', type: 'person'}}, // "dolor sit"
-    {begin: 12, end: 26, body: {id: 'p2', type: 'person'}}, // "dolor sit amet"
-    {begin: 18, end: 39, body: {id: 'e1', type: 'event'}}, // "sit amet, consectetur"
-    {begin: 28, end: 50, body: {id: 'l1', type: 'location'}}, // "consectetur adipiscing"
-    {begin: 40, end: 55, body: {id: 'l2', type: 'location'}}, // "adipiscing elit"
+    { begin: 6, end: 17, body: { id: "p1", type: "person" } }, // "ipsum dolor"
+    {
+      begin: 12,
+      end: 12,
+      body: { id: "n2", type: "note", note: "A note here" },
+    },
+    { begin: 12, end: 21, body: { id: "p3", type: "person" } }, // "dolor sit"
+    { begin: 12, end: 26, body: { id: "p2", type: "person" } }, // "dolor sit amet"
+    { begin: 18, end: 39, body: { id: "e1", type: "event" } }, // "sit amet, consectetur"
+    { begin: 28, end: 50, body: { id: "l1", type: "location" } }, // "consectetur adipiscing"
+    { begin: 40, end: 55, body: { id: "l2", type: "location" } }, // "adipiscing elit"
   ];
 
-  const $app = document.querySelector<HTMLDivElement>('#app')
-    ?? orThrow('app div not found');
+  const $app =
+    document.querySelector<HTMLDivElement>("#app") ??
+    orThrow("app div not found");
 
-  const $text = document.createElement('div');
+  const $text = document.createElement("div");
   $app.appendChild($text);
 
-  const $style = document.createElement('style');
+  const $style = document.createElement("style");
   document.head.appendChild($style);
 
   const rangesById = createRanges(text, annotations);
-  const annotationById = keyBy(annotations, a => a.body.id);
+  const annotationById = keyBy(annotations, (a) => a.body.id);
 
   renderText($style, $text, text, [...rangesById.values()], annotationById);
   handleHovering($text, rangesById, annotationById);
@@ -39,7 +44,7 @@ function main() {
  */
 function createRanges(
   text: string,
-  annotations: Annotation[]
+  annotations: Annotation[],
 ): Map<RangeId, Range> {
   const ranges = new Map<RangeId, Range>();
   let rangeCounter = 0;
@@ -50,21 +55,22 @@ function createRanges(
     if (offsetMap.has(charIndex)) {
       return offsetMap.get(charIndex)!;
     }
-    const newOffset = {charIndex, starting: [], ending: []}
+    const newOffset = { charIndex, starting: [], ending: [] };
     offsetMap.set(charIndex, newOffset);
     return newOffset;
-  }
+  };
 
   getOrCreateOffset(0);
   getOrCreateOffset(text.length);
 
-  annotations.forEach(a => {
+  annotations.forEach((a) => {
     getOrCreateOffset(a.begin).starting.push(a);
     getOrCreateOffset(a.end).ending.push(a);
   });
 
-  const sortedOffsets = [...offsetMap.values()]
-    .sort((a, b) => a.charIndex - b.charIndex);
+  const sortedOffsets = [...offsetMap.values()].sort(
+    (a, b) => a.charIndex - b.charIndex,
+  );
 
   const activeAnnotations = new Set<AnnotationId>();
   let lastOffset = 0;
@@ -82,7 +88,7 @@ function createRanges(
     /**
      * marker: annotation with a location and without any content
      */
-    const markers = offset.starting.filter(a => offset.ending.includes(a));
+    const markers = offset.starting.filter((a) => offset.ending.includes(a));
     for (const marker of markers) {
       const range = `${rangeCounter++}` as RangeId;
       ranges.set(range, {
@@ -93,8 +99,8 @@ function createRanges(
       });
     }
 
-    offset.starting.forEach(a => activeAnnotations.add(a.body.id));
-    offset.ending.forEach(a => activeAnnotations.delete(a.body.id));
+    offset.starting.forEach((a) => activeAnnotations.add(a.body.id));
+    offset.ending.forEach((a) => activeAnnotations.delete(a.body.id));
     lastOffset = offset.charIndex;
   }
 
@@ -106,15 +112,14 @@ function renderText(
   $container: HTMLDivElement,
   text: string,
   ranges: Range[],
-  annotations: Record<AnnotationId, Annotation>
+  annotations: Record<AnnotationId, Annotation>,
 ) {
   createHighlightStyles(annotations, ranges, $style);
 
-  const sortedByBegin = [...ranges]
-    .sort((a, b) => a.begin - b.begin);
+  const sortedByBegin = [...ranges].sort((a, b) => a.begin - b.begin);
 
   for (const range of sortedByBegin) {
-    const $span = document.createElement('span');
+    const $span = document.createElement("span");
     $span.textContent = text.substring(range.begin, range.end);
     $span.dataset.range = range.id;
 
@@ -123,13 +128,13 @@ function renderText(
       const key = createHighlightClass(range.annotations, annotations);
       classList.push(`highlight-${key}`);
     }
-    range.annotations.forEach(id => classList.push(id));
+    range.annotations.forEach((id) => classList.push(id));
 
     if (range.begin === range.end) {
-      classList.push('marker-range');
+      classList.push("marker-range");
     }
 
-    $span.className = classList.join(' ');
+    $span.className = classList.join(" ");
     $container.appendChild($span);
   }
 }
@@ -137,7 +142,7 @@ function renderText(
 function createHighlightStyles(
   annotationsById: Record<AnnotationId, Annotation>,
   ranges: Range[],
-  styleElement: HTMLStyleElement
+  styleElement: HTMLStyleElement,
 ) {
   let cssRules = `.highlight-hover {
       background-color: rgba(0, 0, 0, 0.2) !important;
@@ -157,14 +162,13 @@ function createHighlightStyles(
     }
   `;
 
-  const pink = {r: 255, g: 182, b: 193};
-  const blue = {r: 173, g: 216, b: 230};
-  const yellow = {r: 255, g: 255, b: 224};
-  const colors = {person: pink, location: blue, event: yellow, note: yellow}
+  const pink = { r: 255, g: 182, b: 193 };
+  const blue = { r: 173, g: 216, b: 230 };
+  const yellow = { r: 255, g: 255, b: 224 };
+  const colors = { person: pink, location: blue, event: yellow, note: yellow };
 
   const rangeToColors = new Map<string, string>();
   for (const range of ranges) {
-
     if (!range.annotations.length) {
       continue;
     }
@@ -172,10 +176,10 @@ function createHighlightStyles(
       continue;
     }
 
-    const {key, color} = createHighlight(
+    const { key, color } = createHighlight(
       range.annotations,
       annotationsById,
-      colors
+      colors,
     );
     rangeToColors.set(key, color);
   }
@@ -195,18 +199,18 @@ function createHighlightStyles(
 function handleHovering(
   $text: HTMLDivElement,
   textRanges: Map<RangeId, Range>,
-  annotations: Record<AnnotationId, Annotation>
+  annotations: Record<AnnotationId, Annotation>,
 ) {
   let currentHoveredAnnotation: AnnotationId | null = null;
 
   const setHoverHighlight = (annotationId: AnnotationId | null) => {
-    $text.querySelectorAll('.highlight-hover').forEach(el => {
-      el.classList.remove('highlight-hover');
+    $text.querySelectorAll(".highlight-hover").forEach((el) => {
+      el.classList.remove("highlight-hover");
     });
 
     if (annotationId) {
-      $text.querySelectorAll(`.${annotationId}`).forEach(el => {
-        el.classList.add('highlight-hover');
+      $text.querySelectorAll(`.${annotationId}`).forEach((el) => {
+        el.classList.add("highlight-hover");
       });
     }
     currentHoveredAnnotation = annotationId;
@@ -224,7 +228,7 @@ function handleHovering(
       return;
     }
 
-    const rangeAnnotations = range.annotations.map(id => annotations[id])
+    const rangeAnnotations = range.annotations.map((id) => annotations[id]);
 
     const found = findHoveredAnnotation(rangeAnnotations, range.begin);
     const foundId = found?.body.id;
@@ -234,16 +238,16 @@ function handleHovering(
     }
   }, 25);
 
-  $text.addEventListener('mouseover', (event) => {
+  $text.addEventListener("mouseover", (event) => {
     const target = event.target as HTMLElement;
-    if (target.tagName !== 'SPAN') {
+    if (target.tagName !== "SPAN") {
       return;
     }
-    const range = target.dataset.range ?? null
+    const range = target.dataset.range ?? null;
     handleRangeHover(range);
   });
 
-  $text.addEventListener('mouseleave', () => {
+  $text.addEventListener("mouseleave", () => {
     handleRangeHover(null);
   });
 }
@@ -256,12 +260,12 @@ function handleHovering(
  */
 function findHoveredAnnotation(
   annotations: Annotation[],
-  charIndex: number
+  charIndex: number,
 ): Annotation | null {
-  const candidates = annotations.filter(a => {
+  const candidates = annotations.filter((a) => {
     const marker = a.begin === a.end && charIndex === a.begin;
     const annotation = charIndex >= a.begin && charIndex < a.end;
-    return marker || annotation
+    return marker || annotation;
   });
   if (candidates.length === 0) {
     return null;
@@ -282,9 +286,9 @@ function findHoveredAnnotation(
 function createHighlightClass(
   annotationIds: AnnotationId[],
   annotations: Record<AnnotationId, Annotation>,
-  sortedTypes: AnnotationType[] = ['event', 'location', 'note', 'person']
+  sortedTypes: AnnotationType[] = ["event", "location", "note", "person"],
 ) {
-  const {typeCounts} = countTypes(annotationIds, annotations);
+  const { typeCounts } = countTypes(annotationIds, annotations);
   const parts: string[] = [];
 
   for (const type of sortedTypes) {
@@ -294,25 +298,24 @@ function createHighlightClass(
       parts.push(`${count}${typeKey}`);
     }
   }
-  return parts.join('-');
+  return parts.join("-");
 }
 
 function createHighlight(
   annotationIds: AnnotationId[],
   annotations: Record<AnnotationId, Annotation>,
-  baseColors: Record<AnnotationType, Rgb>
+  baseColors: Record<AnnotationType, Rgb>,
 ) {
-  const {types} = countTypes(annotationIds, annotations);
+  const { types } = countTypes(annotationIds, annotations);
   const color = mergeTypeColors(types, baseColors);
   const key = createHighlightClass(annotationIds, annotations);
-  return {key, color};
+  return { key, color };
 }
 
 function countTypes(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Annotation>
-): { types: AnnotationType[], typeCounts: Map<AnnotationType, number> } {
-
+  annotations: Record<AnnotationId, Annotation>,
+): { types: AnnotationType[]; typeCounts: Map<AnnotationType, number> } {
   const typeCounts = new Map<AnnotationType, number>();
   const types: AnnotationType[] = [];
 
@@ -326,10 +329,10 @@ function countTypes(
     types.push(type);
   }
 
-  if (types.includes('note')) {
-    throw new Error('Notes are not part of ranges with a stylable length');
+  if (types.includes("note")) {
+    throw new Error("Notes are not part of ranges with a stylable length");
   }
-  return {types, typeCounts};
+  return { types, typeCounts };
 }
 
 function orThrow(msg: string): never {
@@ -338,7 +341,7 @@ function orThrow(msg: string): never {
 
 function mergeTypeColors(
   types: AnnotationType[],
-  baseColors: Record<AnnotationType, Rgb>
+  baseColors: Record<AnnotationType, Rgb>,
 ) {
   const baseAlpha = 0.4;
   const uniqueTypes = new Set(types);
@@ -354,21 +357,21 @@ function mergeTypeColors(
   const r = Math.round(rSum / uniqueTypes.size);
   const g = Math.round(gSum / uniqueTypes.size);
   const b = Math.round(bSum / uniqueTypes.size);
-  const alpha = Math.min(1, baseAlpha + (0.1 * types.length));
+  const alpha = Math.min(1, baseAlpha + 0.1 * types.length);
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
 type AnnotationId = string;
-type AnnotationType = 'location' | 'person' | 'event' | 'note';
+type AnnotationType = "location" | "person" | "event" | "note";
 type AnnotationBody = EntityBody | NoteBody;
 type EntityBody = {
   id: AnnotationId;
-  type: 'location' | 'person' | 'event';
+  type: "location" | "person" | "event";
 };
 
 type NoteBody = {
   id: AnnotationId;
-  type: 'note';
+  type: "note";
   note: string;
 };
 
@@ -386,15 +389,14 @@ type Range = {
   annotations: AnnotationId[];
 };
 
-
 type Offset = {
   charIndex: number;
-  starting: Annotation[]
-  ending: Annotation[]
+  starting: Annotation[];
+  ending: Annotation[];
 };
 
 type Rgb = {
-  r: number,
-  g: number,
-  b: number
+  r: number;
+  g: number;
+  b: number;
 };

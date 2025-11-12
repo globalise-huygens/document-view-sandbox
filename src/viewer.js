@@ -157,7 +157,7 @@ const renderStandardView = (
   transcriptionContent,
   item,
   size,
-  imageRect
+  imageRect,
 ) => {
   ap.items
     .filter((a) => a.motivation === "supplementing")
@@ -176,7 +176,7 @@ const renderStandardView = (
       }
 
       const specific = annotation.target.find(
-        (t) => t.type === "SpecificResource"
+        (t) => t.type === "SpecificResource",
       );
       if (!specific || !specific.selector) return;
 
@@ -188,7 +188,7 @@ const renderStandardView = (
 
       const svgElement = document.createElementNS(
         "http://www.w3.org/2000/svg",
-        "svg"
+        "svg",
       );
       svgElement.setAttribute("viewBox", `0 0 ${size.x} ${size.y}`);
       svgElement.style.width = "100%";
@@ -200,7 +200,7 @@ const renderStandardView = (
       g.style.pointerEvents = "none";
 
       g.querySelectorAll(
-        "path, polygon, polyline, rect, circle, ellipse"
+        "path, polygon, polyline, rect, circle, ellipse",
       ).forEach((shape) => {
         shape.setAttribute("fill", "transparent");
         shape.style.pointerEvents = "auto";
@@ -294,7 +294,7 @@ const loadEntities = async (annotationPageUrl) => {
   const anno = createTextAnnotator(transcriptionContent, {
     adapter: W3CTextFormat(
       "urn:example:placeholder/contents",
-      transcriptionContent
+      transcriptionContent,
     ),
     allowModifierSelect: true,
     renderer: "SPANS",
@@ -447,6 +447,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 if (DEV) {
   new EventSource("/esbuild").addEventListener("change", () =>
-    location.reload()
+    location.reload(),
   );
 }
