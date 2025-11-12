@@ -14,11 +14,13 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.17.20",
-    "@types/node": "^24.9.2",
-    "esbuild": "0.25.11"
+    "@types/node": "^24.10.1",
+    "esbuild": "0.27.0",
+    "prettier": "^3.6.2"
   },
   "scripts": {
     "build": "./node_modules/.bin/esbuild src/* --define:DEV=false  --bundle --outdir=./static/ --loader:.html=copy",
-    "dev": "./node_modules/.bin/esbuild src/* --define:DEV=true --bundle --watch --outdir=./static/ --servedir=./static --loader:.html=copy"
+    "dev": "./node_modules/.bin/esbuild src/* --define:DEV=true --bundle --watch --outdir=./static/ --servedir=./static --loader:.html=copy",
+    "format": "prettier --write \"src/**/*.{ts,js,json,css,html}\""
   }
 }
