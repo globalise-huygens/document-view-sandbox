@@ -168,11 +168,12 @@ const renderStandardView = (
       const text = textual.value;
 
       if (annotation.textGranularity === "page") {
+        transcriptionContent.innerHTML = `<div class="page-view">${text}</div>`;
         return;
       }
 
       if (annotation.textGranularity === "line") {
-        transcriptionContent.innerHTML += `<span>${text}</span><br/>`;
+        // transcriptionContent.innerHTML += `<span>${text}</span><br/>`;
       }
 
       const specific = annotation.target.find(

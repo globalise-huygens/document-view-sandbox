@@ -103,6 +103,19 @@ def make_manifest(df, navdate, output_folder):
                 {"id": ap["id"], "type": "AnnotationPage", "label": ap["label"]}
             ]
 
+        # Entities
+        ap_entities = os.path.join(ap_path, "entities", f"{i.filename}.json")
+        if os.path.exists(ap_entities):
+            with open(ap_entities, "r", encoding="utf-8") as f:
+                ap = json.load(f)
+
+            if canvas.annotations is None:
+                canvas.annotations = []
+
+            canvas.annotations.append(
+                {"id": ap["id"], "type": "AnnotationPage", "label": ap["label"]}
+            )
+
     # Ranges
     toc = manifest.make_range(
         id=f"{PREFIX}manifest.json/range/top",
@@ -146,7 +159,7 @@ def make_manifest(df, navdate, output_folder):
             # For sandbox
             if doc_id == "96500":
                 current_doc_range.label = {
-                    "none": [
+                    "en": [
                         "Notitie van alle soo van als na Batavia alhier ten handel komende vaertuijgen te weeten t zedert primo October Anno passato tot ultimo deses namentlijk etc."
                     ]
                 }
