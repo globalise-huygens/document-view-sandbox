@@ -5,6 +5,7 @@
     "https://ns.huc.knaw.nl/globalise.jsonld",
     "https://objectstore.surf.nl/87435b768620494e8e911c83d1997f24:globalise-data/contexts/aaao.json",
     "http://www.w3.org/ns/anno.jsonld",
+    "https://objectstore.surf.nl/87435b768620494e8e911c83d1997f24:globalise-data/contexts/crmdig.json",
     {
       "gan": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/ner/",
       "iiif": "http://iiif.io/api/presentation/3#"
@@ -21,47 +22,58 @@
   },
   "items": [
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:130",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:132",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.188510",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052201",
-        "type": "AppellativeStatus",
+      "created": "2025-11-24T18:08:35.904631",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.904993",
+          "begin_of_the_end": "2025-11-24T18:08:35.904993"
         },
-        "classified_as": {
-          "id": "gan:PER_NAME",
-          "type": "Type",
-          "_label": "Name of Person"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:person:052202",
-          "type": "Person",
-          "_label": "J. C"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "J. C"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
         }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:appellative_status:073256",
+          "type": "AppellativeStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:PER_NAME",
+            "type": "Type",
+            "_label": "Name of Person"
+          },
+          "has_appellative_subject": {
+            "id": "urn:example:globalise:person:073257",
+            "type": "Person",
+            "_label": "J. C: Amier"
+          },
+          "ascribes_appellative_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+            "type": "Type",
+            "_label": "P1 is identified by"
+          },
+          "ascribes_appellation": {
+            "type": "Name",
+            "content": "J. C: Amier"
+          }
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -75,13 +87,13 @@
           "selector": [
             {
               "type": "TextQuoteSelector",
-              "exact": "J. C",
-              "suffix": ": Amier  voor Een"
+              "exact": "J. C: Amier",
+              "suffix": "  voor Een en ten"
             },
             {
               "type": "TextPositionSelector",
               "start": 1,
-              "end": 5
+              "end": 12
             }
           ]
         },
@@ -92,6 +104,10 @@
         {
           "type": "DigitalObject",
           "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/1271,708,64,46/max/0/default.jpg"
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/1363,711,154,49/max/0/default.jpg"
         },
         {
           "type": [
@@ -109,6 +125,11 @@
               "type": "FragmentSelector",
               "conformsTo": "http://www.w3.org/TR/media-frags/",
               "value": "xywh=1271,708,64,46"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=1363,711,154,49"
             }
           ]
         },
@@ -133,53 +154,65 @@
               "type": "FragmentSelector",
               "conformsTo": "http://www.w3.org/TR/media-frags/",
               "value": "xywh=1271,708,64,46"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=1363,711,154,49"
             }
           ]
         }
       ]
     },
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:131",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:133",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.188836",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052203",
-        "type": "AppellativeStatus",
+      "created": "2025-11-24T18:08:35.905271",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.905598",
+          "begin_of_the_end": "2025-11-24T18:08:35.905598"
         },
-        "classified_as": {
-          "id": "gan:PER_NAME",
-          "type": "Type",
-          "_label": "Name of Person"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:person:052204",
-          "type": "Person",
-          "_label": "Goederen"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "Goederen"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
         }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:classificatory_status:073258",
+          "type": "ClassificatoryStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:CMTY_NAME",
+            "type": "Type",
+            "_label": "Name of Commodity"
+          },
+          "has_classificatory_subject": {
+            "id": "urn:example:globalise:dimension:073259",
+            "type": "Dimension",
+            "_label": "Goederen"
+          },
+          "ascribes_classification_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+            "type": "Type",
+            "_label": "P2 has type"
+          }
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -240,47 +273,45 @@
       ]
     },
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:132",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:134",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.189094",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052205",
-        "type": "AppellativeStatus",
+      "created": "2025-11-24T18:08:35.905928",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.906154",
+          "begin_of_the_end": "2025-11-24T18:08:35.906154"
         },
-        "classified_as": {
-          "id": "gan:DATE",
-          "type": "Type",
-          "_label": "Date"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:timespan:052206",
-          "type": "TimeSpan",
-          "_label": "maend"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "maend"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
         }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:dimension:073260",
+          "type": "Dimension",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:CMTY_QUANT",
+            "type": "Type",
+            "_label": "Quantity"
+          },
+          "value": "4000 pees"
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -294,20 +325,146 @@
           "selector": [
             {
               "type": "TextQuoteSelector",
-              "exact": "maend",
-              "prefix": "werden dan eenelijk Een ",
-              "suffix": " Intressen á 4½"
+              "exact": "4000 pees",
+              "prefix": "Aangemaakte Goederen ",
+              "suffix": " vaste snaphaan"
             },
             {
               "type": "TextPositionSelector",
-              "start": 345,
-              "end": 350
+              "start": 174,
+              "end": 183
             }
           ]
         },
         {
           "type": "DigitalObject",
-          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2197,4758,164,46/max/0/default.jpg"
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/1694,4552,179,52/max/0/default.jpg"
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/1916,4554,175,47/max/0/default.jpg"
+        },
+        {
+          "type": [
+            "Image",
+            "DigitalObject"
+          ],
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/full/max/0/default.jpg",
+          "selector": [
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=1694,4552,179,52"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=1916,4554,175,47"
+            }
+          ]
+        },
+        {
+          "type": "SpecificResource",
+          "source": {
+            "@context": "http://iiif.io/api/presentation/3/context.json",
+            "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json/canvas/p900",
+            "type": "Canvas",
+            "partOf": {
+              "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json",
+              "type": "Manifest"
+            }
+          },
+          "selector": [
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=1694,4552,179,52"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=1916,4554,175,47"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:135",
+      "type": [
+        "Annotation",
+        "DigitalObject"
+      ],
+      "created": "2025-11-24T18:08:35.906408",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+        "timespan": {
+          "type": "TimeSpan",
+          "end_of_the_begin": "2025-11-24T18:08:35.906664",
+          "begin_of_the_end": "2025-11-24T18:08:35.906664"
+        },
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
+        }
+      },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:classificatory_status:073261",
+          "type": "ClassificatoryStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:CMTY_QUAL",
+            "type": "Type",
+            "_label": "Commodity qualifier: colors, processing"
+          },
+          "has_classificatory_subject": {
+            "id": "urn:example:globalise:physicalthing:073262",
+            "type": "PhysicalThing",
+            "_label": "vaste"
+          },
+          "ascribes_classification_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+            "type": "Type",
+            "_label": "P2 has type"
+          }
+        }
+      ],
+      "target": [
+        {
+          "type": "SpecificResource",
+          "source": {
+            "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0900#page",
+            "type": [
+              "DigitalObject",
+              "Annotation"
+            ]
+          },
+          "selector": [
+            {
+              "type": "TextQuoteSelector",
+              "exact": "vaste",
+              "prefix": "Aangemaakte Goederen 4000 pees ",
+              "suffix": " snaphaan"
+            },
+            {
+              "type": "TextPositionSelector",
+              "start": 184,
+              "end": 189
+            }
+          ]
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2134,4552,220,47/max/0/default.jpg"
         },
         {
           "type": [
@@ -318,7 +475,7 @@
           "selector": {
             "type": "FragmentSelector",
             "conformsTo": "http://www.w3.org/TR/media-frags/",
-            "value": "xywh=2197,4758,164,46"
+            "value": "xywh=2134,4552,220,47"
           }
         },
         {
@@ -335,40 +492,60 @@
           "selector": {
             "type": "FragmentSelector",
             "conformsTo": "http://www.w3.org/TR/media-frags/",
-            "value": "xywh=2197,4758,164,46"
+            "value": "xywh=2134,4552,220,47"
           }
         }
       ]
     },
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:133",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:136",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.189424",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:dimension:052207",
-        "type": "Dimension",
+      "created": "2025-11-24T18:08:35.906927",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.907152",
+          "begin_of_the_end": "2025-11-24T18:08:35.907152"
         },
-        "classified_as": {
-          "id": "gan:CMTY_QUANT",
-          "type": "Type",
-          "_label": "Quantity"
-        },
-        "value": "4½ precent sJaars"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
+        }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:classificatory_status:073263",
+          "type": "ClassificatoryStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:CMTY_NAME",
+            "type": "Type",
+            "_label": "Name of Commodity"
+          },
+          "has_classificatory_subject": {
+            "id": "urn:example:globalise:dimension:073264",
+            "type": "Dimension",
+            "_label": "snaphaan Pattroonen"
+          },
+          "ascribes_classification_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P2_has_type",
+            "type": "Type",
+            "_label": "P2 has type"
+          }
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -382,14 +559,131 @@
           "selector": [
             {
               "type": "TextQuoteSelector",
-              "exact": "4½ precent sJaars",
+              "exact": "snaphaan Pattroonen",
+              "prefix": "Goederen 4000 pees vaste ",
+              "suffix": " kosten inkoops - -"
+            },
+            {
+              "type": "TextPositionSelector",
+              "start": 190,
+              "end": 209
+            }
+          ]
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2398,4548,350,48/max/0/default.jpg"
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2792,4541,438,52/max/0/default.jpg"
+        },
+        {
+          "type": [
+            "Image",
+            "DigitalObject"
+          ],
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/full/max/0/default.jpg",
+          "selector": [
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2398,4548,350,48"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2792,4541,438,52"
+            }
+          ]
+        },
+        {
+          "type": "SpecificResource",
+          "source": {
+            "@context": "http://iiif.io/api/presentation/3/context.json",
+            "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json/canvas/p900",
+            "type": "Canvas",
+            "partOf": {
+              "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json",
+              "type": "Manifest"
+            }
+          },
+          "selector": [
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2398,4548,350,48"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2792,4541,438,52"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:137",
+      "type": [
+        "Annotation",
+        "DigitalObject"
+      ],
+      "created": "2025-11-24T18:08:35.907396",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+        "timespan": {
+          "type": "TimeSpan",
+          "end_of_the_begin": "2025-11-24T18:08:35.907625",
+          "begin_of_the_end": "2025-11-24T18:08:35.907625"
+        },
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
+        }
+      },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:dimension:073265",
+          "type": "Dimension",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:CMTY_QUANT",
+            "type": "Type",
+            "_label": "Quantity"
+          },
+          "value": "4½ precent"
+        }
+      ],
+      "target": [
+        {
+          "type": "SpecificResource",
+          "source": {
+            "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0900#page",
+            "type": [
+              "DigitalObject",
+              "Annotation"
+            ]
+          },
+          "selector": [
+            {
+              "type": "TextQuoteSelector",
+              "exact": "4½ precent",
               "prefix": "Een maend Intressen á ",
-              "suffix": " als van Ult„o"
+              "suffix": " sJaars als van"
             },
             {
               "type": "TextPositionSelector",
               "start": 363,
-              "end": 380
+              "end": 373
             }
           ]
         },
@@ -402,10 +696,6 @@
           "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2879,4749,229,49/max/0/default.jpg"
         },
         {
-          "type": "DigitalObject",
-          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/3140,4746,196,48/max/0/default.jpg"
-        },
-        {
           "type": [
             "Image",
             "DigitalObject"
@@ -421,11 +711,6 @@
               "type": "FragmentSelector",
               "conformsTo": "http://www.w3.org/TR/media-frags/",
               "value": "xywh=2879,4749,229,49"
-            },
-            {
-              "type": "FragmentSelector",
-              "conformsTo": "http://www.w3.org/TR/media-frags/",
-              "value": "xywh=3140,4746,196,48"
             }
           ]
         },
@@ -450,58 +735,64 @@
               "type": "FragmentSelector",
               "conformsTo": "http://www.w3.org/TR/media-frags/",
               "value": "xywh=2879,4749,229,49"
-            },
-            {
-              "type": "FragmentSelector",
-              "conformsTo": "http://www.w3.org/TR/media-frags/",
-              "value": "xywh=3140,4746,196,48"
             }
           ]
         }
       ]
     },
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:134",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:138",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.189690",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052208",
-        "type": "AppellativeStatus",
+      "created": "2025-11-24T18:08:35.907934",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.908167",
+          "begin_of_the_end": "2025-11-24T18:08:35.908167"
         },
-        "classified_as": {
-          "id": "gan:SHIP",
-          "type": "Type",
-          "_label": "Ship name"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:humanmadeobject:052209",
-          "type": "HumanMadeObject",
-          "_label": "Ult"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "Ult"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
         }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:appellative_status:073266",
+          "type": "AppellativeStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:DATE",
+            "type": "Type",
+            "_label": "Date"
+          },
+          "has_appellative_subject": {
+            "id": "urn:example:globalise:timespan:073267",
+            "type": "TimeSpan",
+            "_label": "Ult„o 9ber: 1780"
+          },
+          "ascribes_appellative_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+            "type": "Type",
+            "_label": "P1 is identified by"
+          },
+          "ascribes_appellation": {
+            "type": "Name",
+            "content": "Ult„o 9ber: 1780"
+          }
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -515,114 +806,13 @@
           "selector": [
             {
               "type": "TextQuoteSelector",
-              "exact": "Ult",
+              "exact": "Ult„o 9ber: 1780",
               "prefix": "precent sJaars als van ",
-              "suffix": "„o 9ber: 1780 tot"
-            },
-            {
-              "type": "TextPositionSelector",
-              "start": 389,
-              "end": 392
-            }
-          ]
-        },
-        {
-          "type": "DigitalObject",
-          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/3626,4741,164,49/max/0/default.jpg"
-        },
-        {
-          "type": [
-            "Image",
-            "DigitalObject"
-          ],
-          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/full/max/0/default.jpg",
-          "selector": {
-            "type": "FragmentSelector",
-            "conformsTo": "http://www.w3.org/TR/media-frags/",
-            "value": "xywh=3626,4741,164,49"
-          }
-        },
-        {
-          "type": "SpecificResource",
-          "source": {
-            "@context": "http://iiif.io/api/presentation/3/context.json",
-            "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json/canvas/p900",
-            "type": "Canvas",
-            "partOf": {
-              "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json",
-              "type": "Manifest"
-            }
-          },
-          "selector": {
-            "type": "FragmentSelector",
-            "conformsTo": "http://www.w3.org/TR/media-frags/",
-            "value": "xywh=3626,4741,164,49"
-          }
-        }
-      ]
-    },
-    {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:135",
-      "type": [
-        "Annotation",
-        "DigitalObject"
-      ],
-      "created": "2025-11-04T16:08:21.189957",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052210",
-        "type": "AppellativeStatus",
-        "timespan": {
-          "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
-        },
-        "classified_as": {
-          "id": "gan:DATE",
-          "type": "Type",
-          "_label": "Date"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:timespan:052211",
-          "type": "TimeSpan",
-          "_label": "„o 9ber: 1780"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "„o 9ber: 1780"
-        }
-      },
-      "target": [
-        {
-          "type": "SpecificResource",
-          "source": {
-            "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0900#page",
-            "type": [
-              "DigitalObject",
-              "Annotation"
-            ]
-          },
-          "selector": [
-            {
-              "type": "TextQuoteSelector",
-              "exact": "„o 9ber: 1780",
-              "prefix": "precent sJaars als van Ult",
               "suffix": " tot ult„o December"
             },
             {
               "type": "TextPositionSelector",
-              "start": 392,
+              "start": 389,
               "end": 405
             }
           ]
@@ -695,47 +885,58 @@
       ]
     },
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:136",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:139",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.190203",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052212",
-        "type": "AppellativeStatus",
+      "created": "2025-11-24T18:08:35.908441",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.908663",
+          "begin_of_the_end": "2025-11-24T18:08:35.908663"
         },
-        "classified_as": {
-          "id": "gan:DATE",
-          "type": "Type",
-          "_label": "Date"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:timespan:052213",
-          "type": "TimeSpan",
-          "_label": "ult„o December"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "ult„o December"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
         }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:appellative_status:073268",
+          "type": "AppellativeStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:DATE",
+            "type": "Type",
+            "_label": "Date"
+          },
+          "has_appellative_subject": {
+            "id": "urn:example:globalise:timespan:073269",
+            "type": "TimeSpan",
+            "_label": "ult„o December"
+          },
+          "ascribes_appellative_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+            "type": "Type",
+            "_label": "P1 is identified by"
+          },
+          "ascribes_appellation": {
+            "type": "Name",
+            "content": "ult„o December"
+          }
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -814,47 +1015,45 @@
       ]
     },
     {
-      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:137",
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:140",
       "type": [
         "Annotation",
         "DigitalObject"
       ],
-      "created": "2025-11-04T16:08:21.190445",
-      "generator": {
-        "id": "https://github.com/knaw-huc/globalise-tools/blob/0b4d897a40bcd357de17948d6850524a09e311b4/scripts/gt_ner_xmi_to_wa.py",
-        "type": "Software",
-        "name": "scripts/gt_ner_xmi_to_wa.py"
-      },
-      "motivation": "classifying",
-      "body": {
-        "id": "urn:example:globalise:appellative_status:052214",
-        "type": "AppellativeStatus",
+      "created": "2025-11-24T18:08:35.908896",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
         "timespan": {
           "type": "TimeSpan",
-          "id": "urn:example:globalise:timespan:3598",
-          "end_of_the_begin": "1782-12-31T23:59:59Z",
-          "begin_of_the_end": "1782-01-01T00:00:00Z"
+          "end_of_the_begin": "2025-11-24T18:08:35.909104",
+          "begin_of_the_end": "2025-11-24T18:08:35.909104"
         },
-        "classified_as": {
-          "id": "gan:DATE",
-          "type": "Type",
-          "_label": "Date"
-        },
-        "has_appellative_subject": {
-          "id": "urn:example:globalise:timespan:052215",
-          "type": "TimeSpan",
-          "_label": "December"
-        },
-        "ascribes_appellative_relation": {
-          "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
-          "type": "Type",
-          "_label": "P1 is identified by"
-        },
-        "ascribes_appellation": {
-          "type": "Name",
-          "content": "December"
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
         }
       },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:dimension:073270",
+          "type": "Dimension",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:CMTY_QUANT",
+            "type": "Type",
+            "_label": "Quantity"
+          },
+          "value": "prec"
+        }
+      ],
       "target": [
         {
           "type": "SpecificResource",
@@ -868,20 +1067,20 @@
           "selector": [
             {
               "type": "TextQuoteSelector",
-              "exact": "December",
-              "prefix": "prec: Verkogt ultimo ",
-              "suffix": " als vooren. . . ."
+              "exact": "prec",
+              "prefix": "geworden reekent 3/8 ",
+              "suffix": ": Verkogt ultimo"
             },
             {
               "type": "TextPositionSelector",
-              "start": 491,
-              "end": 499
+              "start": 470,
+              "end": 474
             }
           ]
         },
         {
           "type": "DigitalObject",
-          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2728,4908,383,52/max/0/default.jpg"
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/4005,4807,156,60/max/0/default.jpg"
         },
         {
           "type": [
@@ -892,7 +1091,7 @@
           "selector": {
             "type": "FragmentSelector",
             "conformsTo": "http://www.w3.org/TR/media-frags/",
-            "value": "xywh=2728,4908,383,52"
+            "value": "xywh=4005,4807,156,60"
           }
         },
         {
@@ -909,8 +1108,138 @@
           "selector": {
             "type": "FragmentSelector",
             "conformsTo": "http://www.w3.org/TR/media-frags/",
-            "value": "xywh=2728,4908,383,52"
+            "value": "xywh=4005,4807,156,60"
           }
+        }
+      ]
+    },
+    {
+      "id": "urn:example:globalise:annotation:NL-HaNA_1.04.02_3598_0900:141",
+      "type": [
+        "Annotation",
+        "DigitalObject"
+      ],
+      "created": "2025-11-24T18:08:35.909392",
+      "created_by": {
+        "type": "DigitalMachineEvent",
+        "_label": "Creation of Web Annotations from Named Entity output in XMI format, using... etc.",
+        "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+        "timespan": {
+          "type": "TimeSpan",
+          "end_of_the_begin": "2025-11-24T18:08:35.909641",
+          "begin_of_the_end": "2025-11-24T18:08:35.909641"
+        },
+        "used_software_or_firmware": {
+          "id": "https://github.com/knaw-huc/globalise-tools/blob/671daf17777b3078f82cf8182f507415c8b7b58c/scripts/gt_ner_xmi_to_wa.py",
+          "type": "Software",
+          "name": "scripts/gt_ner_xmi_to_wa.py"
+        }
+      },
+      "motivation": "classifying",
+      "body": [
+        {
+          "id": "urn:example:globalise:appellative_status:073271",
+          "type": "AppellativeStatus",
+          "timespan": {
+            "type": "TimeSpan",
+            "end_of_the_begin": "1782-12-31T23:59:59Z",
+            "begin_of_the_end": "1782-01-01T00:00:00Z"
+          },
+          "classified_as": {
+            "id": "gan:DATE",
+            "type": "Type",
+            "_label": "Date"
+          },
+          "has_appellative_subject": {
+            "id": "urn:example:globalise:timespan:073272",
+            "type": "TimeSpan",
+            "_label": "ultimo December"
+          },
+          "ascribes_appellative_relation": {
+            "id": "http://www.cidoc-crm.org/cidoc-crm/P1_is_identified_by",
+            "type": "Type",
+            "_label": "P1 is identified by"
+          },
+          "ascribes_appellation": {
+            "type": "Name",
+            "content": "ultimo December"
+          }
+        }
+      ],
+      "target": [
+        {
+          "type": "SpecificResource",
+          "source": {
+            "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0900#page",
+            "type": [
+              "DigitalObject",
+              "Annotation"
+            ]
+          },
+          "selector": [
+            {
+              "type": "TextQuoteSelector",
+              "exact": "ultimo December",
+              "prefix": "reekent 3/8 prec: Verkogt ",
+              "suffix": " als vooren. . . ."
+            },
+            {
+              "type": "TextPositionSelector",
+              "start": 484,
+              "end": 499
+            }
+          ]
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2392,4911,288,49/max/0/default.jpg"
+        },
+        {
+          "type": "DigitalObject",
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/2728,4908,383,52/max/0/default.jpg"
+        },
+        {
+          "type": [
+            "Image",
+            "DigitalObject"
+          ],
+          "source": "https://service.archief.nl/iipsrv?IIIF=/8e/8c/4d/8e/c4/05/4e/ff/a3/39/6b/55/ba/55/bc/95/515d75ee-e176-4c7f-b85d-dd07d832979d.jp2/full/max/0/default.jpg",
+          "selector": [
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2392,4911,288,49"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2728,4908,383,52"
+            }
+          ]
+        },
+        {
+          "type": "SpecificResource",
+          "source": {
+            "@context": "http://iiif.io/api/presentation/3/context.json",
+            "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json/canvas/p900",
+            "type": "Canvas",
+            "partOf": {
+              "id": "https://data.globalise.huygens.knaw.nl/manifests/inventories/3598.json",
+              "type": "Manifest"
+            }
+          },
+          "selector": [
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2392,4911,288,49"
+            },
+            {
+              "type": "FragmentSelector",
+              "conformsTo": "http://www.w3.org/TR/media-frags/",
+              "value": "xywh=2728,4908,383,52"
+            }
+          ]
         }
       ]
     }
