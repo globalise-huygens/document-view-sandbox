@@ -210,7 +210,7 @@ observer.observe(container, {
   subtree: true,
 });
 
-fetch("./data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml")
+fetch("/data/3598_selection/NL-HaNA_1.04.02_3598_0797.xml")
   .then((response) => response.text())
   .then((data) => {
     const xml = parseXml(data);
