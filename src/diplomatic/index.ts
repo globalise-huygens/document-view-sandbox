@@ -1,10 +1,11 @@
 import {select} from "d3-selection";
 import {resizeText} from "./resizeText";
 import {adjustOpacity} from "./adjustOpacity";
-import {renderXmlDoc} from "./renderXmlDoc";
+import {renderText} from "./renderText";
+import {renderScan} from "./renderScan";
+import {findXmlPage} from "./findXmlPage";
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
-
 
 if (DEV) {
   new EventSource("/esbuild").addEventListener("change", () =>
@@ -27,7 +28,7 @@ const observer = new MutationObserver((mutationList, observer) => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const scale = 0.5;
   const dir = "3598_selection";
   const file = "NL-HaNA_1.04.02_3598_0797.xml";
@@ -50,9 +51,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   observer.observe($text, {attributes: false, childList: true, subtree: true});
 
-  fetch(`/data/${dir}/${file}`)
-    .then((response) => response.text())
-    .then((response) => renderXmlDoc(response, scale, $text, $boundaries, $scan, dir));
-
+  const response = await fetch(`/data/${dir}/${file}`)
+  const text = await response.text();
+  const page = findXmlPage(text);
+  renderScan(page, scale, $scan, dir);
+  renderText(page, scale, $text, $boundaries);
 });
 
