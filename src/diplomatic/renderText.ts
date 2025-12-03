@@ -1,48 +1,17 @@
-import {parseXml} from "@rgrove/parse-xml";
+import {parseXml, XmlElement} from "@rgrove/parse-xml";
 import {isXmlElement} from "./isXmlElement";
 import {assertXmlElement} from "./assertXmlElement";
 import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
 
-export function renderXmlDoc(
-  body: string,
+export function renderText(
+  page: XmlElement,
   scale: number,
   $text: HTMLElement,
-  $boundaries: D3Svg,
-  $scan: HTMLImageElement,
-  dir: string
-
+  $boundaries: D3Svg
 ) {
-  const xml = parseXml(body);
-  const doc = xml.children[0];
-  if (!isXmlElement(doc)) {
-    throw new Error("Expected XmlElement")
-  }
-  const page = doc.children.filter((x) => x["name"] === "Page")[0];
-  if (!isXmlElement(page)) {
-    throw new Error("Expected XmlElement")
-  }
-  const {imageFilename, imageWidth, imageHeight} = page.attributes;
-  const imageStyle = `
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: ${scale * parseInt(imageWidth)}px;
-      height: ${scale * parseInt(imageHeight)}px;
-      border-style: none;
-      z-index: -1;
-    `;
-  const bodyStyle = `
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: ${scale * parseInt(imageWidth)}px;
-      height: ${scale * parseInt(imageHeight)}px;
-    `;
-
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
-
   for (const region of regions) {
     assertXmlElement(region);
     const lines = region.children
@@ -70,9 +39,4 @@ export function renderXmlDoc(
       }
     }
   }
-
-  $scan.src = `/images/${dir}/${imageFilename}`;
-  $scan.style.cssText = imageStyle;
-  const bodyEl = document.getElementsByTagName("body")[0];
-  bodyEl.style.cssText = bodyStyle;
 }
