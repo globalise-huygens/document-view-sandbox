@@ -7,36 +7,41 @@ export class TextResizer {
   private prevFontsize: number | null = null;
   private isOverflownCount = 0
 
-  public resize = (el: HTMLElement, minSize = 1, maxSize = 150, step = 1) => {
-    let i = minSize;
-    let overflow = false;
-    let direction: 'asc' | 'desc' = 'asc';
+  constructor(
+    private precision = 3,
+    private minSize = 1,
+    private maxSize = 150
+  ) {
+  }
+
+  public resize = (el: HTMLElement) => {
     const parent = el.parentNode as HTMLElement;
-    if(this.prevFontsize) {
-      i = this.prevFontsize
-      el.style.fontSize = `${i}px`;
-      overflow = this.isOverflown(parent)
-      if (overflow) {
-        direction = 'desc'
-      }
+
+    let low = this.minSize;
+    let high = this.maxSize;
+    const startFontSize = this.prevFontsize || parseInt(el.style.fontSize);
+    el.style.fontSize = `${startFontSize}px`;
+    if (this.isOverflown(parent)) {
+      high = startFontSize - 1;
+    } else {
+      low = startFontSize + 1;
     }
 
-    let finalFontSize: number;
-    if (direction === 'desc') {
-      while (overflow && i > 0) {
-        i -= step;
-        el.style.fontSize = `${i}px`;
-        overflow = this.isOverflown(parent);
+    let finalFontSize = low;
+    while (low <= high) {
+      if (high - low < this.precision) {
+        finalFontSize = low;
+        break;
       }
-      finalFontSize = i;
-    } else {
-      while (!overflow && i < maxSize) {
-        i += step;
-        el.style.fontSize = `${i}px`;
-        overflow = this.isOverflown(parent);
+      const i = Math.floor((low + high) / 2);
+      el.style.fontSize = `${i}px`;
+
+      if (this.isOverflown(parent)) {
+        high = i - 1;
+      } else {
+        finalFontSize = i;
+        low = i + 1;
       }
-      // revert to last state where no overflow happened
-      finalFontSize = i - step;
     }
 
     el.style.fontSize = `${finalFontSize}px`;
