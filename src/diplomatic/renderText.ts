@@ -4,6 +4,7 @@ import {assertXmlElement} from "./assertXmlElement";
 import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
+import {resizeText} from "./resizeText";
 
 export function renderText(
   page: XmlElement,
@@ -11,6 +12,9 @@ export function renderText(
   $text: HTMLElement,
   $boundaries: D3Svg
 ) {
+  $text.classList.add("text");
+  observe($text, resizeText);
+
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
   for (const region of regions) {
     assertXmlElement(region);
@@ -39,4 +43,21 @@ export function renderText(
       }
     }
   }
+}
+
+function observe($text: HTMLElement, onChange: (el: HTMLElement) => void) {
+  const observer = new MutationObserver((mutationList) => {
+    for (const mutations of mutationList) {
+      if (mutations.type !== "childList") {
+        continue;
+      }
+      for (const added of mutations.addedNodes) {
+        if (!(added instanceof HTMLElement) || added.className !== "text") {
+          continue;
+        }
+        onChange(added);
+      }
+    }
+  });
+  observer.observe($text, {attributes: false, childList: true, subtree: true});
 }
