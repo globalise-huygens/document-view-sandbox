@@ -1,10 +1,10 @@
 import {XmlElement} from "@rgrove/parse-xml";
-import {assertXmlElement} from "./assertXmlElement";
-import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
 import {Benchmark} from "./Benchmark";
 import {TextResizer} from "./TextResizer";
+import {assertXmlElement} from "./xml/assertXmlElement";
+import {assertXmlText} from "./xml/assertXmlText";
 
 export function renderText(
   page: XmlElement,
