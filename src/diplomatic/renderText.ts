@@ -1,11 +1,11 @@
-import {parseXml, XmlElement} from "@rgrove/parse-xml";
-import {isXmlElement} from "./isXmlElement";
+import {XmlElement} from "@rgrove/parse-xml";
 import {assertXmlElement} from "./assertXmlElement";
 import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
 import {resizeText} from "./resizeText";
 import {resizableTextClass} from "./resizableTextClass";
+import {Benchmark} from "./Benchmark";
 
 export function renderText(
   page: XmlElement,
@@ -13,9 +13,9 @@ export function renderText(
   $text: HTMLElement,
   $boundaries: D3Svg
 ) {
-  $text.classList.add(resizableTextClass);
-  observe($text, resizeText);
+  const resizeTextBench = new Benchmark(resizeText.name);
 
+  $text.classList.add(resizableTextClass);
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
   for (const region of regions) {
     assertXmlElement(region);
@@ -40,24 +40,10 @@ export function renderText(
         const textChild = unicode.children[0];
         assertXmlText(textChild);
         const text = textChild.text;
-        renderWord(text, points, $text, $boundaries, scale);
+        const $word = renderWord(text, points, $text, $boundaries, scale);
+        resizeTextBench.run(() => resizeText($word));
       }
     }
   }
 }
 
-function observe($text: HTMLElement, onChange: (el: HTMLElement) => void) {
-  const observer = new MutationObserver((mutationList) => {
-    for (const mutations of mutationList) {
-      if (mutations.type !== "childList") {
-        continue;
-      }
-      for (const added of mutations.addedNodes) {
-        if (added instanceof HTMLElement && added.className === resizableTextClass) {
-          onChange(added);
-        }
-      }
-    }
-  });
-  observer.observe($text, {attributes: false, childList: true, subtree: true});
-}

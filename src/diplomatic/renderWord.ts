@@ -75,4 +75,5 @@ export const renderWord = (
     .attr("stroke", "red")
     .attr("fill", "white")
     .attr("stroke-width", 1);
+  return $wordText;
 };
