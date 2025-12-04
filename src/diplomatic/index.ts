@@ -13,21 +13,6 @@ if (DEV) {
   );
 }
 
-// https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40
-
-const observer = new MutationObserver((mutationList, observer) => {
-  for (const mutations of mutationList) {
-    if (mutations.type === "childList") {
-      for (const added of mutations.addedNodes) {
-        if (added instanceof HTMLElement && added.className === "text") {
-          resizeText(added);
-          // TODO: remember the font weight and use it as a starting point for the next
-        }
-      }
-    }
-  }
-});
-
 document.addEventListener("DOMContentLoaded", async () => {
   const scale = 0.5;
   const dir = "3598_selection";
@@ -42,14 +27,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     .attr("width", 4000)
     .attr("height", 5500);
 
-  const $text = document.createElement("div");
-  $text.classList.add("text");
-  $view.appendChild($text);
-
   adjustOpacity($view, $scan, $slider);
   $slider.addEventListener("change", () => adjustOpacity($view, $scan, $slider));
 
-  observer.observe($text, {attributes: false, childList: true, subtree: true});
+  const $text = document.createElement("div");
+  $view.appendChild($text);
 
   const response = await fetch(`/data/${dir}/${file}`)
   const text = await response.text();
