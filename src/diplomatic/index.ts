@@ -4,6 +4,7 @@ import {adjustOpacity} from "./adjustOpacity";
 import {renderText} from "./renderText";
 import {renderScan} from "./renderScan";
 import {findXmlPage} from "./findXmlPage";
+import {Benchmark} from "./Benchmark";
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
 
@@ -15,8 +16,8 @@ if (DEV) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   const scale = 0.5;
-  const dir = "3598_selection";
-  const file = "NL-HaNA_1.04.02_3598_0797.xml";
+  const dir = "3965_selection";
+  const file = "NL-HaNA_1.04.02_3965_0177.xml";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
@@ -37,6 +38,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const text = await response.text();
   const page = findXmlPage(text);
   renderScan(page, scale, $scan, dir);
-  renderText(page, scale, $text, $boundaries);
+  new Benchmark(renderText.name).run(
+    () => renderText(page, scale, $text, $boundaries)
+  )
 });
 
