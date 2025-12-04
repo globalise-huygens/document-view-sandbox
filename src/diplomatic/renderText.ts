@@ -3,7 +3,6 @@ import {assertXmlElement} from "./assertXmlElement";
 import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
-import {resizableTextClass} from "./resizableTextClass";
 import {Benchmark} from "./Benchmark";
 import {TextResizer} from "./TextResizer";
 
@@ -15,7 +14,6 @@ export function renderText(
 ) {
   const resizeTextBench = new Benchmark(TextResizer.name);
   const resizer = new TextResizer();
-  $text.classList.add(resizableTextClass);
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
   for (const region of regions) {
     assertXmlElement(region);
