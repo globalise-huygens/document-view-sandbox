@@ -3,9 +3,9 @@ import {assertXmlElement} from "./assertXmlElement";
 import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
-import {resizeText} from "./resizeText";
 import {resizableTextClass} from "./resizableTextClass";
 import {Benchmark} from "./Benchmark";
+import {TextResizer} from "./TextResizer";
 
 export function renderText(
   page: XmlElement,
@@ -13,8 +13,8 @@ export function renderText(
   $text: HTMLElement,
   $boundaries: D3Svg
 ) {
-  const resizeTextBench = new Benchmark(resizeText.name);
-
+  const resizeTextBench = new Benchmark(TextResizer.name);
+  const resizer = new TextResizer();
   $text.classList.add(resizableTextClass);
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
   for (const region of regions) {
@@ -41,7 +41,7 @@ export function renderText(
         assertXmlText(textChild);
         const text = textChild.text;
         const $word = renderWord(text, points, $text, $boundaries, scale);
-        resizeTextBench.run(() => resizeText($word));
+        resizeTextBench.run(() => resizer.resize($word));
       }
     }
   }

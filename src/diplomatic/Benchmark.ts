@@ -22,7 +22,7 @@ export class Benchmark {
     const summed = sum(this.callDurations);
     let callCount = this.callDurations.length;
     const average = summed / callCount
-    console.log(`${this.name} took ${summed.toFixed(2)}ms, on average: ${average.toFixed(2)}ms (${callCount} calls)`, structuredClone(this.callDurations))
+    console.log(`${this.name} took ${summed.toFixed(2)}ms, on average: ${average.toFixed(2)}ms (${callCount} calls)`)
     this.callDurations.length = 0
   }, 1000)
 }

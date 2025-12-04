@@ -1,5 +1,4 @@
 import {select} from "d3-selection";
-import {resizeText} from "./resizeText";
 import {adjustOpacity} from "./adjustOpacity";
 import {renderText} from "./renderText";
 import {renderScan} from "./renderScan";
