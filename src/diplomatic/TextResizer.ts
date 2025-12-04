@@ -21,29 +21,24 @@ export class TextResizer {
       }
     }
 
-    let finalFontSize;
+    let finalFontSize: number;
     if (direction === 'desc') {
       while (overflow && i > 0) {
+        i -= step;
         el.style.fontSize = `${i}px`;
         overflow = this.isOverflown(parent);
-        if (overflow) {
-          i -= step;
-        }
       }
       finalFontSize = i;
     } else {
       while (!overflow && i < maxSize) {
+        i += step;
         el.style.fontSize = `${i}px`;
         overflow = this.isOverflown(parent);
-        if (!overflow) {
-          i += step;
-        }
-        this.isOverflownCount++
       }
+      // revert to last state where no overflow happened
       finalFontSize = i - step;
     }
 
-    // revert to last state where no overflow happened
     el.style.fontSize = `${finalFontSize}px`;
 
     // adjust the vertical positioning after the horizontal scaling of the font.
