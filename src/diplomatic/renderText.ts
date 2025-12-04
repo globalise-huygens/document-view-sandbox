@@ -5,6 +5,7 @@ import {assertXmlText} from "./assertXmlText";
 import {renderWord} from "./renderWord";
 import {D3Svg} from "./index";
 import {resizeText} from "./resizeText";
+import {resizableTextClass} from "./resizableTextClass";
 
 export function renderText(
   page: XmlElement,
@@ -12,7 +13,7 @@ export function renderText(
   $text: HTMLElement,
   $boundaries: D3Svg
 ) {
-  $text.classList.add("text");
+  $text.classList.add(resizableTextClass);
   observe($text, resizeText);
 
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
@@ -52,10 +53,9 @@ function observe($text: HTMLElement, onChange: (el: HTMLElement) => void) {
         continue;
       }
       for (const added of mutations.addedNodes) {
-        if (!(added instanceof HTMLElement) || added.className !== "text") {
-          continue;
+        if (added instanceof HTMLElement && added.className === resizableTextClass) {
+          onChange(added);
         }
-        onChange(added);
       }
     }
   });

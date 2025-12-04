@@ -3,8 +3,9 @@ import {calcRadius} from "./calcRadius";
 import {calcBoundingBox} from "./calcBoundingBox";
 import {D3Svg} from "./index";
 import {findHighestSegments} from "./findHighestSegments";
-import { polygonHull } from "d3-polygon";
-import { line, curveLinearClosed } from "d3-shape";
+import {polygonHull} from "d3-polygon";
+import {curveLinearClosed, line} from "d3-shape";
+import {resizableTextClass} from "./resizableTextClass";
 
 export const renderWord = (
   text: string,
@@ -50,7 +51,7 @@ export const renderWord = (
   const $wordText = document.createElement("div");
   $boundingBox.appendChild($wordText);
   $wordText.innerText = text;
-  $wordText.className = "text";
+  $wordText.classList.add(resizableTextClass);
   $wordText.style.fontFamily = "monospace";
   $wordText.style.display = "block";
   $wordText.style.fontSize = "8px";
