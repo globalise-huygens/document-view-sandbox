@@ -51,6 +51,7 @@ export const renderWord = (
   $boundingBox.appendChild($wordText);
   $wordText.innerText = text;
   $wordText.style.fontFamily = "monospace";
+  $wordText.style.whiteSpace = "nowrap";
   $wordText.style.display = "block";
   $wordText.style.fontSize = "8px";
 
