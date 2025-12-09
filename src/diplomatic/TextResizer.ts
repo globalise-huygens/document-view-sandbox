@@ -19,7 +19,7 @@ export class TextResizer {
         continue;
       }
       const width = parent.clientWidth;
-      const predicted = this.calcWidth(width, charCount);
+      const predicted = this.calcFontSize(width, charCount);
       const finalSize = this.binarySearch(element, parent, predicted);
       this.updateFactor(width, charCount, finalSize);
     }
@@ -32,7 +32,7 @@ export class TextResizer {
     if (!charCount) return;
     const width = parent.clientWidth;
 
-    const predicted = this.calcWidth(width, charCount);
+    const predicted = this.calcFontSize(width, charCount);
     el.style.fontSize = `${predicted}px`;
 
     // adjust the vertical positioning after the horizontal scaling of the font.
@@ -85,7 +85,7 @@ export class TextResizer {
     this.sampleCount = newSampleCount;
   }
 
-  private calcWidth(width: number, charCount: number) {
+  private calcFontSize(width: number, charCount: number) {
     return Math.round(width / (charCount * this.charToWidthFactor));
   }
 
