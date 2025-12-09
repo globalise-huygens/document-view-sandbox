@@ -1,6 +1,6 @@
-import {XmlText} from "@rgrove/parse-xml";
+import { XmlText } from "@rgrove/parse-xml";
 
-import {isXmlText} from "./isXmlText";
+import { isXmlText } from "./isXmlText";
 
 export function assertXmlText(el: unknown): asserts el is XmlText {
   if (!isXmlText(el)) {

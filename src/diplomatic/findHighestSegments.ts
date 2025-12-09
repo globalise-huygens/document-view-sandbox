@@ -1,4 +1,4 @@
-import {Point} from "./point";
+import { Point } from "./point";
 
 export function findHighestSegments(points: Point[]) {
   const segments: Point[] = [];

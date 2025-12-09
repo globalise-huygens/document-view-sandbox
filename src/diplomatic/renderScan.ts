@@ -1,12 +1,12 @@
-import {XmlElement} from "@rgrove/parse-xml";
+import { XmlElement } from "@rgrove/parse-xml";
 
 export function renderScan(
   page: XmlElement,
   scale: number,
   $scan: HTMLImageElement,
-  dir: string
+  dir: string,
 ) {
-  const {imageFilename, imageWidth, imageHeight} = page.attributes;
+  const { imageFilename, imageWidth, imageHeight } = page.attributes;
   const imageStyle = `
       position: absolute;
       left: 0;
