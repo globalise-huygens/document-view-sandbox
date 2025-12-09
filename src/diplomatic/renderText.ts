@@ -1,10 +1,9 @@
-import { XmlElement } from "@rgrove/parse-xml";
-import { renderWord } from "./renderWord";
-import { D3Svg } from "./index";
-import { Benchmark } from "./Benchmark";
-import { TextResizer } from "./TextResizer";
-import { assertXmlElement } from "./xml/assertXmlElement";
-import { assertXmlText } from "./xml/assertXmlText";
+import {XmlElement} from "@rgrove/parse-xml";
+import {renderWord} from "./renderWord";
+import {D3Svg} from "./index";
+import {Benchmark} from "./Benchmark";
+import {TextResizer} from "./TextResizer";
+import {findXmlWords} from "./xml/findXmlWords";
 
 export function renderText(
   page: XmlElement,
@@ -16,42 +15,12 @@ export function renderText(
   const resizer = new TextResizer();
   const regions = page.children.filter((x) => x["name"] === "TextRegion");
 
-  const $words = findWords();
+  const $words = findXmlWords(regions)
+    .map(({text, points}) => renderWord(text, points, $text, $boundaries, scale));
 
   resizeTextBench.run(() => {
     resizer.calibrate($words.slice(0, 10));
     $words.forEach((word) => resizer.resize(word));
   });
 
-  function findWords(): HTMLDivElement[] {
-    const $found = [];
-    for (const region of regions) {
-      assertXmlElement(region);
-      const lines = region.children.filter((x) => x["name"] === "TextLine");
-      for (const line of lines) {
-        assertXmlElement(line);
-        const words = line.children.filter((x) => x["name"] === "Word");
-        for (const word of words) {
-          assertXmlElement(word);
-          const coords = word.children.find((x) => x["name"] === "Coords");
-          assertXmlElement(coords);
-          const points = coords.attributes["points"];
-          const textEquiv = word.children.find(
-            (x) => x["name"] === "TextEquiv",
-          );
-          assertXmlElement(textEquiv);
-          const unicode = textEquiv.children.find(
-            (x) => x["name"] === "Unicode",
-          );
-          assertXmlElement(unicode);
-          const textChild = unicode.children[0];
-          assertXmlText(textChild);
-          const text = textChild.text;
-          const $word = renderWord(text, points, $text, $boundaries, scale);
-          $found.push($word);
-        }
-      }
-    }
-    return $found;
-  }
 }
