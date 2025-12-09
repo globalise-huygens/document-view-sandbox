@@ -1,25 +1,22 @@
-import {Point} from "./point";
-import {calcRadius} from "./calcRadius";
-import {calcBoundingBox} from "./calcBoundingBox";
-import {D3Svg} from "./index";
-import {findHighestSegments} from "./findHighestSegments";
-import {polygonHull} from "d3-polygon";
-import {curveLinearClosed, line} from "d3-shape";
+import { Point } from "./point";
+import { calcRadius } from "./calcRadius";
+import { calcBoundingBox } from "./calcBoundingBox";
+import { D3Svg } from "./index";
+import { findHighestSegments } from "./findHighestSegments";
+import { polygonHull } from "d3-polygon";
+import { curveLinearClosed, line } from "d3-shape";
 
 export const renderWord = (
   text: string,
   coords: string,
   $text: HTMLElement,
   $boundaries: D3Svg,
-  scale: number
+  scale: number,
 ) => {
   const coordarr: Point[] = [];
   for (const pair of coords.split(" ")) {
     const p = pair.split(",");
-    coordarr.push([
-      parseInt(p[0]),
-      parseInt(p[1])
-    ]);
+    coordarr.push([parseInt(p[0]), parseInt(p[1])]);
   }
 
   const hull = polygonHull(coordarr);
@@ -40,7 +37,7 @@ export const renderWord = (
   const $boundingBox = document.createElement("div");
   $text.appendChild($boundingBox);
   $boundingBox.style.position = "absolute";
-  $boundingBox.style.border = "dashed 1px blue"
+  $boundingBox.style.border = "dashed 1px blue";
   $boundingBox.style.left = boundingBox.x * scale + "px";
   $boundingBox.style.top = boundingBox.y * scale + "px";
   $boundingBox.style.width = boundingBox.width * scale + "px";
@@ -55,8 +52,8 @@ export const renderWord = (
   $wordText.style.display = "block";
   $wordText.style.fontSize = "8px";
 
-  const scaledHull = hull.map(p => [p[0] * scale, p[1] * scale]);
-  const scaledSeg = seg.map(p => [p[0] * scale, p[1] * scale]);
+  const scaledHull = hull.map((p) => [p[0] * scale, p[1] * scale]);
+  const scaledSeg = seg.map((p) => [p[0] * scale, p[1] * scale]);
   const cur = line<Point>().curve(curveLinearClosed);
 
   $boundaries

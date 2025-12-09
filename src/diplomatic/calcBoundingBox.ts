@@ -1,4 +1,4 @@
-import {Point} from "./point";
+import { Point } from "./point";
 
 /**
  * find the x and y bounds from a set of points
