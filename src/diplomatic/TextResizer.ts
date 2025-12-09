@@ -1,11 +1,9 @@
-import { debounce } from "lodash";
+import {debounce, update} from "lodash";
 
 /**
  * Inspiration: https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40
  */
 export class TextResizer {
-  private isOverflownCount = 0;
-
   private sampleCount = 0;
 
   constructor(
@@ -25,10 +23,7 @@ export class TextResizer {
       const finalSize = this.binarySearch(element, parent, predicted);
       this.updateFactor(width, charCount, finalSize);
     }
-    console.log(
-      "Calibrated, new char-to-width factor:",
-      this.charToWidthFactor,
-    );
+    console.log(`Factor=${this.charToWidthFactor}, n=${elements.length}`);
   }
 
   public resize = (el: HTMLElement) => {
@@ -78,14 +73,16 @@ export class TextResizer {
   private updateFactor(
     width: number,
     charCount: number,
-    finalFontSize: number,
+    fontSize: number,
   ) {
-    const factorUpdate = width / (charCount * finalFontSize);
-    const sampleCountUpdate = this.sampleCount + 1;
-    this.charToWidthFactor =
-      (this.charToWidthFactor * this.sampleCount + factorUpdate) /
-      sampleCountUpdate;
-    this.sampleCount = sampleCountUpdate;
+    const sampleFactor = width / (charCount * fontSize);
+    const sampleCount = this.sampleCount;
+    const newSampleCount = sampleCount + 1;
+    const oldFactor = this.charToWidthFactor;
+    const newFactor = (oldFactor * sampleCount + sampleFactor) / newSampleCount;
+    this.charToWidthFactor = newFactor;
+    console.debug('Update factor:', {sampleFactor, oldFactor, newFactor})
+    this.sampleCount = newSampleCount;
   }
 
   private calcWidth(width: number, charCount: number) {
@@ -93,12 +90,6 @@ export class TextResizer {
   }
 
   private isOverflown = ({ clientWidth, scrollWidth }) => {
-    this.isOverflownCount++;
-    this.printOverflownCount();
     return scrollWidth > clientWidth;
   };
-
-  private printOverflownCount = debounce(() => {
-    console.log("isOverflownCount:", this.isOverflownCount);
-  }, 1000);
 }
