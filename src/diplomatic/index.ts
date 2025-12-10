@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     renderScan(page, scale, $scan, dir);
     renderDiplomaticView($view, page);
-  }, 250);
+  }, 50);
 
   new ResizeObserver(render).observe($resizeHandle);
 });
