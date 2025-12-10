@@ -1,10 +1,9 @@
-import {select} from "d3-selection";
 import {adjustOpacity} from "./adjustOpacity";
-import {renderText} from "./renderText";
 import {renderScan} from "./renderScan";
-import {Benchmark} from "./Benchmark";
 import {findXmlPage} from "./xml/findXmlPage";
 import {debounce} from "lodash";
+import {renderDiplomaticView} from "./renderDiplomaticView";
+import {select} from "d3-selection";
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
 
@@ -21,68 +20,40 @@ document.addEventListener("DOMContentLoaded", async () => {
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
   const $view = document.getElementById("diplomatic-view") as HTMLDivElement;
-  const $boundaries = select($view)
-    .append("svg")
-    .attr("id", "svgbody");
+  const $resizeHandle = document.getElementById('resize-handle') as HTMLDivElement
 
   adjustOpacity($view, $scan, $slider);
   $slider.addEventListener("change", () =>
     adjustOpacity($view, $scan, $slider),
   );
 
-  const $text = document.createElement("div");
-  $view.appendChild($text);
-
   const response = await fetch(`/data/${dir}/${file}`);
   const text = await response.text();
   const page = findXmlPage(text);
-
-  const {width: viewWidth, height: viewHeight} = $view.getBoundingClientRect();
-  const $resizeHandle = document.createElement('div') as HTMLDivElement
-
-  $resizeHandle.classList.add('resize-handle')
-  $view.appendChild($resizeHandle)
-  Object.assign($resizeHandle.style, {
-    overflow: 'auto',
-    resize: 'both',
-    width: px(viewWidth),
-    height: px(viewHeight),
-    border: '3px solid pink',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    boxSizing: 'border-box',
-  })
-
-  const {imageWidth, imageHeight} = page.attributes;
 
   const render = debounce(() => {
     const {
       width: maxWidth,
       height: maxHeight
     } = $resizeHandle.getBoundingClientRect();
+    const {imageWidth, imageHeight} = page.attributes;
     const scale = Math.min(
       maxWidth / +imageWidth,
       maxHeight / +imageHeight
     );
 
-    $scan.innerHTML = ''
-    $text.innerHTML = ''
-    $boundaries
-      .selectAll("*")
-      .remove()
+    Object.assign(
+      $view.style,
+      {
+        height: scale * parseInt(imageHeight),
+        width: scale * parseInt(imageWidth)
+      }
+    )
 
     renderScan(page, scale, $scan, dir);
-    new Benchmark(renderText.name).run(() =>
-      renderText(page, scale, $text, $boundaries),
-    );
-    console.log('render', Date.now())
+    renderDiplomaticView($view, page);
   }, 250);
-  new ResizeObserver(render).observe($resizeHandle);
-  render()
 
+  new ResizeObserver(render).observe($resizeHandle);
 });
 
-export function px(amount: string | number) {
-  return `${amount}px`
-}

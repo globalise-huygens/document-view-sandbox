@@ -6,6 +6,7 @@ export function renderScan(
   $scan: HTMLImageElement,
   dir: string,
 ) {
+  $scan.innerHTML = ''
   const { imageFilename, imageWidth, imageHeight } = page.attributes;
   const imageStyle = `
       position: absolute;
