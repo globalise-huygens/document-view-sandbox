@@ -1,4 +1,5 @@
-import { XmlElement } from "@rgrove/parse-xml";
+import {XmlElement} from "@rgrove/parse-xml";
+import {px} from "./px";
 
 export function renderScan(
   page: XmlElement,
@@ -7,26 +8,15 @@ export function renderScan(
   dir: string,
 ) {
   $scan.innerHTML = ''
-  const { imageFilename, imageWidth, imageHeight } = page.attributes;
-  const imageStyle = `
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: ${scale * parseInt(imageWidth)}px;
-      height: ${scale * parseInt(imageHeight)}px;
-      border-style: none;
-      z-index: -1;
-    `;
-  const bodyStyle = `
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: ${scale * parseInt(imageWidth)}px;
-      height: ${scale * parseInt(imageHeight)}px;
-    `;
-
+  const {imageFilename, imageWidth, imageHeight} = page.attributes;
   $scan.src = `/images/${dir}/${imageFilename}`;
-  $scan.style.cssText = imageStyle;
-  const bodyEl = document.getElementsByTagName("body")[0];
-  bodyEl.style.cssText = bodyStyle;
+  Object.assign($scan.style, {
+    width: px(scale * parseInt(imageWidth)),
+    height: px(scale * parseInt(imageHeight)),
+    borderStyle: 'none',
+    zIndex: -1,
+    position: 'absolute',
+    top:0,
+    left: 0,
+  })
 }
