@@ -1,4 +1,4 @@
-import { Point } from "./point";
+import { Point } from "./Point";
 import { calcRadius } from "./calcRadius";
 import { calcBoundingBox } from "./calcBoundingBox";
 import { D3Svg } from "./index";
