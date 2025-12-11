@@ -81,7 +81,6 @@ export class TextResizer {
     const oldFactor = this.charToWidthFactor;
     const newFactor = (oldFactor * sampleCount + sampleFactor) / newSampleCount;
     this.charToWidthFactor = newFactor;
-    console.debug('Update factor:', {sampleFactor, oldFactor, newFactor})
     this.sampleCount = newSampleCount;
   }
 
