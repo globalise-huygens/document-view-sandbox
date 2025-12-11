@@ -4,6 +4,7 @@ import {debounce} from "lodash";
 import {renderDiplomaticView} from "./renderDiplomaticView";
 import {select} from "d3-selection";
 import {IiifAnnotationPage} from "./AnnoModel";
+import {px} from "./px";
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
 
@@ -45,13 +46,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       maxHeight / +height
     );
 
-    Object.assign(
-      $view.style,
-      {
-        height: scale * height,
-        width: scale * height
-      }
-    )
+    $view.style.height = px(scale * height)
+    $view.style.width = px(scale * width)
 
     const pageAttributes = {height, width, imageFilename};
     renderScan(pageAttributes, scale, $scan, dir.replace('data', ''));

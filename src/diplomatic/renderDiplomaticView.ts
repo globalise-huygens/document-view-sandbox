@@ -10,11 +10,11 @@ export function renderDiplomaticView(
   $view.innerHTML = ''
 
   const {width, height} = $view.getBoundingClientRect()
-  const {width: imageWidth, height: imageHeight} = annoPage.partOf;
+  const {width: scanWidth, height: scanHeight} = annoPage.partOf;
 
   const scale = Math.min(
-    width / +imageWidth,
-    height / +imageHeight
+    width / +scanWidth,
+    height / +scanHeight
   );
 
   const $text = document.createElement("div");
