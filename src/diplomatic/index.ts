@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     )
 
-    renderScan(page, scale, $scan, dir);
+    renderScan(page, scale, $scan, dir.replace('data', ''));
     renderDiplomaticView($view, page, annoPage);
   }, 50);
 
