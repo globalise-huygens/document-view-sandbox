@@ -1,18 +1,23 @@
-import {XmlElement} from "@rgrove/parse-xml";
 import {px} from "./px";
 
+type ImgAttributes = {
+  imageFilename: string,
+  width: number,
+  height: number
+};
+
 export function renderScan(
-  page: XmlElement,
+  img: ImgAttributes,
   scale: number,
   $scan: HTMLImageElement,
   dir: string,
 ) {
   $scan.innerHTML = ''
-  const {imageFilename, imageWidth, imageHeight} = page.attributes;
+  const {imageFilename, width, height} = img;
   $scan.src = `/images/${dir}/${imageFilename}`;
   Object.assign($scan.style, {
-    width: px(scale * parseInt(imageWidth)),
-    height: px(scale * parseInt(imageHeight)),
+    width: px(scale * width),
+    height: px(scale * height),
     borderStyle: 'none',
     zIndex: -1,
     position: 'absolute',
