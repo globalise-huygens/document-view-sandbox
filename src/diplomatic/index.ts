@@ -17,10 +17,10 @@ if (DEV) {
 document.addEventListener("DOMContentLoaded", async () => {
   // const dir = "3965_selection";
   // const file = "NL-HaNA_1.04.02_3965_0177.xml";
-  const dir = "data/3598_selection";
   const jsonDir = "iiif/annotations/transcriptions"
   const jsonFile = "NL-HaNA_1.04.02_3598_0797.json";
-  const imageFilename = "NL-HaNA_1.04.02_3598_0797.jpg";
+  const scanDir = "3598_selection";
+  const scanName = "NL-HaNA_1.04.02_3598_0797.jpg";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
@@ -49,8 +49,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     $view.style.height = px(scale * height)
     $view.style.width = px(scale * width)
 
-    const pageAttributes = {height, width, imageFilename};
-    renderScan(pageAttributes, scale, $scan, dir.replace('data', ''));
+    const pageAttributes = {height, width, imageFilename: scanName};
+    renderScan(pageAttributes, scale, $scan, scanDir);
     renderDiplomaticView($view, annoPage);
   }, 50);
 
