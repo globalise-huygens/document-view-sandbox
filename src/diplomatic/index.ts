@@ -14,8 +14,10 @@ if (DEV) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const dir = "3965_selection";
-  const file = "NL-HaNA_1.04.02_3965_0177.xml";
+  // const dir = "3965_selection";
+  // const file = "NL-HaNA_1.04.02_3965_0177.xml";
+  const dir = "3598_selection";
+  const file = "NL-HaNA_1.04.02_3598_0797.xml";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
