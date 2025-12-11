@@ -1,6 +1,5 @@
 import {adjustOpacity} from "./adjustOpacity";
 import {renderScan} from "./renderScan";
-import {findXmlPage} from "./xml/findXmlPage";
 import {debounce} from "lodash";
 import {renderDiplomaticView} from "./renderDiplomaticView";
 import {select} from "d3-selection";
@@ -18,9 +17,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   // const dir = "3965_selection";
   // const file = "NL-HaNA_1.04.02_3965_0177.xml";
   const dir = "data/3598_selection";
-  const file = "NL-HaNA_1.04.02_3598_0797.xml";
   const jsonDir = "iiif/annotations/transcriptions"
   const jsonFile = "NL-HaNA_1.04.02_3598_0797.json";
+  const imageFilename = "NL-HaNA_1.04.02_3598_0797.jpg";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
@@ -32,35 +31,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     adjustOpacity($view, $scan, $slider),
   );
 
-  const response = await fetch(`/${dir}/${file}`);
-  const text = await response.text();
-  const page = findXmlPage(text);
-
   const annoResponse = await fetch(`/${jsonDir}/${jsonFile}`);
   const annoPage: IiifAnnotationPage = await annoResponse.json();
-  console.log('found', annoPage)
 
   const render = debounce(() => {
     const {
       width: maxWidth,
       height: maxHeight
     } = $resizeHandle.getBoundingClientRect();
-    const {imageWidth, imageHeight} = page.attributes;
+    const {width, height} = annoPage.partOf;
     const scale = Math.min(
-      maxWidth / +imageWidth,
-      maxHeight / +imageHeight
+      maxWidth / +height,
+      maxHeight / +height
     );
 
     Object.assign(
       $view.style,
       {
-        height: scale * parseInt(imageHeight),
-        width: scale * parseInt(imageWidth)
+        height: scale * height,
+        width: scale * height
       }
     )
 
-    renderScan(page, scale, $scan, dir.replace('data', ''));
-    renderDiplomaticView($view, page, annoPage);
+    const pageAttributes = {height, width, imageFilename};
+    renderScan(pageAttributes, scale, $scan, dir.replace('data', ''));
+    renderDiplomaticView($view, annoPage);
   }, 50);
 
   new ResizeObserver(render).observe($resizeHandle);
