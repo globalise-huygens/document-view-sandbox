@@ -1,9 +1,15 @@
 import {XmlElement} from "@rgrove/parse-xml";
 import {Benchmark} from "./Benchmark";
-import {renderText} from "./renderText";
+import {renderXmlText} from "./renderXmlText";
 import {select} from "d3-selection";
+import {renderAnnoText} from "./renderAnnoText";
+import {IiifAnnotationPage} from "./AnnoModel";
 
-export function renderDiplomaticView($view: HTMLDivElement, page: XmlElement) {
+export function renderDiplomaticView(
+  $view: HTMLDivElement,
+  page: XmlElement,
+  annos: IiifAnnotationPage
+) {
   $view.innerHTML = ''
 
   const {width, height} = $view.getBoundingClientRect()
@@ -22,7 +28,7 @@ export function renderDiplomaticView($view: HTMLDivElement, page: XmlElement) {
     .attr("width", width)
     .attr("height", height);
 
-  new Benchmark(renderText.name).run(() =>
-    renderText(page, scale, $text, $boundaries),
+  new Benchmark(renderXmlText.name).run(() =>
+    renderAnnoText(page, annos, scale, $text, $boundaries),
   );
 }

@@ -4,6 +4,7 @@ import {findXmlPage} from "./xml/findXmlPage";
 import {debounce} from "lodash";
 import {renderDiplomaticView} from "./renderDiplomaticView";
 import {select} from "d3-selection";
+import {IiifAnnotationPage} from "./AnnoModel";
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
 
@@ -16,8 +17,10 @@ if (DEV) {
 document.addEventListener("DOMContentLoaded", async () => {
   // const dir = "3965_selection";
   // const file = "NL-HaNA_1.04.02_3965_0177.xml";
-  const dir = "3598_selection";
+  const dir = "data/3598_selection";
   const file = "NL-HaNA_1.04.02_3598_0797.xml";
+  const jsonDir = "iiif/annotations/transcriptions"
+  const jsonFile = "NL-HaNA_1.04.02_3598_0797.json";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
@@ -29,9 +32,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     adjustOpacity($view, $scan, $slider),
   );
 
-  const response = await fetch(`/data/${dir}/${file}`);
+  const response = await fetch(`/${dir}/${file}`);
   const text = await response.text();
   const page = findXmlPage(text);
+
+  const annoResponse = await fetch(`/${jsonDir}/${jsonFile}`);
+  const annoPage: IiifAnnotationPage = await annoResponse.json();
+  console.log('found', annoPage)
 
   const render = debounce(() => {
     const {
@@ -53,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     )
 
     renderScan(page, scale, $scan, dir);
-    renderDiplomaticView($view, page);
+    renderDiplomaticView($view, page, annoPage);
   }, 50);
 
   new ResizeObserver(render).observe($resizeHandle);
