@@ -15,12 +15,10 @@ if (DEV) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // const dir = "3965_selection";
-  // const file = "NL-HaNA_1.04.02_3965_0177.xml";
-  const jsonDir = "iiif/annotations/transcriptions"
-  const jsonFile = "NL-HaNA_1.04.02_3598_0797.json";
-  const scanDir = "3598_selection";
-  const scanName = "NL-HaNA_1.04.02_3598_0797.jpg";
+  const jsonPath = "/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json";
+  const scanPath = "/images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg";
+  // const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  // const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
@@ -32,7 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     adjustOpacity($view, $scan, $slider),
   );
 
-  const annoResponse = await fetch(`/${jsonDir}/${jsonFile}`);
+  const annoResponse = await fetch(jsonPath);
   const annoPage: IiifAnnotationPage = await annoResponse.json();
 
   const render = debounce(() => {
@@ -49,8 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     $view.style.height = px(scale * height)
     $view.style.width = px(scale * width)
 
-    const pageAttributes = {height, width, imageFilename: scanName};
-    renderScan(pageAttributes, scale, $scan, scanDir);
+    const pageAttributes = {height, width, scanPath};
+    renderScan(pageAttributes, scale, $scan);
     renderDiplomaticView($view, annoPage);
   }, 50);
 
