@@ -11,7 +11,7 @@ export function renderDiplomaticView($view: HTMLDivElement, page: XmlElement) {
 
   const scale = Math.min(
     width / +imageWidth,
-    width / +imageHeight
+    height / +imageHeight
   );
 
   const $text = document.createElement("div");
