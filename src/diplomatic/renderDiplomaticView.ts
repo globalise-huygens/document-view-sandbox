@@ -7,13 +7,13 @@ import {IiifAnnotationPage} from "./AnnoModel";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
-  page: XmlElement,
-  annos: IiifAnnotationPage
+  xmlPage: XmlElement,
+  annoPage: IiifAnnotationPage
 ) {
   $view.innerHTML = ''
 
   const {width, height} = $view.getBoundingClientRect()
-  const {imageWidth, imageHeight} = page.attributes;
+  const {imageWidth, imageHeight} = xmlPage.attributes;
 
   const scale = Math.min(
     width / +imageWidth,
@@ -28,7 +28,6 @@ export function renderDiplomaticView(
     .attr("width", width)
     .attr("height", height);
 
-  new Benchmark(renderXmlText.name).run(() =>
-    renderAnnoText(page, annos, scale, $text, $boundaries),
-  );
+  new Benchmark(renderAnnoText.name).run(() => renderAnnoText(annoPage, scale, $text, $boundaries));
+  // new Benchmark(renderXmlText.name).run(() => renderXmlText(xmlPage, scale, $text, $boundaries));
 }
