@@ -1,7 +1,7 @@
 import {px} from "./px";
 
 type ImgAttributes = {
-  imageFilename: string,
+  scanPath: string,
   width: number,
   height: number
 };
@@ -10,11 +10,10 @@ export function renderScan(
   img: ImgAttributes,
   scale: number,
   $scan: HTMLImageElement,
-  dir: string,
 ) {
   $scan.innerHTML = ''
-  const {imageFilename, width, height} = img;
-  $scan.src = `/images/${dir}/${imageFilename}`;
+  const {scanPath, width, height} = img;
+  $scan.src = scanPath;
   Object.assign($scan.style, {
     width: px(scale * width),
     height: px(scale * height),
