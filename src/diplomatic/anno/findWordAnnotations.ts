@@ -1,4 +1,3 @@
-// src/diplomatic/anno/findWordAnnotations.ts
 import type {IiifAnnotationPage} from '../AnnoModel';
 import {assertTextualBody} from './assertTextualBody';
 import {assertSpecificResourceTarget} from './assertSpecificResourceTarget';

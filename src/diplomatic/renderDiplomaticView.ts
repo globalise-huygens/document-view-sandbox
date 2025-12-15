@@ -5,6 +5,8 @@ import {IiifAnnotationPage} from "./AnnoModel";
 import {DiplomaticViewConfig} from "./DiplomaticViewConfig";
 
 import {renderWordBoundaries} from "./renderWordBoundaries";
+import {px} from "./px";
+import {calcMargin} from "./calcMargin";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
@@ -19,6 +21,7 @@ export function renderDiplomaticView(
   const scale = Math.min(width / +scanWidth, height / +scanHeight);
 
   const $text = document.createElement("div");
+  $text.classList.add('text');
   $view.appendChild($text);
 
   new Benchmark(renderAnnoText.name).run(() => {
@@ -32,6 +35,11 @@ export function renderDiplomaticView(
       words.forEach(word =>
         renderWordBoundaries(word, $boundaries, scale)
       )
+    }
+    if(!config.showScanMargin) {
+      const margin = calcMargin(words, scale)
+      $text.style.marginTop = px(`-${margin.top}`)
+      $text.style.marginLeft = px(`-${margin.left}`)
     }
   });
 
