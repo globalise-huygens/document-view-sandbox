@@ -11,7 +11,7 @@ export function renderWordBoundaries(
   word.el.parentElement.classList.add('bounding-box')
 
   const scaledHull = word.hull.map((p) => [p[0] * scale, p[1] * scale]);
-  const scaledSeg = word.segment.map((p) => [p[0] * scale, p[1] * scale]);
+  const scaledSeg = word.base.map((p) => [p[0] * scale, p[1] * scale]);
   const cur = line<Point>().curve(curveLinearClosed);
 
   $boundaries
