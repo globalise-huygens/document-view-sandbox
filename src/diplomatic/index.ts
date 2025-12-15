@@ -1,10 +1,10 @@
-import {adjustOpacity} from "./adjustOpacity";
-import {renderScan} from "./renderScan";
-import {debounce} from "lodash";
-import {renderDiplomaticView} from "./renderDiplomaticView";
-import {select} from "d3-selection";
-import {IiifAnnotationPage} from "./AnnoModel";
-import {px} from "./px";
+import { adjustOpacity } from "./adjustOpacity";
+import { renderScan } from "./renderScan";
+import { debounce } from "lodash";
+import { renderDiplomaticView } from "./renderDiplomaticView";
+import { select } from "d3-selection";
+import { IiifAnnotationPage } from "./AnnoModel";
+import { px } from "./px";
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
 
@@ -23,7 +23,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
   const $view = document.getElementById("diplomatic-view") as HTMLDivElement;
-  const $resizeHandle = document.getElementById('resize-handle') as HTMLDivElement
+  const $resizeHandle = document.getElementById(
+    "resize-handle",
+  ) as HTMLDivElement;
 
   adjustOpacity($view, $scan, $slider);
   $slider.addEventListener("change", () =>
@@ -34,24 +36,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const annoPage: IiifAnnotationPage = await annoResponse.json();
 
   const render = debounce(() => {
-    const {
-      width: maxWidth,
-      height: maxHeight
-    } = $resizeHandle.getBoundingClientRect();
-    const {width, height} = annoPage.partOf;
-    const scale = Math.min(
-      maxWidth / +height,
-      maxHeight / +height
-    );
+    const { width: maxWidth, height: maxHeight } =
+      $resizeHandle.getBoundingClientRect();
+    const { width, height } = annoPage.partOf;
+    const scale = Math.min(maxWidth / +height, maxHeight / +height);
 
-    $view.style.height = px(scale * height)
-    $view.style.width = px(scale * width)
+    $view.style.height = px(scale * height);
+    $view.style.width = px(scale * width);
 
-    const pageAttributes = {height, width, scanPath};
+    const pageAttributes = { height, width, scanPath };
     renderScan(pageAttributes, scale, $scan);
     renderDiplomaticView($view, annoPage);
   }, 50);
 
   new ResizeObserver(render).observe($resizeHandle);
 });
-

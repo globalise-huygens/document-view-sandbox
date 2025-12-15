@@ -1,7 +1,7 @@
 import { SpecificResourceTarget } from "../AnnoModel";
 
 export const isSpecificResourceTarget = (
-  target: any
+  target: any,
 ): target is SpecificResourceTarget =>
   target &&
   target.type === "SpecificResource" &&

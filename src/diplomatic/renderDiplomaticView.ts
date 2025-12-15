@@ -1,21 +1,18 @@
-import {Benchmark} from "./Benchmark";
-import {select} from "d3-selection";
-import {renderAnnoText} from "./renderAnnoText";
-import {IiifAnnotationPage} from "./AnnoModel";
+import { Benchmark } from "./Benchmark";
+import { select } from "d3-selection";
+import { renderAnnoText } from "./renderAnnoText";
+import { IiifAnnotationPage } from "./AnnoModel";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
-  annoPage: IiifAnnotationPage
+  annoPage: IiifAnnotationPage,
 ) {
-  $view.innerHTML = ''
+  $view.innerHTML = "";
 
-  const {width, height} = $view.getBoundingClientRect()
-  const {width: scanWidth, height: scanHeight} = annoPage.partOf;
+  const { width, height } = $view.getBoundingClientRect();
+  const { width: scanWidth, height: scanHeight } = annoPage.partOf;
 
-  const scale = Math.min(
-    width / +scanWidth,
-    height / +scanHeight
-  );
+  const scale = Math.min(width / +scanWidth, height / +scanHeight);
 
   const $text = document.createElement("div");
   $view.appendChild($text);
@@ -26,6 +23,6 @@ export function renderDiplomaticView(
     .attr("height", height);
 
   new Benchmark(renderAnnoText.name).run(() =>
-    renderAnnoText(annoPage, scale, $text, $boundaries)
+    renderAnnoText(annoPage, scale, $text, $boundaries),
   );
 }

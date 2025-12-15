@@ -1,4 +1,4 @@
-import {debounce, update} from "lodash";
+import { debounce, update } from "lodash";
 
 /**
  * Inspiration: https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40
@@ -70,11 +70,7 @@ export class TextResizer {
     return mid;
   }
 
-  private updateFactor(
-    width: number,
-    charCount: number,
-    fontSize: number,
-  ) {
+  private updateFactor(width: number, charCount: number, fontSize: number) {
     const sampleFactor = width / (charCount * fontSize);
     const sampleCount = this.sampleCount;
     const newSampleCount = sampleCount + 1;

@@ -1,3 +1,3 @@
 export function px(amount: string | number) {
-  return `${amount}px`
+  return `${amount}px`;
 }
