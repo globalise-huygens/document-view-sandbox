@@ -5,7 +5,7 @@ import { assertSvgSelector } from "./assertSvgSelector";
 import { parseSvgPath } from "./parseSvgPath";
 
 export function findAnnoWords(
-  annoPage: IiifAnnotationPage
+  annoPage: IiifAnnotationPage,
 ): { text: string; points: string }[] {
   const words = [];
   for (const annotation of annoPage.items) {
