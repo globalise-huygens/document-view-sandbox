@@ -1,51 +1,28 @@
-export type IiifAnnotationPage = {
-  "@context": string | string[];
-  type: "AnnotationPage";
-  id: string;
-  label: string;
-  items: Annotation[];
+import type {Annotation, AnnotationPage,} from '@iiif/presentation-3';
+
+export type IiifAnnotationPage = Omit<AnnotationPage, 'partOf'> & {
   partOf: PartOf;
 };
+export type { Annotation };
 
-export type Annotation = {
-  type: "Annotation";
-  id: string;
-  motivation: string;
-  textGranularity?: string;
-  body?: AnnotationBody[];
-  target: AnnotationTarget[];
+export type TextualBody = {
+  type: 'TextualBody';
+  value: string;
+  format?: string;
+  language?: string;
 };
-
-export type AnnotationBody = SpecificResource | TextualBody;
 
 export type SpecificResource = {
-  type: "SpecificResource";
-  source: SourceConcept;
-  purpose: string;
+  type: 'SpecificResource';
+  source: string | Source;
+  selector?: Selector;
+  purpose?: string;
 };
 
-export type SourceConcept = {
+export type Source = {
   id: string;
   type: string;
   label: string;
-};
-
-export type TextualBody = {
-  type: "TextualBody";
-  value: string;
-};
-
-export type AnnotationTarget = SpecificResourceTarget | AnnotationReference;
-
-export type SpecificResourceTarget = {
-  type: "SpecificResource";
-  source: string;
-  selector: Selector;
-};
-
-export type AnnotationReference = {
-  id: string;
-  type: "Annotation";
 };
 
 export type Selector = {
@@ -53,9 +30,15 @@ export type Selector = {
   value: string;
 };
 
+export type SpecificResourceTarget = {
+  type: 'SpecificResource';
+  source: string;
+  selector: Selector;
+};
+
 export type PartOf = {
   id: string;
-  type: "Canvas";
+  type: 'Canvas';
   height: number;
   width: number;
 };
