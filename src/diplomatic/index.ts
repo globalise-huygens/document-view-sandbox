@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const pageAttributes = { height, width, scanPath };
     renderScan(pageAttributes, scale, $scan);
-    const viewConfig = {showBoundaries: false, showScanMargin: false};
+    const viewConfig = {showBoundaries: false, showScanMargin: true};
     renderDiplomaticView($view, annoPage, viewConfig);
   }, 50);
 
