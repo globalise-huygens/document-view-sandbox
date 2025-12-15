@@ -15,10 +15,10 @@ if (DEV) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  // const jsonPath = "/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json";
-  // const scanPath = "/images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg";
-  const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
-  const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
+  const jsonPath = "/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json";
+  const scanPath = "/images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg";
+  // const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  // const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
 
   const $slider = document.getElementById("opacity") as HTMLInputElement;
   const $scan = document.getElementById("page-scan") as HTMLImageElement;
