@@ -1,4 +1,5 @@
-import { debounce, keyBy } from "lodash";
+import {debounce, keyBy} from "lodash";
+import {orThrow} from "./util/orThrow";
 
 main();
 
@@ -6,22 +7,21 @@ function main() {
   const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
   const annotations: Annotation[] = [
-    { begin: 6, end: 17, body: { id: "p1", type: "person" } }, // "ipsum dolor"
+    {begin: 6, end: 17, body: {id: "p1", type: "person"}}, // "ipsum dolor"
     {
       begin: 12,
       end: 12,
-      body: { id: "n2", type: "note", note: "A note here" },
+      body: {id: "n2", type: "note", note: "A note here"},
     },
-    { begin: 12, end: 21, body: { id: "p3", type: "person" } }, // "dolor sit"
-    { begin: 12, end: 26, body: { id: "p2", type: "person" } }, // "dolor sit amet"
-    { begin: 18, end: 39, body: { id: "e1", type: "event" } }, // "sit amet, consectetur"
-    { begin: 28, end: 50, body: { id: "l1", type: "location" } }, // "consectetur adipiscing"
-    { begin: 40, end: 55, body: { id: "l2", type: "location" } }, // "adipiscing elit"
+    {begin: 12, end: 21, body: {id: "p3", type: "person"}}, // "dolor sit"
+    {begin: 12, end: 26, body: {id: "p2", type: "person"}}, // "dolor sit amet"
+    {begin: 18, end: 39, body: {id: "e1", type: "event"}}, // "sit amet, consectetur"
+    {begin: 28, end: 50, body: {id: "l1", type: "location"}}, // "consectetur adipiscing"
+    {begin: 40, end: 55, body: {id: "l2", type: "location"}}, // "adipiscing elit"
   ];
 
-  const $app =
-    document.querySelector<HTMLDivElement>("#app") ??
-    orThrow("app div not found");
+  const $app = document.querySelector<HTMLDivElement>("#app")
+    ?? orThrow("app div not found");
 
   const $text = document.createElement("div");
   $app.appendChild($text);
@@ -55,7 +55,7 @@ function createRanges(
     if (offsetMap.has(charIndex)) {
       return offsetMap.get(charIndex)!;
     }
-    const newOffset = { charIndex, starting: [], ending: [] };
+    const newOffset = {charIndex, starting: [], ending: []};
     offsetMap.set(charIndex, newOffset);
     return newOffset;
   };
@@ -162,10 +162,10 @@ function createHighlightStyles(
     }
   `;
 
-  const pink = { r: 255, g: 182, b: 193 };
-  const blue = { r: 173, g: 216, b: 230 };
-  const yellow = { r: 255, g: 255, b: 224 };
-  const colors = { person: pink, location: blue, event: yellow, note: yellow };
+  const pink = {r: 255, g: 182, b: 193};
+  const blue = {r: 173, g: 216, b: 230};
+  const yellow = {r: 255, g: 255, b: 224};
+  const colors = {person: pink, location: blue, event: yellow, note: yellow};
 
   const rangeToColors = new Map<string, string>();
   for (const range of ranges) {
@@ -176,7 +176,7 @@ function createHighlightStyles(
       continue;
     }
 
-    const { key, color } = createHighlight(
+    const {key, color} = createHighlight(
       range.annotations,
       annotationsById,
       colors,
@@ -233,7 +233,7 @@ function handleHovering(
     const found = findHoveredAnnotation(rangeAnnotations, range.begin);
     const foundId = found?.body.id;
 
-    if (foundId !== currentHoveredAnnotation) {
+    if (foundId && foundId !== currentHoveredAnnotation) {
       setHoverHighlight(foundId);
     }
   }, 25);
@@ -288,7 +288,7 @@ function createHighlightClass(
   annotations: Record<AnnotationId, Annotation>,
   sortedTypes: AnnotationType[] = ["event", "location", "note", "person"],
 ) {
-  const { typeCounts } = countTypes(annotationIds, annotations);
+  const {typeCounts} = countTypes(annotationIds, annotations);
   const parts: string[] = [];
 
   for (const type of sortedTypes) {
@@ -306,10 +306,10 @@ function createHighlight(
   annotations: Record<AnnotationId, Annotation>,
   baseColors: Record<AnnotationType, Rgb>,
 ) {
-  const { types } = countTypes(annotationIds, annotations);
+  const {types} = countTypes(annotationIds, annotations);
   const color = mergeTypeColors(types, baseColors);
   const key = createHighlightClass(annotationIds, annotations);
-  return { key, color };
+  return {key, color};
 }
 
 function countTypes(
@@ -332,11 +332,7 @@ function countTypes(
   if (types.includes("note")) {
     throw new Error("Notes are not part of ranges with a stylable length");
   }
-  return { types, typeCounts };
-}
-
-function orThrow(msg: string): never {
-  throw new Error(msg);
+  return {types, typeCounts};
 }
 
 function mergeTypeColors(

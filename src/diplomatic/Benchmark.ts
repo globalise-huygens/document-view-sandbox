@@ -4,14 +4,14 @@ import { debounce, sum } from "lodash";
  * privacy.reduceTimerPrecision = false
  */
 export class Benchmark {
-  private callDurations = [];
+  private callDurations: number[] = [];
   constructor(private name: string) {}
 
   public run(toCall: () => void) {
     const start = performance.now();
     toCall();
-    let end = performance.now();
-    let duration = end - start;
+    const end = performance.now();
+    const duration = end - start;
     this.callDurations.push(duration);
     this.logDebounced();
   }

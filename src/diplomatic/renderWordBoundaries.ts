@@ -2,21 +2,23 @@ import {D3Svg} from "./index";
 import {Point} from "./Point";
 import {Word} from "./renderWord";
 import {curveLinearClosed, line} from "d3-shape";
+import {orThrow} from "../util/orThrow";
 
 export function renderWordBoundaries(
   word: Word,
   $boundaries: D3Svg,
   scale: number,
 ) {
-  word.el.parentElement.classList.add('bounding-box')
+  const parent = word.el.parentElement ??orThrow('No parent')
+  parent.classList.add('bounding-box')
 
-  const scaledHull = word.hull.map((p) => [p[0] * scale, p[1] * scale]);
-  const scaledSeg = word.base.map((p) => [p[0] * scale, p[1] * scale]);
-  const cur = line<Point>().curve(curveLinearClosed);
+  const scaledHull: Point[] = word.hull.map((p) => [p[0] * scale, p[1] * scale]);
+  const scaledSeg: Point[] = word.base.map((p) => [p[0] * scale, p[1] * scale]);
+  const curve = line<Point>().curve(curveLinearClosed);
 
   $boundaries
     .append("path")
-    .attr("d", cur(scaledHull))
+    .attr("d", curve(scaledHull))
     .attr("stroke", "black")
     .attr("fill", "white")
     .attr("stroke-width", 1);
