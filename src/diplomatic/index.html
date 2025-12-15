@@ -8,22 +8,26 @@
             margin: 0;
         }
 
+        html, body, #resize-handle {
+            height: 100%;
+            width: 100%;
+        }
+
         #slider {
             position: absolute;
-            top: 0;
-            left: 0;
+            top: 0.25rem;
+            left: 0.5rem;
             opacity: 100%;
             z-index: 100;
-            color: blue;
-            background-color: #aaaaaa;
+            font-family: sans-serif;
+            font-size: 0.8rem;
+            input { vertical-align: middle }
         }
 
         #resize-handle {
-            height: 700px;
-            width: 1200px;
             overflow: auto;
             resize: both;
-            border: 3px solid pink;
+            border: 1px dashed grey;
             position: absolute;
             top: 0;
             left: 0;
@@ -32,9 +36,9 @@
 
         #wrapper {
             position: relative;
-            margin-left: 1rem;
-            margin-top: 3rem;
-            box-sizing: border-box;
+            margin: 0.5rem;
+            height: 95%;
+            width: 95%;
         }
 
     </style>
@@ -46,7 +50,7 @@
       <div id="resize-handle"></div>
       <div id="slider">
         text only
-        <input id="opacity" type="range" value="20" min="0" max="100"/>
+        <input id="opacity" type="range" value="0" min="0" max="100"/>
         image
         only
       </div>
