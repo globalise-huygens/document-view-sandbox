@@ -1,5 +1,3 @@
-import { debounce, update } from "lodash";
-
 /**
  * Inspiration: https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40
  */

@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const pageAttributes = { height, width, scanPath };
     renderScan(pageAttributes, scale, $scan);
-    renderDiplomaticView($view, annoPage);
+    renderDiplomaticView($view, annoPage, {showBoundaries: false});
   }, 50);
 
   new ResizeObserver(render).observe($resizeHandle);

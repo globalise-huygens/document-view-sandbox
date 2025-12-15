@@ -4,7 +4,7 @@ import { assertSpecificResourceTarget } from "./assertSpecificResourceTarget";
 import { assertSvgSelector } from "./assertSvgSelector";
 import { parseSvgPath } from "./parseSvgPath";
 
-export function findAnnoWords(
+export function findWordAnnotations(
   annoPage: IiifAnnotationPage,
 ): { text: string; points: string }[] {
   const words = [];
