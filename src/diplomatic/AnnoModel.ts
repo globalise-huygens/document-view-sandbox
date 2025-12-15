@@ -4,7 +4,7 @@ export type IiifAnnotationPage = {
   id: string;
   label: string;
   items: Annotation[];
-  partOf?: PartOf;
+  partOf: PartOf;
 };
 
 export type Annotation = {

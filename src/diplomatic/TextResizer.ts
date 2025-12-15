@@ -82,7 +82,7 @@ export class TextResizer {
     return Math.round(width / (charCount * this.charToWidthFactor));
   }
 
-  private isOverflown = ({ clientWidth, scrollWidth }) => {
+  private isOverflown = ({ clientWidth, scrollWidth }: HTMLElement) => {
     return scrollWidth > clientWidth;
   };
 }

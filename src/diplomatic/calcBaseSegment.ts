@@ -9,7 +9,7 @@ export function calcBaseSegment(points: Point[]) {
 
   // Find the highest point:
   let highest: Point = [0, 0];
-  let highestIndex: number | null = null;
+  let highestIndex = -1;
   points.forEach((p, i) => {
     if (p[1] > highest[1]) {
       highest = p;

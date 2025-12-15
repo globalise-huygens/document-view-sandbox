@@ -3,6 +3,7 @@ import {calcBoundingBox} from "./calcBoundingBox";
 import {calcBaseSegment} from "./calcBaseSegment";
 import {polygonHull} from "d3-polygon";
 import {calcTextAngle} from "./calcTextAngle";
+import {orThrow} from "../util/orThrow";
 
 export type Word = {
   el: HTMLDivElement,
@@ -16,13 +17,13 @@ export const renderWord = (
   $text: HTMLElement,
   scale: number,
 ): Word => {
-  const coordarr: Point[] = [];
+  const points: Point[] = [];
   for (const pair of coords.split(" ")) {
     const p = pair.split(",");
-    coordarr.push([parseInt(p[0]), parseInt(p[1])]);
+    points.push([parseInt(p[0]), parseInt(p[1])]);
   }
 
-  const hull = polygonHull(coordarr);
+  const hull = polygonHull(points) ?? orThrow('No hull');
   const base = calcBaseSegment(hull);
   const angle = calcTextAngle(base);
 
