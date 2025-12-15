@@ -5,7 +5,7 @@ export class TextResizer {
   private sampleCount = 0;
 
   constructor(
-    private precision = 3,
+    private precision = 1,
     private charToWidthFactor = 1,
   ) {}
 
