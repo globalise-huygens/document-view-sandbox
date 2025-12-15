@@ -39,12 +39,9 @@ export const renderWord = (
   $boundingBox.style.transform = "rotate(" + angle + "rad)";
 
   const $wordText = document.createElement("div");
+  $wordText.classList.add('word')
   $boundingBox.appendChild($wordText);
   $wordText.innerText = text;
-  $wordText.style.fontFamily = "monospace";
-  $wordText.style.whiteSpace = "nowrap";
-  $wordText.style.display = "block";
-  $wordText.style.fontSize = "8px";
   return {el: $wordText, hull, base};
 };
 
