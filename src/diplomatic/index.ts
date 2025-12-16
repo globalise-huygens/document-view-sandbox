@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const scale = Math.min(maxWidth / +height, maxHeight / +height);
 
     $view.style.height = px(scale * height);
-    $view.style.width = px(scale * width);
 
     const pageAttributes = { height, width, scanPath };
     renderScan(pageAttributes, scale, $scan);
