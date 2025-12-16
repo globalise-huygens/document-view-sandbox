@@ -1,4 +1,4 @@
-import { Point } from "./Point";
+import { Point } from './Point';
 
 /**
  * Find the three lowest points forming the baseline of a 'convex hull'
@@ -16,7 +16,7 @@ export function calcBaseSegment(points: Point[]) {
       highestIndex = i;
     }
   });
-  segment[1] = highest
+  segment[1] = highest;
 
   // Add the previous point:
   if (highestIndex > 0) {

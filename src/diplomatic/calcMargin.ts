@@ -1,16 +1,13 @@
-import {Word} from "./renderWord";
+import { Word } from './renderWord';
 
 export type Margin = {
   left: number;
   top: number;
 };
 
-export function calcMargin(
-  words: Word[],
-  scale: number
-): Margin {
+export function calcMargin(words: Word[], scale: number): Margin {
   if (!words.length) {
-    return {left: 0, top: 0};
+    return { left: 0, top: 0 };
   }
   const firstHull = words[0].hull;
   let minX = firstHull[0][0];

@@ -1,34 +1,38 @@
-import { adjustOpacity } from "./adjustOpacity";
-import { renderScan } from "./renderScan";
-import { debounce } from "lodash";
-import { renderDiplomaticView } from "./renderDiplomaticView";
-import { select } from "d3-selection";
-import { IiifAnnotationPage } from "./AnnoModel";
-import { px } from "./px";
+import { adjustOpacity } from './adjustOpacity';
+import { renderScan } from './renderScan';
+import { debounce } from 'lodash';
+import { renderDiplomaticView } from './renderDiplomaticView';
+import { select } from 'd3-selection';
+import { IiifAnnotationPage } from './AnnoModel';
+import { px } from './px';
+import { orThrow } from '../util/orThrow';
 
 export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
 
 if (DEV) {
-  new EventSource("/esbuild").addEventListener("change", () =>
+  new EventSource('/esbuild').addEventListener('change', () =>
     location.reload(),
   );
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const jsonPath = "/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json";
-  const scanPath = "/images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg";
+export function $<T extends HTMLElement>(selector: string): T {
+  return document.querySelector(selector) ?? orThrow(`${selector} not found`);
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const jsonPath =
+    '/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const scanPath = '/images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
   // const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
   // const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
 
-  const $slider = document.getElementById("opacity") as HTMLInputElement;
-  const $scan = document.getElementById("page-scan") as HTMLImageElement;
-  const $view = document.getElementById("diplomatic-view") as HTMLDivElement;
-  const $resizeHandle = document.getElementById(
-    "resize-handle",
-  ) as HTMLDivElement;
+  const $slider: HTMLInputElement = $('#opacity');
+  const $scan: HTMLImageElement = $('#page-scan');
+  const $view: HTMLDivElement = $('#diplomatic-view');
+  const $resizeHandle: HTMLDivElement = $('#resize-handle');
 
   adjustOpacity($view, $scan, $slider);
-  $slider.addEventListener("change", () =>
+  $slider.addEventListener('change', () =>
     adjustOpacity($view, $scan, $slider),
   );
 
@@ -46,7 +50,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const pageAttributes = { height, width, scanPath };
     renderScan(pageAttributes, scale, $scan);
-    const viewConfig = {showBoundaries: false, showScanMargin: true};
+    const viewConfig = { showBoundaries: false, showScanMargin: true };
     renderDiplomaticView($view, annoPage, viewConfig);
   }, 50);
 

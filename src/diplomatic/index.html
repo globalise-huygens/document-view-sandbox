@@ -3,86 +3,86 @@
   <head>
     <title>diplomatic view</title>
     <style>
-        * {
-            padding: 0;
-            margin: 0;
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      html,
+      body,
+      #resize-handle {
+        height: 100%;
+        width: 100%;
+      }
+
+      #slider {
+        position: absolute;
+        top: 0.25rem;
+        left: 0.5rem;
+        opacity: 100%;
+        z-index: 100;
+        font-family: sans-serif;
+        font-size: 0.8rem;
+        input {
+          vertical-align: middle;
+        }
+      }
+
+      #resize-handle {
+        overflow: auto;
+        resize: both;
+        border: 1px dashed grey;
+        position: absolute;
+        top: 0;
+        left: 0;
+        box-sizing: border-box;
+
+        &::after {
+          content: '◢';
+          position: absolute;
+          bottom: 0;
+          right: 4px;
+          color: grey;
+          font-size: 2rem;
+          pointer-events: none;
+          cursor: pointer;
+        }
+      }
+
+      #wrapper {
+        position: relative;
+        margin: 0.5rem;
+        height: 95%;
+        width: 95%;
+      }
+
+      #diplomatic-view {
+        overflow: hidden;
+
+        .text {
+          position: relative;
         }
 
-        html,
-        body,
-        #resize-handle {
-            height: 100%;
-            width: 100%;
+        .bounding-box {
+          border: dashed 1px blue;
         }
 
-        #slider {
-            position: absolute;
-            top: 0.25rem;
-            left: 0.5rem;
-            opacity: 100%;
-            z-index: 100;
-            font-family: sans-serif;
-            font-size: 0.8rem;
-            input {
-                vertical-align: middle;
-            }
+        .word {
+          font-size: 8px;
+          font-family: monospace;
+          white-space: nowrap;
         }
-
-        #resize-handle {
-            overflow: auto;
-            resize: both;
-            border: 1px dashed grey;
-            position: absolute;
-            top: 0;
-            left: 0;
-            box-sizing: border-box;
-
-            &::after {
-                content: '◢';
-                position: absolute;
-                bottom: 0;
-                right: 4px;
-                color: grey;
-                font-size: 2rem;
-                pointer-events: none;
-                cursor: pointer;
-            }
-        }
-
-        #wrapper {
-            position: relative;
-            margin: 0.5rem;
-            height: 95%;
-            width: 95%;
-        }
-
-        #diplomatic-view {
-            overflow: hidden;
-
-            .text {
-              position: relative
-            }
-
-            .bounding-box {
-                border: dashed 1px blue;
-            }
-
-            .word {
-                font-size: 8px;
-                font-family: monospace;
-                white-space: nowrap;
-            }
-        }
+      }
     </style>
   </head>
   <body>
     <div id="wrapper">
       <div id="diplomatic-view"></div>
-      <img id="page-scan"/>
+      <img id="page-scan" />
       <div id="resize-handle"></div>
       <div id="slider">
         text
-        <input id="opacity" type="range" value="0" min="0" max="100"/>
+        <input id="opacity" type="range" value="0" min="0" max="100" />
         scan
       </div>
     </div>

@@ -1,46 +1,43 @@
-import {Benchmark} from "./Benchmark";
-import {select} from "d3-selection";
-import {renderAnnoText} from "./renderAnnoText";
-import {IiifAnnotationPage} from "./AnnoModel";
-import {DiplomaticViewConfig} from "./DiplomaticViewConfig";
+import { Benchmark } from './Benchmark';
+import { select } from 'd3-selection';
+import { renderAnnoText } from './renderAnnoText';
+import { IiifAnnotationPage } from './AnnoModel';
+import { DiplomaticViewConfig } from './DiplomaticViewConfig';
 
-import {renderWordBoundaries} from "./renderWordBoundaries";
-import {px} from "./px";
-import {calcMargin} from "./calcMargin";
+import { renderWordBoundaries } from './renderWordBoundaries';
+import { px } from './px';
+import { calcMargin } from './calcMargin';
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
   annoPage: IiifAnnotationPage,
-  config: DiplomaticViewConfig
+  config: DiplomaticViewConfig,
 ) {
-  $view.innerHTML = "";
+  $view.innerHTML = '';
 
-  const {width, height} = $view.getBoundingClientRect();
-  const {width: scanWidth, height: scanHeight} = annoPage.partOf;
+  const { width, height } = $view.getBoundingClientRect();
+  const { width: scanWidth, height: scanHeight } = annoPage.partOf;
 
   const scale = Math.min(width / +scanWidth, height / +scanHeight);
 
-  const $text = document.createElement("div");
+  const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
 
   new Benchmark(renderAnnoText.name).run(() => {
-    const {words} = renderAnnoText(annoPage, scale, $text)
+    const { words } = renderAnnoText(annoPage, scale, $text);
     if (config.showBoundaries) {
       const $boundaries = select($view)
-        .append("svg")
-        .attr("id", "svgbody")
-        .attr("width", width)
-        .attr("height", height);
-      words.forEach(word =>
-        renderWordBoundaries(word, $boundaries, scale)
-      )
+        .append('svg')
+        .attr('id', 'svgbody')
+        .attr('width', width)
+        .attr('height', height);
+      words.forEach((word) => renderWordBoundaries(word, $boundaries, scale));
     }
-    if(!config.showScanMargin) {
-      const margin = calcMargin(words, scale)
-      $text.style.marginTop = px(`-${margin.top}`)
-      $text.style.marginLeft = px(`-${margin.left}`)
+    if (!config.showScanMargin) {
+      const margin = calcMargin(words, scale);
+      $text.style.marginTop = px(`-${margin.top}`);
+      $text.style.marginLeft = px(`-${margin.left}`);
     }
   });
-
 }
