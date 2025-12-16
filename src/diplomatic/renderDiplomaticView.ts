@@ -6,7 +6,7 @@ import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {px} from './px';
-import {calcMargin} from './calcMargin';
+import {calcScanlessRect} from './calcScanlessRect';
 import {D3Svg} from "./index";
 
 export function renderDiplomaticView(
@@ -36,14 +36,19 @@ export function renderDiplomaticView(
         .attr('height', height);
       words.forEach((word) => renderWordBoundaries(word, $boundaries!, scale));
     }
-    if (!config.showScanMargin) {
-      const margin = calcMargin(words, $text);
-      $text.style.marginTop = px(-margin.top);
-      $text.style.marginLeft = px(-margin.left);
+    if(config.showScanMargin) {
+      $view.style.height = px(scale * scanHeight)
+      $view.style.width = px(scale * scanWidth)
+    } else {
+      const rect = calcScanlessRect(words, $text);
+      $view.style.height = px(rect.height)
+      $view.style.width = px(rect.width)
+      $text.style.marginTop = px(-rect.top);
+      $text.style.marginLeft = px(-rect.left);
       $boundaries
         ?.style('display', 'block')
-        ?.style('margin-top', px(-margin.top))
-        .style('margin-left', px(-margin.left));
+        ?.style('margin-top', px(-rect.top))
+        .style('margin-left', px(-rect.left));
     }
   });
 }
