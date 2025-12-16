@@ -20,10 +20,8 @@ export function $<T extends HTMLElement>(selector: string): T {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const jsonPath =
-    '/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
-  const scanPath =
-    '/document-view-sandbox/images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
+  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const scanPath = '../images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
   // const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
   // const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
 
