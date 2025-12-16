@@ -46,7 +46,6 @@ export function renderDiplomaticView(
       $text.style.marginTop = px(-rect.top);
       $text.style.marginLeft = px(-rect.left);
       $boundaries
-        ?.style('display', 'block')
         ?.style('margin-top', px(-rect.top))
         .style('margin-left', px(-rect.left));
     }
