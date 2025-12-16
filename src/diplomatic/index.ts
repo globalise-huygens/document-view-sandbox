@@ -2,12 +2,12 @@ import { adjustOpacity } from './adjustOpacity';
 import { renderScan } from './renderScan';
 import { debounce } from 'lodash';
 import { renderDiplomaticView } from './renderDiplomaticView';
-import { select } from 'd3-selection';
+import {select, Selection} from 'd3-selection';
 import { IiifAnnotationPage } from './AnnoModel';
 import { px } from './px';
 import { orThrow } from '../util/orThrow';
 
-export type D3Svg = ReturnType<typeof select<SVGSVGElement, unknown>>;
+export type D3Svg = Selection<SVGSVGElement, unknown, null, undefined>
 
 if (DEV) {
   new EventSource('/esbuild').addEventListener('change', () =>
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const pageAttributes = { height, width, scanPath };
     renderScan(pageAttributes, scale, $scan);
-    const viewConfig = { showBoundaries: false, showScanMargin: true };
+    const viewConfig = { showBoundaries: true, showScanMargin: false };
     renderDiplomaticView($view, annoPage, viewConfig);
   }, 50);
 
