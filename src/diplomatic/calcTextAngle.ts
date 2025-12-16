@@ -1,5 +1,5 @@
-import {Point} from "./Point";
-import {calcRadians} from "./calcRadians";
+import { Point } from './Point';
+import { calcRadians } from './calcRadians';
 
 /**
  * Determine the text angle from a segment of three points
@@ -15,8 +15,6 @@ export function calcTextAngle(segment: Point[]) {
   const angle01 = calcRadians(segment[0], segment[1]);
   const angle12 = calcRadians(segment[1], segment[2]);
 
-  const lowestAngle = Math.abs(angle01) < Math.abs(angle12)
-    ? angle01
-    : angle12;
+  const lowestAngle = Math.abs(angle01) < Math.abs(angle12) ? angle01 : angle12;
   return lowestAngle;
 }

@@ -1,4 +1,4 @@
-import { debounce, sum } from "lodash";
+import { debounce, sum } from 'lodash';
 
 /**
  * privacy.reduceTimerPrecision = false

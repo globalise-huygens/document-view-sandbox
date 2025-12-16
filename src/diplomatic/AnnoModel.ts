@@ -1,4 +1,4 @@
-import type {Annotation, AnnotationPage,} from '@iiif/presentation-3';
+import type { Annotation, AnnotationPage } from '@iiif/presentation-3';
 
 export type IiifAnnotationPage = Omit<AnnotationPage, 'partOf'> & {
   partOf: PartOf;

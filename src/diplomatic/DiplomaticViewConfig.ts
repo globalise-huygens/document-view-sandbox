@@ -1,4 +1,4 @@
 export type DiplomaticViewConfig = {
-  showBoundaries: boolean,
-  showScanMargin: boolean
+  showBoundaries: boolean;
+  showScanMargin: boolean;
 };

@@ -1,9 +1,9 @@
-import type {IiifAnnotationPage} from '../AnnoModel';
-import {assertTextualBody} from './assertTextualBody';
-import {assertSpecificResourceTarget} from './assertSpecificResourceTarget';
-import {assertSvgSelector} from './assertSvgSelector';
-import {parseSvgPath} from './parseSvgPath';
-import {isEmpty} from "lodash";
+import type { IiifAnnotationPage } from '../AnnoModel';
+import { assertTextualBody } from './assertTextualBody';
+import { assertSpecificResourceTarget } from './assertSpecificResourceTarget';
+import { assertSvgSelector } from './assertSvgSelector';
+import { parseSvgPath } from './parseSvgPath';
+import { isEmpty } from 'lodash';
 
 export type WordAnnotation = { text: string; points: string };
 
@@ -36,7 +36,7 @@ export function findWordAnnotations(
     const selector = target.selector;
     assertSvgSelector(selector);
     const points = parseSvgPath(selector.value);
-    words.push({text, points});
+    words.push({ text, points });
   }
   return words;
 }
