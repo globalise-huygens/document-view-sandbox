@@ -1,32 +1,33 @@
-import { debounce, keyBy } from "lodash";
+import { debounce, keyBy } from 'lodash';
+import { orThrow } from './util/orThrow';
 
 main();
 
 function main() {
-  const text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+  const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
 
   const annotations: Annotation[] = [
-    { begin: 6, end: 17, body: { id: "p1", type: "person" } }, // "ipsum dolor"
+    { begin: 6, end: 17, body: { id: 'p1', type: 'person' } }, // "ipsum dolor"
     {
       begin: 12,
       end: 12,
-      body: { id: "n2", type: "note", note: "A note here" },
+      body: { id: 'n2', type: 'note', note: 'A note here' },
     },
-    { begin: 12, end: 21, body: { id: "p3", type: "person" } }, // "dolor sit"
-    { begin: 12, end: 26, body: { id: "p2", type: "person" } }, // "dolor sit amet"
-    { begin: 18, end: 39, body: { id: "e1", type: "event" } }, // "sit amet, consectetur"
-    { begin: 28, end: 50, body: { id: "l1", type: "location" } }, // "consectetur adipiscing"
-    { begin: 40, end: 55, body: { id: "l2", type: "location" } }, // "adipiscing elit"
+    { begin: 12, end: 21, body: { id: 'p3', type: 'person' } }, // "dolor sit"
+    { begin: 12, end: 26, body: { id: 'p2', type: 'person' } }, // "dolor sit amet"
+    { begin: 18, end: 39, body: { id: 'e1', type: 'event' } }, // "sit amet, consectetur"
+    { begin: 28, end: 50, body: { id: 'l1', type: 'location' } }, // "consectetur adipiscing"
+    { begin: 40, end: 55, body: { id: 'l2', type: 'location' } }, // "adipiscing elit"
   ];
 
   const $app =
-    document.querySelector<HTMLDivElement>("#app") ??
-    orThrow("app div not found");
+    document.querySelector<HTMLDivElement>('#app') ??
+    orThrow('app div not found');
 
-  const $text = document.createElement("div");
+  const $text = document.createElement('div');
   $app.appendChild($text);
 
-  const $style = document.createElement("style");
+  const $style = document.createElement('style');
   document.head.appendChild($style);
 
   const rangesById = createRanges(text, annotations);
@@ -119,7 +120,7 @@ function renderText(
   const sortedByBegin = [...ranges].sort((a, b) => a.begin - b.begin);
 
   for (const range of sortedByBegin) {
-    const $span = document.createElement("span");
+    const $span = document.createElement('span');
     $span.textContent = text.substring(range.begin, range.end);
     $span.dataset.range = range.id;
 
@@ -131,10 +132,10 @@ function renderText(
     range.annotations.forEach((id) => classList.push(id));
 
     if (range.begin === range.end) {
-      classList.push("marker-range");
+      classList.push('marker-range');
     }
 
-    $span.className = classList.join(" ");
+    $span.className = classList.join(' ');
     $container.appendChild($span);
   }
 }
@@ -204,13 +205,13 @@ function handleHovering(
   let currentHoveredAnnotation: AnnotationId | null = null;
 
   const setHoverHighlight = (annotationId: AnnotationId | null) => {
-    $text.querySelectorAll(".highlight-hover").forEach((el) => {
-      el.classList.remove("highlight-hover");
+    $text.querySelectorAll('.highlight-hover').forEach((el) => {
+      el.classList.remove('highlight-hover');
     });
 
     if (annotationId) {
       $text.querySelectorAll(`.${annotationId}`).forEach((el) => {
-        el.classList.add("highlight-hover");
+        el.classList.add('highlight-hover');
       });
     }
     currentHoveredAnnotation = annotationId;
@@ -233,21 +234,21 @@ function handleHovering(
     const found = findHoveredAnnotation(rangeAnnotations, range.begin);
     const foundId = found?.body.id;
 
-    if (foundId !== currentHoveredAnnotation) {
+    if (foundId && foundId !== currentHoveredAnnotation) {
       setHoverHighlight(foundId);
     }
   }, 25);
 
-  $text.addEventListener("mouseover", (event) => {
+  $text.addEventListener('mouseover', (event) => {
     const target = event.target as HTMLElement;
-    if (target.tagName !== "SPAN") {
+    if (target.tagName !== 'SPAN') {
       return;
     }
     const range = target.dataset.range ?? null;
     handleRangeHover(range);
   });
 
-  $text.addEventListener("mouseleave", () => {
+  $text.addEventListener('mouseleave', () => {
     handleRangeHover(null);
   });
 }
@@ -286,7 +287,7 @@ function findHoveredAnnotation(
 function createHighlightClass(
   annotationIds: AnnotationId[],
   annotations: Record<AnnotationId, Annotation>,
-  sortedTypes: AnnotationType[] = ["event", "location", "note", "person"],
+  sortedTypes: AnnotationType[] = ['event', 'location', 'note', 'person'],
 ) {
   const { typeCounts } = countTypes(annotationIds, annotations);
   const parts: string[] = [];
@@ -298,7 +299,7 @@ function createHighlightClass(
       parts.push(`${count}${typeKey}`);
     }
   }
-  return parts.join("-");
+  return parts.join('-');
 }
 
 function createHighlight(
@@ -329,14 +330,10 @@ function countTypes(
     types.push(type);
   }
 
-  if (types.includes("note")) {
-    throw new Error("Notes are not part of ranges with a stylable length");
+  if (types.includes('note')) {
+    throw new Error('Notes are not part of ranges with a stylable length');
   }
   return { types, typeCounts };
-}
-
-function orThrow(msg: string): never {
-  throw new Error(msg);
 }
 
 function mergeTypeColors(
@@ -362,16 +359,16 @@ function mergeTypeColors(
 }
 
 type AnnotationId = string;
-type AnnotationType = "location" | "person" | "event" | "note";
+type AnnotationType = 'location' | 'person' | 'event' | 'note';
 type AnnotationBody = EntityBody | NoteBody;
 type EntityBody = {
   id: AnnotationId;
-  type: "location" | "person" | "event";
+  type: 'location' | 'person' | 'event';
 };
 
 type NoteBody = {
   id: AnnotationId;
-  type: "note";
+  type: 'note';
   note: string;
 };
 
