@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const $resizeHandle: HTMLDivElement = $('#resize-handle');
 
   adjustOpacity($view, $scan, $slider);
-  $slider.addEventListener('change', () =>
+  $slider.addEventListener('input', () =>
     adjustOpacity($view, $scan, $slider),
   );
 
