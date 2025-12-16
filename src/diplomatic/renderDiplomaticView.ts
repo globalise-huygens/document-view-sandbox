@@ -37,7 +37,7 @@ export function renderDiplomaticView(
       words.forEach((word) => renderWordBoundaries(word, $boundaries!, scale));
     }
     if (!config.showScanMargin) {
-      const margin = calcMargin(words, scale);
+      const margin = calcMargin(words, $text);
       $text.style.marginTop = px(-margin.top);
       $text.style.marginLeft = px(-margin.left);
       $boundaries

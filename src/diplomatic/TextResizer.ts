@@ -1,3 +1,5 @@
+import {px} from "./px";
+
 /**
  * Inspiration: https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40
  */
@@ -31,11 +33,11 @@ export class TextResizer {
     const width = parent.clientWidth;
 
     const predicted = this.calcFontSize(width, charCount);
-    el.style.fontSize = `${predicted}px`;
+    el.style.fontSize = px(predicted);
 
     // adjust the vertical positioning after the horizontal scaling of the font.
     const verticalAdjust = parent.clientHeight / 2 - el.clientHeight / 2;
-    el.style.marginTop = `${verticalAdjust}px`;
+    el.style.marginTop = px(verticalAdjust);
   };
 
   private binarySearch(

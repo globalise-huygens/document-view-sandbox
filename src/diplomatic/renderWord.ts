@@ -4,6 +4,7 @@ import { calcBaseSegment } from './calcBaseSegment';
 import { polygonHull } from 'd3-polygon';
 import { calcTextAngle } from './calcTextAngle';
 import { orThrow } from '../util/orThrow';
+import {px} from "./px";
 
 export type Word = {
   el: HTMLDivElement;
@@ -32,10 +33,10 @@ export const renderWord = (
   const $boundingBox = document.createElement('div');
   $text.appendChild($boundingBox);
   $boundingBox.style.position = 'absolute';
-  $boundingBox.style.left = boundingBox.x * scale + 'px';
-  $boundingBox.style.top = boundingBox.y * scale + 'px';
-  $boundingBox.style.width = boundingBox.width * scale + 'px';
-  $boundingBox.style.height = boundingBox.height * scale + 'px';
+  $boundingBox.style.left = px(boundingBox.x * scale);
+  $boundingBox.style.top = px(boundingBox.y * scale);
+  $boundingBox.style.width = px(boundingBox.width * scale);
+  $boundingBox.style.height = px(boundingBox.height * scale);
   $boundingBox.style.transform = 'rotate(' + angle + 'rad)';
 
   const $wordText = document.createElement('div');
