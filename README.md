@@ -8,7 +8,7 @@ https://globalise-huygens.github.io/document-view-sandbox/viewer.html
 
 ## Diplomatic view
 
-https://globalise-huygens.github.io/document-view-sandbox/diplomatic.html
+https://globalise-huygens.github.io/document-view-sandbox/diplomatic/index.html
 
 ## Highlights
 
