@@ -1,11 +1,10 @@
-import { adjustOpacity } from './adjustOpacity';
-import { renderScan } from './renderScan';
-import { debounce } from 'lodash';
-import { renderDiplomaticView } from './renderDiplomaticView';
-import { select, Selection } from 'd3-selection';
-import { IiifAnnotationPage } from './AnnoModel';
-import { px } from './px';
-import { orThrow } from '../util/orThrow';
+import {adjustOpacity} from './adjustOpacity';
+import {renderScan} from './renderScan';
+import {renderDiplomaticView} from './renderDiplomaticView';
+import {Selection} from 'd3-selection';
+import {IiifAnnotationPage} from './AnnoModel';
+import {px} from './px';
+import {orThrow} from "../util/orThrow";
 
 export type D3Svg = Selection<SVGSVGElement, unknown, null, undefined>;
 
@@ -15,42 +14,76 @@ if (DEV) {
   );
 }
 
-export function $<T extends HTMLElement>(selector: string): T {
-  return document.querySelector(selector) ?? orThrow(`${selector} not found`);
-}
-
 document.addEventListener('DOMContentLoaded', async () => {
-  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
-  const scanPath = '../images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
-  // const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
-  // const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
+  const example = new URLSearchParams(location.search).get('example')
+    ?? 'with-scan'
+  $('a.' + example).classList.add('active')
+  const $example = $('#example')
 
-  const $slider: HTMLInputElement = $('#opacity');
-  const $scan: HTMLImageElement = $('#page-scan');
-  const $view: HTMLDivElement = $('#diplomatic-view');
-  const $resizeHandle: HTMLDivElement = $('#resize-handle');
+  if (example === 'with-scan') {
+    await renderScanExample($example)
+  } else {
+    await renderTextOnlyExample()
+  }
+});
 
-  adjustOpacity($view, $scan, $slider);
-  $slider.addEventListener('input', () =>
-    adjustOpacity($view, $scan, $slider),
-  );
+async function renderScanExample($parent: HTMLElement) {
+  $parent.classList.add('with-scan')
+  $parent.innerHTML = `
+      <div id="menu"></div>
+      <div class="diplomatic-view"></div>
+      <img id="scan"/>`
+  const $menu = $('#menu')
+  $menu.classList.add('with-scan')
+  const $view: HTMLDivElement = $('.diplomatic-view', $parent);
+  const $scan: HTMLImageElement = $('#scan', $parent);
+  const $slider = document.createElement('span')
+  $menu.appendChild($slider)
+  renderSlider($slider, $view, $scan);
+
+  const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
 
   const annoResponse = await fetch(jsonPath);
   const annoPage: IiifAnnotationPage = await annoResponse.json();
+  const {width: parentWidth} = $parent.getBoundingClientRect();
+  const {width, height} = annoPage.partOf;
 
-  const render = debounce(() => {
-    const { width: maxWidth, height: maxHeight } =
-      $resizeHandle.getBoundingClientRect();
-    const { width, height } = annoPage.partOf;
-    const scale = Math.min(maxWidth / +height, maxHeight / +height);
+  const scale = Math.max(parentWidth / +width);
+  let newHeight = px(scale * height);
+  $view.style.height = newHeight;
+  let newWidth = px(scale * width);
+  $view.style.width = newWidth;
+  console.log('scale', {newWidth, newHeight, parentWidth, scale})
 
-    $view.style.height = px(scale * height);
+  const pageAttributes = {height, width, scanPath};
+  renderScan(pageAttributes, scale, $scan);
+  const viewConfig = {showBoundaries: false, showScanMargin: true};
+  renderDiplomaticView($view, annoPage, viewConfig);
+}
 
-    const pageAttributes = { height, width, scanPath };
-    renderScan(pageAttributes, scale, $scan);
-    const viewConfig = { showBoundaries: true, showScanMargin: false };
-    renderDiplomaticView($view, annoPage, viewConfig);
-  }, 50);
+function renderSlider(
+  $parent: HTMLElement,
+  $view: HTMLDivElement,
+  $scan: HTMLImageElement
+) {
+  $parent.classList.add('slider')
+  $parent.innerHTML = `
+    text 
+    <input type="range" value="20" min="0" max="100"/> 
+    scan`
+  const $input: HTMLInputElement = $('input', $parent)
+  adjustOpacity($view, $scan, $input);
+  $parent.addEventListener('input', () =>
+    adjustOpacity($view, $scan, $input),
+  );
+}
 
-  new ResizeObserver(render).observe($resizeHandle);
-});
+async function renderTextOnlyExample() {}
+
+export function $<T extends HTMLElement>(
+  selector: string,
+  parent: HTMLElement | Document = document
+): T {
+  return parent.querySelector(selector) ?? orThrow(`${selector} not found`);
+}
