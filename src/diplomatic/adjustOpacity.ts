@@ -1,6 +1,6 @@
 export const adjustOpacity = (
   $view: HTMLElement,
-  $scan: HTMLImageElement,
+  $scan: HTMLElement,
   $slider: HTMLInputElement,
 ) => {
   const opacity = parseInt($slider.value);

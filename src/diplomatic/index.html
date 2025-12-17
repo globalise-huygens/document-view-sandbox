@@ -6,6 +6,8 @@
         * {
             padding: 0;
             margin: 0;
+            font-family: sans-serif;
+            font-size: 0.8rem;
         }
 
         html,
@@ -15,49 +17,7 @@
             width: 100%;
         }
 
-        #slider {
-            position: absolute;
-            top: 0.25rem;
-            left: 0.5rem;
-            opacity: 100%;
-            z-index: 100;
-            font-family: sans-serif;
-            font-size: 0.8rem;
-
-            input {
-                vertical-align: middle;
-            }
-        }
-
-        #resize-handle {
-            overflow: auto;
-            resize: both;
-            border: 1px dashed grey;
-            position: absolute;
-            top: 0;
-            left: 0;
-            box-sizing: border-box;
-
-            &::after {
-                content: '◢';
-                position: absolute;
-                bottom: 0;
-                right: 4px;
-                color: grey;
-                font-size: 2rem;
-                pointer-events: none;
-                cursor: pointer;
-            }
-        }
-
-        #wrapper {
-            position: relative;
-            margin: 2rem;
-            height: 200%;
-            width: 95%;
-        }
-
-        #diplomatic-view {
+        .diplomatic-view {
             overflow: hidden;
 
             .text {
@@ -78,19 +38,63 @@
                 display: block;
             }
         }
+
+        #menu {
+            position: absolute;
+            box-sizing: border-box;
+            width: 100%;
+            z-index: 20;
+            background: white;
+            padding: 0.25rem 0.5rem;
+            display: flex;
+            align-items: center;
+
+            a {
+                text-decoration: none;
+                color: blue;
+
+                &:hover {
+                    color: black;
+                }
+
+                &.active {
+                    color: black;
+                    cursor: default;
+                }
+            }
+
+
+            &.with-scan, &.with-scan a {
+            }
+
+            .slider {
+                margin-left: auto;
+
+                input {
+                    vertical-align: middle;
+                }
+            }
+        }
+
+        #example.with-scan {
+            z-index: 10;
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+        }
     </style>
   </head>
   <body>
-    <div id="wrapper">
-      <div id="diplomatic-view"></div>
-      <img id="page-scan"/>
-      <div id="resize-handle"></div>
-      <div id="slider">
-        text
-        <input id="opacity" type="range" value="0" min="0" max="100"/>
-        scan
-      </div>
+    <div id="menu">
+      <span class="examples">examples:
+        <a class="with-scan" href="./index.html?example=with-scan">with scan</a>
+        |
+        <a class="text-only" href="./index.html?example=text-only">text only</a>
+      </span>
     </div>
+    <div id="example"></div>
     <script src="./index.js"></script>
   </body>
 </html>
