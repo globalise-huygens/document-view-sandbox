@@ -1,4 +1,3 @@
-import {adjustOpacity} from './adjustOpacity';
 import {renderScan} from './renderScan';
 import {renderDiplomaticView} from './renderDiplomaticView';
 import {Selection} from 'd3-selection';
@@ -23,26 +22,39 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (example === 'with-scan') {
     await renderScanExample($example)
   } else {
-    await renderTextOnlyExample()
+    await renderTextOnlyExample($example)
   }
 });
 
 async function renderScanExample($parent: HTMLElement) {
+  const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  const scanPath = "../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
+
   $parent.classList.add('with-scan')
   $parent.innerHTML = `
-      <div id="menu"></div>
       <div class="diplomatic-view"></div>
-      <img id="scan"/>`
+      <img id="scan" alt="scan"/>`
   const $menu = $('#menu')
-  $menu.classList.add('with-scan')
   const $view: HTMLDivElement = $('.diplomatic-view', $parent);
   const $scan: HTMLImageElement = $('#scan', $parent);
+
   const $slider = document.createElement('span')
   $menu.appendChild($slider)
-  renderSlider($slider, $view, $scan);
+  $slider.classList.add('slider')
+  $slider.innerHTML = `
+    text 
+    <input type="range" value="20" min="0" max="100"/> 
+    scan`
+  const $input: HTMLInputElement = $('input', $slider)
 
-  const jsonPath = "/data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
-  const scanPath = "/images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
+  const adjustOpacity = () => {
+    const opacity = parseInt($input.value);
+    $scan.style.opacity = `${opacity}%`;
+    $view.style.opacity = `${100 - opacity}%`;
+  };
+
+  adjustOpacity();
+  $slider.addEventListener('input', adjustOpacity);
 
   const annoResponse = await fetch(jsonPath);
   const annoPage: IiifAnnotationPage = await annoResponse.json();
@@ -50,11 +62,8 @@ async function renderScanExample($parent: HTMLElement) {
   const {width, height} = annoPage.partOf;
 
   const scale = Math.max(parentWidth / +width);
-  let newHeight = px(scale * height);
-  $view.style.height = newHeight;
-  let newWidth = px(scale * width);
-  $view.style.width = newWidth;
-  console.log('scale', {newWidth, newHeight, parentWidth, scale})
+  $view.style.height = px(scale * height);
+  $view.style.width = px(scale * width);
 
   const pageAttributes = {height, width, scanPath};
   renderScan(pageAttributes, scale, $scan);
@@ -62,24 +71,48 @@ async function renderScanExample($parent: HTMLElement) {
   renderDiplomaticView($view, annoPage, viewConfig);
 }
 
-function renderSlider(
-  $parent: HTMLElement,
-  $view: HTMLDivElement,
-  $scan: HTMLImageElement
+async function renderTextOnlyExample(
+  $parent: HTMLElement
 ) {
-  $parent.classList.add('slider')
-  $parent.innerHTML = `
-    text 
+
+  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const scanPath = '../images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
+
+  $parent.classList.add('text-only')
+  $parent.innerHTML = `<div class="diplomatic-view"></div>`
+  const $menu = $('#menu')
+  const $view: HTMLDivElement = $('.diplomatic-view', $parent);
+  const $slider = document.createElement('span')
+  $menu.appendChild($slider)
+  $slider.classList.add('slider')
+  $slider.innerHTML = `
+    zoom: min 
     <input type="range" value="20" min="0" max="100"/> 
-    scan`
-  const $input: HTMLInputElement = $('input', $parent)
-  adjustOpacity($view, $scan, $input);
-  $parent.addEventListener('input', () =>
-    adjustOpacity($view, $scan, $input),
-  );
+    max`
+  const $input: HTMLInputElement = $('input', $slider)
+
+  const adjustScale = () => {
+    const scale = parseInt($input.value);
+    console.log('scale', scale)
+  }
+
+  adjustScale();
+  $slider.addEventListener('drag', adjustScale);
+
+  const annoResponse = await fetch(jsonPath);
+  const annoPage: IiifAnnotationPage = await annoResponse.json();
+  const {width: parentWidth} = $parent.getBoundingClientRect();
+  const {width, height} = annoPage.partOf;
+
+  const scale = Math.max(parentWidth / +width);
+  $view.style.height = px(scale * height);
+  $view.style.width = px(scale * width);
+
+  const viewConfig = {showBoundaries: true, showScanMargin: false};
+  renderDiplomaticView($view, annoPage, viewConfig);
 }
 
-async function renderTextOnlyExample() {}
+
 
 export function $<T extends HTMLElement>(
   selector: string,
