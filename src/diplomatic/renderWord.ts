@@ -1,30 +1,22 @@
-import { Point } from './Point';
-import { calcBoundingBox } from './calcBoundingBox';
-import { calcBaseSegment } from './calcBaseSegment';
-import { polygonHull } from 'd3-polygon';
-import { calcTextAngle } from './calcTextAngle';
-import { orThrow } from '../util/orThrow';
+import {Point} from './Point';
+import {calcBoundingBox} from './calcBoundingBox';
+import {calcBaseSegment} from './calcBaseSegment';
+import {calcTextAngle} from './calcTextAngle';
 import {px} from "./px";
 
-export type Word = {
+import {TextHull} from "./TextHull";
+
+export type Word = TextHull & {
   el: HTMLDivElement;
-  hull: Point[];
   base: Point[];
 };
 
 export const renderWord = (
   text: string,
-  coords: string,
+  hull: Point[],
   $text: HTMLElement,
   scale: number,
 ): Word => {
-  const points: Point[] = [];
-  for (const pair of coords.split(' ')) {
-    const p = pair.split(',');
-    points.push([parseInt(p[0]), parseInt(p[1])]);
-  }
-
-  const hull = polygonHull(points) ?? orThrow('No hull');
   const base = calcBaseSegment(hull);
   const angle = calcTextAngle(base);
 
@@ -37,11 +29,11 @@ export const renderWord = (
   $boundingBox.style.top = px(boundingBox.y * scale);
   $boundingBox.style.width = px(boundingBox.width * scale);
   $boundingBox.style.height = px(boundingBox.height * scale);
-  $boundingBox.style.transform = 'rotate(' + angle + 'rad)';
+  $boundingBox.style.transform = `rotate(${angle}rad)`;
 
   const $wordText = document.createElement('div');
   $wordText.classList.add('word');
   $boundingBox.appendChild($wordText);
   $wordText.innerText = text;
-  return { el: $wordText, hull, base };
+  return { text, el: $wordText, hull, base };
 };
