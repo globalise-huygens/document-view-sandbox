@@ -8,7 +8,10 @@ export async function renderTextOnlyExample(
 ) {
 
   // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
-  const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  // const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
+  // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
+  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
   $parent.classList.add('text-only')
   $parent.innerHTML = `<div class="diplomatic-view"></div>`
@@ -19,7 +22,7 @@ export async function renderTextOnlyExample(
   $slider.classList.add('slider')
   $slider.innerHTML = `
     zoom: min 
-    <input type="range" value="40" min="5" max="100"/> 
+    <input type="range" value="100" min="5" max="100"/> 
     max`
   const $input: HTMLInputElement = $('input', $slider)
 
