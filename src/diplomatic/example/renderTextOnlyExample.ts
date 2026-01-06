@@ -30,18 +30,16 @@ export async function renderTextOnlyExample(
   const annoPage: IiifAnnotationPage = await annoResponse.json();
 
   const {width: parentWidth} = $parent.getBoundingClientRect();
-  const {width, height} = annoPage.partOf;
+  const {width} = annoPage.partOf;
 
-  let sliderScale = -1
   const adjustScale = () => {
-    sliderScale = parseInt($input.value) / 100;
+    const sliderScale = parseInt($input.value) / 100;
     const scale = Math.max(parentWidth / +width) * sliderScale;
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
 
     const viewConfig = {showBoundaries: true, showScanMargin: false};
     renderDiplomaticView($view, annoPage, viewConfig);
-    console.log('scale', sliderScale)
   }
 
   $slider.addEventListener('change', adjustScale);
