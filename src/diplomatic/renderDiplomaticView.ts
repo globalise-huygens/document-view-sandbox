@@ -4,7 +4,7 @@ import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {px} from './px';
-import {calcWordsRect} from './calcWordsRect';
+import {calcTextRect} from './calcTextRect';
 import {findWordAnnotations} from "./anno/findWordAnnotations";
 import {renderWord} from "./renderWord";
 import {createHull} from "./createHull";
@@ -31,42 +31,45 @@ export function renderDiplomaticView(
     return {text, hull: createHull(points)};
   })
 
-  const rect = calcWordsRect(textHulls);
-  console.log({rect, textRect: $text.getBoundingClientRect().toJSON()})
+  const marginlessRect = calcTextRect(textHulls);
 
-  // If view has no height, calculate scale on width only:
+  /**
+   * Add some padding to show characters at the edges
+   * Characters can overflow vertically as words are fit into their
+   * bounding boxes using width only.
+   */
+  const overflowPadding = Math.round(marginlessRect.width * 0.02)
+
   const scale = showScanMargin
     ? viewWidth / scanWidth
-    : viewWidth / rect.width;
+    : viewWidth / (marginlessRect.width + overflowPadding * 2);
 
   if (showScanMargin) {
     $view.style.height = px(scale * scanHeight)
     $view.style.width = px(scale * scanWidth)
   } else {
-    $view.style.height = px(scale * rect.height)
-    $view.style.width = px(scale * rect.width)
-    $text.style.marginTop = px(scale * -rect.top);
-    $text.style.marginLeft = px(scale * -rect.left);
+    $view.style.height = px(scale * (marginlessRect.height + overflowPadding * 2))
+    $view.style.width = px(scale * (marginlessRect.width + overflowPadding * 2))
+    $text.style.marginTop = px(scale * (-marginlessRect.top + overflowPadding));
+    $text.style.marginLeft = px(scale * (-marginlessRect.left + overflowPadding));
   }
   const $boundaries = select($view)
     .append('svg')
+    .attr('class', 'boundaries')
 
   if (showBoundaries) {
     const {width, height} = $view.getBoundingClientRect();
 
     if (showScanMargin) {
       $boundaries
-        .attr('class', 'boundaries')
         .attr('width', width)
         .attr('height', height);
     } else {
       $boundaries
-        .style('margin-top', px(scale * -rect.top))
-        .style('margin-left', px(scale * -rect.left));
-      $boundaries
-        .attr('class', 'boundaries')
-        .attr('width', width + scale * rect.left)
-        .attr('height', height + scale * rect.top);
+        .style('margin-top', px(scale * (-marginlessRect.top + overflowPadding)))
+        .style('margin-left', px(scale * (-marginlessRect.left + overflowPadding)))
+        .attr('width', width + scale * (marginlessRect.left - overflowPadding))
+        .attr('height', height + scale * (marginlessRect.top - overflowPadding));
     }
   }
 
@@ -79,7 +82,7 @@ export function renderDiplomaticView(
   resizer.calibrate(words.slice(0, 10).map(w => w.el));
   words.forEach((w) => {
     resizer.resize(w.el);
-    if(showBoundaries) {
+    if (showBoundaries) {
       renderWordBoundaries(w, $boundaries, scale);
     }
   });
