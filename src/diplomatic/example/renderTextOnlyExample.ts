@@ -7,7 +7,8 @@ export async function renderTextOnlyExample(
   $parent: HTMLElement
 ) {
 
-  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
 
   $parent.classList.add('text-only')
   $parent.innerHTML = `<div class="diplomatic-view"></div>`
@@ -32,7 +33,7 @@ export async function renderTextOnlyExample(
   const adjustScale = () => {
     sliderScale = parseInt($input.value) / 100;
     const scale = Math.max(parentWidth / +width) * sliderScale;
-    $view.style.height = px(scale * height);
+    $view.style.height = px(0);
     $view.style.width = px(scale * width);
 
     const viewConfig = {showBoundaries: true, showScanMargin: false};

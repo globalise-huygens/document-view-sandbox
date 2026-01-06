@@ -16,38 +16,50 @@ export function renderDiplomaticView(
 ) {
   $view.innerHTML = '';
 
-  const {width, height} = $view.getBoundingClientRect();
+  const {width: viewWidth, height: viewHeight} = $view.getBoundingClientRect();
   const {width: scanWidth, height: scanHeight} = annoPage.partOf;
 
-  const scale = Math.min(width / +scanWidth, height / +scanHeight);
+  // If view has no height, calculate scale on width only:
+  const scale = viewHeight
+    ? Math.min(viewWidth / +scanWidth, viewHeight / +scanHeight)
+    : viewWidth / +scanWidth;
 
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
 
-  new Benchmark(renderAnnoText.name).run(() => {
-    const {words} = renderAnnoText(annoPage, scale, $text);
-    let $boundaries: D3Svg | null = null;
-    if (config.showBoundaries) {
-      $boundaries = select($view)
-        .append('svg')
+  const {words} = renderAnnoText(annoPage, scale, $text);
+
+  const rect = calcWordsRect(words, $text);
+  if (config.showScanMargin) {
+    $view.style.height = px(scale * scanHeight)
+    $view.style.width = px(scale * scanWidth)
+  } else {
+    $view.style.height = px(rect.height)
+    $view.style.width = px(rect.width)
+    $text.style.marginTop = px(-rect.top);
+    $text.style.marginLeft = px(-rect.left);
+  }
+  if (config.showBoundaries) {
+    const $boundaries = select($view)
+      .append('svg')
+    const {width, height} = $view.getBoundingClientRect();
+
+    if (config.showScanMargin) {
+      $boundaries
         .attr('class', 'boundaries')
         .attr('width', width)
         .attr('height', height);
-      words.forEach((word) => renderWordBoundaries(word, $boundaries!, scale));
-    }
-    if(config.showScanMargin) {
-      $view.style.height = px(scale * scanHeight)
-      $view.style.width = px(scale * scanWidth)
     } else {
-      const rect = calcWordsRect(words, $text);
-      $view.style.height = px(rect.height)
-      $view.style.width = px(rect.width)
-      $text.style.marginTop = px(-rect.top);
-      $text.style.marginLeft = px(-rect.left);
       $boundaries
-        ?.style('margin-top', px(-rect.top))
+        .style('margin-top', px(-rect.top))
         .style('margin-left', px(-rect.left));
+      $boundaries
+        .attr('class', 'boundaries')
+        .attr('width', width + rect.left)
+        .attr('height', height + rect.top);
     }
-  });
+
+    words.forEach((word) => renderWordBoundaries(word, $boundaries, scale));
+  }
 }
