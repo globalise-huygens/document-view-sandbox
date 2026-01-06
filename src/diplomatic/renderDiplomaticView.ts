@@ -42,16 +42,16 @@ export function renderDiplomaticView(
 
   const scale = showScanMargin
     ? viewWidth / scanWidth
-    : viewWidth / (marginlessRect.width + overflowPadding * 2);
+    : viewWidth / marginlessRect.width;
 
   if (showScanMargin) {
     $view.style.height = px(scale * scanHeight)
     $view.style.width = px(scale * scanWidth)
   } else {
     $view.style.height = px(scale * (marginlessRect.height + overflowPadding * 2))
-    $view.style.width = px(scale * (marginlessRect.width + overflowPadding * 2))
+    $view.style.width = px(scale * marginlessRect.width)
     $text.style.marginTop = px(scale * (-marginlessRect.top + overflowPadding));
-    $text.style.marginLeft = px(scale * (-marginlessRect.left + overflowPadding));
+    $text.style.marginLeft = px(scale * -marginlessRect.left);
   }
   const $boundaries = select($view)
     .append('svg')
@@ -67,8 +67,8 @@ export function renderDiplomaticView(
     } else {
       $boundaries
         .style('margin-top', px(scale * (-marginlessRect.top + overflowPadding)))
-        .style('margin-left', px(scale * (-marginlessRect.left + overflowPadding)))
-        .attr('width', width + scale * (marginlessRect.left - overflowPadding))
+        .style('margin-left', px(scale * -marginlessRect.left))
+        .attr('width', width + scale * marginlessRect.left)
         .attr('height', height + scale * (marginlessRect.top - overflowPadding));
     }
   }
