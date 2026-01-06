@@ -10,33 +10,9 @@
             font-size: 0.8rem;
         }
 
-        html,
-        body,
-        #resize-handle {
+        html, body {
             height: 100%;
             width: 100%;
-        }
-
-        .diplomatic-view {
-            overflow: hidden;
-
-            .text {
-                position: relative;
-            }
-
-            .bounding-box {
-                border: dashed 1px blue;
-            }
-
-            .word {
-                font-size: 8px;
-                font-family: monospace;
-                white-space: nowrap;
-            }
-
-            .boundaries {
-                display: block;
-            }
         }
 
         :root {
@@ -79,6 +55,40 @@
 
                 input {
                     vertical-align: middle;
+                }
+            }
+        }
+
+        .diplomatic-view {
+            overflow: hidden;
+
+            .text {
+                position: relative;
+            }
+
+            .bounding-box {
+                border: dashed 1px blue;
+            }
+
+            .word {
+                font-size: 8px;
+                font-family: monospace;
+                white-space: nowrap;
+            }
+
+            .boundaries {
+                display: block;
+            }
+        }
+
+        #example {
+            &.with-scan {
+                #scan {
+                    z-index: -1;
+                    position: absolute;
+                    top: var(--menu-height);
+                    left: 0;
+                    border-style: none;
                 }
             }
         }
