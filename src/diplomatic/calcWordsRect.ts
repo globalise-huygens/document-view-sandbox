@@ -1,4 +1,5 @@
-import {Word} from './renderWord';
+import {Point} from "./Point";
+import {TextHull} from "./TextHull";
 
 export type Rect = {
   left: number;
@@ -7,65 +8,37 @@ export type Rect = {
   height: number;
 };
 
-export function calcWordsRect(
-  words: Word[],
-  $text: HTMLElement
-): Rect {
+export function calcWordsRect(words: TextHull[]): Rect {
   if (!words.length) {
     return {left: 0, top: 0, width: 0, height: 0};
   }
 
-  // Determine the outermost words:
   let minX = Infinity;
-  let minXWord: null | Word = null
-
   let minY = Infinity;
-  let minYWord: null | Word = null
-
   let maxX = -Infinity;
-  let maxXWord: null | Word = null
-
   let maxY = -Infinity;
-  let maxYWord: null | Word = null
 
   for (const word of words) {
-    for (const point of word.hull) {
-      const [x, y] = point;
+    for (const [x, y] of word.hull) {
       if (x < minX) {
-        minX = x
-        minXWord = word
+        minX = x;
       }
       if (y < minY) {
-        minY = y
-        minYWord = word
+        minY = y;
       }
       if (x > maxX) {
-        maxX = x
-        maxXWord = word
+        maxX = x;
       }
       if (y > maxY) {
-        maxY = y
-        maxYWord = word
+        maxY = y;
       }
     }
   }
 
-  // Determine actual margins and dimensions using the rotated and scaled DOM elements:
-  const wordLeft = minXWord?.el.getBoundingClientRect().left || 0
-  const wordTop = minYWord?.el.getBoundingClientRect().top || 0
-  const wordRight = maxXWord?.el.getBoundingClientRect().right || 0
-  const wordBottom = maxYWord?.el.getBoundingClientRect().bottom || 0
-
-  const {left: textLeft, top: textTop} = $text.getBoundingClientRect()
-  const relativeTop = wordTop - textTop;
-  const relativeLeft = wordLeft - textLeft;
-  const width = wordRight - wordLeft;
-  const height = wordBottom - wordTop;
-
   return {
-    left: relativeLeft,
-    top: relativeTop,
-    width,
-    height,
+    left: minX,
+    top: minY,
+    width: maxX - minX,
+    height: maxY - minY,
   };
 }

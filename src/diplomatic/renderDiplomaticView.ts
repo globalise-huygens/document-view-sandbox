@@ -1,65 +1,86 @@
-import {Benchmark} from './Benchmark';
-import {select, Selection} from 'd3-selection';
-import {renderAnnoText} from './renderAnnoText';
+import {select} from 'd3-selection';
 import {IiifAnnotationPage} from './AnnoModel';
 import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {px} from './px';
 import {calcWordsRect} from './calcWordsRect';
-import {D3Svg} from "./index";
+import {findWordAnnotations} from "./anno/findWordAnnotations";
+import {renderWord} from "./renderWord";
+import {createHull} from "./createHull";
+import {TextResizer} from "./TextResizer";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
   annoPage: IiifAnnotationPage,
   config: DiplomaticViewConfig,
 ) {
+  const {showBoundaries, showScanMargin} = config
   $view.innerHTML = '';
 
   const {width: viewWidth, height: viewHeight} = $view.getBoundingClientRect();
-  const {width: scanWidth, height: scanHeight} = annoPage.partOf;
 
-  // If view has no height, calculate scale on width only:
-  const scale = viewHeight
-    ? Math.min(viewWidth / +scanWidth, viewHeight / +scanHeight)
-    : viewWidth / +scanWidth;
+  const {width: scanWidth, height: scanHeight} = annoPage.partOf;
 
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
 
-  const {words} = renderAnnoText(annoPage, scale, $text);
+  const annotations = findWordAnnotations(annoPage);
+  const textHulls = annotations.map(({text, points}) => {
+    return {text, hull: createHull(points)};
+  })
 
-  const rect = calcWordsRect(words, $text);
-  if (config.showScanMargin) {
+  const rect = calcWordsRect(textHulls);
+  console.log({rect, textRect: $text.getBoundingClientRect().toJSON()})
+
+  // If view has no height, calculate scale on width only:
+  const scale = showScanMargin
+    ? viewWidth / scanWidth
+    : viewWidth / rect.width;
+
+  if (showScanMargin) {
     $view.style.height = px(scale * scanHeight)
     $view.style.width = px(scale * scanWidth)
   } else {
-    $view.style.height = px(rect.height)
-    $view.style.width = px(rect.width)
-    $text.style.marginTop = px(-rect.top);
-    $text.style.marginLeft = px(-rect.left);
+    $view.style.height = px(scale * rect.height)
+    $view.style.width = px(scale * rect.width)
+    $text.style.marginTop = px(scale * -rect.top);
+    $text.style.marginLeft = px(scale * -rect.left);
   }
-  if (config.showBoundaries) {
-    const $boundaries = select($view)
-      .append('svg')
+  const $boundaries = select($view)
+    .append('svg')
+
+  if (showBoundaries) {
     const {width, height} = $view.getBoundingClientRect();
 
-    if (config.showScanMargin) {
+    if (showScanMargin) {
       $boundaries
         .attr('class', 'boundaries')
         .attr('width', width)
         .attr('height', height);
     } else {
       $boundaries
-        .style('margin-top', px(-rect.top))
-        .style('margin-left', px(-rect.left));
+        .style('margin-top', px(scale * -rect.top))
+        .style('margin-left', px(scale * -rect.left));
       $boundaries
         .attr('class', 'boundaries')
-        .attr('width', width + rect.left)
-        .attr('height', height + rect.top);
+        .attr('width', width + scale * rect.left)
+        .attr('height', height + scale * rect.top);
     }
-
-    words.forEach((word) => renderWordBoundaries(word, $boundaries, scale));
   }
+
+  const resizer = new TextResizer();
+
+  const words = textHulls.map(({text, hull}) => {
+    return renderWord(text, hull, $text, scale);
+  })
+
+  resizer.calibrate(words.slice(0, 10).map(w => w.el));
+  words.forEach((w) => {
+    resizer.resize(w.el);
+    if(showBoundaries) {
+      renderWordBoundaries(w, $boundaries, scale);
+    }
+  });
 }
