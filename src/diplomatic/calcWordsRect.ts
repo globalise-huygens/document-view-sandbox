@@ -7,7 +7,7 @@ export type Rect = {
   height: number;
 };
 
-export function calcScanlessRect(
+export function calcWordsRect(
   words: Word[],
   $text: HTMLElement
 ): Rect {

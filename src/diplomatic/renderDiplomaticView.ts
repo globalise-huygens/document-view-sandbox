@@ -6,7 +6,7 @@ import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {px} from './px';
-import {calcScanlessRect} from './calcScanlessRect';
+import {calcWordsRect} from './calcWordsRect';
 import {D3Svg} from "./index";
 
 export function renderDiplomaticView(
@@ -40,7 +40,7 @@ export function renderDiplomaticView(
       $view.style.height = px(scale * scanHeight)
       $view.style.width = px(scale * scanWidth)
     } else {
-      const rect = calcScanlessRect(words, $text);
+      const rect = calcWordsRect(words, $text);
       $view.style.height = px(rect.height)
       $view.style.width = px(rect.width)
       $text.style.marginTop = px(-rect.top);
