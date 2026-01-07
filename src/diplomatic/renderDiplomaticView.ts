@@ -9,10 +9,12 @@ import {findWordPositions} from "./anno/findWordPositions";
 import {renderWord} from "./renderWord";
 import {createHull} from "./createHull";
 import {TextResizer} from "./TextResizer";
+import {scalePath} from "./scalePath";
+import {findSvgPath} from "./anno/findSvgPath";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
-  annoPage: AnnotationPage,
+  page: AnnotationPage,
   config: DiplomaticViewConfig,
 ) {
   const {showBoundaries, showScanMargin} = config
@@ -20,13 +22,13 @@ export function renderDiplomaticView(
 
   const {width: viewWidth, height: viewHeight} = $view.getBoundingClientRect();
 
-  const {width: scanWidth, height: scanHeight} = annoPage.partOf;
+  const {width: scanWidth, height: scanHeight} = page.partOf;
 
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
 
-  const annotations = findWordPositions(annoPage);
+  const annotations = findWordPositions(page);
   const wordHulls = annotations.map(({text, path}) => {
     return {text, hull: createHull(path)};
   })
@@ -86,4 +88,27 @@ export function renderDiplomaticView(
       renderWordBoundaries(w, $boundaries, scale);
     }
   });
+
+  const linePaths = page.items
+    .filter(a => a.textGranularity === 'line')
+    .map(findSvgPath)
+  linePaths.forEach(p => {
+    const path = scalePath(p, scale)
+    $boundaries
+      .append("polygon")
+      .attr("points", path)
+      .attr("fill", "rgba(255,0,0,0.05)")
+      .attr("stroke", "rgba(255,0,0,0.5)");
+  })
+  const blockPaths = page.items
+    .filter(a => a.textGranularity === 'block')
+    .map(findSvgPath)
+  blockPaths.forEach(p => {
+    const path = scalePath(p, scale)
+    $boundaries
+      .append("polygon")
+      .attr("points", path)
+      .attr("fill", "rgba(0,255,0,0.05)")
+      .attr("stroke", "rgba(0,255,0,0.5)");
+  })
 }

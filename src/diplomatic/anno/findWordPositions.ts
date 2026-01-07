@@ -1,17 +1,15 @@
 import type {AnnotationPage} from '../AnnoModel';
 import {assertTextualBody} from './assertTextualBody';
-import {assertSpecificResourceTarget} from './assertSpecificResourceTarget';
-import {assertSvgSelector} from './assertSvgSelector';
-import {parseSvgPath} from './parseSvgPath';
 import {isEmpty} from 'lodash';
 import {isWord} from "./isWord";
+import {findSvgPath} from "./findSvgPath";
 
-export type TextPath = { text: string; path: string };
+export type WordPath = { text: string; path: string };
 
 export function findWordPositions(
   annoPage: AnnotationPage,
-): TextPath[] {
-  const words: TextPath[] = [];
+): WordPath[] {
+  const words: WordPath[] = [];
   if (!annoPage.items) {
     return words;
   }
@@ -27,16 +25,7 @@ export function findWordPositions(
       : annotation.body;
     assertTextualBody(body);
     const text = body.value;
-    if (!annotation.target || isEmpty(annotation.target)) {
-      throw new Error('Annotation missing target');
-    }
-    const target = Array.isArray(annotation.target)
-      ? annotation.target[0]
-      : annotation.target;
-    assertSpecificResourceTarget(target);
-    const selector = target.selector;
-    assertSvgSelector(selector);
-    const path = parseSvgPath(selector.value);
+    const path = findSvgPath(annotation);
     words.push({ text, path });
   }
   return words;
