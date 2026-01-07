@@ -1,4 +1,4 @@
-import {IiifAnnotationPage} from "../AnnoModel";
+import {AnnotationPage} from "../AnnoModel";
 import {px} from "../px";
 import {renderScan} from "./renderScan";
 import {renderDiplomaticView} from "../renderDiplomaticView";
@@ -35,7 +35,7 @@ export async function renderScanExample($parent: HTMLElement) {
   $slider.addEventListener('input', adjustOpacity);
 
   const annoResponse = await fetch(jsonPath);
-  const annoPage: IiifAnnotationPage = await annoResponse.json();
+  const annoPage: AnnotationPage = await annoResponse.json();
   const {width: parentWidth} = $parent.getBoundingClientRect();
   const {width, height} = annoPage.partOf;
 

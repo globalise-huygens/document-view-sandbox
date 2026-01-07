@@ -1,18 +1,18 @@
 import {select} from 'd3-selection';
-import {IiifAnnotationPage} from './AnnoModel';
+import {AnnotationPage} from './AnnoModel';
 import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {px} from './px';
 import {calcTextRect} from './calcTextRect';
-import {findWordAnnotations} from "./anno/findWordAnnotations";
+import {findWordPositions} from "./anno/findWordPositions";
 import {renderWord} from "./renderWord";
 import {createHull} from "./createHull";
 import {TextResizer} from "./TextResizer";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
-  annoPage: IiifAnnotationPage,
+  annoPage: AnnotationPage,
   config: DiplomaticViewConfig,
 ) {
   const {showBoundaries, showScanMargin} = config
@@ -26,12 +26,12 @@ export function renderDiplomaticView(
   $text.classList.add('text');
   $view.appendChild($text);
 
-  const annotations = findWordAnnotations(annoPage);
-  const textHulls = annotations.map(({text, points}) => {
-    return {text, hull: createHull(points)};
+  const annotations = findWordPositions(annoPage);
+  const wordHulls = annotations.map(({text, path}) => {
+    return {text, hull: createHull(path)};
   })
 
-  const marginlessRect = calcTextRect(textHulls);
+  const marginlessRect = calcTextRect(wordHulls);
 
   /**
    * Add some padding to show characters at the edges
@@ -75,7 +75,7 @@ export function renderDiplomaticView(
 
   const resizer = new TextResizer();
 
-  const words = textHulls.map(({text, hull}) => {
+  const words = wordHulls.map(({text, hull}) => {
     return renderWord(text, hull, $text, scale);
   })
 

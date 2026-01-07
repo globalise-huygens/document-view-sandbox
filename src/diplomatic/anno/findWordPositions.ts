@@ -1,21 +1,22 @@
-import type { IiifAnnotationPage } from '../AnnoModel';
-import { assertTextualBody } from './assertTextualBody';
-import { assertSpecificResourceTarget } from './assertSpecificResourceTarget';
-import { assertSvgSelector } from './assertSvgSelector';
-import { parseSvgPath } from './parseSvgPath';
-import { isEmpty } from 'lodash';
+import type {AnnotationPage} from '../AnnoModel';
+import {assertTextualBody} from './assertTextualBody';
+import {assertSpecificResourceTarget} from './assertSpecificResourceTarget';
+import {assertSvgSelector} from './assertSvgSelector';
+import {parseSvgPath} from './parseSvgPath';
+import {isEmpty} from 'lodash';
+import {isWord} from "./isWord";
 
-export type WordAnnotation = { text: string; points: string };
+export type TextPath = { text: string; path: string };
 
-export function findWordAnnotations(
-  annoPage: IiifAnnotationPage,
-): WordAnnotation[] {
-  const words: WordAnnotation[] = [];
+export function findWordPositions(
+  annoPage: AnnotationPage,
+): TextPath[] {
+  const words: TextPath[] = [];
   if (!annoPage.items) {
     return words;
   }
   for (const annotation of annoPage.items) {
-    if (annotation.textGranularity !== 'word') {
+    if (!isWord(annotation)) {
       continue;
     }
     if (!annotation.body || isEmpty(annotation.body)) {
@@ -35,8 +36,8 @@ export function findWordAnnotations(
     assertSpecificResourceTarget(target);
     const selector = target.selector;
     assertSvgSelector(selector);
-    const points = parseSvgPath(selector.value);
-    words.push({ text, points });
+    const path = parseSvgPath(selector.value);
+    words.push({ text, path });
   }
   return words;
 }

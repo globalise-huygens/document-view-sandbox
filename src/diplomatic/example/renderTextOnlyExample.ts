@@ -1,4 +1,4 @@
-import {IiifAnnotationPage} from "../AnnoModel";
+import {AnnotationPage} from "../AnnoModel";
 import {px} from "../px";
 import {renderDiplomaticView} from "../renderDiplomaticView";
 import {$} from "./$";
@@ -27,7 +27,7 @@ export async function renderTextOnlyExample(
   const $input: HTMLInputElement = $('input', $slider)
 
   const annoResponse = await fetch(jsonPath);
-  const annoPage: IiifAnnotationPage = await annoResponse.json();
+  const annoPage: AnnotationPage = await annoResponse.json();
 
   const {width: parentWidth} = $parent.getBoundingClientRect();
   const {width} = annoPage.partOf;
