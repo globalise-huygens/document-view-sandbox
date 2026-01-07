@@ -1,4 +1,4 @@
-import { px } from './px';
+import { px } from '../px';
 
 type ImgAttributes = {
   scanPath: string;

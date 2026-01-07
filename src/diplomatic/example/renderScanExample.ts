@@ -1,6 +1,6 @@
 import {IiifAnnotationPage} from "../AnnoModel";
 import {px} from "../px";
-import {renderScan} from "../renderScan";
+import {renderScan} from "./renderScan";
 import {renderDiplomaticView} from "../renderDiplomaticView";
 import { $ } from "./$";
 
