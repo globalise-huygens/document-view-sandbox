@@ -18,6 +18,8 @@ import {Id} from "./Id";
 import {assertTextualBody} from "./anno/assertTextualBody";
 import {calcTextAngle} from "./calcTextAngle";
 import {calcBaseSegment} from "./calcBaseSegment";
+import {createPath} from "./createPath";
+import {Rect} from "./Rect";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
@@ -142,22 +144,22 @@ export function renderDiplomaticView(
     }
 
     // TODO: pick most left word in line, use that bbox
-    // const leftmost = words.reduce<Rect | null>((prev, curr) => {
-    //   const bbox = calcBoundingBox(createPoints(findSvgPath(curr)))
-    //   if(!prev) {
-    //     return bbox;
-    //   }
-    //   if(prev.left < bbox.left) {
-    //     return prev
-    //   }
-    //   return bbox
-    // }, null) ?? orThrow('No leftmost word found')
-
-    const bbox = calcBoundingBox(scaled)
+    const bbox: Rect = words.reduce<Rect | null>((prev, curr) => {
+      const bbox = calcBoundingBox(createPoints(findSvgPath(curr)).map(scalePoint))
+      if(!prev) {
+        return bbox;
+      }
+      if(prev.left < bbox.left) {
+        return prev
+      }
+      return bbox
+    }, null) ?? orThrow('No leftmost word found')
+    // TODO: left position should be determined by the block words bb
     Object.assign($lineNumber.style, {
       left: px(bbox.left),
       top: px(bbox.top + bbox.height / 2),
       marginLeft: px(-scale(120)),
+      marginTop: px(-scale(40)),
       fontSize: px(scale(80))
     })
 
