@@ -4,8 +4,9 @@ import {isSpecificResourceTarget} from "./isSpecificResourceTarget";
 import {assertSpecificResourceTarget} from "./assertSpecificResourceTarget";
 import {assertSvgSelector} from "./assertSvgSelector";
 import {parseSvgPath} from "./parseSvgPath";
+export type SvgPath = string;
 
-export function findSvgPath(annotation: Annotation) {
+export function findSvgPath(annotation: Annotation): SvgPath {
   if (!annotation.target || isEmpty(annotation.target)) {
     throw new Error('Annotation missing target');
   }

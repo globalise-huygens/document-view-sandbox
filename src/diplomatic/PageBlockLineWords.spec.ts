@@ -6,6 +6,7 @@ import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
 import {isLine} from "./anno/isLine";
 import {isBlock} from "./anno/isBlock";
 import {isPage} from "./anno/isPage";
+import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
 
 describe('AnnotationPage', () => {
 
@@ -37,11 +38,11 @@ describe('AnnotationPage', () => {
     assert(page.items)
     const lines = page.items.filter(isLine)
     expect(lines.length).toBe(30)
-    const annoResourceTargets = lines.map(w => {
-      assert(w.target)
-      assert(Array.isArray(w.target))
-      return w.target.find(isAnnotationResourceTarget);
-    }).filter(target => !!target)
+    const annoResourceTargets = lines
+      .map(findAnnotationResourceTarget)
+      .filter(target => !!target)
+
+
     expect(annoResourceTargets.length).toBe(30)
     const foundAnnotations: Annotation[] = annoResourceTargets.map(target => {
       assert(target)

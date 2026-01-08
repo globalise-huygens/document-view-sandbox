@@ -1,9 +1,32 @@
 import { Point } from './Point';
+import {Rect} from "./calcTextRect";
+
+export function calcBoundingCorners(points: Point[]): Point[] {
+  const {xMin, yMin, xMax, yMax} = calcMinMax(points);
+
+  return [
+    [xMin, yMin],
+    [xMax, yMin],
+    [xMax, yMax],
+    [xMin, yMax],
+  ];
+}
 
 /**
  * find the x and y bounds from a set of points
  */
-export const calcBoundingBox = (points: Point[]) => {
+export const calcBoundingBox = (points: Point[]): Rect => {
+  const {xMin, yMin, xMax, yMax} = calcMinMax(points);
+
+  return {
+    top: yMin,
+    left: xMin,
+    width: xMax - xMin,
+    height: yMax - yMin,
+  };
+};
+
+function calcMinMax(points: Point[]) {
   let xMin = points[0][0];
   let yMin = points[0][1];
   let xMax = points[0][0];
@@ -17,11 +40,5 @@ export const calcBoundingBox = (points: Point[]) => {
     yMin = Math.min(yMin, y);
     yMax = Math.max(yMax, y);
   }
-
-  return {
-    x: xMin,
-    y: yMin,
-    width: xMax - xMin,
-    height: yMax - yMin,
-  };
-};
+  return {xMin, yMin, xMax, yMax};
+}

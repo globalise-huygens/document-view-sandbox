@@ -5,12 +5,19 @@ import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {px} from './px';
 import {calcTextRect} from './calcTextRect';
-import {findWordPositions} from "./anno/findWordPositions";
 import {renderWord} from "./renderWord";
 import {createHull} from "./createHull";
 import {TextResizer} from "./TextResizer";
-import {scalePath} from "./scalePath";
 import {findSvgPath} from "./anno/findSvgPath";
+import {Point} from "./Point";
+import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
+import {orThrow} from "../util/orThrow";
+import {createPoints} from "./createPoints";
+import {calcBoundingCorners} from "./calcBoundingBox";
+import {Id} from "./Id";
+import {assertTextualBody} from "./anno/assertTextualBody";
+import {calcTextAngle} from "./calcTextAngle";
+import {calcBaseSegment} from "./calcBaseSegment";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
@@ -20,6 +27,7 @@ export function renderDiplomaticView(
   const {showBoundaries, showScanMargin} = config
   $view.innerHTML = '';
 
+  // TODO: Make aware of height when provided:
   const {width: viewWidth, height: viewHeight} = $view.getBoundingClientRect();
 
   const {width: scanWidth, height: scanHeight} = page.partOf;
@@ -27,13 +35,19 @@ export function renderDiplomaticView(
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
-
-  const annotations = findWordPositions(page);
-  const wordHulls = annotations.map(({text, path}) => {
-    return {text, hull: createHull(path)};
+  const wordAnnos = page.items
+    .filter(a => a.textGranularity === 'word');
+  const words = wordAnnos.map(w => {
+    const body = Array.isArray(w.body) ? w.body[0] : w.body;
+    assertTextualBody(body);
+    const id = w.id;
+    const text = body.value;
+    const hull: Point[] = createHull(findSvgPath(w));
+    const base = calcBaseSegment(hull);
+    const angle = calcTextAngle(base);
+    return {id, text, hull, base, angle}
   })
-
-  const marginlessRect = calcTextRect(wordHulls);
+  const marginlessRect = calcTextRect(words)
 
   /**
    * Add some padding to show characters at the edges
@@ -42,18 +56,20 @@ export function renderDiplomaticView(
    */
   const overflowPadding = Math.round(marginlessRect.width * 0.02)
 
-  const scale = showScanMargin
+  const factor = showScanMargin
     ? viewWidth / scanWidth
     : viewWidth / marginlessRect.width;
+  const scale = (toScale: number) => toScale * factor
+  const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
 
   if (showScanMargin) {
-    $view.style.height = px(scale * scanHeight)
-    $view.style.width = px(scale * scanWidth)
+    $view.style.height = px(scale(scanHeight))
+    $view.style.width = px(scale(scanWidth))
   } else {
-    $view.style.height = px(scale * (marginlessRect.height + overflowPadding * 2))
-    $view.style.width = px(scale * marginlessRect.width)
-    $text.style.marginTop = px(scale * (-marginlessRect.top + overflowPadding));
-    $text.style.marginLeft = px(scale * -marginlessRect.left);
+    $view.style.height = px(scale(marginlessRect.height + overflowPadding * 2))
+    $view.style.width = px(scale(marginlessRect.width))
+    $text.style.marginTop = px(scale(-marginlessRect.top + overflowPadding));
+    $text.style.marginLeft = px(scale(-marginlessRect.left));
   }
   const $boundaries = select($view)
     .append('svg')
@@ -68,47 +84,80 @@ export function renderDiplomaticView(
         .attr('height', height);
     } else {
       $boundaries
-        .style('margin-top', px(scale * (-marginlessRect.top + overflowPadding)))
-        .style('margin-left', px(scale * -marginlessRect.left))
-        .attr('width', width + scale * marginlessRect.left)
-        .attr('height', height + scale * (marginlessRect.top - overflowPadding));
+        .style('margin-top', px(scale(-marginlessRect.top + overflowPadding)))
+        .style('margin-left', px(scale(-marginlessRect.left)))
+        .attr('width', width + scale(marginlessRect.left))
+        .attr('height', height + scale(marginlessRect.top - overflowPadding));
     }
   }
 
   const resizer = new TextResizer();
-
-  const words = wordHulls.map(({text, hull}) => {
-    return renderWord(text, hull, $text, scale);
-  })
-
-  resizer.calibrate(words.slice(0, 10).map(w => w.el));
-  words.forEach((w) => {
-    resizer.resize(w.el);
+  const $words = words.map(w =>
+    renderWord(w.text, w.hull.map(scalePoint), scale(w.angle), $text)
+  )
+  resizer.calibrate($words.slice(0, 10).map(w => w));
+  words.forEach((w, i) => {
+    const $w = $words[i];
+    resizer.resize($w);
     if (showBoundaries) {
-      renderWordBoundaries(w, $boundaries, scale);
+      const scaledHulls = w.hull.map(scalePoint);
+      const scaledBases = w.base.map(scalePoint);
+      renderWordBoundaries($w, scaledHulls, scaledBases, $boundaries);
     }
   });
 
-  const linePaths = page.items
-    .filter(a => a.textGranularity === 'line')
+  const lineAnnos = page.items
+    .filter(a => a.textGranularity === 'line');
+  const blockAnnos = page.items
+    .filter(a => a.textGranularity === 'block');
+  const linePaths = lineAnnos
     .map(findSvgPath)
+  const scalePath = (path: string) => createPoints(path)
+    .map(scalePoint)
+    .map(p => `${p[0]},${p[1]}`).join(' ');
+
   linePaths.forEach(p => {
-    const path = scalePath(p, scale)
     $boundaries
       .append("polygon")
-      .attr("points", path)
+      .attr("points", scalePath(p))
       .attr("fill", "rgba(255,0,0,0.05)")
       .attr("stroke", "rgba(255,0,0,0.5)");
   })
-  const blockPaths = page.items
-    .filter(a => a.textGranularity === 'block')
+  const blockPaths = blockAnnos
     .map(findSvgPath)
   blockPaths.forEach(p => {
-    const path = scalePath(p, scale)
     $boundaries
       .append("polygon")
-      .attr("points", path)
+      .attr("points", scalePath(p))
       .attr("fill", "rgba(0,255,0,0.05)")
       .attr("stroke", "rgba(0,255,0,0.5)");
   })
+
+  const blockBoundaries: Map<Id, Point[]> = new Map()
+  const lineToBlock: Map<Id, Id> = new Map()
+  for (const line of lineAnnos) {
+    const block = findAnnotationResourceTarget(line)
+      ?? orThrow('No annotation resource target')
+    lineToBlock.set(line.id, block.id)
+  }
+  for (const wordAnno of wordAnnos) {
+    const line = findAnnotationResourceTarget(wordAnno)
+      ?? orThrow('No annotation resource target')
+    const blockId = lineToBlock.get(line.id)
+      ?? orThrow(`No block for line ${line.id}`);
+    if (!blockBoundaries.has(blockId)) {
+      blockBoundaries.set(blockId, [])
+    }
+    const wordPoints = createPoints(findSvgPath(wordAnno));
+    blockBoundaries.get(blockId)!.push(...wordPoints)
+  }
+  [...blockBoundaries.values()]
+    .map(p => calcBoundingCorners(p.map(scalePoint)))
+    .forEach(p => {
+      $boundaries
+        .append("polygon")
+        .attr("points", p.map(p => `${p[0]},${p[1]}`).join(' '))
+        .attr("fill", "rgba(255,0,255,0.05)")
+        .attr("stroke", "rgba(255,0,255,1)");
+    })
 }
