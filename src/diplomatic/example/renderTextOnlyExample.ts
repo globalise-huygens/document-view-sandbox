@@ -22,7 +22,7 @@ export async function renderTextOnlyExample(
   $slider.classList.add('slider')
   $slider.innerHTML = `
     zoom: min 
-    <input type="range" value="100" min="50" max="200"/> 
+    <input type="range" value="50" min="30" max="200"/> 
     max`
   const $input: HTMLInputElement = $('input', $slider)
 
@@ -38,7 +38,7 @@ export async function renderTextOnlyExample(
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
 
-    const viewConfig = {showBoundaries: true, showScanMargin: false};
+    const viewConfig = {showBoundaries: false, showScanMargin: false};
     renderDiplomaticView($view, annoPage, viewConfig);
   }
 

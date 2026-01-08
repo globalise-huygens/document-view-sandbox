@@ -1,5 +1,5 @@
 import { Point } from './Point';
-import {Rect} from "./calcTextRect";
+import {Rect} from "./Rect";
 
 export function calcBoundingPoints(points: Point[]): Point[] {
   const {xMin, yMin, xMax, yMax} = calcMinMax(points);

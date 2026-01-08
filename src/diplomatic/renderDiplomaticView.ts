@@ -1,5 +1,5 @@
 import {select} from 'd3-selection';
-import {AnnotationPage} from './AnnoModel';
+import {Annotation, AnnotationPage} from './AnnoModel';
 import {DiplomaticViewConfig} from './DiplomaticViewConfig';
 
 import {renderWordBoundaries} from './renderWordBoundaries';
@@ -13,7 +13,7 @@ import {Point} from "./Point";
 import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
 import {orThrow} from "../util/orThrow";
 import {createPoints} from "./createPoints";
-import {calcBoundingPoints} from "./calcBoundingBox";
+import {calcBoundingBox} from "./calcBoundingBox";
 import {Id} from "./Id";
 import {assertTextualBody} from "./anno/assertTextualBody";
 import {calcTextAngle} from "./calcTextAngle";
@@ -54,7 +54,7 @@ export function renderDiplomaticView(
    * Characters can overflow vertically as words are fit into their
    * bounding boxes using width only.
    */
-  const overflowPadding = Math.round(marginlessRect.width * 0.02)
+  const overflowPadding = Math.round(marginlessRect.width * 0.05)
 
   const factor = showScanMargin
     ? viewWidth / scanWidth
@@ -70,28 +70,26 @@ export function renderDiplomaticView(
     $view.style.width = px(scale(scanWidth))
   } else {
     $view.style.height = px(scale(marginlessRect.height + overflowPadding * 2))
-    $view.style.width = px(scale(marginlessRect.width))
+    $view.style.width = px(scale(marginlessRect.width + overflowPadding * 2))
     $text.style.marginTop = px(scale(-marginlessRect.top + overflowPadding));
-    $text.style.marginLeft = px(scale(-marginlessRect.left));
+    $text.style.marginLeft = px(scale(-marginlessRect.left + overflowPadding));
   }
   const $boundaries = select($view)
     .append('svg')
     .attr('class', 'boundaries')
 
-  if (showBoundaries) {
-    const {width, height} = $view.getBoundingClientRect();
+  const {width, height} = $view.getBoundingClientRect();
 
-    if (showScanMargin) {
-      $boundaries
-        .attr('width', width)
-        .attr('height', height);
-    } else {
-      $boundaries
-        .style('margin-top', px(scale(-marginlessRect.top + overflowPadding)))
-        .style('margin-left', px(scale(-marginlessRect.left)))
-        .attr('width', width + scale(marginlessRect.left))
-        .attr('height', height + scale(marginlessRect.top - overflowPadding));
-    }
+  if (showScanMargin) {
+    $boundaries
+      .attr('width', width)
+      .attr('height', height);
+  } else {
+    $boundaries
+      .style('margin-top', px(scale(-marginlessRect.top + overflowPadding)))
+      .style('margin-left', px(scale(-marginlessRect.left + overflowPadding)))
+      .attr('width', width + scale(marginlessRect.left - overflowPadding))
+      .attr('height', height + scale(marginlessRect.top - overflowPadding));
   }
 
   const resizer = new TextResizer();
@@ -113,14 +111,56 @@ export function renderDiplomaticView(
     .filter(a => a.textGranularity === 'line');
   const blockAnnos = page.items
     .filter(a => a.textGranularity === 'block');
-  const linePaths = lineAnnos
-    .map(findSvgPath)
-  linePaths.forEach(p => {
-    $boundaries
-      .append("polygon")
-      .attr("points", scalePath(p))
-      .attr("fill", "rgba(255,0,0,0.05)")
-      .attr("stroke", "rgba(255,0,0,0.5)");
+  const wordAnnosByLine: Map<Id, Annotation[]> = new Map()
+  for (const wordAnno of wordAnnos) {
+    const target = findAnnotationResourceTarget(wordAnno)
+      ?? orThrow(`No line found for word ${wordAnno.id}`)
+    if (!wordAnnosByLine.has(target.id)) {
+      wordAnnosByLine.set(target.id, [])
+    }
+    wordAnnosByLine.get(target.id)!.push(wordAnno)
+  }
+  lineAnnos.forEach((a, i) => {
+    const path = findSvgPath(a)
+    const points = createPoints(path)
+    const scaled = points.map(scalePoint)
+    // $boundaries
+    //   .append("polygon")
+    //   .attr("points", createPath(scaled))
+    //   .attr("fill", "rgba(255,0,0,0.05)")
+    //   .attr("stroke", "rgba(255,0,0,0.5)");
+
+    const $lineNumber = document.createElement('span')
+    $text.appendChild($lineNumber)
+    $lineNumber.classList.add('line-number')
+    $lineNumber.textContent = `${i + 1}`.padStart(2, '0')
+
+    const words = wordAnnosByLine.get(a.id)
+    if (!words) {
+      console.warn('Line without words')
+      return;
+    }
+
+    // TODO: pick most left word in line, use that bbox
+    // const leftmost = words.reduce<Rect | null>((prev, curr) => {
+    //   const bbox = calcBoundingBox(createPoints(findSvgPath(curr)))
+    //   if(!prev) {
+    //     return bbox;
+    //   }
+    //   if(prev.left < bbox.left) {
+    //     return prev
+    //   }
+    //   return bbox
+    // }, null) ?? orThrow('No leftmost word found')
+
+    const bbox = calcBoundingBox(scaled)
+    Object.assign($lineNumber.style, {
+      left: px(bbox.left),
+      top: px(bbox.top + bbox.height / 2),
+      marginLeft: px(-scale(120)),
+      fontSize: px(scale(80))
+    })
+
   })
   const blockPaths = blockAnnos
     .map(findSvgPath)
@@ -150,13 +190,13 @@ export function renderDiplomaticView(
     const wordPoints = createPoints(findSvgPath(wordAnno));
     blockBoundaries.get(blockId)!.push(...wordPoints)
   }
-  [...blockBoundaries.values()]
-    .map(p => calcBoundingPoints(p).map(scalePoint))
-    .forEach(p => {
-      $boundaries
-        .append("polygon")
-        .attr("points", p.map(p => `${p[0]},${p[1]}`).join(' '))
-        .attr("fill", "rgba(255,0,255,0.05)")
-        .attr("stroke", "rgba(255,0,255,1)");
-    })
+  // [...blockBoundaries.values()]
+  //   .map(p => calcBoundingPoints(p).map(scalePoint))
+  //   .forEach(p => {
+  //     $boundaries
+  //       .append("polygon")
+  //       .attr("points", createPath(p))
+  //       .attr("fill", "rgba(255,0,255,0.05)")
+  //       .attr("stroke", "rgba(255,0,255,1)");
+  //   })
 }

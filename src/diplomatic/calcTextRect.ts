@@ -1,11 +1,5 @@
 import {Point} from "./Point";
-
-export type Rect = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
+import {Rect} from "./Rect";
 
 /**
  * Bounding rectangle that fits all text
