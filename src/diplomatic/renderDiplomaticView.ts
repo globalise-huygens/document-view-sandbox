@@ -13,7 +13,7 @@ import {Point} from "./Point";
 import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
 import {orThrow} from "../util/orThrow";
 import {createPoints} from "./createPoints";
-import {calcBoundingCorners} from "./calcBoundingBox";
+import {calcBoundingPoints} from "./calcBoundingBox";
 import {Id} from "./Id";
 import {assertTextualBody} from "./anno/assertTextualBody";
 import {calcTextAngle} from "./calcTextAngle";
@@ -61,6 +61,9 @@ export function renderDiplomaticView(
     : viewWidth / marginlessRect.width;
   const scale = (toScale: number) => toScale * factor
   const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
+  const scalePath = (path: string) => createPoints(path)
+    .map(scalePoint)
+    .map(p => `${p[0]},${p[1]}`).join(' ');
 
   if (showScanMargin) {
     $view.style.height = px(scale(scanHeight))
@@ -112,10 +115,6 @@ export function renderDiplomaticView(
     .filter(a => a.textGranularity === 'block');
   const linePaths = lineAnnos
     .map(findSvgPath)
-  const scalePath = (path: string) => createPoints(path)
-    .map(scalePoint)
-    .map(p => `${p[0]},${p[1]}`).join(' ');
-
   linePaths.forEach(p => {
     $boundaries
       .append("polygon")
@@ -152,7 +151,7 @@ export function renderDiplomaticView(
     blockBoundaries.get(blockId)!.push(...wordPoints)
   }
   [...blockBoundaries.values()]
-    .map(p => calcBoundingCorners(p.map(scalePoint)))
+    .map(p => calcBoundingPoints(p).map(scalePoint))
     .forEach(p => {
       $boundaries
         .append("polygon")

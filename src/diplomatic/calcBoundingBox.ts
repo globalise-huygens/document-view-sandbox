@@ -1,7 +1,7 @@
 import { Point } from './Point';
 import {Rect} from "./calcTextRect";
 
-export function calcBoundingCorners(points: Point[]): Point[] {
+export function calcBoundingPoints(points: Point[]): Point[] {
   const {xMin, yMin, xMax, yMax} = calcMinMax(points);
 
   return [
