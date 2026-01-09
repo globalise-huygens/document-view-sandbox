@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0453.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0453.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:58:41.427962",
+      "begin_of_the_end": "2026-01-09T11:58:41.427962"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2128,7 +2156,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3017,7 +3045,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5726,7 +5754,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5785,7 +5813,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -5793,19 +5821,21 @@
           "type": "TextualBody",
           "value": "Verklaaring van den Bataviasch, tans hier presenten Chinees Ong= Sianko, ter requisitie van de Expresse gecommitteerde Heeren Leeden uit den Agtbaaren Raad van Politie dezes Gouvernements den Koopman en Fistraal M„r Jan Willem Hen= „drik van Rossum en Sabandaar Iacobus Leonardus de Vos, blijkens Extract Resolutie uit welmelden Raade op Vrijdag den 15=e Juni A„o 1781 tot den Onderkoek gequali= „ficeerd regd. Dat hij aan den pagter der in- en uitgaande Regten Intje Sadulla afgevraagt hadde of hij 10 â 12½ p„r C=o van de aangebragte werdende Iavaanse Tobak mag neemen. Dat den pagter daar op ten andwoord gegeven hadde Ia: dat mag ik doen volgens de pagt Conditien. Dat hij dan ook volgens zijn Eijsch voldaan hadde. Dat hij nimmer gepresenteerd hadde, om ze voorde, door den Pagter getaxeerde prijs, over te geeven. Dat hij ook nooit eenige quitantie van betaalde tot van den Pagter g'eischt hadde Dat hij niet gezegt heeft, dat bij aldien voorm: Sadulla in zijne knevelarijen in de pagt niet gestuit wierde, dat hij daar door zoude geruineert werden. zegd nog op expresse afvrage van de Heeren Ge= "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0453#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "ƒ\nVerklaaring van den Bataviasch,\ntans hier presenten Chinees Ong=\nSianko, ter requisitie van de Expresse\ngecommitteerde Heeren Leeden uit\nden Agtbaaren Raad van Politie\ndezes Gouvernements den Koopman\nen Fistraal M„r Jan Willem Hen=\n„drik van Rossum en Sabandaar\nIacobus Leonardus de Vos, blijkens\nExtract Resolutie uit welmelden\nRaade op Vrijdag den 15=e Juni\nA„o 1781 tot den Onderkoek gequali=\n„ficeerd regd.\nDat hij aan den pagter der in- en uitgaande Regten\nIntje Sadulla afgevraagt hadde of hij 10 â 12½ p„r C=o\nvan de aangebragte werdende Iavaanse Tobak mag\nneemen.\nDat den pagter daar op ten andwoord gegeven\nhadde Ia: dat mag ik doen volgens de pagt Conditien.\nDat hij dan ook volgens zijn Eijsch voldaan hadde.\nDat hij nimmer gepresenteerd hadde, om ze voorde,\ndoor den Pagter getaxeerde prijs, over te geeven.\nDat hij ook nooit eenige quitantie van betaalde\ntot van den Pagter g'eischt hadde\nDat hij niet gezegt heeft, dat bij aldien voorm:\nSadulla in zijne knevelarijen in de pagt niet gestuit\nwierde, dat hij daar door zoude geruineert werden.\nzegd nog op expresse afvrage van de Heeren Ge=\n„committeerdens,"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

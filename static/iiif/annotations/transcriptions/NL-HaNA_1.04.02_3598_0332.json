@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0332.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0332.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:57:18.804125",
+      "begin_of_the_end": "2026-01-09T11:57:18.804125"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1655,7 +1683,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3844,7 +3872,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3953,7 +3981,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7364,7 +7392,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7423,7 +7451,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -7431,19 +7459,21 @@
           "type": "TextualBody",
           "value": "lasten gelegde gruwelijke feijt niet te kunnen overtuijgen, sij egter op desselfs versoek gelijk voorzegt naar saleijer gebannen is, eensdeels ter voorkoming van onheijl tusschen haer en haere verbitterde familie te wagten, en anderendeels om haer in Cas er nadere bewijsen ten haeren lasten mogten opkomen van daer weeder herwaards te kunnen ontbieden Dan vermits nu in ruim neegen jaaren van het voorsz feijt niets het minste ten haaren lasten is ingekomen, en de suppliante haar inteegendeel het getuijgenis geven moet van zig geduurende dien tyd wel gedragen te hebben, derhalven verstout zig de suppliante op het instantig versoek va meergemelde gerelegeerde Moemoe bij uwel Edele Achtbaare, haare relagatie ookmoedig te besolliciteeren /onderstond/ 'T welk Doende /in margine/ Maccasser int Casteel Rotterdam den 30:e December A. o 1780. No: 108 Den Boekhouder en geswooren Clerk van potitie Bastiaan steijns, g'assisteert met twee getuijgen vervoege zig uijt name en van weegen den ondergeteekende secretaris van politie George Bremer en Equipagiemeester Dirk Rinse als gebleevene Executeuren testamentair in den boedel van wijlen den koopman titulair en siabandhaar alhier Heer Jan Hendrik Voll, ten woonhuijse en bij Mejuffroúw Jacoba van den Anker, weduwe, Erfgename en boedelholdster van welmelde Heer Voll, ten eijnde haar uyt naam als boven insinuando mode aftevragen of sij geneegen is de Nalatenschap van gemelde haer overleeden Egtgenoot of eijgentlijk de boedel papieren nevens de sleutels van de geldkist en eenige Contanten uijt handen van de ondergeteekende overteneemen en hen bij een behoorlijke Acte te indemneeren "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0332#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "81\nlasten gelegde gruwelijke feijt niet te kunnen overtuijgen, sij egter op\ndesselfs versoek gelijk voorzegt naar saleijer gebannen is, eensdeels ter\nvoorkoming van onheijl tusschen haer en haere verbitterde familie\nte wagten, en anderendeels om haer in Cas er nadere bewijsen ten haeren\nlasten mogten opkomen van daer weeder herwaards te kunnen ontbieden\nDan vermits nu in ruim neegen jaaren van het voorsz feijt niets het\nminste ten haaren lasten is ingekomen, en de suppliante haar inteegendeel\nhet getuijgenis geven moet van zig geduurende dien tyd wel gedragen te hebben,\nderhalven verstout zig de suppliante op het instantig versoek va meerge„\n„melde gerelegeerde Moemoe bij uwel Edele Achtbaare, haare relagatie\nookmoedig te besolliciteeren /onderstond/ 'T welk Doende /in margine/\nMaccasser int Casteel Rotterdam den 30:e December A. o 1780.\nNo: 108\nDen Boekhouder en geswooren Clerk van potitie Bastiaan\nsteijns, g'assisteert met twee getuijgen vervoege zig uijt name\nen van weegen den ondergeteekende secretaris van politie George\nBremer en Equipagiemeester Dirk Rinse als gebleevene Executeuren\ntestamentair in den boedel van wijlen den koopman titulair en\nsiabandhaar alhier Heer Jan Hendrik Voll, ten woonhuijse en\nbij Mejuffroúw Jacoba van den Anker, weduwe, Erfgename en\nboedelholdster van welmelde Heer Voll, ten eijnde haar uyt naam\nals boven insinuando mode aftevragen of sij geneegen is de\nNalatenschap van gemelde haer overleeden Egtgenoot of eijgentlijk\nde boedel papieren nevens de sleutels van de geldkist en\neenige Contanten uijt handen van de ondergeteekende overte„\n„neemen en hen bij een behoorlijke Acte te indemneeren\nzo"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

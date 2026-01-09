@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0330.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0330.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:57:17.394413",
+      "begin_of_the_end": "2026-01-09T11:57:17.394413"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1083,7 +1111,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4936,7 +4964,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5071,7 +5099,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6610,7 +6638,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6669,7 +6697,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -6677,19 +6705,21 @@
           "type": "TextualBody",
           "value": "den Chinees Likonsaij ingekogte Chialoup groot omtrent 20 lasten een hollands voer te mogen laten aanmaaken /onderstond / 't welk doende /wak geteekend:/ A: Voll /inmargine/ Maccasser den 6e. xber Ao. 1780 Aan als vooren Heeft met vereyschten Eerbied te kennen Bappa Bisiding javaan en jnwoonder te Samarang, hoe hij in de maand october jongstleeden met zijn sloep en een behoorlijke Pas van gemelde zijn woonplaats vertrokken zijnde om naa Palengbang veis te vorderen door storm en teegen winden alhier vervallen is, En vermits den needrigen suppliant in de presente west mousson onmogelijk de reise naa voorschreeve gedastineerde plaats vervolgen kan, derhalven keert hij zig tot uwelEd Achtb. met ootmoedig versoek hem te permitteeren zijn inhebbende lading, bestaande in rijst, zuijker, tabak, kamalo en eenige Corgiel gavaase kleeder alhier te mogen lossen en des mogelijk van de hand te zetten /onderstond / 'T welk doende / was geteekend met eenige inlandse Caraitars /in margine / Maccasser den 28„e December A. o 1780. Aan als boven. Den needrigen teekenaar gebruijkt de vrijmoedigheijd van uwelEd Achtb bij deesen Eerbiedig te kennen te geven als dat hem door de gemagtigdens van den afgegane dispencier Zukver 't onder medio julij 9. L. restant van 726627 1/66 lb Rijst en 12355 bossen Padij ten genoegen toegeteld en gemeeten, en terwijl zeedert A„o 55. "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0330#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "6\nden Chinees Likonsaij ingekogte Chialoup groot omtrent\n20 lasten een hollands voer te mogen laten aanmaaken\n/onderstond / 't welk doende /wak geteekend:/ A: Voll /inmargine/\nMaccasser den 6e. xber Ao. 1780\nAan als vooren\nHeeft met vereyschten Eerbied te kennen Bappa Bisiding javaan\nen jnwoonder te Samarang, hoe hij in de maand october\njongstleeden met zijn sloep en een behoorlijke Pas van gemelde\nzijn woonplaats vertrokken zijnde om naa Palengbang veis\nte vorderen door storm en teegen winden alhier vervallen is, En ver„\n„mits den needrigen suppliant in de presente west mousson on„\n„mogelijk de reise naa voorschreeve gedastineerde plaats vervolgen\nkan, derhalven keert hij zig tot uwelEd Achtb. met ootmoedig\nversoek hem te permitteeren zijn inhebbende lading, bestaande\nin rijst, zuijker, tabak, kamalo en eenige Corgiel gavaase kleeder\nalhier te mogen lossen en des mogelijk van de hand te zetten /onder„\n„stond / 'T welk doende / was geteekend met eenige inlandse Caraitars\n/in margine / Maccasser den 28„e December A. o 1780.\nAan als boven.\nDen needrigen teekenaar gebruijkt de vrijmoedigheijd van uwelEd\nAchtb bij deesen Eerbiedig te kennen te geven als dat hem door\nde gemagtigdens van den afgegane dispencier Zukver 't onder\nmedio julij 9. L. restant van 726627 1/66 lb Rijst en 12355 bossen\nPadij ten genoegen toegeteld en gemeeten, en terwijl zeedert A„o 55.\nzoo"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

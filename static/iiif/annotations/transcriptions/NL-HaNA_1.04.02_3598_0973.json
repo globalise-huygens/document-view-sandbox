@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0973.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0973.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:04:28.669417",
+      "begin_of_the_end": "2026-01-09T12:04:28.669417"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -360,7 +388,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -391,7 +419,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7130,7 +7158,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7189,7 +7217,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -7197,19 +7225,21 @@
           "type": "TextualBody",
           "value": "Van Pontiana den 4. October 1781. deeze, in alle eer tier verzellende Pagtboeken van de BrekJaren 173/80 en 178 5/1. Waar uijt hoogst deselve sal blijken, dat de vaart af en aan deeze plaatz niets, off zeer weinig Wilt zeggen; Waar voor wij geene andere oorsaak kunnen vinden dan de slegte betaaling van de vorst, Waar onder een iegelijk er principael de Hardelaer moet zugter, en daarom ook weinig hebben hunne goederen herwaarts te brengen, om zonder betaaling te vertrecken, gelijk meest alle Naviganten dit Jaer Verpligt zijn geweest, Waar onder sommige selfs onvermoogend. Waaren hunne pagt penningen te betaelen, en dewijl sulthan sarieph zig als borg Voor eenige heeft g'interporeerd ten bedraagen Van Reaalen 202 9/64. zoo hebbe wij in hoope van UWE: Hoog Edelheedens g'eerde goedkeuring dit van zijn aandeel uijt de Pagten gedecorteerd, als hebbende zijn Hoogheijd op Hoogst derselver approbatie gecrediteerd voor de helfte van het geproflueerde uijt dit fonds om dat niet tegenstaande onse dagelijkse aanmaaning ter voldoening van zijn schuld aan dE: Maatschappij niets hoe genaamd daar van inkomt, schoon wij de vorst hier omtrent te sterksten hebben aangespoord, en onder 't oog gebragt dat zulx gansch niet ter zijner Reputatie strekt, dan zijne armoede veroorzaakt door zijne Verspillende bee vens wijze, steld hen buijten staat iets afteleggen, naer ons met belofte gaande te houden, Waarom wij ook niet hebben durven besluijten om de door UWE: Hoog Edelheedens "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0973#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "33\nVan Pontiana den 4. October 1781.\ndeeze, in alle eer tier verzellende Pagtboeken van de Brek„\nJaren 173/80 en 178 5/1. Waar uijt hoogst deselve sal blijken,\ndat de vaart af en aan deeze plaatz niets, off zeer weinig\nWilt zeggen; Waar voor wij geene andere oorsaak kunnen\nvinden dan de slegte betaaling van de vorst, Waar onder\neen iegelijk er principael de Hardelaer moet zugter, en\ndaarom ook weinig hebben hunne goederen herwaarts te bren„\ngen, om zonder betaaling te vertrecken, gelijk meest alle\nNaviganten dit Jaer Verpligt zijn geweest, Waar onder\nsommige selfs onvermoogend. Waaren hunne pagt penningen\nte betaelen, en dewijl sulthan sarieph zig als borg Voor eeni„\nge heeft g'interporeerd ten bedraagen Van Reaalen 202 9/64.\nzoo hebbe wij in hoope van UWE: Hoog Edelheedens g'eerde\ngoedkeuring dit van zijn aandeel uijt de Pagten gedecorteerd,\nals hebbende zijn Hoogheijd op Hoogst derselver approbatie\ngecrediteerd voor de helfte van het geproflueerde uijt dit fonds\nom dat niet tegenstaande onse dagelijkse aanmaaning ter\nvoldoening van zijn schuld aan dE: Maatschappij niets\nhoe genaamd daar van inkomt, schoon wij de vorst hier om„\ntrent te sterksten hebben aangespoord, en onder 't oog ge„\nbragt dat zulx gansch niet ter zijner Reputatie strekt,\ndan zijne armoede veroorzaakt door zijne Verspillende bee\nvens wijze, steld hen buijten staat iets afteleggen, naer\nons met belofte gaande te houden, Waarom wij ook niet hebben\ndurven besluijten om de door UWE: Hoog Edelheedens\naan:"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

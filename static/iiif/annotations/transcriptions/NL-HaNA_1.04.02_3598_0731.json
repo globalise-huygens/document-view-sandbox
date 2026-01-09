@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0731.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0731.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:01:49.381626",
+      "begin_of_the_end": "2026-01-09T12:01:49.381626"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1816,7 +1844,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7775,7 +7803,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7858,7 +7886,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7917,7 +7945,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -7925,19 +7953,21 @@
           "type": "TextualBody",
           "value": "ons te mogen gedragen en in overtrouw en hier meede aan de g'Eerde Jntentie van uwelEdele Agtbaarens te zullen hebben voldaan, noemen wij ons met alle verschuldigde Eerbied / onderstond:/ welEdele Agtbaare Heer en Heeren /lager/ uwelEd: Agtbaarens Trouwschuldige dienaaren /was geteekend/ C: Kraane en I: G: Budach / in margine/ Maccasser den 29„e September Ao 1781— Aan als vooren Den ondergeteekende geweesen secreteris van den Agtbaaren Raad van Iustitie alhier ter hand gesteld zynde Een Extract Notul Hunner Hoog Edelheedens de Jllustere Hooge Indiasche Regeering te Batavia en de bij hoogst deselve ingekomene Inventaris der alhier nagelaten goederen van de christen vrouw Helena Box met last om daar op een nader Berigt te dienen, neemt bij deesen de vrijheijd uwel Edele Agtbaare zeer reverentelijk te suppediteeren — Dat hij niet beter weet of bij zijn op den laatsten Iunij Passato aan uweldelele Agtbrare gepresenteert Berigt door hem duijdelijk was opgegeven den staat des Boedels van voormelde Helena Bop en aange„2 „toont wat 'er ten voordeele van dezelve ingekomen en wat daar en teegen 30 ten lasten uijtgegeeven zyn mitsgaders dat ged„e Boedel nog ten agteren is geweest Rd„s Een Hondert vier en sestig en dertig stv„s hollandsh uijtrijsens de nevens Berigt overgelegde Boedel Reekening Van vermits van die papieren bij 't welmelde Extract Notul geen mentie 24— gemaakt, maar alleen van de herwaards zending des Jnventaris gewag, werd 36 — zo moet den ondergeteekende volgens zijn geringe eragtens met Eerbied veronden „stellen dat Hunner Hoog Edelheedens voorsz: papieren nog niet ontfangen„ 42 hebben terwijl hoogst dezelve des behaagende anders ten eersten hadde kunnen 24 "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0731#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "73\nons te mogen gedragen en in overtrouw en hier meede aan de g'Eerde Jntentie\nvan uwelEdele Agtbaarens te zullen hebben voldaan, noemen wij ons\nmet alle verschuldigde Eerbied / onderstond:/ welEdele Agtbaare Heer\nen Heeren /lager/ uwelEd: Agtbaarens Trouwschuldige dienaaren\n/was geteekend/ C: Kraane en I: G: Budach / in margine/\nMaccasser den 29„e September Ao 1781—\nAan als vooren\nDen ondergeteekende geweesen secreteris van den Agtbaaren Raad\nvan Iustitie alhier ter hand gesteld zynde Een Extract Notul Hunner\nHoog Edelheedens de Jllustere Hooge Indiasche Regeering te Batavia\nen de bij hoogst deselve ingekomene Inventaris der alhier nagelaten goede„\n„ren van de christen vrouw Helena Box met last om daar op een nader\nBerigt te dienen, neemt bij deesen de vrijheijd uwel Edele Agtbaare\nzeer reverentelijk te suppediteeren —\nDat hij niet beter weet of bij zijn op den laatsten Iunij Passato\naan uweldelele Agtbrare gepresenteert Berigt door hem duijdelijk was\nopgegeven den staat des Boedels van voormelde Helena Bop en aange„2\n„toont wat 'er ten voordeele van dezelve ingekomen en wat daar en teegen 30\nten lasten uijtgegeeven zyn mitsgaders dat ged„e Boedel nog ten agteren is geweest\nRd„s Een Hondert vier en sestig en dertig stv„s hollandsh uijtrijsens de nevens\nBerigt overgelegde Boedel Reekening\nVan vermits van die papieren bij 't welmelde Extract Notul geen mentie 24—\ngemaakt, maar alleen van de herwaards zending des Jnventaris gewag, werd 36 —\nzo moet den ondergeteekende volgens zijn geringe eragtens met Eerbied veronden\n„stellen dat Hunner Hoog Edelheedens voorsz: papieren nog niet ontfangen„ 42\nhebben terwijl hoogst dezelve des behaagende anders ten eersten hadde kunnen\n24\nontraaren"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

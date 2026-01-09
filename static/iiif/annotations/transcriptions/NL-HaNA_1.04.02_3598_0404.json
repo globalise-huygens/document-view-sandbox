@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0404.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0404.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:58:09.399770",
+      "begin_of_the_end": "2026-01-09T11:58:09.399770"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -823,7 +851,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2726,7 +2754,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4785,7 +4813,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7754,7 +7782,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7813,7 +7841,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -7821,19 +7849,21 @@
           "type": "TextualBody",
           "value": "om de Affaire tusschen den kenegt van den pagter dar sterke dranken te onderzoeken heeft d' Eere uwelEd Achtb het ondervolgende te berigten Dat op gisteren des avonds om holf ses uuren vier soldaten genaamd Labroij, Hoffman, Boekmulder en Duviger in de zogena amde schachareij komende, en voor een dubbeltje Saguweer g' eyscht en deselve gekregen en uijtgedronken hebbende de eerstgemeld niet alleen de Cattoang waarin de Saguwer geweest is aan stukken gesmeeten maar ook aan de dienaar van de pagter geen duijt daervoor hebben willen betaalen Dat den pagters knagt hierop toekomende en deselve toespreekende dat het niet passde zulke baldadigheiden te begaan mitsgaders hun de betaling van de Cattoany afeijsschende gaf d' eerstgenoemde Labroij ten antwoord van gaa ik zal u deselve betalen wanneer deselve om de duiter vraagde, kom maer hier ik sal u deselve uyt de oogen slaan waerop gem Labroij den pagters knegt ook een slag in het gezigt gegeven heeft Dat gemelde pagters knegt zig op het ontfangen van die slag verweeren wilde door den tweeden of Hoffman bij de haare gekreegen en den houwer op de borst gehouden onder het uijten dier woorden gij rakker gij zult hier sterven want over u ben ik 14 dagen binnen gebannen geweest, op welk zeggen de twee laastgenoemde toe kwamen en voorm aanraadende met te zeggen gaat u gang maar indien u te kort schiet zullen wij u helpen roep ons maar tot getuijgen dog den pagters kneyt kans ziende om te vlugten heeft de vlugt genomen en is bij den ondergeteekende komen klagen "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0404#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "80\nom de Affaire tusschen den kenegt van den pagter dar sterke dranken\nte onderzoeken heeft d' Eere uwelEd Achtb het ondervolgende te\nberigten\nDat op gisteren des avonds om holf ses uuren vier soldaten\ngenaamd Labroij, Hoffman, Boekmulder en Duviger in de\nzogena amde schachareij komende, en voor een dubbeltje Saguweer\ng' eyscht en deselve gekregen en uijtgedronken hebbende de eerstge„\n„meld niet alleen de Cattoang waarin de Saguwer geweest is aan\nstukken gesmeeten maar ook aan de dienaar van de pagter\ngeen duijt daervoor hebben willen betaalen\nDat den pagters knagt hierop toekomende en deselve toe„\n„spreekende dat het niet passde zulke baldadigheiden te begaan\nmitsgaders hun de betaling van de Cattoany afeijsschende gaf\nd' eerstgenoemde Labroij ten antwoord van gaa ik zal u deselve betalen\nwanneer deselve om de duiter vraagde, kom maer hier ik sal u de„\n„selve uyt de oogen slaan waerop gem Labroij den pagters knegt\nook een slag in het gezigt gegeven heeft\nDat gemelde pagters knegt zig op het ontfangen van die\nslag verweeren wilde door den tweeden of Hoffman bij de haare ge„\n„kreegen en den houwer op de borst gehouden onder het uijten\ndier woorden gij rakker gij zult hier sterven want over u ben ik\n14 dagen binnen gebannen geweest, op welk zeggen de twee\nlaastgenoemde toe kwamen en voorm aanraadende met te\nzeggen gaat u gang maar indien u te kort schiet zullen wij\nu helpen roep ons maar tot getuijgen dog den pagters kneyt kans\nziende om te vlugten heeft de vlugt genomen en is bij den\nondergeteekende komen klagen\nDat"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

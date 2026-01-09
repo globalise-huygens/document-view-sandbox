@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0232.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0232.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:56:14.076758",
+      "begin_of_the_end": "2026-01-09T11:56:14.076758"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -277,7 +305,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -542,7 +570,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4109,7 +4137,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4181,7 +4209,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4240,7 +4268,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4248,19 +4276,21 @@
           "type": "TextualBody",
           "value": "Calculatien te zenden van te doene Reparatien \nden 3e April 1781 \nin antwoord te dienen dat den Heer gouverneur hier toe door Continueele aanmaaning zijn uijterste best doet Ten vervolge van het genoteerde ter Jongsten sessie, met opzigt tot de Forlificatie en gebouwen, nog gezien voezende dat Haar Hoog Edelheeden voor wel gedaan houden; dat om niet alles te laten vervallen het allernoodzaaklykste reeds onder handen was genomen dog geen vernieuwing of reparatie van groten ommeslag of belang verwagte den voor en aleerklaar en omstandig aangetoont wiert waar in dezelve zal moeten bestaan en hoe veel daartoe bekostigt zal worden, onder Recommandatie en volgens circulaire ordre te zorgen dat behoorlyke calcullatien werden overgezonden het geen men telkens verzuimde en hieronder wel Speciaal "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0232#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "99\nden 3e April 1781\nCalculatien te zenden\nvan te doene Reparatien\nin antwoord te dienen dat den Heer gouverneur\nhier toe door Continueele aanmaaning zijn\nuijterste best doet\nTen vervolge van het genoteerde ter\nJongsten sessie, met opzigt tot de For„\n„lificatie en gebouwen, nog gezien voe„\nzende dat Haar Hoog Edelheeden voor\nwel gedaan houden; dat om niet alles\nte laten vervallen het allernoodzaak„\nlykste reeds onder handen was genomen\ndog geen vernieuwing of reparatie van\ngroten ommeslag of belang verwagte den\nvoor en aleerklaar en omstandig aange¬\ntoont wiert waar in dezelve zal moeten\nbestaan en hoe veel daartoe bekostigt\nzal worden, onder Recommandatie\nen volgens circulaire ordre te zorgen\ndat behoorlyke calcullatien werden\novergezonden het geen men telkens ver¬\n„zuimde en hieronder wel Speciaal\nmede\nvr:n"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

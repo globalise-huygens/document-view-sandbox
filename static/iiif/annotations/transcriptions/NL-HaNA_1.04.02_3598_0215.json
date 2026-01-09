@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0215.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0215.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:56:01.851614",
+      "begin_of_the_end": "2026-01-09T11:56:01.851614"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -308,7 +336,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -547,7 +575,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4192,7 +4220,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4251,7 +4279,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4259,19 +4287,21 @@
           "type": "TextualBody",
           "value": "door d' intext gem: gecommitteerdens \nden 24e maart 17811 \nreekeningen wierden afgeschreeven, mitsdien ordonneerende een nader en accuraten opneem te laten doen van alle de fortificatien en gebouwen en op te geeven ƒ. ƒ seedert wat tijd deze defecten aan dezelve bespeurd, welke reparatien daaraan Successive gedaan en hoedanige kosten daarvoor opgebragt zijn, voorts waaraan toe te schrijven zij dat tans zo veele en Zwaare defecten aan dezelve alomme ontdekt worden, zo is, ter voldoening aan welmelde ordre goedgevonden en verstaan den Capitain der Arthillerij en opzigter der werken Erick Dundberg, nevens de Leeden dezer vergadering Theodorus Boschen Johan Godfried Budach verzeld van de meesterknegts der huystimmerlieden en metzelaars exact te laten opnemende gebreken welke zij aan de gebouwen en fortificatie werken in "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0215#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "81\nden 24e maart 17811\ndoor d' intext gem: gecommit„\n„teerdens\nreekeningen wierden afgeschreeven, mits„\ndien ordonneerende een nader en accura¬\n„ten opneem te laten doen van alle de\nfortificatien en gebouwen en op te geeven\nƒ.\nƒ\nseedert wat tijd deze defecten aan dezelve\nbespeurd, welke reparatien daaraan\nSuccessive gedaan en hoedanige kosten\ndaarvoor opgebragt zijn, voorts waaraan\ntoe te schrijven zij dat tans zo veele\nen Zwaare defecten aan dezelve alomme\nontdekt worden, zo is, ter voldoening aan\nwelmelde ordre goedgevonden en verstaan\nden Capitain der Arthillerij en opzigter\nder werken Erick Dundberg, nevens\nde Leeden dezer vergadering Theodorus\nBoschen Johan Godfried Budach\nverzeld van de meesterknegts der huystim„\n„merlieden en metzelaars exact te laten\nopnemende gebreken welke zij aan de\ngebouwen en fortificatie werken in\nhet"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

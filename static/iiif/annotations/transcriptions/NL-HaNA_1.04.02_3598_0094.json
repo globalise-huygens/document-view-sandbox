@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0094.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0094.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:54:46.985877",
+      "begin_of_the_end": "2026-01-09T11:54:46.985877"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -402,7 +430,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -485,7 +513,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6418,7 +6446,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6709,7 +6737,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6781,7 +6809,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6808,7 +6836,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -6816,19 +6844,21 @@
           "type": "TextualBody",
           "value": "versoek om hen oppermeester van dit kasteel om neevenstaande reedenen Krankbesoeker verandering ten dien belange Durvendes maakken, hebben wij beslooten het versoek aan uw Hoog Edelheedens Eerbiedigst voo te dragen, en zulx uijt Consideratie wijl die menschen hier geen ƒ vooruijtsigt tot verder Avancement en bereeds Iaaren lang over hun verband gediend hebben, Ia zelfs met de Boschieters waar Get over zij 't Commando moeten voeren gelijkstandig in gagie zijn, alsoo die tot ƒ. 16: kunnen werden verhoogt, re „halven wij ontmoedigst. versoeken, hier op hoogst derzelver gunstige dispositie te mogen Erlangen § 6„ Gelijk wij ook uw Hoog Edelheedens onderdanigst versoeken dat ingevalle den Chirurgijn Majoor Frisschen die bij Een overgaand Request vermeld onder §74 om zijn verlossing na de hoofdplaats verzogt heeft deselve mogte koomen te obtineeren, en den opperchirrgijn van dit Casteel Iohan Christiaan Kirsten in die tusschen tijd, van de hem g'accordeerde springtogt van daar niet te verteeren, dat ons als dan Een ander bequaam oppermeester van 't Casteel in zijn plaats: mag worden toegesonden. § 62 Jnselver voegen herhaalen wij ons gedaan versoek en om hen ons toegezegde in a:o passato dat wij met de ons toegezegde en aanden kerkenraad aldaar reeds ter Besorging gedemandeerde krankbesoeker als nog mogen werden geholpen §63 Terwijl wij almeede Jnsteeren, dat den stuurman de "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0094#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "versoek om hen oppermeester\nvan dit kasteel om neevenstaande\nreedenen\nKrankbesoeker\nverandering ten dien belange Durvendes maakken, hebben wij\nbeslooten het versoek aan uw Hoog Edelheedens Eerbiedigst voo\nte dragen, en zulx uijt Consideratie wijl die menschen hier geen\nƒ\nvooruijtsigt tot verder Avancement en bereeds Iaaren lang over hun\nverband gediend hebben, Ia zelfs met de Boschieters waar\nGet\nover zij 't Commando moeten voeren gelijkstandig in ga„\n„gie zijn, alsoo die tot ƒ. 16: kunnen werden verhoogt, re\n„halven wij ontmoedigst. versoeken, hier op hoogst derzelver\ngunstige dispositie te mogen Erlangen\n§ 6„ Gelijk wij ook uw Hoog Edelheedens onderdanigst ver„\nsoeken dat ingevalle den Chirurgijn Majoor Frisschen\ndie bij Een overgaand Request vermeld onder §74 om zijn\nverlossing na de hoofdplaats verzogt heeft deselve mogte\nkoomen te obtineeren, en den opperchirrgijn van dit Cas„\n„teel Iohan Christiaan Kirsten in die tusschen tijd, van\nde hem g'accordeerde springtogt van daar niet te ver„\n„teeren, dat ons als dan Een ander bequaam oppermees„\n„ter van 't Casteel in zijn plaats: mag worden toegesonden.\n§ 62 Jnselver voegen herhaalen wij ons gedaan versoek\nen om hen ons toegezegde in a:o passato dat wij met de ons toegezegde en aan„\nden kerkenraad aldaar reeds ter Besorging gedeman„\ndeerde krankbesoeker als nog mogen werden\ngeholpen\n§63 Terwijl wij almeede Jnsteeren, dat den stuurman de\nRsoo"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

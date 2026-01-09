@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0470.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0470.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:58:53.360947",
+      "begin_of_the_end": "2026-01-09T11:58:53.360947"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -64,7 +92,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -95,7 +123,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6080,7 +6108,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6111,7 +6139,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6183,7 +6211,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6268,7 +6296,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -6276,19 +6304,21 @@
           "type": "TextualBody",
           "value": "Ter Requisitie van de Heeren gecommitteerdens / tot het examineeren van eene door diverse Chineesen op den 12„e Juni A„o HJ: ten Raade van Politie ingediend Request:) de Heeren Mr. Jan Willem Hendrik van Bossum koopman en Fiscaal en Jacobus Leonardus de vos onderkoopman en Sjaband naar ingevolgen Politicque Raak besluit, de dato 15„e Juni 1781, verklaart den Boeginies Poea Goa, voor zijn hoogheid den koning van Bonij g'installeerde opziender van de thol onder zijn Hoogheids gebied en territorium Dat na de dood van zyn voorvaderen samalloe als opziender van de thol hij declarant hem op ordre van de koning van Bonij hier in gesuccedeert hadde. Dat ter diertijd als pagter der Inen uijtgaande Regten bij de Ed: Comp„e tot maccasser geweest ras eenen Chinees genaamt ong= Jszoe Dat denzelven Chinees nog vijf maanden de pagt gehouden hadde R Dat ter dier tyd, reeds de gewoonte g'exvan „steerd hadde ieder pikole araanse tobak dertig A„o thol te neemen, gelijk ook van ieder pikol kappas vijfthien St„s Dat na dato den Malaijer Jntje Sadulla de pagt g'aanvaart hadde Dat denzelven bij de ingevoerde gewoonte, ten reguard van de Iavaanse tobak en kappas "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0470#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "Ter Requisitie van de Heeren gecommitteer„\ndens / tot het examineeren van eene door diverse\nChineesen op den 12„e Juni A„o HJ: ten Raade van\nPolitie ingediend Request:) de Heeren Mr. Jan\nWillem Hendrik van Bossum koopman en\nFiscaal en Jacobus Leonardus de vos onderkoop¬\n„man en Sjaband naar ingevolgen Politicque Raak\nbesluit, de dato 15„e Juni 1781, verklaart den Boegi„\n„nies Poea Goa, voor zijn hoogheid den koning\nvan Bonij g'installeerde opziender van de thol\nonder zijn Hoogheids gebied en territorium\nDat na de dood van zyn voorvaderen samal„\n„loe als opziender van de thol hij declarant hem\nop ordre van de koning van Bonij hier in gesuc„\ncedeert hadde. Dat ter diertijd als pagter der In¬\nen uijtgaande Regten bij de Ed: Comp„e tot mac„\n„casser geweest ras eenen Chinees genaamt\nong= Jszoe\nDat denzelven Chinees nog vijf maanden\nde pagt gehouden hadde\nR\nDat ter dier tyd, reeds de gewoonte g'ex„\nvan\n„steerd hadde ieder pikole araanse tobak dertig\nA„o thol te neemen, gelijk ook van ieder pikol kappas\nvijfthien St„s\nDat na dato den Malaijer Jntje Sadulla\nde pagt g'aanvaart hadde\nDat denzelven bij de ingevoerde gewoonte,\nten reguard van de Iavaanse tobak en kappas\nverbleeven\nL„a E:"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

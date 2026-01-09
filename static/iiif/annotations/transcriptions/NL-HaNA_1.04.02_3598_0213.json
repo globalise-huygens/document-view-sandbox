@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0213.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0213.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:56:00.467375",
+      "begin_of_the_end": "2026-01-09T11:56:00.467375"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -308,7 +336,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -521,7 +549,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4634,7 +4662,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4693,7 +4721,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4701,19 +4729,21 @@
           "type": "TextualBody",
           "value": "Den onderstuurman de te committeeren \nden 24„e maart 1781 \nde laate komst van het schip Azia ook verstoken is geweest van Contanten en men geen aanbesteeding doen kan zonder de Burgers te gelyk de helfte van bepaal de prijs in handen te geeven, als waaram het de meeste te doen is, terwijl men omtrent de wijnige gegoede burgen die hier zijn werk heeft dezelve met Contanten tot het aanneemen van maar eenige Slaven, als daarop geen voordeel ziende, te Persuadeeren Haar Hoog Edelheedens onder de scheepmaterie met toezending van een Extract sisoo naa den Bogt van Bonj uijt het Berigt van den Commandeur en opper Equipagie meester Schrijver Cs nopens het gehouden gedrag der overheeden van het in de bogt van Bonij vast gezeeten dog weder vlot geraakte schip Delfshaven en een Extract uijt het op dien Bodem gehouden Journaal, gelastende "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0213#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "29\nden 24„e maart 1781\nDen onderstuurman de\nte committeeren\nde laate komst van het schip Azia ook\nverstoken is geweest van Contanten en\nmen geen aanbesteeding doen kan zonder\nde Burgers te gelyk de helfte van bepaal¬\n„\nde prijs in handen te geeven, als waa„\n„ram het de meeste te doen is, terwijl\nmen omtrent de wijnige gegoede burgen\ndie hier zijn werk heeft dezelve met\nContanten tot het aanneemen van maar\neenige Slaven, als daarop geen voordeel\nziende, te Persuadeeren\nHaar Hoog Edelheedens onder de scheep¬\nmaterie met toezending van een Extract\nsisoo naa den Bogt van Bonj uijt het Berigt van den Commandeur en\nopper Equipagie meester Schrijver Cs\nnopens het gehouden gedrag der overheeden\nvan het in de bogt van Bonij vast ge„\n„zeeten dog weder vlot geraakte schip\nDelfshaven en een Extract uijt het op\ndien Bodem gehouden Journaal, gelastende\nom"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

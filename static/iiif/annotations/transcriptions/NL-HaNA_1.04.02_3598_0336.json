@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0336.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0336.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:57:21.578505",
+      "begin_of_the_end": "2026-01-09T11:57:21.578505"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1239,7 +1267,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1374,7 +1402,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4577,7 +4605,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7286,7 +7314,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7345,7 +7373,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -7353,19 +7381,21 @@
           "type": "TextualBody",
           "value": "om met diep onthagte onderschrijven (onderstond/: E E: Achtbaaren Heer /lage:/ uwelEd Agtb: onderdaanige en trouwschuldige Dienaaren /:wal geteekend/ D:k Rinse P„s Voerman: D: f:rn Strijkhaan en J:r M: Gusouw /in margine/ Maccassie den 29e. November Ao. 17080 Aan als Vooren Jn obserrantie van uwelEd Agtb veel g„ Eerde ordre bij Politig Raadt besluijt van den 15„e November laastleeden hebben zig de teekenaaren deeses ten Negotie Comptoir vervoegt, en aldaer nevens dien EE opperkoopman en hoofd Administrateur geconfronteerd en gepuncteerd de Restanten van de afgelegde boeken dee jaaren 17 7/10 teegens de niuw geformeerde van 1788/ deselve bevonden te accordeeren en wel overgedragen te zijn vertrouwende hiermeede aan de g'Eerde intentie van uwelEd Agtb te zullen hebben voldaen, onderschryvende ons met de meeste hoogagting /onderstond/ EE Agtbaaren Heer /:lager/ uwelEd: Achtb: onderdanige en trouwschuldige Dienaaren /:was geteekend/ I:s P„s de Vas en P„ Bosch /inmargiene/ Maccasser den 29e December Ao. 1780. Reekening oar Den EelEdelen Achtbaaren Heer Barend Reijke Gouverneur en Directeur deeser Custe Celebes &. a &. a weegens zodanige aan een hondert ses en Vijftig man zaleijereesen die op Malankerie ^ hier, en op Maros dienst gedaen hebben, op ordre van zijn wel Ed Achtb door den ondergeteekende verstrekte kostpenningen voor de maanden Augustus en September à 7. 45 spaart ter maand - - - - - - - - - - - - - - rds 90: —:— rds /was geteekend/ P:s Bragman Cinmarijn Manasae den 29:' Depb: A:o 1788. "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0336#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "12\nom met diep onthagte onderschrijven (onderstond/: E E: Achtbaaren Heer\n/lage:/ uwelEd Agtb: onderdaanige en trouwschuldige Dienaaren /:wal geteekend/\nD:k Rinse P„s Voerman: D: f:rn Strijkhaan en J:r M: Gusouw /in margine/\nMaccassie den 29e. November Ao. 17080\nAan als Vooren\nJn obserrantie van uwelEd Agtb veel g„ Eerde ordre bij Politig Raadt\nbesluijt van den 15„e November laastleeden hebben zig de teekenaaren dee„\n„ses ten Negotie Comptoir vervoegt, en aldaer nevens dien EE opperkoopman\nen hoofd Administrateur geconfronteerd en gepuncteerd de Restanten van de\nafgelegde boeken dee jaaren 17 7/10 teegens de niuw geformeerde van 1788/\ndeselve bevonden te accordeeren en wel overgedragen te zijn\nvertrouwende hiermeede aan de g'Eerde intentie van uwelEd Agtb te zullen\nhebben voldaen, onderschryvende ons met de meeste hoogagting /onderstond/\nEE Agtbaaren Heer /:lager/ uwelEd: Achtb: onderdanige en trouwschuldige\nDienaaren /:was geteekend/ I:s P„s de Vas en P„ Bosch /inmargiene/\nMaccasser den 29e December Ao. 1780.\nReekening oar Den EelEdelen Achtbaaren Heer\nBarend Reijke\nGouverneur en Directeur deeser Custe Celebes &. a &. a\nweegens zodanige aan een hondert ses en Vijftig man zaleijereesen\ndie op Malankerie ^ hier, en op Maros dienst gedaen hebben, op ordre\nvan zijn wel Ed Achtb door den ondergeteekende verstrekte kostpen„\n„ningen voor de maanden Augustus en September à 7. 45 spaart\nter maand - - - - - - - - - - - - - - rds 90: —:—\nrds\n/was geteekend/ P:s Bragman Cinmarijn Manasae den 29:' Depb: A:o 1788.\nOp"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

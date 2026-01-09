@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0410.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0410.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:58:13.686827",
+      "begin_of_the_end": "2026-01-09T11:58:13.686827"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2045,7 +2073,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2154,7 +2182,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3771,7 +3799,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4556,7 +4584,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4635,7 +4663,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4643,19 +4671,21 @@
           "type": "TextualBody",
           "value": "voor den door welmelde Haar Hoog Edelheedeens tot opperkoopman en secunde alhier benoemden koopman en fiscaal Claas kraane, en zulx ter ordre van den welEdelen Achtbaar Heer Barend Reijke, Gouverneur en Directeur deeser Custe Celebes, ingevolge het beslootene in Raade van politie op den 3„e April jongstleeden en ten overstaan van gecommitteerde Leeden de Heeren Jacobus Leonardus de Vob. en Johan Godfreed Budach Mijn Heer uwel Edele zo als voorsegt door Haar Hoog Edelheedens tot mijn successeur in het fiscalaat g' Eligeerd, en nog bij evengemelde besluit van weegen de Regeering deeser lande geordonneet zijnde om dat Ampt met den aan „kleeven van dien aan uwel Edele Achtbaare te transporteeren zo geve ik uwel Edele hiernevens over 1 Een boek of bondel beschreeven Miscillania enhoudende diverse Extrecten plaaaten billetter en Reglementen Zeedert den jaare 1670 tot 1771 volgens daer voor zijnde Register "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0410#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "86\nvoor den door welmelde Haar Hoog Edelheedeens tot opper„\n„koopman en secunde alhier benoemden koopman en\nfiscaal Claas kraane, en zulx ter ordre van den\nwelEdelen Achtbaar Heer Barend Reijke, Gouverneur\nen Directeur deeser Custe Celebes, ingevolge het\nbeslootene in Raade van politie op den\n3„e April jongstleeden en ten overstaan van\ngecommitteerde Leeden de Heeren Jacobus\nLeonardus de Vob. en Johan Godfreed Budach\nMijn Heer\nuwel Edele zo als voorsegt door Haar\nHoog Edelheedens tot mijn successeur in het\nfiscalaat g' Eligeerd, en nog bij evengemelde be„\n„sluit van weegen de Regeering deeser lande\ngeordonneet zijnde om dat Ampt met den aan\n„kleeven van dien aan uwel Edele Achtbaare\nte transporteeren zo geve ik uwel Edele hiernevens\nover\n1 Een boek of bondel beschreeven Miscillania enhoudende\ndiverse Extrecten plaaaten billetter\nen Reglementen Zeedert den jaare 1670 tot\n1771 volgens daer voor zijnde Register\nEen"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

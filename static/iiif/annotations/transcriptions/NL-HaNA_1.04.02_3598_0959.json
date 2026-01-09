@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0959.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0959.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:04:18.899464",
+      "begin_of_the_end": "2026-01-09T12:04:18.899464"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -360,7 +388,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1795,7 +1823,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3640,7 +3668,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5441,7 +5469,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -5449,19 +5477,21 @@
           "type": "TextualBody",
           "value": "Van Pontiana den 21. Maart 1781. in alle eerbied bijgeweigde Notitie staen gespecificeerd, hebbende buiter dien nog drie en twintig Chineese Nieuwelinger meede gebragt, tot op de hoogte Van Mampauwa Waer hij deselve alle heeft ontscheept, en zijn op gemelde plaats ook reeds Vier Jonken van verscheidene haavens, in China binnen geloopen. Wij solliciteeren aller onderdanigst met Uwer Hoog Edelheedens geeerd Welbehager omtrent dit kieltje te werden gemunieerd, onder needrige Jnstantie Var ons goedgunstelijk te Willen pardonneeren dat Wij op aanhouderde lamentatien van Verscheidene hier aan weesende bovenlandse grooter genoodsaakt zijn geworden dies voerder te permitteeren, zijne goederen te moogen verkoopen dewelke alle geen drie duizend Realen aen Waerde bedraegen Met diep ontzager Verschuldigde dog Waere hoog agting, maatigen Wij ons de hooge Eere aen, aller onderdanigst te onderteekenen /:onderstond:/ Hoog Edelen Gestrengen, Hoog Achtbaeren Wijdgebieder der Heere en Wel Edele Gestrenge Heeren /:Lager:/ UWE: Hoog Edelheedens zeer nedrige gehoorsame en trouw schuldige Dienaaren /: Was geteekend:/ W:t M:s Stuart en J: Klaagman /:in margine:/ Portiara den 21. Maart 1781. "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0959#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "19\nVan Pontiana den 21. Maart 1781.\nin alle eerbied bijgeweigde Notitie staen gespecificeerd, hebben„\nde buiter dien nog drie en twintig Chineese Nieuwelin„\nger meede gebragt, tot op de hoogte Van Mampauwa\nWaer hij deselve alle heeft ontscheept, en zijn op gemelde\nplaats ook reeds Vier Jonken van verscheidene haavens,\nin China binnen geloopen.\nWij solliciteeren aller onderdanigst met Uwer Hoog\nEdelheedens geeerd Welbehager omtrent dit kieltje\nte werden gemunieerd, onder needrige Jnstantie Var ons\ngoedgunstelijk te Willen pardonneeren dat Wij op aanhou„\nderde lamentatien van Verscheidene hier aan weesende boven„\nlandse grooter genoodsaakt zijn geworden dies voerder\nte permitteeren, zijne goederen te moogen verkoopen dewel„\nke alle geen drie duizend Realen aen Waerde bedraegen\nMet diep ontzager Verschuldigde dog Waere hoog agting, maatigen\nWij ons de hooge Eere aen, aller onderdanigst te onderteekenen\n/:onderstond:/ Hoog Edelen Gestrengen, Hoog Achtbaeren\nWijdgebieder der Heere en Wel Edele Gestrenge Hee„\nren /:Lager:/ UWE: Hoog Edelheedens zeer nedrige\ngehoorsame en trouw schuldige Dienaaren /: Was geteekend:/\nW:t M:s Stuart en J: Klaagman /:in margine:/\nPortiara den 21. Maart 1781."
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

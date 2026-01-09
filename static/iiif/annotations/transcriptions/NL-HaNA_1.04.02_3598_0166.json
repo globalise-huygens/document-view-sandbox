@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0166.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0166.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:55:27.449371",
+      "begin_of_the_end": "2026-01-09T11:55:27.449371"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -277,7 +305,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -308,7 +336,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1535,7 +1563,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5440,7 +5468,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5499,7 +5527,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -5507,19 +5535,21 @@
           "type": "TextualBody",
           "value": "\nden 30e december 1780 \nis, blijft se agter nog altijd in dat Hak logeeren en zo advers van Menschen te zien als hardnekkig weijgeren den Boedel over te neemen, die zij zegt dat haar niet toekomt om reeden men dezelve heeft g'inventarisseerd Dat zij Supplianten ter zaeke van al het voorschreeven henderhalven genoodzaakt gevonden hebben haar door den gezerdooren Clercq van Politie Bastiaan Steyns g'assisteert van twee getuigen te laeten Insinueeren en Cathagorisch antwoord af te vragen, of zij den Boedel wilde aan of overneemen dan niet! zo neen reeden te geeven waarom zij zulx weijgerde, onder protestatie teffens van alle kosten en schaaden daar door veroorzaakt, of die nog stonden te vallen, derwelke tweemaal bij haar gegaan en die Insinuatie gedaan hebbende volgens d' in eerbied bijgevoegde schriftelijke Belaasen, gerelateerd heeft dat zij is blijven persisteeren„ van den Boedel niet te willen „overneemen, vermits te diendwoegen „te veel hartzeer geleeden hadde, en dat „de Supplianten dierhalven daar meede „handelen konden na welgevallen. Een "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0166#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "32\nden 30e december 1780\nis, blijft se agter nog altijd in dat Hak logee„\n„ren en zo advers van Menschen te zien als\nhardnekkig weijgeren den Boedel over te\nneemen, die zij zegt dat haar niet toekomt\nom reeden men dezelve heeft g'inventaris„\nseerd\nDat zij Supplianten ter zaeke van al\nhet voorschreeven henderhalven genood„\nzaakt gevonden hebben haar door den ge¬\n„zerdooren Clercq van Politie Bastiaan\nSteyns g'assisteert van twee getuigen\nte laeten Insinueeren en Cathagorisch\nantwoord af te vragen, of zij den Boedel\nwilde aan of overneemen dan niet! zo\nneen reeden te geeven waarom zij zulx\nweijgerde, onder protestatie teffens van\nalle kosten en schaaden daar door veroor¬\n„zaakt, of die nog stonden te vallen, derwel¬\nke tweemaal bij haar gegaan en die Insi¬\nnuatie gedaan hebbende volgens d' in\neerbied bijgevoegde schriftelijke Belaasen,\ngerelateerd heeft dat zij is blijven persis„\nteeren„ van den Boedel niet te willen\n„overneemen, vermits te diendwoegen\n„te veel hartzeer geleeden hadde, en dat\n„de Supplianten dierhalven daar meede\n„handelen konden na welgevallen. Een\nantwoord"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

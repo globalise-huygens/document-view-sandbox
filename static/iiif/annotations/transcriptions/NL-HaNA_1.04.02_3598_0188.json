@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0188.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0188.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:55:42.968822",
+      "begin_of_the_end": "2026-01-09T11:55:42.968822"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -407,7 +435,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1686,7 +1714,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2003,7 +2031,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3698,7 +3726,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3757,7 +3785,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -3765,19 +3793,21 @@
           "type": "TextualBody",
           "value": "Aan den bezijde genoemden Chinees het ontfossen zyne Agtbare verstaan gemelde Borgtogt als sufficant te accepteeren /onderstond:/ Aldus Geresolveert tot Maccasser in 't Casteel Rotter dato voorschreeven /:was geteekent:/ B„r Beyke, C„s Rhaane, I M„n Basserman Dus de vos, P. Bosch en G: Bremer Is J„o L Diengsdag den 30: Januarij A:o 1781 bij zond vrage Door den Chineesen Jnwoonder te Sonlading en teakondaren abaja Gouw Lilt bij Request versoek gedaan zijnde om zijn aldaar ingenoomen lading na luijd zijner pasce bestaande in 30 Coyangs zout, 50 tonnen olij, 50 Corgies Jajaanse bonte kleetjes en eenige kleenigheeden, waar meede hij met zijn Chialoup na Bangermassing de wil gehad hebbende "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0188#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "54\nAan den bezijde genoemden\nChinees het ontfossen zyne\nAgtbare verstaan gemelde Borgtogt als\nsufficant te accepteeren\n/onderstond:/ Aldus Geresolveert\ntot Maccasser in 't Casteel Rotter\ndato voorschreeven /:was geteekent:/\nB„r Beyke, C„s Rhaane, I M„n Basserman\nDus de vos, P. Bosch en G: Bremer\nIs\nJ„o L\nDiengsdag den 30: Januarij A:o 1781\nbij zond vrage\nDoor den Chineesen Jnwoonder te Son„\nlading en teakondaren abaja Gouw Lilt bij Request versoek\ngedaan zijnde om zijn aldaar ingenoomen\nlading na luijd zijner pasce bestaande in\n30 Coyangs zout, 50 tonnen olij, 50 Corgies Ja„\n„jaanse bonte kleetjes en eenige kleenig„\n„heeden, waar meede hij met zijn Chialoup\nna Bangermassing de wil gehad hebbende\ndoor"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

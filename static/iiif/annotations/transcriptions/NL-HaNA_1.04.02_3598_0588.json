@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0588.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0588.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:00:08.604304",
+      "begin_of_the_end": "2026-01-09T12:00:08.604304"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -251,7 +279,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -568,7 +596,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2939,7 +2967,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5258,7 +5286,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5317,7 +5345,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -5325,19 +5353,21 @@
           "type": "TextualBody",
           "value": "en die menschen bij Land te rug te senden \nden 9e: Sept: \n1784: ten bedraagen van ƒ25:8:8. weegens het aan die menschen aldaar en voor de rheijse na Batavia verstrekte onderhoud, jtem en voor het geen nog verder aan hun hier ter plaatse zal werden bekostigt, tot dat men geleegendheijd na hun geleegentheijd zal hebben, en de mousson het toelaat dezelve weeder na hun land, onder aanbieding van de voorsz: brieff aan de koning van Bouthon en een daar bij gevoegt Compliment briefje van hier te rug te senden. Op Een jngekoomen Berigt van de Equipagie meester Dirk Hinse c:s gebleeken weesende, dat de Landschuijt door swaer weer den 26=e aug„s p„o zodaanig ontrampooneerd was geraakt, dat deselve tot eenig gebruijk ten eenemaal onbekwaam geworden was, en in 't voorige jaar als oud en afgevaaren bereeds is opgegeven, zoo is goedgevonden en verstaan dezelve voor het geldende ter slooping te laaten verkoopen en vervolgens bij de negotie boeken afte schrijven, mitsgaders dies "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0588#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "18\nden 9e: Sept:\nen die menschen bij\nLand te rug te senden\n1784: ten bedraagen van ƒ25:8:8. weegens het\naan die menschen aldaar en voor de rheijse\nna Batavia verstrekte onderhoud, jtem en\nvoor het geen nog verder aan hun hier ter\nplaatse zal werden bekostigt, tot dat men\ngeleegendheijd na hun geleegentheijd zal hebben, en de mousson\nhet toelaat dezelve weeder na hun land, on„\n„der aanbieding van de voorsz: brieff aan de\nkoning van Bouthon en een daar bij ge„\n„voegt Compliment briefje van hier te rug\nte senden.\nOp Een jngekoomen Berigt van de\nEquipagie meester Dirk Hinse c:s geblee„\n„ken weesende, dat de Landschuijt door swaer\nweer den 26=e aug„s p„o zodaanig ontrampoo„\n„neerd was geraakt, dat deselve tot eenig\ngebruijk ten eenemaal onbekwaam ge„\n„worden was, en in 't voorige jaar als oud\nen afgevaaren bereeds is opgegeven, zoo\nis goedgevonden en verstaan dezelve\nvoor het geldende ter slooping te laaten\nverkoopen en vervolgens bij de negotie\nboeken afte schrijven, mitsgaders dies\nRendement."
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0677.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0677.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:01:10.719371",
+      "begin_of_the_end": "2026-01-09T12:01:10.719371"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1915,7 +1943,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5898,7 +5926,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5929,7 +5957,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -5960,7 +5988,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6019,7 +6047,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -6027,19 +6055,21 @@
           "type": "TextualBody",
           "value": "voor reeden van weetenschap als in den text, en bereijd zijnde des gerequireerd werdende met eede nader gestand te doen Aldus Gedaan en Gepasseert tot Maccasser dato voorschreeven ter presentie van Iohannes Arnoldus Geubels en Carel Pielaat, Clercquen als getuijgen hier toe gerequireerd, de minute deeses is behoorlijk geteekend /onderstond/ quod Attestor /was geteekend/ B: Steijns p„ Eert gesw: Clercq Op Heeden den 14„e September Anno 1781 compareerde voor mij ons ondergeteekende Leeden in den Agtbaaren Raad van Iustitie des Casteels Rotterdam tot Marcasser Den Corporaal en Mandadoor van sComp„s thuijn voormeld Michiel werner, zijnde van de overEyschte ouderdom en van de Gereformeerde Religie dewelke zijn gegeeven verklaaring andermaal voor geleesen en te verstaan gegeven zijnde, zoo verklaarde hij daar bij te blijven perserteeren, op Expresse afvraage daar op den Eed te doen, gelijk denzelven gepresteerd heeft met het opsteeken van zijn voorte vingeren van de Regter hand en het nazeggen der woorden, zo waarlijk help mij God Almagtig Aldus Gedaan en beeedigt ter ordinaire Raadhamer van Iustitie dato voorsch: /was geteekend/ M: werner /onderstond/ In kennisse van mij /was geteekend/ B: Steijns p„l secretaris /:ter zeijde /:geteekend / T: Bosch: en I: B: Claassen "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0677#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "19\nvoor reeden van weetenschap als in den text, en bereijd zijnde des gerequireerd\nwerdende met eede nader gestand te doen\nAldus Gedaan en Gepasseert tot Maccasser dato voor„\n„schreeven ter presentie van Iohannes Arnoldus Geubels en\nCarel Pielaat, Clercquen als getuijgen hier toe gerequireerd, de minute\ndeeses is behoorlijk geteekend /onderstond/ quod Attestor /was geteekend/\nB: Steijns p„ Eert gesw: Clercq\nOp Heeden den 14„e September Anno 1781\ncompareerde voor mij ons ondergeteekende Leeden in den Agtbaaren Raad\nvan Iustitie des Casteels Rotterdam tot Marcasser\nDen Corporaal en Mandadoor van sComp„s thuijn voormeld Mic„\n„hiel werner, zijnde van de overEyschte ouderdom en van de Gereformeerde\nReligie dewelke zijn gegeeven verklaaring andermaal voor geleesen\nen te verstaan gegeven zijnde, zoo verklaarde hij daar bij te blijven per„\n„serteeren, op Expresse afvraage daar op den Eed te doen, gelijk denzelven\ngepresteerd heeft met het opsteeken van zijn voorte vingeren van de\nRegter hand en het nazeggen der woorden, zo waarlijk help\nmij God Almagtig\nAldus Gedaan en beeedigt ter ordinaire Raadhamer\nvan Iustitie dato voorsch: /was geteekend/ M: werner\n/onderstond/ In kennisse van mij /was geteekend/ B: Steijns\np„l secretaris /:ter zeijde /:geteekend / T: Bosch: en I: B: Claassen\nAan"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

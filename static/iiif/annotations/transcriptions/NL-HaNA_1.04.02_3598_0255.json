@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0255.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0255.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:56:30.439230",
+      "begin_of_the_end": "2026-01-09T11:56:30.439230"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -308,7 +336,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -703,7 +731,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4894,7 +4922,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4953,7 +4981,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4961,19 +4989,21 @@
           "type": "TextualBody",
           "value": "het Berigt wegens de geder hoofd H: HoogEd:s aantebieden. \nden 19„e april 1781 \nmagtig geworden, en hem tans zo veel te meer te stade kwam, daar hij nu in dit jaar weder niet alleen te weijnig maar ook zulk slegt zoort van papier hadden ontfangen dat hij er ten minsten tot eenig werk van belang bijna geen gebruijk dorst van te maken met verzoek dat hem zyn uijtgeschotene penningen voor het gemelde papier en penne te zamen ten bedragen van rd„s 57:12:— uijt Comp„s Cassa mogte werden gerestitueert; zo is vermits men „vert dat den Supliant met d' aan hem sedert twee Jaren verstrekte schrijf gereedschappen niet wel kan rondschieten goed gevonden en verstaan desselfs verzoek te accordeeren en hem dus voorm: somma van rd„s 57:12:— uijt Cassa te rembourseeren— Den EE opperkoopman en Hoofdadministradane reparatien aan het teur Claas Kraane ter voldoening aan Haar Hoog Edelheedens g'eerde ordre en "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0255#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "121\nden 19„e april 1781\nhet Berigt wegens de ge„\nder hoofd H: HoogEd:s aan„\ntebieden.\nmagtig geworden, en hem tans zo veel te\nmeer te stade kwam, daar hij nu in dit jaar\nweder niet alleen te weijnig maar ook zulk\nslegt zoort van papier hadden ontfangen\ndat hij er ten minsten tot eenig werk van\nbelang bijna geen gebruijk dorst van te\nmaken met verzoek dat hem zyn uijtge„\nschotene penningen voor het gemelde\npapier en penne te zamen ten bedragen\nvan rd„s 57:12:— uijt Comp„s Cassa mogte\nwerden gerestitueert; zo is vermits men\n„vert dat den Supliant met d' aan hem sedert\ntwee Jaren verstrekte schrijf gereedschap„\n„pen niet wel kan rondschieten goed gevonden\nen verstaan desselfs verzoek te accordeeren\nen hem dus voorm: somma van rd„s 57:12:—\nuijt Cassa te rembourseeren—\nDen EE opperkoopman en Hoofdadministra„\n„dane reparatien aan het teur Claas Kraane ter voldoening aan\nHaar Hoog Edelheedens g'eerde ordre en\nhet"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

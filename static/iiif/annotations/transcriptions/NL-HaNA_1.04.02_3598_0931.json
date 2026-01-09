@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0931.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0931.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:04:00.365500",
+      "begin_of_the_end": "2026-01-09T12:04:00.365500"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -64,7 +92,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -355,7 +383,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2102,7 +2130,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3433,7 +3461,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3947,7 +3975,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4006,7 +4034,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4014,19 +4042,21 @@
           "type": "TextualBody",
           "value": "Register der van Pontiana ontvangene Papieren in 1781. Orgineele missive van de residenten aan Hun Hoog Edelheeden gedateerd 17 December 1780. Lijst der Aangekomene inlandse Vaartuigen de dato 15 Xber: Lijst der van hier Vertrokkene Vaartuigen gedateerd als even Origineele missive van de residenten bovengemeld aan hunne Hoog Edelheeden gedateerd 21 Maart 1781. Notitie van het geladene in een Chinase Jonk de dato 20 Maart gevaseert 1. October. Notitie concerneerende de publique Voor stelling van den Wel Edele Groot Agtbaaren Heere M:r Willem Arnold Alting tot Gouverneur Generaal Van Nederlands &:a &:a &:a op dato 24. Augustus Extract volgens 't Journaal vande Bark den Arend, gedateerd 12 september Origineele missive van de residenter te Pontiana gedagteekend 4. October Restant Lijst onder uld„o september 1781. "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0931#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "Register der van Pontiana\nontvangene Papieren in 1781.\nOrgineele missive van de residenten aan Hun Hoog Edelheeden geda„\nteerd 17 December 1780.\nLijst der Aangekomene inlandse Vaartuigen de dato 15 Xber:\nLijst der van hier Vertrokkene Vaartuigen gedateerd als even\nOrigineele missive van de residenten bovengemeld aan hunne Hoog Edel„\nheeden gedateerd 21 Maart 1781.\nNotitie van het geladene in een Chinase Jonk de dato 20 Maart\ngevaseert 1. October.\nNotitie concerneerende de publique Voor stelling van den Wel Edele Groot\nAgtbaaren Heere M:r Willem Arnold Alting\ntot Gouverneur Generaal Van Nederlands\n&:a &:a &:a op dato 24. Augustus\nExtract volgens 't Journaal vande Bark den Arend, gedateerd\n12 september\nOrigineele missive van de residenter te Pontiana gedagteekend\n4. October\nRestant Lijst onder uld„o september 1781.\n„"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

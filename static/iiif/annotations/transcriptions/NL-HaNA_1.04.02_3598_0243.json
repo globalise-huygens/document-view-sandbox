@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0243.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0243.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:56:21.993463",
+      "begin_of_the_end": "2026-01-09T11:56:21.993463"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -147,7 +175,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -308,7 +336,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -547,7 +575,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4452,7 +4480,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -4511,7 +4539,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -4519,19 +4547,21 @@
           "type": "TextualBody",
           "value": "die nader g'assisteert geworden is \nden 3e April 1781 \nverantwoord zullen zijn en men dezen bijstand aan dit Hof als Eeen bewijs van sComp„s welmeenentheid zal doen aanmerken maar dat ook de vergoeding zo spoedig mogelijk zal geschieden en den koning niet nalatende Contracten in het weeren van den smakkelhandel te onderhouden zo is goedgevonden te rescribeeren dat den Heer gouverneur nog onlangs bij een brief aan den koning op de vergoeding aangedrongen heeft en dat men in dit Jaar op de sterkte instantie van de voor de Hoofdplaats geprofecteerd geweest zijnde, dog hier vervallene gezanten hen weder egter met een Capistaal advans en tegens kloeke mansslaven a ro„s 40 de kop, een parthij ammonitie heeft afgestaan volgens resolutie van den 8„e december A:o p„s Haar Hoog Edelheeden aan den Heer gouverneur opgedragen hebbende een "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0243#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "29\nden 3e April 1781\ndie nader g'assisteert ge„\nworden is\nverantwoord zullen zijn en men dezen bij„\n„stand aan dit Hof als Eeen bewijs van\nsComp„s welmeenentheid zal doen aanmerken\nmaar dat ook de vergoeding zo spoedig moge„\n„lijk zal geschieden en den koning niet\nnalatende Contracten in het weeren van\nden smakkelhandel te onderhouden zo is\ngoedgevonden te rescribeeren dat den Heer\ngouverneur nog onlangs bij een brief aan\nden koning op de vergoeding aangedrongen\nheeft en dat men in dit Jaar op de sterkte\ninstantie van de voor de Hoofdplaats gepro„\nfecteerd geweest zijnde, dog hier vervallene\ngezanten hen weder egter met een Capistaal\nadvans en tegens kloeke mansslaven\na ro„s 40 de kop, een parthij ammonitie\nheeft afgestaan volgens resolutie van\nden 8„e december A:o p„s\nHaar Hoog Edelheeden aan den Heer\ngouverneur opgedragen hebbende een\nnaauwkeurig"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

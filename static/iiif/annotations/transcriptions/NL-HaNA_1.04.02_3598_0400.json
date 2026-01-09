@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0400.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0400.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T11:58:06.582985",
+      "begin_of_the_end": "2026-01-09T11:58:06.582985"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -1083,7 +1111,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -2258,7 +2286,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -6189,7 +6217,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -8118,7 +8146,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -8177,7 +8205,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -8185,19 +8213,21 @@
           "type": "TextualBody",
           "value": "ontwaerde hij dat morgens en by het aanbreeken van den dag dat het Cerammier vaertuyg agter na quam zeijlen in verbeelding van hem declarant dat zy meede dit heer na de post wilde Dat den declarant het voor de negerij tamamoija genadert zijnde wel haast het Contraire van dien ontdekte alsoo den Cerommer in steede van dat, de Coers hadde gesteld buiten het varkans Eiland om, en te vervolgens voorbij deese vesting passeerde, Dat den declarant daerop heeft afgehouden en meede de Coers na 't voormelde eijland gesteld, met voorneemen om dien Ceramdwingen „mer te vervolgen en was het mogelijk z' na de verting te brengen in dog geen kans ziende dat vaertuijg (vermits in het zeijlen dat van hem declarant veel te saell was 9 te kunnen inhaalen, en als oordeelende maar vergeef moeyte zoude zyn, heeft den declarant derhalven van dit zyn voorneemen afgesien, en vervolgens zyn Coers verandert na de vesting alwaar hij ook is aangeland en van de tanettereesen zendeling die expres dit hun was gesonden om van het voorval der Cerammers aan dien sergeant als ook hem declorant kennisse te geven heeft verstaan als dat den meermelde Cerammer of orang baaij vijf stuks onderdanen van daer hadde vervoert, meede nemende 2 pees werpnetten awijders verklaarde die declarant dat den meergemelde Resident al na de aankomst van den Ceramner of orang kaaij met denselven zijn overeengekomen dat den resident voor ieder kop der aangebragte tanettereesen niet meerder zoude behoeven te betalen all ryp=s twintig, dog in salejerese kleeden -à ieder poel teegens rygd„s twee gereekend, onder specaal leding dat die restitutie niet eerder zoude geschieden dan met des "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0400#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "76\nontwaerde hij dat morgens en by het aanbreeken van den dag dat\nhet Cerammier vaertuyg agter na quam zeijlen in verbeelding van\nhem declarant dat zy meede dit heer na de post wilde\nDat den declarant het voor de negerij tamamoija genadert\nzijnde wel haast het Contraire van dien ontdekte alsoo den Cerommer\nin steede van dat, de Coers hadde gesteld buiten het varkans\nEiland om, en te vervolgens voorbij deese vesting passeerde,\nDat den declarant daerop heeft afgehouden en meede de\nCoers na 't voormelde eijland gesteld, met voorneemen om dien Ceram„\ndwingen\n„mer te vervolgen en was het mogelijk z' na de verting te brengen in\ndog geen kans ziende dat vaertuijg (vermits in het zeijlen\ndat van hem declarant veel te saell was 9 te kunnen inhaalen,\nen als oordeelende maar vergeef moeyte zoude zyn, heeft den declarant\nderhalven van dit zyn voorneemen afgesien, en vervolgens zyn\nCoers verandert na de vesting alwaar hij ook is aangeland en\nvan de tanettereesen zendeling die expres dit hun was gesonden\nom van het voorval der Cerammers aan dien sergeant als ook\nhem declorant kennisse te geven heeft verstaan als dat den\nmeermelde Cerammer of orang baaij vijf stuks onderdanen van daer\nhadde vervoert, meede nemende 2 pees werpnetten\nawijders verklaarde die declarant dat den meergemelde\nResident al na de aankomst van den Ceramner of orang kaaij\nmet denselven zijn overeengekomen dat den resident voor ieder\nkop der aangebragte tanettereesen niet meerder zoude behoeven\nte betalen all ryp=s twintig, dog in salejerese kleeden\n-„\nà ieder poel teegens rygd„s twee gereekend, onder specaal leding dat\ndie restitutie niet eerder zoude geschieden dan met des\nresidentb="
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

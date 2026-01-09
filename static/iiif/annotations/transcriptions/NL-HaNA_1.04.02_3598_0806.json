@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0806.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0806.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:02:40.849934",
+      "begin_of_the_end": "2026-01-09T12:02:40.849934"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -220,7 +248,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -433,7 +461,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -620,7 +648,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7743,7 +7771,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7815,7 +7843,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -7874,7 +7902,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -7882,19 +7910,21 @@
           "type": "TextualBody",
           "value": "den 8 Junij na Batavia „ „ _„o „ „ _„o„ „ 3 Iulij „ _ 200 pic„s trippangs 2 pi C„s wax en 11 stuks slaven ter bestelling, als passagier den Arabiers toeang Said Jseeng, en said alawie nevens vlijff Eijgen den Chinees Linkowanko, per barcq groot 90 lasten, bemant met 29 koppen, was gemontheerd met 10 p„s kanons, 4 donderbussen, 4 p„s snaphanen en 2 vatjes buskruijt, neemt meede 300 pic„s trippangs, 30 pic„s wax en 5 stuxs slaven ter negotie, als passagiers den meede Chineesen Tansoko, en tontjaseeng den Chinees Gotjantjoong per gonting groot 8 lasten bemant met 15 koppen was gemontheerd met 1 p„s rantackangs 2 p„s snaphanen en 25 lb: buskruijt neemt meede 10 pic„s trippangs 8 pi C„ agar agar, 8 Cong:s Javase kleetjes en 1 laaf ter negotie „ „ _o„ „ _o „ den Chinees Orignjeko nevens 1 lijff ijpen per Patuwackang groot 16 lasten bemant met 17 koppen, was gemontheerd met 6 p„s rantackangs, 6 p„s donderbussen, 8 p„s snaphaanen en 25 lb buskruijt, neemt meede 100 pic:o treppangs, 16 stukks slaven ter bestelling 22 stuxs ter negotie als passagiers den meede Chinees Niobongo Nevens v leijff Eijgen, en den Jnlander alie met zijn vrouw _„ den Chinees Konkiseeng nevens vlijff Eijgen per dito groot 15 lasten, bemant met 15 koppen, was gemontheerd met 4 p„s Eijzere en 4 p„s metaale stukjes, 12 p„s snaphanen, 4 p„s donderbussen en 100 lb bus kruijt, neemt meede 16 pic„s wax en 15 stuks bestelde slaven, als passagier den "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0806#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "den 8 Junij na Batavia\n„ „ _„o „ „ _„o„\n„ 3 Iulij „ _\n200 pic„s trippangs 2 pi C„s wax en 11 stuks slaven\nter bestelling, als passagier den Arabiers toeang\nSaid Jseeng, en said alawie nevens vlijff Eijgen\nden Chinees Linkowanko, per barcq groot 90\nlasten, bemant met 29 koppen, was gemontheerd\nmet 10 p„s kanons, 4 donderbussen, 4 p„s snaphanen\nen 2 vatjes buskruijt, neemt meede 300 pic„s trip„\n„pangs, 30 pic„s wax en 5 stuxs slaven ter negotie,\nals passagiers den meede Chineesen Tansoko, en\ntontjaseeng\nden Chinees Gotjantjoong per gonting groot 8 las„\n„ten bemant met 15 koppen was gemontheerd met\n1 p„s rantackangs 2 p„s snaphanen en 25 lb: buskruijt\nneemt meede 10 pic„s trippangs 8 pi C„ agar agar, 8 Cong:s\nJavase kleetjes en 1 laaf ter negotie\n„ „ _o„ „ _o „ den Chinees Orignjeko nevens 1 lijff ijpen per Patu„\n„wackang groot 16 lasten bemant met 17 koppen, was ge„\n„montheerd met 6 p„s rantackangs, 6 p„s donderbussen,\n8 p„s snaphaanen en 25 lb buskruijt, neemt meede\n100 pic:o treppangs, 16 stukks slaven ter bestelling\n22 stuxs ter negotie als passagiers den meede Chi„\n„nees Niobongo Nevens v leijff Eijgen, en den Jnlander alie\nmet zijn vrouw\n_„ den Chinees Konkiseeng nevens vlijff Eijgen per dito\ngroot 15 lasten, bemant met 15 koppen, was gemontheerd\nmet 4 p„s Eijzere en 4 p„s metaale stukjes, 12 p„s snaphanen,\n4 p„s donderbussen en 100 lb bus kruijt, neemt meede 16 pic„s\nwax en 15 stuks bestelde slaven, als passagier den\nJnlandsche\nden"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {

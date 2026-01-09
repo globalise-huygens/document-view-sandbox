@@ -1,11 +1,39 @@
 {
   "@context": [
     "http://iiif.io/api/extension/text-granularity/context.json",
-    "http://iiif.io/api/presentation/3/context.json"
+    "http://iiif.io/api/presentation/3/context.json",
+    "https://linked.art/ns/v1/linked-art.json",
+    "http://www.w3.org/ns/anno.jsonld",
+    {
+      "transcription-diplomatic": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-diplomatic"
+      },
+      "transcription-normalized": {
+        "@id": "https://digitaalerfgoed.poolparty.biz/globalise/annotation/transcription/transcription-normalized"
+      }
+    }
   ],
-  "type": "AnnotationPage",
+  "type": [
+    "DigitalObject",
+    "AnnotationPage"
+  ],
   "id": "https://globalise-huygens.github.io/document-view-sandbox/iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0759.json",
   "label": "Transcription of NL-HaNA_1.04.02_3598_0759.jpg",
+  "created_by": {
+    "type": "DigitalMachineEvent",
+    "_label": "Creation of Web Annotation Page, using... etc.",
+    "carried_out_by": "https://globalise.huygens.knaw.nl/team/",
+    "timespan": {
+      "type": "TimeSpan",
+      "end_of_the_begin": "2026-01-09T12:02:09.132448",
+      "begin_of_the_end": "2026-01-09T12:02:09.132448"
+    },
+    "used_software_or_firmware": {
+      "id": "https://github.com/knaw-huc/globalise-tools/blob/7d7b7df9c1cf69320ff6049678863fd1ab4a7b2e/scripts/gt-generate-transcription-annotation-pages.py",
+      "type": "Software",
+      "name": "scripts/gt-generate-transcription-annotation-pages.py"
+    }
+  },
   "items": [
     {
       "type": "Annotation",
@@ -33,7 +61,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -116,7 +144,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3527,7 +3555,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3599,7 +3627,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3639,7 +3667,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3711,7 +3739,7 @@
           }
         },
         {
-          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+          "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
           "type": "Annotation"
         }
       ]
@@ -3738,7 +3766,7 @@
     },
     {
       "type": "Annotation",
-      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page",
+      "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-normalized",
       "motivation": "supplementing",
       "textGranularity": "page",
       "body": [
@@ -3746,19 +3774,21 @@
           "type": "TextualBody",
           "value": "178½ lb oud staal 45¼ „ slootplaaten 333 Maate smeekoolen 889 lb ijzer in zoort 607¼ „ Hoepijzer 301 „ oud yzer 103¾„ Thin 30½ „ spiauter Gereedschappen 4 p„s ambeelden 14 „ Armveijlen 7 „ Bankschroeven 1 „ boeij bout den train 4 „ buijg tangen 4, Brandijzers 2 in den train 2 „ bank speerhaeken 4 „ blaasbalgen 8 „ Bankhamers 125„ Beijlen den train 1 „ duijmstok. 1 „ draaij slijpsteen 3. „ drie kante saag veijlen 6„ gaat ijzers 1 „ bos haaken 13 p„s hakken den train 1 „ houte Pantbak 6 „ handhamers 8 „ smeetkroesen # "
         }
-      ]
+      ],
+      "purpose": "transcription-normalized"
     },
     {
       "type": "Annotation",
       "id": "https://data.globalise.huygens.knaw.nl/hdl:20.500.14722/annotations:transcriptions:NL-HaNA_1.04.02_3598_0759#page-htr",
       "motivation": "supplementing",
-      "textGranularity": "page-htr",
+      "textGranularity": "page",
       "body": [
         {
           "type": "TextualBody",
           "value": "101\n178½ lb oud staal\n45¼ „ slootplaaten\n333 Maate smeekoolen\n889 lb ijzer in zoort\n607¼ „ Hoepijzer\n301 „ oud yzer\n103¾„ Thin\n30½ „ spiauter\nGereedschappen\n4 p„s ambeelden\n14 „ Armveijlen\n7 „ Bankschroeven\n1 „ boeij bout den train\n4 „ buijg tangen\n4, Brandijzers 2 in den train\n2 „ bank speerhaeken\n4 „ blaasbalgen\n8 „ Bankhamers\n125„ Beijlen den train\n1 „ duijmstok.\n1 „ draaij slijpsteen\n3. „ drie kante saag veijlen\n6„ gaat ijzers\n1 „ bos haaken\n13 p„s hakken den train\n1 „ houte Pantbak\n6 „ handhamers\n8 „ smeetkroesen\n#\nverte"
         }
-      ]
+      ],
+      "purpose": "transcription-diplomatic"
     }
   ],
   "partOf": {
