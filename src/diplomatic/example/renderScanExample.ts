@@ -1,7 +1,10 @@
 import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
 import { renderScan } from './renderScan';
-import { renderDiplomaticView } from '../renderDiplomaticView';
+import {
+  DiplomaticViewConfig,
+  renderDiplomaticView
+} from '../renderDiplomaticView';
 import { $ } from './$';
 
 export async function renderScanExample($parent: HTMLElement) {
@@ -45,6 +48,6 @@ export async function renderScanExample($parent: HTMLElement) {
 
   const pageAttributes = { height, width, scanPath };
   renderScan(pageAttributes, scale, $scan);
-  const viewConfig = { showBoundaries: false, showScanMargin: true };
+  const viewConfig: DiplomaticViewConfig = { showBoundaries: false, showScanMargin: true, fit: 'contain' };
   renderDiplomaticView($view, annoPage, viewConfig);
 }

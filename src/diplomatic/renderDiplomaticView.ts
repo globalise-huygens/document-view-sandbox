@@ -1,44 +1,50 @@
-import { select } from 'd3-selection';
-import { Annotation, AnnotationPage } from './AnnoModel';
-import { DiplomaticViewConfig } from './DiplomaticViewConfig';
-
-import { renderWordBoundaries } from './renderWordBoundaries';
-import { px } from './px';
-import { calcTextRect } from './calcTextRect';
-import { renderWord } from './renderWord';
-import { createHull } from './createHull';
-import { TextResizer } from './TextResizer';
-import { findSvgPath } from './anno/findSvgPath';
-import { Point } from './Point';
-import { findAnnotationResourceTarget } from './findAnnotationResourceTarget';
-import { orThrow } from '../util/orThrow';
-import { createPoints } from './createPoints';
+import {Annotation, AnnotationPage} from "./AnnoModel";
+import {orThrow} from "../util/orThrow";
+import {assertTextualBody} from "./anno/assertTextualBody";
+import {Point} from "./Point";
+import {createHull} from "./createHull";
+import {findSvgPath} from "./anno/findSvgPath";
+import {calcBaseSegment} from "./calcBaseSegment";
+import {calcTextAngle} from "./calcTextAngle";
+import {calcTextRect} from "./calcTextRect";
+import {px} from "./px";
+import {D3El} from "./D3El";
+import {select} from "d3-selection";
+import {TextResizer} from "./TextResizer";
+import {Id} from "./Id";
+import {renderWord} from "./renderWord";
+import {renderWordBoundaries} from "./renderWordBoundaries";
+import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
+import {createPoints} from "./createPoints";
 import {
   calcBoundingBox,
   calcBoundingPoints,
-  padBoundingPoints,
-} from './calcBoundingBox';
-import { Id } from './Id';
-import { assertTextualBody } from './anno/assertTextualBody';
-import { calcTextAngle } from './calcTextAngle';
-import { calcBaseSegment } from './calcBaseSegment';
-import { createPath } from './createPath';
-import { Rect } from './Rect';
+  padBoundingPoints
+} from "./calcBoundingBox";
+import {createPath} from "./createPath";
+import {Rect} from "./Rect";
+import {calcScaleFactor, ViewFit} from "./calcScaleFactor";
 
-import { $D3 } from './$D3';
-
+export interface DiplomaticViewConfig {
+  showBoundaries: boolean;
+  showScanMargin: boolean;
+  fit: ViewFit;
+}
+const defaultConfig: DiplomaticViewConfig = {
+  showBoundaries: false,
+  showScanMargin: false,
+  fit: 'width'
+}
 export function renderDiplomaticView(
   $view: HTMLDivElement,
   page: AnnotationPage,
-  config: DiplomaticViewConfig,
+  config: Partial<DiplomaticViewConfig>,
 ) {
-  const { showBoundaries, showScanMargin } = config;
+  const { showBoundaries, showScanMargin, fit = 'width' } = {
+    ...defaultConfig,
+    ...config
+  };
   $view.innerHTML = '';
-
-  // TODO: Make aware of height when provided:
-  const { width: viewWidth, height: viewHeight } =
-    $view.getBoundingClientRect();
-
   const { width: scanWidth, height: scanHeight } = page.partOf;
 
   const $text = document.createElement('div');
@@ -57,33 +63,32 @@ export function renderDiplomaticView(
   });
   const marginlessRect = calcTextRect(words);
 
-  /**
-   * Add some padding to show characters at the edges
-   * Characters can overflow vertically as words are fit into their
-   * bounding boxes using width only.
-   */
   const overflowPadding = Math.round(marginlessRect.width * 0.05);
-
-  const factor = showScanMargin
-    ? viewWidth / scanWidth
-    : viewWidth / marginlessRect.width;
+  const contentWidth = showScanMargin
+    ? scanWidth
+    : marginlessRect.width + overflowPadding * 2;
+  const contentHeight = showScanMargin
+    ? scanHeight
+    : marginlessRect.height + overflowPadding * 2;
+  const factor = calcScaleFactor(fit, $view, contentWidth, contentHeight);
   const scale = (toScale: number) => toScale * factor;
   const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
 
-  if (showScanMargin) {
-    $view.style.height = px(scale(scanHeight));
-    $view.style.width = px(scale(scanWidth));
-  } else {
-    $view.style.height = px(scale(marginlessRect.height + overflowPadding * 2));
-    $view.style.width = px(scale(marginlessRect.width + overflowPadding * 2));
+  if (fit !== 'contain') {
+    $view.style.width = px(scale(contentWidth));
+    $view.style.height = px(scale(contentHeight));
+  }
+
+  if (!showScanMargin) {
     $text.style.marginTop = px(scale(-marginlessRect.top + overflowPadding));
     $text.style.marginLeft = px(scale(-marginlessRect.left + overflowPadding));
   }
-  const $boundaries: $D3<SVGSVGElement> = select($view)
+
+  const $boundaries: D3El<SVGSVGElement> = select($view)
     .append('svg')
     .attr('class', 'boundaries');
 
-  const { width, height } = $view.getBoundingClientRect();
+  const {width, height} = $view.getBoundingClientRect();
 
   if (showScanMargin) {
     $boundaries.attr('width', width).attr('height', height);
@@ -97,28 +102,25 @@ export function renderDiplomaticView(
 
   const resizer = new TextResizer();
   const $words: Record<Id, HTMLElement> = Object.fromEntries(
-    words.map((w) => {
-      const $w = renderWord(
-        w.text,
-        w.hull.map(scalePoint),
-        scale(w.angle),
-        $text,
-      );
-      return [w.id, $w];
-    }),
+    words.map((word) => [word.id, renderWord(
+      word.text,
+      word.hull.map(scalePoint),
+      scale(word.angle),
+      $text,
+    )]),
   );
   resizer.calibrate(
     Object.values($words)
       .slice(0, 10)
       .map((w) => w),
   );
-  words.forEach((w) => {
-    const $w = $words[w.id];
-    resizer.resize($w);
+  words.forEach((word) => {
+    const $word = $words[word.id];
+    resizer.resize($word);
     if (showBoundaries) {
-      const scaledHulls = w.hull.map(scalePoint);
-      const scaledBases = w.base.map(scalePoint);
-      renderWordBoundaries($w, scaledHulls, scaledBases, $boundaries);
+      const scaledHulls = word.hull.map(scalePoint);
+      const scaledBases = word.base.map(scalePoint);
+      renderWordBoundaries($word, scaledHulls, scaledBases, $boundaries);
     }
   });
 
@@ -264,14 +266,12 @@ export function renderDiplomaticView(
   }
 
   Object.entries($words).forEach(([wordId, $word]) => {
-    const wordAnno =
-      wordAnnos.find((w) => w.id === wordId) ??
-      orThrow(`No word annotation for ${wordId}`);
-    const lineId =
-      findAnnotationResourceTarget(wordAnno)?.id ??
-      orThrow(`No line for word ${wordId}`);
-    const blockId =
-      lineToBlock[lineId] ?? orThrow(`No block for line ${lineId}`);
+    const wordAnno = wordAnnos.find((w) => w.id === wordId)
+      ?? orThrow(`No word annotation for ${wordId}`);
+    const lineId = findAnnotationResourceTarget(wordAnno)?.id
+      ?? orThrow(`No line for word ${wordId}`);
+    const blockId = lineToBlock[lineId]
+      ?? orThrow(`No block for line ${lineId}`);
     $word.addEventListener('mouseenter', () => {
       showLine(lineId);
       showBlock(blockId);
