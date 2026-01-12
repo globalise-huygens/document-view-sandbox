@@ -1,9 +1,9 @@
-import type {Annotation} from "../AnnoModel";
-import {isEmpty} from "lodash";
-import {isSpecificResourceTarget} from "./isSpecificResourceTarget";
-import {assertSpecificResourceTarget} from "./assertSpecificResourceTarget";
-import {assertSvgSelector} from "./assertSvgSelector";
-import {parseSvgPath} from "./parseSvgPath";
+import type { Annotation } from '../AnnoModel';
+import { isEmpty } from 'lodash';
+import { isSpecificResourceTarget } from './isSpecificResourceTarget';
+import { assertSpecificResourceTarget } from './assertSpecificResourceTarget';
+import { assertSvgSelector } from './assertSvgSelector';
+import { parseSvgPath } from './parseSvgPath';
 export type SvgPath = string;
 
 export function findSvgPath(annotation: Annotation): SvgPath {

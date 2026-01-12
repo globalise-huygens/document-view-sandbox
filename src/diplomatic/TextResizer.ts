@@ -1,4 +1,4 @@
-import {px} from "./px";
+import { px } from './px';
 
 /**
  * Inspiration: https://dev.to/jankapunkt/make-text-fit-it-s-parent-size-using-javascript-m40

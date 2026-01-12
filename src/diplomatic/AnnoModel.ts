@@ -1,20 +1,19 @@
 import type {
   Annotation as IiifAnnotation,
   AnnotationPage as IiifAnnotationPage,
-  AnnotationTarget as IiifAnnotationTarget
+  AnnotationTarget as IiifAnnotationTarget,
 } from '@iiif/presentation-3';
 
 export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
   partOf: PartOf;
-  items: Annotation[]
+  items: Annotation[];
 };
 
-
 export type Annotation = IiifAnnotation & {
-  target: AnnotationTarget
-}
+  target: AnnotationTarget;
+};
 
-export type AnnotationTarget = IiifAnnotationTarget | AnnotationResourceTarget
+export type AnnotationTarget = IiifAnnotationTarget | AnnotationResourceTarget;
 
 export type TextualBody = {
   type: 'TextualBody';
@@ -55,7 +54,6 @@ export type PartOf = {
 };
 
 export type AnnotationResourceTarget = {
-  id: string,
-  type: "Annotation"
-}
-
+  id: string;
+  type: 'Annotation';
+};

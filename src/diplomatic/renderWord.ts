@@ -1,6 +1,6 @@
-import {Point} from './Point';
-import {calcBoundingBox} from './calcBoundingBox';
-import {px} from "./px";
+import { Point } from './Point';
+import { calcBoundingBox } from './calcBoundingBox';
+import { px } from './px';
 
 export const renderWord = (
   text: string,

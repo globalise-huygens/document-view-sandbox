@@ -1,7 +1,7 @@
 import { Point } from './Point';
 import { curveLinearClosed, line } from 'd3-shape';
 import { orThrow } from '../util/orThrow';
-import {$D3} from "./$D3";
+import { $D3 } from './$D3';
 
 export function renderWordBoundaries(
   el: HTMLElement,

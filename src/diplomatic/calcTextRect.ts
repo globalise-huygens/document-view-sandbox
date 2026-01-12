@@ -1,12 +1,12 @@
-import {Point} from "./Point";
-import {Rect} from "./Rect";
+import { Point } from './Point';
+import { Rect } from './Rect';
 
 /**
  * Bounding rectangle that fits all text
  */
-export function calcTextRect(texts: {hull: Point[]}[]): Rect {
+export function calcTextRect(texts: { hull: Point[] }[]): Rect {
   if (!texts.length) {
-    return {left: 0, top: 0, width: 0, height: 0};
+    return { left: 0, top: 0, width: 0, height: 0 };
   }
 
   let minX = Infinity;

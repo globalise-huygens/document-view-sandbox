@@ -16,6 +16,6 @@ export function renderScan(
   $scan.src = scanPath;
   Object.assign($scan.style, {
     width: px(scale * width),
-    height: px(scale * height)
+    height: px(scale * height),
   });
 }
