@@ -1,7 +1,9 @@
 import { Point } from './Point';
 import {Rect} from "./Rect";
 
-export function calcBoundingPoints(points: Point[]): Point[] {
+type BoundingPoints = [Point, Point, Point, Point];
+
+export function calcBoundingPoints(points: Point[]): BoundingPoints {
   const {xMin, yMin, xMax, yMax} = calcMinMax(points);
 
   return [
@@ -9,6 +11,25 @@ export function calcBoundingPoints(points: Point[]): Point[] {
     [xMax, yMin],
     [xMax, yMax],
     [xMin, yMax],
+  ];
+}
+
+export function padBoundingPoints(
+  points: BoundingPoints,
+  padding: Point
+): BoundingPoints {
+  const { xMin, yMin, xMax, yMax } = calcMinMax(points);
+  const [paddingX, paddingY] = padding;
+  const paddedXMin = xMin - paddingX;
+  const paddedYMin = yMin - paddingY;
+  const paddedXMax = xMax + paddingX;
+  const paddedYMax = yMax + paddingY;
+
+  return [
+    [paddedXMin, paddedYMin],
+    [paddedXMax, paddedYMin],
+    [paddedXMax, paddedYMax],
+    [paddedXMin, paddedYMax],
   ];
 }
 

@@ -13,7 +13,11 @@ import {Point} from "./Point";
 import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
 import {orThrow} from "../util/orThrow";
 import {createPoints} from "./createPoints";
-import {calcBoundingBox} from "./calcBoundingBox";
+import {
+  calcBoundingBox,
+  calcBoundingPoints,
+  padBoundingPoints
+} from "./calcBoundingBox";
 import {Id} from "./Id";
 import {assertTextualBody} from "./anno/assertTextualBody";
 import {calcTextAngle} from "./calcTextAngle";
@@ -122,57 +126,16 @@ export function renderDiplomaticView(
     }
     wordAnnosByLine.get(target.id)!.push(wordAnno)
   }
-  lineAnnos.forEach((a, i) => {
-    const path = findSvgPath(a)
-    const points = createPoints(path)
-    const scaled = points.map(scalePoint)
-    // $boundaries
-    //   .append("polygon")
-    //   .attr("points", createPath(scaled))
-    //   .attr("fill", "rgba(255,0,0,0.05)")
-    //   .attr("stroke", "rgba(255,0,0,0.5)");
 
-    const $lineNumber = document.createElement('span')
-    $text.appendChild($lineNumber)
-    $lineNumber.classList.add('line-number')
-    $lineNumber.textContent = `${i + 1}`.padStart(2, '0')
-
-    const words = wordAnnosByLine.get(a.id)
-    if (!words) {
-      console.warn('Line without words')
-      return;
-    }
-
-    // TODO: pick most left word in line, use that bbox
-    const bbox: Rect = words.reduce<Rect | null>((prev, curr) => {
-      const bbox = calcBoundingBox(createPoints(findSvgPath(curr)).map(scalePoint))
-      if(!prev) {
-        return bbox;
-      }
-      if(prev.left < bbox.left) {
-        return prev
-      }
-      return bbox
-    }, null) ?? orThrow('No leftmost word found')
-    // TODO: left position should be determined by the block words bb
-    Object.assign($lineNumber.style, {
-      left: px(bbox.left),
-      top: px(bbox.top + bbox.height / 2),
-      marginLeft: px(-scale(120)),
-      marginTop: px(-scale(40)),
-      fontSize: px(scale(80))
-    })
-
-  })
-  const blockPaths = blockAnnos
-    .map(findSvgPath)
-  blockPaths.forEach(p => {
-    $boundaries
-      .append("polygon")
-      .attr("points", scalePath(p))
-      .attr("fill", "rgba(0,255,0,0.05)")
-      .attr("stroke", "rgba(0,255,0,0.5)");
-  })
+  // const blockPaths = blockAnnos
+  //   .map(findSvgPath)
+  // blockPaths.forEach(p => {
+  //   $boundaries
+  //     .append("polygon")
+  //     .attr("points", scalePath(p))
+  //     .attr("fill", "rgba(0,255,0,0.05)")
+  //     .attr("stroke", "rgba(0,255,0,0.5)");
+  // })
 
   const blockBoundaries: Map<Id, Point[]> = new Map()
   const lineToBlock: Map<Id, Id> = new Map()
@@ -192,13 +155,78 @@ export function renderDiplomaticView(
     const wordPoints = createPoints(findSvgPath(wordAnno));
     blockBoundaries.get(blockId)!.push(...wordPoints)
   }
-  // [...blockBoundaries.values()]
-  //   .map(p => calcBoundingPoints(p).map(scalePoint))
-  //   .forEach(p => {
-  //     $boundaries
-  //       .append("polygon")
-  //       .attr("points", createPath(p))
-  //       .attr("fill", "rgba(255,0,255,0.05)")
-  //       .attr("stroke", "rgba(255,0,255,1)");
-  //   })
+
+  const padding: Point = [50, 100];
+  const blockBoundaryPoints = Object.fromEntries([...blockBoundaries.entries()]
+    .map(([id, block]) => [
+      id,
+      padBoundingPoints(
+        calcBoundingPoints(block),
+        padding
+      ).map(scalePoint)
+    ]));
+  Object.values(blockBoundaryPoints)
+    .forEach(p => {
+      $boundaries
+        .append("polygon")
+        .attr("points", createPath(p))
+        .attr("fill", "rgba(255,0,255,0.05)")
+        .attr("stroke", "rgba(255,0,255,1)");
+    })
+
+  lineAnnos.forEach((a, i) => {
+    const id = a.id
+    const path = findSvgPath(a)
+    const points = createPoints(path)
+    // const scaled = points.map(scalePoint)
+    // $boundaries
+    //   .append("polygon")
+    //   .attr("points", createPath(scaled))
+    //   .attr("fill", "rgba(255,0,0,0.05)")
+    //   .attr("stroke", "rgba(255,0,0,0.5)");
+
+    const $lineNumber = document.createElement('span')
+    $text.appendChild($lineNumber)
+    $lineNumber.classList.add('line-number')
+    $lineNumber.textContent = `${i + 1}`.padStart(2, '0')
+
+    const words = wordAnnosByLine.get(id)
+    if (!words) {
+      console.warn('Line without words')
+      return;
+    }
+
+    const blockId = lineToBlock.get(id);
+    if (!blockId) {
+      console.warn('Line without block')
+      return;
+    }
+    const blockPoints = blockBoundaryPoints[blockId]
+      ?? orThrow('Block points not found')
+
+    // TODO: pick most left word in line, use that bbox
+    const bbox: Rect = words.reduce<Rect | null>((prev, curr) => {
+      const bbox = calcBoundingBox(createPoints(findSvgPath(curr)).map(scalePoint))
+      if (!prev) {
+        return bbox;
+      }
+      if (prev.left < bbox.left) {
+        return prev
+      }
+      return bbox
+    }, null) ?? orThrow('No leftmost word found')
+    // TODO: left position should be determined by the block words bb
+    const topLeft = blockPoints[0];
+    const topLeftX = topLeft[0];
+    console.log('blockPoints', {topLeft, topLeftX})
+    Object.assign($lineNumber.style, {
+      // TODO: X should be bbox from boundaryPoints
+      left: px(topLeftX),
+      top: px(bbox.top + bbox.height / 2),
+      marginLeft: px(-scale(120)),
+      marginTop: px(-scale(40)),
+      fontSize: px(scale(80))
+    })
+
+  })
 }
