@@ -1,9 +1,6 @@
-import {Selection} from 'd3-selection';
 import {renderTextOnlyExample} from "./example/renderTextOnlyExample";
 import {renderScanExample} from "./example/renderScanExample";
 import {$} from "./example/$";
-
-export type D3Svg = Selection<SVGSVGElement, unknown, null, undefined>;
 
 if (DEV) {
   new EventSource('/esbuild').addEventListener('change', () =>

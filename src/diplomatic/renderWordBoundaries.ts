@@ -1,13 +1,13 @@
-import { D3Svg } from './index';
 import { Point } from './Point';
 import { curveLinearClosed, line } from 'd3-shape';
 import { orThrow } from '../util/orThrow';
+import {$D3} from "./$D3";
 
 export function renderWordBoundaries(
-  el: HTMLDivElement,
+  el: HTMLElement,
   hull: Point[],
   base: Point[],
-  $boundaries: D3Svg,
+  $boundaries: $D3<SVGSVGElement>,
 ) {
   const parent = el.parentElement ?? orThrow('No parent');
   parent.classList.add('bounding-box');

@@ -25,6 +25,8 @@ import {calcBaseSegment} from "./calcBaseSegment";
 import {createPath} from "./createPath";
 import {Rect} from "./Rect";
 
+import {$D3} from "./$D3";
+
 export function renderDiplomaticView(
   $view: HTMLDivElement,
   page: AnnotationPage,
@@ -67,9 +69,6 @@ export function renderDiplomaticView(
     : viewWidth / marginlessRect.width;
   const scale = (toScale: number) => toScale * factor
   const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
-  const scalePath = (path: string) => createPoints(path)
-    .map(scalePoint)
-    .map(p => `${p[0]},${p[1]}`).join(' ');
 
   if (showScanMargin) {
     $view.style.height = px(scale(scanHeight))
@@ -80,7 +79,7 @@ export function renderDiplomaticView(
     $text.style.marginTop = px(scale(-marginlessRect.top + overflowPadding));
     $text.style.marginLeft = px(scale(-marginlessRect.left + overflowPadding));
   }
-  const $boundaries = select($view)
+  const $boundaries: $D3<SVGSVGElement> = select($view)
     .append('svg')
     .attr('class', 'boundaries')
 
@@ -99,12 +98,13 @@ export function renderDiplomaticView(
   }
 
   const resizer = new TextResizer();
-  const $words = words.map(w =>
-    renderWord(w.text, w.hull.map(scalePoint), scale(w.angle), $text)
-  )
-  resizer.calibrate($words.slice(0, 10).map(w => w));
-  words.forEach((w, i) => {
-    const $w = $words[i];
+  const $words: Record<Id, HTMLElement> = Object.fromEntries(words.map(w => {
+    const $w = renderWord(w.text, w.hull.map(scalePoint), scale(w.angle), $text)
+    return [w.id, $w]
+  }))
+  resizer.calibrate(Object.values($words).slice(0, 10).map(w => w));
+  words.forEach((w) => {
+    const $w = $words[w.id];
     resizer.resize($w);
     if (showBoundaries) {
       const scaledHulls = w.hull.map(scalePoint);
@@ -153,16 +153,18 @@ export function renderDiplomaticView(
         padding
       ).map(scalePoint)
     ]));
-  Object.values(blockBoundaryPoints)
-    .forEach(p => {
+  const $blockHighlights: Record<Id, $D3<SVGPolygonElement>> = Object.fromEntries(Object.entries(blockBoundaryPoints)
+    .map(([id, p]) => [
+      id,
       $boundaries
         .append("polygon")
         .attr("points", createPath(p))
         .attr("fill", "rgba(255,0,255,0.05)")
-        .attr("stroke", "rgba(255,0,255,1)");
-    })
+        .attr("stroke", "rgba(255,0,255,1)")
+        .attr('visibility', 'hidden')
+    ]))
 
-  lineAnnos.forEach((a, i) => {
+  const $lines: Record<Id, HTMLElement> = Object.fromEntries(lineAnnos.map((a, i) => {
     const id = a.id
     const $lineNumber = document.createElement('span')
     $text.appendChild($lineNumber)
@@ -200,6 +202,70 @@ export function renderDiplomaticView(
       marginTop: px(-scale(40)),
       fontSize: px(scale(80))
     })
+    $lineNumber.style.display = 'none'
+    return [id, $lineNumber]
+  }).filter(e => !!e))
 
+  const wordToLine: Map<Id, Id> = new Map()
+  for (const word of wordAnnos) {
+    const line = findAnnotationResourceTarget(word)
+      ?? orThrow('No annotation resource target')
+    wordToLine.set(word.id, line.id)
+  }
+
+  /**
+   * Prevent flickering of blocks and lines when hovering words
+   */
+  const hideLineTimeouts: Map<Id, number> = new Map()
+  const hideBlockTimeouts: Map<Id, number> = new Map()
+
+  function showLine(lineId: Id) {
+    const existingTimeout = hideLineTimeouts.get(lineId)
+    if (existingTimeout) {
+      clearTimeout(existingTimeout)
+      hideLineTimeouts.delete(lineId)
+    }
+    $lines[lineId].style.display = 'block'
+  }
+
+  function hideLine(lineId: Id) {
+    const timeoutId = window.setTimeout(() => {
+      $lines[lineId].style.display = 'none'
+      hideLineTimeouts.delete(lineId)
+    }, 50)
+    hideLineTimeouts.set(lineId, timeoutId)
+  }
+
+  function showBlock(blockId: Id) {
+    const existingTimeout = hideBlockTimeouts.get(blockId)
+    if (existingTimeout) {
+      clearTimeout(existingTimeout)
+      hideBlockTimeouts.delete(blockId)
+    }
+    $blockHighlights[blockId].attr('visibility', 'visible')
+  }
+
+  function hideBlock(blockId: Id) {
+    const timeoutId = window.setTimeout(() => {
+      $blockHighlights[blockId].attr('visibility', 'hidden')
+      hideBlockTimeouts.delete(blockId)
+    }, 150)
+    hideBlockTimeouts.set(blockId, timeoutId)
+  }
+
+  Object.entries($words).forEach(([wordId, $word]) => {
+    const lineId = wordToLine.get(wordId)
+      ?? orThrow(`No line for word ${wordId}`)
+    const blockId = lineToBlock.get(lineId)
+      ?? orThrow(`No block for line ${lineId}`)
+    $word.addEventListener('mouseenter', () => {
+      showLine(lineId);
+      showBlock(blockId);
+    })
+    $word.addEventListener('mouseleave', () => {
+      hideLine(lineId);
+      hideBlock(blockId);
+    })
   })
+
 }
