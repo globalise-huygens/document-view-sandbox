@@ -125,27 +125,27 @@ export function renderDiplomaticView(
     wordAnnosByLine.get(target.id)!.push(wordAnno)
   }
 
-  const blockBoundaries: Map<Id, Point[]> = new Map()
-  const lineToBlock: Map<Id, Id> = new Map()
+  const blockBoundaries: Record<Id, Point[]> = {}
+  const lineToBlock: Record<Id, Id> = {}
   for (const line of lineAnnos) {
     const block = findAnnotationResourceTarget(line)
       ?? orThrow('No annotation resource target')
-    lineToBlock.set(line.id, block.id)
+    lineToBlock[line.id] = block.id
   }
   for (const wordAnno of wordAnnos) {
     const line = findAnnotationResourceTarget(wordAnno)
       ?? orThrow('No annotation resource target')
-    const blockId = lineToBlock.get(line.id)
+    const blockId = lineToBlock[line.id]
       ?? orThrow(`No block for line ${line.id}`);
-    if (!blockBoundaries.has(blockId)) {
-      blockBoundaries.set(blockId, [])
+    if (!blockBoundaries[blockId]) {
+      blockBoundaries[blockId] = []
     }
     const wordPoints = createPoints(findSvgPath(wordAnno));
-    blockBoundaries.get(blockId)!.push(...wordPoints)
+    blockBoundaries[blockId].push(...wordPoints)
   }
 
   const padding: Point = [50, 100];
-  const blockBoundaryPoints = Object.fromEntries([...blockBoundaries.entries()]
+  const blockBoundaryPoints = Object.fromEntries(Object.entries(blockBoundaries)
     .map(([id, block]) => [
       id,
       padBoundingPoints(
@@ -186,7 +186,7 @@ export function renderDiplomaticView(
       return bbox
     }, null) ?? orThrow('No leftmost word found')
 
-    const blockId = lineToBlock.get(id);
+    const blockId = lineToBlock[id];
     if (!blockId) {
       console.warn('Line without block')
       return;
@@ -205,13 +205,6 @@ export function renderDiplomaticView(
     $lineNumber.style.display = 'none'
     return [id, $lineNumber]
   }).filter(e => !!e))
-
-  const wordToLine: Map<Id, Id> = new Map()
-  for (const word of wordAnnos) {
-    const line = findAnnotationResourceTarget(word)
-      ?? orThrow('No annotation resource target')
-    wordToLine.set(word.id, line.id)
-  }
 
   /**
    * Prevent flickering of blocks and lines when hovering words
@@ -254,9 +247,11 @@ export function renderDiplomaticView(
   }
 
   Object.entries($words).forEach(([wordId, $word]) => {
-    const lineId = wordToLine.get(wordId)
+    const wordAnno = wordAnnos.find(w => w.id === wordId)
+      ?? orThrow(`No word annotation for ${wordId}`)
+    const lineId = findAnnotationResourceTarget(wordAnno)?.id
       ?? orThrow(`No line for word ${wordId}`)
-    const blockId = lineToBlock.get(lineId)
+    const blockId = lineToBlock[lineId]
       ?? orThrow(`No block for line ${lineId}`)
     $word.addEventListener('mouseenter', () => {
       showLine(lineId);

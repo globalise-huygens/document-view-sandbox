@@ -22,7 +22,7 @@ export async function renderTextOnlyExample(
   $slider.classList.add('slider')
   $slider.innerHTML = `
     zoom: min 
-    <input type="range" value="50" min="30" max="200"/> 
+    <input type="range" value="42" min="30" max="200"/> 
     max`
   const $input: HTMLInputElement = $('input', $slider)
 
