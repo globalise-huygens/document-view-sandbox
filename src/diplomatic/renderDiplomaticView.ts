@@ -115,8 +115,6 @@ export function renderDiplomaticView(
 
   const lineAnnos = page.items
     .filter(a => a.textGranularity === 'line');
-  const blockAnnos = page.items
-    .filter(a => a.textGranularity === 'block');
   const wordAnnosByLine: Map<Id, Annotation[]> = new Map()
   for (const wordAnno of wordAnnos) {
     const target = findAnnotationResourceTarget(wordAnno)
@@ -126,16 +124,6 @@ export function renderDiplomaticView(
     }
     wordAnnosByLine.get(target.id)!.push(wordAnno)
   }
-
-  // const blockPaths = blockAnnos
-  //   .map(findSvgPath)
-  // blockPaths.forEach(p => {
-  //   $boundaries
-  //     .append("polygon")
-  //     .attr("points", scalePath(p))
-  //     .attr("fill", "rgba(0,255,0,0.05)")
-  //     .attr("stroke", "rgba(0,255,0,0.5)");
-  // })
 
   const blockBoundaries: Map<Id, Point[]> = new Map()
   const lineToBlock: Map<Id, Id> = new Map()
@@ -176,36 +164,16 @@ export function renderDiplomaticView(
 
   lineAnnos.forEach((a, i) => {
     const id = a.id
-    const path = findSvgPath(a)
-    const points = createPoints(path)
-    // const scaled = points.map(scalePoint)
-    // $boundaries
-    //   .append("polygon")
-    //   .attr("points", createPath(scaled))
-    //   .attr("fill", "rgba(255,0,0,0.05)")
-    //   .attr("stroke", "rgba(255,0,0,0.5)");
-
     const $lineNumber = document.createElement('span')
     $text.appendChild($lineNumber)
     $lineNumber.classList.add('line-number')
     $lineNumber.textContent = `${i + 1}`.padStart(2, '0')
-
     const words = wordAnnosByLine.get(id)
     if (!words) {
       console.warn('Line without words')
       return;
     }
-
-    const blockId = lineToBlock.get(id);
-    if (!blockId) {
-      console.warn('Line without block')
-      return;
-    }
-    const blockPoints = blockBoundaryPoints[blockId]
-      ?? orThrow('Block points not found')
-
-    // TODO: pick most left word in line, use that bbox
-    const bbox: Rect = words.reduce<Rect | null>((prev, curr) => {
+    const leftMostBbox: Rect = words.reduce<Rect | null>((prev, curr) => {
       const bbox = calcBoundingBox(createPoints(findSvgPath(curr)).map(scalePoint))
       if (!prev) {
         return bbox;
@@ -215,14 +183,19 @@ export function renderDiplomaticView(
       }
       return bbox
     }, null) ?? orThrow('No leftmost word found')
-    // TODO: left position should be determined by the block words bb
-    const topLeft = blockPoints[0];
-    const topLeftX = topLeft[0];
-    console.log('blockPoints', {topLeft, topLeftX})
+
+    const blockId = lineToBlock.get(id);
+    if (!blockId) {
+      console.warn('Line without block')
+      return;
+    }
+    const blockPoints = blockBoundaryPoints[blockId]
+      ?? orThrow('Block points not found')
+    const topLeftX = blockPoints[0][0];
+
     Object.assign($lineNumber.style, {
-      // TODO: X should be bbox from boundaryPoints
       left: px(topLeftX),
-      top: px(bbox.top + bbox.height / 2),
+      top: px(leftMostBbox.top + leftMostBbox.height / 2),
       marginLeft: px(-scale(120)),
       marginTop: px(-scale(40)),
       fontSize: px(scale(80))
