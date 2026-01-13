@@ -1,5 +1,4 @@
 import {Annotation, AnnotationPage} from './AnnoModel';
-import {orThrow} from '../util/orThrow';
 import {assertTextualBody} from './anno/assertTextualBody';
 import {Point} from './Point';
 import {createHull} from './createHull';
@@ -15,11 +14,9 @@ import {Id} from './Id';
 import {renderWord} from './renderWord';
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {findResourceTarget} from './findResourceTarget';
-import {calcBoundingCorners, padCorners,} from './calcBoundingBox';
-import {createPath} from './createPath';
 import {calcScaleFactor, ViewFit} from './calcScaleFactor';
 import {renderLineNumbers} from "./renderLineNumbers";
-import {createBlockBoundaries} from "./createBlockBoundaries";
+import {renderBlocks} from "./renderBlocks";
 
 export interface DiplomaticViewConfig {
   showBoundaries: boolean;
@@ -52,12 +49,12 @@ export function renderDiplomaticView(
   $text.classList.add('text');
   $view.appendChild($text);
   const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
-  const words = wordAnnos.map((w) => {
-    const body = Array.isArray(w.body) ? w.body[0] : w.body;
+  const words = wordAnnos.map((word) => {
+    const {id, body: bodies} = word
+    const body = Array.isArray(bodies) ? bodies[0] : bodies;
     assertTextualBody(body);
-    const id = w.id;
     const text = body.value;
-    const hull: Point[] = createHull(findSvgPath(w));
+    const hull: Point[] = createHull(findSvgPath(word));
     const base = calcBaseSegment(hull);
     const angle = calcTextAngle(base);
     return {id, text, hull, base, angle};
@@ -71,7 +68,9 @@ export function renderDiplomaticView(
   const contentHeight = showScanMargin
     ? scanHeight
     : marginlessRect.height + overflowPadding * 2;
+  // TODO: scale words here, remove all other scaling?
   const factor = calcScaleFactor(fit, $view, contentWidth, contentHeight);
+
   const scale = (toScale: number) => toScale * factor;
   const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
 
@@ -119,28 +118,7 @@ export function renderDiplomaticView(
     }
   });
 
-  const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
-  const padding: Point = [50, 100];
-  const blockCorners = Object.fromEntries(
-    Object.entries(blockBoundaries).map(([id, block]) => {
-      const corners = calcBoundingCorners(block);
-      const padded = padCorners(corners, padding);
-      const scaled = padded.map(scalePoint);
-      return [id, scaled];
-    }),
-  );
-  const $blockHighlights = Object.fromEntries(
-    Object.entries(blockCorners).map(([id, p]) => {
-      const $highlight = $highlights
-        .append('polygon')
-        .attr('points', createPath(p))
-        .attr('fill', 'rgba(255,0,255,0.05)')
-        .attr('stroke', 'rgba(255,0,255,1)')
-        .attr('visibility', 'hidden');
-      return [id, $highlight];
-    }),
-  );
-
+  const $blockHighlights = renderBlocks(annotations, $highlights, {factor});
   const $lineNumbers = renderLineNumbers(annotations, $text, {factor});
 
   /**

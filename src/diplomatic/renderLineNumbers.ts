@@ -14,14 +14,15 @@ import {px} from "./px";
 import {findResourceTarget} from "./findResourceTarget";
 import {createBlockBoundaries} from "./createBlockBoundaries";
 
+type LineNumbersConfig = {
+  factor: number
+};
+
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $text: HTMLDivElement,
-  config: {
-    factor: number
-  }
+  {factor}: LineNumbersConfig
 ): Record<Id, HTMLElement> {
-  const {factor} = config;
   const lineAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'line');
   const wordAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'word');
 
@@ -52,6 +53,7 @@ export function renderLineNumbers(
       return [id, scaled];
     }),
   );
+
   return Object.fromEntries(
     lineAnnos
       .map((line, i) => {
