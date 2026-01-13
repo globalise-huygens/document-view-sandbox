@@ -16,14 +16,10 @@ import {renderWord} from './renderWord';
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {findAnnotationResourceTarget} from './findAnnotationResourceTarget';
 import {createPoints} from './createPoints';
-import {
-  calcBoundingBox,
-  calcBoundingCorners,
-  padCorners
-} from './calcBoundingBox';
+import {calcBoundingCorners, padCorners,} from './calcBoundingBox';
 import {createPath} from './createPath';
-import {Rect} from './Rect';
 import {calcScaleFactor, ViewFit} from './calcScaleFactor';
+import {renderLineNumbers} from "./renderLineNumbers";
 
 export interface DiplomaticViewConfig {
   showBoundaries: boolean;
@@ -167,52 +163,8 @@ export function renderDiplomaticView(
     }),
   );
 
-  const $lineNumbers: Record<Id, HTMLElement> = Object.fromEntries(
-    lineAnnos.map((line, i) => {
-      const id = line.id;
-      const $lineNumber = document.createElement('span');
-      $text.appendChild($lineNumber);
-      $lineNumber.classList.add('line-number');
-      $lineNumber.textContent = `${i + 1}`.padStart(2, '0');
-      const words = wordAnnosByLine.get(id);
-      if (!words) {
-        console.warn('Line without words');
-        return;
-      }
-      const leftMostBbox: Rect =
-        words.reduce<Rect | null>((prev, curr) => {
-          const bbox = calcBoundingBox(
-            createPoints(findSvgPath(curr)).map(scalePoint),
-          );
-          if (!prev) {
-            return bbox;
-          }
-          if (prev.left < bbox.left) {
-            return prev;
-          }
-          return bbox;
-        }, null) ?? orThrow('No leftmost word found');
-
-      const blockId = lineToBlock[id];
-      if (!blockId) {
-        console.warn('Line without block');
-        return;
-      }
-      const corners = blockCorners[blockId] ?? orThrow(`No block ${blockId}`);
-      const topLeft = corners[0];
-
-      Object.assign($lineNumber.style, {
-        left: px(topLeft[0]),
-        top: px(leftMostBbox.top + leftMostBbox.height / 2),
-        marginLeft: px(-scale(120)),
-        marginTop: px(-scale(40)),
-        fontSize: px(scale(80)),
-      });
-      $lineNumber.style.display = 'none';
-      return [id, $lineNumber];
-    })
-      .filter((e) => !!e),
-  );
+  const $lineNumbers = renderLineNumbers(lineAnnos, $text, wordAnnosByLine, scalePoint, lineToBlock, blockCorners, scale);
+  // const $lineNumbers = renderLineNumbers(page, $text, {factor});
 
   /**
    * Prevent flickering of blocks and lines when hovering words
