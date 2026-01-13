@@ -1,8 +1,6 @@
-import { orThrow } from '../util/orThrow';
-
 export type ViewFit =
-  | 'width'    // $view must have width, height is calculated
-  | 'height'   // $view must have height, width is calculated
+  | 'width' // $view must have width, height is calculated
+  | 'height' // $view must have height, width is calculated
   | 'contain'; // $view must have both, content fits inside
 
 /**
@@ -31,9 +29,6 @@ export function calcScaleFactor(
     case 'height':
       return viewHeight / contentHeight;
     case 'contain':
-      return Math.min(
-        viewWidth / contentWidth,
-        viewHeight / contentHeight,
-      );
+      return Math.min(viewWidth / contentWidth, viewHeight / contentHeight);
   }
 }

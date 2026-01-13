@@ -2,7 +2,7 @@ import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
 import {
   DiplomaticViewConfig,
-  renderDiplomaticView
+  renderDiplomaticView,
 } from '../renderDiplomaticView';
 import { $ } from './$';
 
@@ -39,7 +39,7 @@ export async function renderTextOnlyExample($parent: HTMLElement) {
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
 
-    renderDiplomaticView($view, annoPage, {});
+    renderDiplomaticView($view, annoPage);
   };
 
   $slider.addEventListener('change', adjustScale);

@@ -3,7 +3,7 @@ import { px } from '../px';
 import { renderScan } from './renderScan';
 import {
   DiplomaticViewConfig,
-  renderDiplomaticView
+  renderDiplomaticView,
 } from '../renderDiplomaticView';
 import { $ } from './$';
 
@@ -48,6 +48,10 @@ export async function renderScanExample($parent: HTMLElement) {
 
   const pageAttributes = { height, width, scanPath };
   renderScan(pageAttributes, scale, $scan);
-  const viewConfig: DiplomaticViewConfig = { showBoundaries: false, showScanMargin: true, fit: 'contain' };
+  const viewConfig: DiplomaticViewConfig = {
+    showBoundaries: false,
+    showScanMargin: true,
+    fit: 'contain',
+  };
   renderDiplomaticView($view, annoPage, viewConfig);
 }
