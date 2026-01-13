@@ -11,22 +11,23 @@ import {createPoints} from "./createPoints";
 import {findSvgPath} from "./anno/findSvgPath";
 import {orThrow} from "../util/orThrow";
 import {px} from "./px";
-import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
+import {findResourceTarget} from "./findResourceTarget";
 import {createBlockBoundaries} from "./createBlockBoundaries";
 
 export function renderLineNumbers(
-  page: AnnotationPage,
+  annotations: Record<Id, Annotation>,
   $text: HTMLDivElement,
   config: {
     factor: number
   }
 ): Record<Id, HTMLElement> {
   const {factor} = config;
-  const lineAnnos = page.items.filter((a) => a.textGranularity === 'line');
-  const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
+  const lineAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'line');
+  const wordAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'word');
+
   const wordsByLine: Map<Id, Annotation[]> = new Map();
   for (const wordAnno of wordAnnos) {
-    const target = findAnnotationResourceTarget(wordAnno);
+    const target = findResourceTarget(wordAnno);
     if (!wordsByLine.has(target.id)) {
       wordsByLine.set(target.id, []);
     }
@@ -34,13 +35,15 @@ export function renderLineNumbers(
   }
   const lineToBlock: Record<Id, Id> = {};
   for (const line of lineAnnos) {
-    const block = findAnnotationResourceTarget(line);
+    const block = findResourceTarget(line);
     lineToBlock[line.id] = block.id;
   }
+
   const scale = (toScale: number) => toScale * factor;
   const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
+
   const padding: Point = [50, 100];
-  const blockBoundaries = createBlockBoundaries(wordAnnos, lineToBlock);
+  const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);

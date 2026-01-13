@@ -1,24 +1,24 @@
 import {Annotation} from "./AnnoModel";
 import {Id} from "./Id";
 import {Point} from "./Point";
-import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
+import {findResourceTarget} from "./findResourceTarget";
 import {orThrow} from "../util/orThrow";
 import {createPoints} from "./createPoints";
 import {findSvgPath} from "./anno/findSvgPath";
 
 export function createBlockBoundaries(
-  wordAnnos: Annotation[],
-  lineToBlock: Record<string, string>
+  words: Annotation[],
+  annotations: Record<Id, Annotation>
 ) {
   const blockBoundaries: Record<Id, Point[]> = {};
-  for (const wordAnno of wordAnnos) {
-    const line = findAnnotationResourceTarget(wordAnno);
-    const blockId = lineToBlock[line.id] ?? orThrow(`No line ${line.id}`);
-    if (!blockBoundaries[blockId]) {
-      blockBoundaries[blockId] = [];
+  for (const word of words) {
+    const line = annotations[findResourceTarget(word).id];
+    const block = annotations[findResourceTarget(line).id];
+    if (!blockBoundaries[block.id]) {
+      blockBoundaries[block.id] = [];
     }
-    const wordPoints = createPoints(findSvgPath(wordAnno));
-    blockBoundaries[blockId].push(...wordPoints);
+    const wordPoints = createPoints(findSvgPath(word));
+    blockBoundaries[block.id].push(...wordPoints);
   }
   return blockBoundaries;
 }

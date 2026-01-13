@@ -6,7 +6,7 @@ import { isAnnotationResourceTarget } from './anno/isAnnotationResourceTarget';
 import { isLine } from './anno/isLine';
 import { isBlock } from './anno/isBlock';
 import { isPage } from './anno/isPage';
-import { findAnnotationResourceTarget } from './findAnnotationResourceTarget';
+import { findResourceTarget } from './findResourceTarget';
 
 describe('AnnotationPage', () => {
   it('links every word to a line', () => {
@@ -44,7 +44,7 @@ describe('AnnotationPage', () => {
     const lines = page.items.filter(isLine);
     expect(lines.length).toBe(30);
     const annoResourceTargets = lines
-      .map(findAnnotationResourceTarget)
+      .map(findResourceTarget)
       .filter((target) => !!target);
 
     expect(annoResourceTargets.length).toBe(30);

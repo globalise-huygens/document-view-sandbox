@@ -14,13 +14,12 @@ import {TextResizer} from './TextResizer';
 import {Id} from './Id';
 import {renderWord} from './renderWord';
 import {renderWordBoundaries} from './renderWordBoundaries';
-import {findAnnotationResourceTarget} from './findAnnotationResourceTarget';
+import {findResourceTarget} from './findResourceTarget';
 import {calcBoundingCorners, padCorners,} from './calcBoundingBox';
 import {createPath} from './createPath';
 import {calcScaleFactor, ViewFit} from './calcScaleFactor';
 import {renderLineNumbers} from "./renderLineNumbers";
 import {createBlockBoundaries} from "./createBlockBoundaries";
-import {linkAnnotationResources} from "./linkAnnotationResources";
 
 export interface DiplomaticViewConfig {
   showBoundaries: boolean;
@@ -45,7 +44,10 @@ export function renderDiplomaticView(
   };
   $view.innerHTML = '';
   const {width: scanWidth, height: scanHeight} = page.partOf;
-
+  const annotations = page.items.reduce((prev, curr) => {
+    prev[curr.id] = curr
+    return prev
+  }, {} as Record<Id, Annotation>)
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
@@ -117,10 +119,7 @@ export function renderDiplomaticView(
     }
   });
 
-  const lineAnnos = page.items.filter((a) => a.textGranularity === 'line');
-
-  const lineToBlock = linkAnnotationResources(lineAnnos);
-  const blockBoundaries = createBlockBoundaries(wordAnnos, lineToBlock);
+  const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
   const padding: Point = [50, 100];
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
@@ -142,7 +141,7 @@ export function renderDiplomaticView(
     }),
   );
 
-  const $lineNumbers = renderLineNumbers(page, $text, {factor});
+  const $lineNumbers = renderLineNumbers(annotations, $text, {factor});
 
   /**
    * Prevent flickering of blocks and lines when hovering words
@@ -187,15 +186,15 @@ export function renderDiplomaticView(
   wordAnnos.forEach((word) => {
     const id = word.id;
     const $word = $words[id];
-    const lineId = findAnnotationResourceTarget(word).id;
-    const blockId = lineToBlock[lineId] ?? orThrow(`No line ${lineId}`);
+    const line = annotations[findResourceTarget(word).id];
+    const block = annotations[findResourceTarget(line).id];
     $word.addEventListener('mouseenter', () => {
-      showLine(lineId);
-      showBlock(blockId);
+      showLine(line.id);
+      showBlock(block.id);
     });
     $word.addEventListener('mouseleave', () => {
-      hideLine(lineId);
-      hideBlock(blockId);
+      hideLine(line.id);
+      hideBlock(block.id);
     });
   });
 }
