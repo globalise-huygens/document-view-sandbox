@@ -15,11 +15,12 @@ import {Id} from './Id';
 import {renderWord} from './renderWord';
 import {renderWordBoundaries} from './renderWordBoundaries';
 import {findAnnotationResourceTarget} from './findAnnotationResourceTarget';
-import {createPoints} from './createPoints';
 import {calcBoundingCorners, padCorners,} from './calcBoundingBox';
 import {createPath} from './createPath';
 import {calcScaleFactor, ViewFit} from './calcScaleFactor';
 import {renderLineNumbers} from "./renderLineNumbers";
+import {createBlockBoundaries} from "./createBlockBoundaries";
+import {linkAnnotationResources} from "./linkAnnotationResources";
 
 export interface DiplomaticViewConfig {
   showBoundaries: boolean;
@@ -117,31 +118,9 @@ export function renderDiplomaticView(
   });
 
   const lineAnnos = page.items.filter((a) => a.textGranularity === 'line');
-  const wordAnnosByLine: Map<Id, Annotation[]> = new Map();
-  for (const wordAnno of wordAnnos) {
-    const target = findAnnotationResourceTarget(wordAnno);
-    if (!wordAnnosByLine.has(target.id)) {
-      wordAnnosByLine.set(target.id, []);
-    }
-    wordAnnosByLine.get(target.id)!.push(wordAnno);
-  }
 
-  const lineToBlock: Record<Id, Id> = {};
-  for (const line of lineAnnos) {
-    const block = findAnnotationResourceTarget(line);
-    lineToBlock[line.id] = block.id;
-  }
-  const blockBoundaries: Record<Id, Point[]> = {};
-  for (const wordAnno of wordAnnos) {
-    const line = findAnnotationResourceTarget(wordAnno);
-    const blockId = lineToBlock[line.id] ?? orThrow(`No line ${line.id}`);
-    if (!blockBoundaries[blockId]) {
-      blockBoundaries[blockId] = [];
-    }
-    const wordPoints = createPoints(findSvgPath(wordAnno));
-    blockBoundaries[blockId].push(...wordPoints);
-  }
-
+  const lineToBlock = linkAnnotationResources(lineAnnos);
+  const blockBoundaries = createBlockBoundaries(wordAnnos, lineToBlock);
   const padding: Point = [50, 100];
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
@@ -163,8 +142,7 @@ export function renderDiplomaticView(
     }),
   );
 
-  const $lineNumbers = renderLineNumbers(lineAnnos, $text, wordAnnosByLine, scalePoint, lineToBlock, blockCorners, scale);
-  // const $lineNumbers = renderLineNumbers(page, $text, {factor});
+  const $lineNumbers = renderLineNumbers(page, $text, {factor});
 
   /**
    * Prevent flickering of blocks and lines when hovering words

@@ -1,33 +1,63 @@
-import {Annotation} from "./AnnoModel";
+import {Annotation, AnnotationPage} from "./AnnoModel";
 import {Id} from "./Id";
 import {Point} from "./Point";
 import {Rect} from "./Rect";
-import {calcBoundingBox} from "./calcBoundingBox";
+import {
+  calcBoundingBox,
+  calcBoundingCorners,
+  padCorners
+} from "./calcBoundingBox";
 import {createPoints} from "./createPoints";
 import {findSvgPath} from "./anno/findSvgPath";
 import {orThrow} from "../util/orThrow";
 import {px} from "./px";
+import {findAnnotationResourceTarget} from "./findAnnotationResourceTarget";
+import {createBlockBoundaries} from "./createBlockBoundaries";
 
 export function renderLineNumbers(
-  lines: Annotation[],
+  page: AnnotationPage,
   $text: HTMLDivElement,
-  wordAnnosByLine: Map<Id, Annotation[]>,
-  scalePoint: (p: Point) => Point,
-  lineToBlock: Record<string, string>,
-  blockCorners: {
-    [p: string]: [number, number][]
-  },
-  scale: (toScale: number) => number
-) {
+  config: {
+    factor: number
+  }
+): Record<Id, HTMLElement> {
+  const {factor} = config;
+  const lineAnnos = page.items.filter((a) => a.textGranularity === 'line');
+  const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
+  const wordsByLine: Map<Id, Annotation[]> = new Map();
+  for (const wordAnno of wordAnnos) {
+    const target = findAnnotationResourceTarget(wordAnno);
+    if (!wordsByLine.has(target.id)) {
+      wordsByLine.set(target.id, []);
+    }
+    wordsByLine.get(target.id)!.push(wordAnno);
+  }
+  const lineToBlock: Record<Id, Id> = {};
+  for (const line of lineAnnos) {
+    const block = findAnnotationResourceTarget(line);
+    lineToBlock[line.id] = block.id;
+  }
+  const scale = (toScale: number) => toScale * factor;
+  const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
+  const padding: Point = [50, 100];
+  const blockBoundaries = createBlockBoundaries(wordAnnos, lineToBlock);
+  const blockCorners = Object.fromEntries(
+    Object.entries(blockBoundaries).map(([id, block]) => {
+      const corners = calcBoundingCorners(block);
+      const padded = padCorners(corners, padding);
+      const scaled = padded.map(scalePoint);
+      return [id, scaled];
+    }),
+  );
   return Object.fromEntries(
-    lines
+    lineAnnos
       .map((line, i) => {
         const id = line.id;
         const $lineNumber = document.createElement('span');
         $text.appendChild($lineNumber);
         $lineNumber.classList.add('line-number');
         $lineNumber.textContent = `${i + 1}`.padStart(2, '0');
-        const words = wordAnnosByLine.get(id);
+        const words = wordsByLine.get(id);
         if (!words) {
           console.warn('Line without words');
           return;
