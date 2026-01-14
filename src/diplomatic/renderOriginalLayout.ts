@@ -106,7 +106,7 @@ export function renderOriginalLayout(
   const resizer = new TextResizer();
   const $words: Record<Id, HTMLElement> = Object.fromEntries(
     words.map(({id, text, hull, angle}) => {
-      const $word = renderWord(text, scale.path(hull), scale(angle), $text);
+      const $word = renderWord(text, scale.path(hull), angle, $text);
       return [id, $word];
     }),
   );
