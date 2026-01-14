@@ -59,7 +59,7 @@ export function renderOriginalLayout(
   const marginlessRect = calcTextRect(words);
 
   /**
-   * Add some vertical padding to show overflowing characters.
+   * Add some padding to show line numbers and overflowing characters.
    * Characters are fit into their bounding boxes using width only.
    */
   const overflowPadding = Math.round(marginlessRect.width * 0.05);
