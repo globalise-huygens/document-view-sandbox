@@ -1,37 +1,39 @@
-import {Annotation} from "./AnnoModel";
-import {Id} from "./Id";
-import {Point} from "./Point";
-import {Rect} from "./Rect";
+import { Annotation } from './AnnoModel';
+import { Id } from './Id';
+import { Point } from './Point';
+import { Rect } from './Rect';
 import {
   calcBoundingBox,
   calcBoundingCorners,
-  padCorners
-} from "./calcBoundingBox";
-import {createPoints} from "./createPoints";
-import {findSvgPath} from "./anno/findSvgPath";
-import {orThrow} from "../util/orThrow";
-import {px} from "./px";
-import {findResourceTarget} from "./findResourceTarget";
-import {createBlockBoundaries} from "./createBlockBoundaries";
-import {Scale} from "./Scale";
+  padCorners,
+} from './calcBoundingBox';
+import { createPoints } from './createPoints';
+import { findSvgPath } from './anno/findSvgPath';
+import { orThrow } from '../util/orThrow';
+import { px } from './px';
+import { findResourceTarget } from './findResourceTarget';
+import { createBlockBoundaries } from './createBlockBoundaries';
+import { Scale } from './Scale';
 
 type LineNumbersConfig = {
-  scale: Scale
+  scale: Scale;
 };
 
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLDivElement,
-  {scale}: LineNumbersConfig
+  { scale }: LineNumbersConfig,
 ): Record<Id, HTMLElement> {
   const $text = document.createElement('div');
   $view.appendChild($text);
   $text.classList.add('text');
 
-  const lineAnnos = Object.values(annotations)
-    .filter((a) => a.textGranularity === 'line');
-  const wordAnnos = Object.values(annotations)
-    .filter((a) => a.textGranularity === 'word');
+  const lineAnnos = Object.values(annotations).filter(
+    (a) => a.textGranularity === 'line',
+  );
+  const wordAnnos = Object.values(annotations).filter(
+    (a) => a.textGranularity === 'word',
+  );
 
   const wordsByLine: Map<Id, Annotation[]> = new Map();
   for (const wordAnno of wordAnnos) {

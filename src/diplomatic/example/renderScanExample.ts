@@ -1,11 +1,9 @@
 import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
 import { renderScan } from './renderScan';
-import {
-  renderDiplomaticView,
-} from '../renderDiplomaticView';
+import { renderDiplomaticView } from '../renderDiplomaticView';
 import { $ } from './$';
-import {OriginalLayoutConfig} from "../renderOriginalLayout";
+import { OriginalLayoutConfig } from '../renderOriginalLayout';
 
 export async function renderScanExample($parent: HTMLElement) {
   const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';

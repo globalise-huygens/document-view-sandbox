@@ -1,10 +1,8 @@
 import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
-import {
-  renderDiplomaticView,
-} from '../renderDiplomaticView';
+import { renderDiplomaticView } from '../renderDiplomaticView';
 import { $ } from './$';
-import {Benchmark} from "../Benchmark";
+import { Benchmark } from '../Benchmark';
 
 export async function renderTextOnlyExample($parent: HTMLElement) {
   const jsonPath =
@@ -38,8 +36,9 @@ export async function renderTextOnlyExample($parent: HTMLElement) {
     const scale = Math.max(parentWidth / +width) * sliderScale;
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
-    new Benchmark(renderDiplomaticView.name)
-      .run(() => renderDiplomaticView($view, annoPage))
+    new Benchmark(renderDiplomaticView.name).run(() =>
+      renderDiplomaticView($view, annoPage),
+    );
   };
 
   $slider.addEventListener('change', adjustScale);

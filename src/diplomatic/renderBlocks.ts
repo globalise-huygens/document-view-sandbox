@@ -1,22 +1,23 @@
-import {Annotation} from "./AnnoModel";
-import {D3El} from "./D3El";
-import {Point} from "./Point";
-import {createBlockBoundaries} from "./createBlockBoundaries";
-import {calcBoundingCorners, padCorners} from "./calcBoundingBox";
-import {createPath} from "./createPath";
-import {Scale} from "./Scale";
-import {select} from "d3-selection";
+import { Annotation } from './AnnoModel';
+import { D3El } from './D3El';
+import { Point } from './Point';
+import { createBlockBoundaries } from './createBlockBoundaries';
+import { calcBoundingCorners, padCorners } from './calcBoundingBox';
+import { createPath } from './createPath';
+import { Scale } from './Scale';
+import { select } from 'd3-selection';
 
 type BlocksConfig = { scale: Scale };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
   overlay: SVGSVGElement,
-  {scale}: BlocksConfig
+  { scale }: BlocksConfig,
 ) {
-  const $svg = select(overlay)
-  const words = Object.values(annotations)
-    .filter(a => a.textGranularity === 'word')
+  const $svg = select(overlay);
+  const words = Object.values(annotations).filter(
+    (a) => a.textGranularity === 'word',
+  );
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
   const blockCorners = Object.fromEntries(

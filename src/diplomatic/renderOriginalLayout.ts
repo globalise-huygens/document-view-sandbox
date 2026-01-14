@@ -1,21 +1,21 @@
-import {AnnotationPage} from "./AnnoModel";
-import {assertTextualBody} from "./anno/assertTextualBody";
-import {Point} from "./Point";
-import {createHull} from "./createHull";
-import {findSvgPath} from "./anno/findSvgPath";
-import {calcBaseSegment} from "./calcBaseSegment";
-import {calcTextAngle} from "./calcTextAngle";
-import {calcTextRect} from "./calcTextRect";
-import {calcScaleFactor, ViewFit} from "./calcScaleFactor";
-import {createScale} from "./Scale";
-import {px} from "./px";
-import {D3El} from "./D3El";
-import {select} from "d3-selection";
-import {TextResizer} from "./TextResizer";
-import {Id} from "./Id";
-import {renderWord} from "./renderWord";
-import {renderWordBoundaries} from "./renderWordBoundaries";
-import {orThrow} from "../util/orThrow";
+import { AnnotationPage } from './AnnoModel';
+import { assertTextualBody } from './anno/assertTextualBody';
+import { Point } from './Point';
+import { createHull } from './createHull';
+import { findSvgPath } from './anno/findSvgPath';
+import { calcBaseSegment } from './calcBaseSegment';
+import { calcTextAngle } from './calcTextAngle';
+import { calcTextRect } from './calcTextRect';
+import { calcScaleFactor, ViewFit } from './calcScaleFactor';
+import { createScale } from './Scale';
+import { px } from './px';
+import { D3El } from './D3El';
+import { select } from 'd3-selection';
+import { TextResizer } from './TextResizer';
+import { Id } from './Id';
+import { renderWord } from './renderWord';
+import { renderWordBoundaries } from './renderWordBoundaries';
+import { orThrow } from '../util/orThrow';
 
 export interface OriginalLayoutConfig {
   showBoundaries: boolean;
@@ -34,24 +34,23 @@ export function renderOriginalLayout(
   page: AnnotationPage,
   config?: Partial<OriginalLayoutConfig>,
 ) {
-  const {fit, showBoundaries, showScanMargin} = {
+  const { fit, showBoundaries, showScanMargin } = {
     ...defaultConfig,
     ...config,
   };
-  const {width: pageWidth, height: pageHeight} = page.partOf;
+  const { width: pageWidth, height: pageHeight } = page.partOf;
 
-  const wordAnnos = page.items
-    .filter((a) => a.textGranularity === 'word');
+  const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
 
   const words = wordAnnos.map((word) => {
-    const {id, body: bodies} = word
+    const { id, body: bodies } = word;
     const body = Array.isArray(bodies) ? bodies[0] : bodies;
     assertTextualBody(body);
     const text = body.value;
     const hull: Point[] = createHull(findSvgPath(word));
     const base = calcBaseSegment(hull);
     const angle = calcTextAngle(base);
-    return {id, text, hull, base, angle};
+    return { id, text, hull, base, angle };
   });
 
   /**
@@ -73,7 +72,7 @@ export function renderOriginalLayout(
     : marginlessRect.height + overflowPadding * 2;
 
   const factor = calcScaleFactor(fit, $view, contentWidth, contentHeight);
-  const scale = createScale(factor)
+  const scale = createScale(factor);
 
   if (fit !== 'contain') {
     $view.style.width = px(scale(contentWidth));
@@ -89,7 +88,7 @@ export function renderOriginalLayout(
     $text.style.marginLeft = px(scale(-marginlessRect.left + overflowPadding));
   }
 
-  const {width, height} = $view.getBoundingClientRect()
+  const { width, height } = $view.getBoundingClientRect();
   const $svg: D3El<SVGSVGElement> = select($view)
     .append('svg')
     .attr('class', 'boundaries');
@@ -106,17 +105,17 @@ export function renderOriginalLayout(
 
   const resizer = new TextResizer();
   const $words: Record<Id, HTMLElement> = Object.fromEntries(
-    words.map(({id, text, hull, angle}) => {
+    words.map(({ id, text, hull, angle }) => {
       const $word = renderWord(text, scale.path(hull), angle, $text);
       return [id, $word];
     }),
   );
   resizer.calibrate(Object.values($words).slice(0, 10));
 
-  let onMouseEnter: (id: Id) => void = () => {}
-  let onMouseLeave: (id: Id) => void = () => {}
+  let onMouseEnter: (id: Id) => void = () => {};
+  let onMouseLeave: (id: Id) => void = () => {};
 
-  words.forEach(({id, hull, base}) => {
+  words.forEach(({ id, hull, base }) => {
     const $word = $words[id];
     resizer.resize($word);
     if (showBoundaries) {
@@ -124,8 +123,8 @@ export function renderOriginalLayout(
       const scaledBase = scale.path(base);
       renderWordBoundaries($word, scaledHull, scaledBase, $svg);
     }
-    $word.addEventListener('mouseenter', () => onMouseEnter(id))
-    $word.addEventListener('mouseleave', () => onMouseLeave(id))
+    $word.addEventListener('mouseenter', () => onMouseEnter(id));
+    $word.addEventListener('mouseleave', () => onMouseLeave(id));
   });
 
   return {

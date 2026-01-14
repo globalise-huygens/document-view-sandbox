@@ -3,111 +3,111 @@
   <head>
     <title>diplomatic view</title>
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-            font-family: sans-serif;
-            font-size: 0.8rem;
+      * {
+        padding: 0;
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 0.8rem;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+
+      :root {
+        --menu-height: 2rem;
+      }
+
+      body {
+        margin-top: var(--menu-height);
+      }
+
+      #menu {
+        height: var(--menu-height);
+        position: fixed;
+        top: 0;
+        right: 0;
+        box-sizing: border-box;
+        width: 100%;
+        z-index: 20;
+        background: white;
+        padding: 0.25rem 0.5rem;
+        display: flex;
+        align-items: center;
+
+        a {
+          color: blue;
+
+          &:hover {
+            color: black;
+          }
+
+          &.active {
+            color: black;
+            cursor: default;
+            text-decoration: none;
+          }
         }
 
-        html,
-        body {
-            height: 100%;
-            width: 100%;
+        .slider {
+          margin-left: auto;
+
+          input {
+            vertical-align: middle;
+          }
+        }
+      }
+
+      .diplomatic-view {
+        overflow: hidden;
+        position: relative;
+
+        .text {
+          position: absolute;
+          top: 0;
+          left: 0;
+
+          .line-number {
+            position: absolute;
+            color: grey;
+            font-family: monospace;
+          }
         }
 
-        :root {
-            --menu-height: 2rem;
+        .bounding-box {
+          border: dashed 1px blue;
         }
 
-        body {
-            margin-top: var(--menu-height);
+        .word {
+          font-size: 8px;
+          font-family: monospace;
+          white-space: nowrap;
         }
 
-        #menu {
-            height: var(--menu-height);
-            position: fixed;
-            top: 0;
-            right: 0;
-            box-sizing: border-box;
-            width: 100%;
-            z-index: 20;
-            background: white;
-            padding: 0.25rem 0.5rem;
-            display: flex;
-            align-items: center;
-
-            a {
-                color: blue;
-
-                &:hover {
-                    color: black;
-                }
-
-                &.active {
-                    color: black;
-                    cursor: default;
-                    text-decoration: none;
-                }
-            }
-
-            .slider {
-                margin-left: auto;
-
-                input {
-                    vertical-align: middle;
-                }
-            }
+        .boundaries {
+          display: block;
         }
+      }
 
-        .diplomatic-view {
-            overflow: hidden;
-            position: relative;
-
-            .text {
-                position: absolute;
-                top: 0;
-                left: 0;
-
-                .line-number {
-                    position: absolute;
-                    color: grey;
-                    font-family: monospace;
-                }
-            }
-
-            .bounding-box {
-                border: dashed 1px blue;
-            }
-
-            .word {
-                font-size: 8px;
-                font-family: monospace;
-                white-space: nowrap;
-            }
-
-            .boundaries {
-                display: block;
-            }
+      #example {
+        &.with-scan {
+          #scan {
+            z-index: -1;
+            position: absolute;
+            top: var(--menu-height);
+            left: 0;
+            border-style: none;
+          }
         }
-
-        #example {
-            &.with-scan {
-                #scan {
-                    z-index: -1;
-                    position: absolute;
-                    top: var(--menu-height);
-                    left: 0;
-                    border-style: none;
-                }
-            }
-        }
+      }
     </style>
   </head>
   <body>
     <div id="menu">
       <span class="examples"
-      >examples:
+        >examples:
         <a class="with-scan" href="./index.html?example=with-scan">with scan</a>
         |
         <a class="text-only" href="./index.html?example=text-only">text only</a>
