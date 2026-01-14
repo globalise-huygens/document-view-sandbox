@@ -1,23 +1,30 @@
-import { Annotation } from './AnnoModel';
-import { D3El } from './D3El';
+import { Annotation, isBlockWithLabel } from './AnnoModel';
 import { Point } from './Point';
 import { createBlockBoundaries } from './createBlockBoundaries';
 import { calcBoundingCorners, padCorners } from './calcBoundingBox';
 import { createPath } from './createPath';
 import { Scale } from './Scale';
 import { select } from 'd3-selection';
+import { px } from './px';
+import { pickBy } from 'lodash';
 
-type BlocksConfig = { scale: Scale };
+type BlocksConfig = { scale: Scale; fill?: string; stroke?: string };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
-  overlay: SVGSVGElement,
-  { scale }: BlocksConfig,
+  $overlay: SVGSVGElement,
+  {
+    scale,
+    stroke = 'rgba(255,0,255,1)',
+    fill = 'rgba(255,0,255,0.05)',
+  }: BlocksConfig,
 ) {
-  const $svg = select(overlay);
+  const $svg = select($overlay);
   const words = Object.values(annotations).filter(
     (a) => a.textGranularity === 'word',
   );
+  const blocks = pickBy(annotations, (a) => a.textGranularity === 'block');
+
   const blockBoundaries = createBlockBoundaries(words, annotations);
   const padding: Point = [50, 100];
   const blockCorners = Object.fromEntries(
@@ -28,13 +35,31 @@ export function renderBlocks(
     }),
   );
   const $blockHighlights = Object.fromEntries(
-    Object.entries(blockCorners).map(([id, p]) => {
-      const $highlight = $svg
+    Object.entries(blockCorners).map(([id, corners]) => {
+      const block = blocks[id];
+      const body = Array.isArray(block.body) ? block.body[0] : block.body;
+
+      const label = isBlockWithLabel(body) ? body.source.label : 'no label';
+      console.log('render', block);
+      const $highlight = $svg.append('g').attr('visibility', 'hidden');
+
+      $highlight
         .append('polygon')
-        .attr('points', createPath(p))
-        .attr('fill', 'rgba(255,0,255,0.05)')
-        .attr('stroke', 'rgba(255,0,255,1)')
-        .attr('visibility', 'hidden');
+        .attr('points', createPath(corners))
+        .attr('fill', fill)
+        .attr('stroke', stroke);
+
+      const blockTopLeft = corners[0];
+      $highlight
+        .append('text')
+        .attr('class', 'block-label')
+        .attr('dominant-baseline', 'hanging')
+        .attr('x', blockTopLeft[0] + scale(30))
+        .attr('y', blockTopLeft[1] + scale(30))
+        .style('font-size', px(scale(60)))
+        .attr('fill', stroke)
+        .text(label);
+
       return [id, $highlight];
     }),
   );

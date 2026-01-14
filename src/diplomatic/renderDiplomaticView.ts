@@ -7,7 +7,8 @@ import {
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import {clearTimeout} from "node:timers";
+
+type TimedCallback = { timeout: number; callback: () => void };
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
@@ -31,7 +32,7 @@ export function renderDiplomaticView(
   /**
    * Prevent flickering of blocks and lines when hovering words
    */
-  const timedLineHides: Map<Id, {timeout: number, callback: () => void}> = new Map();
+  const timedLineHides: Map<Id, TimedCallback> = new Map();
   const timedBlockHides: Map<Id, number> = new Map();
 
   function showLine(lineId: Id) {
@@ -42,10 +43,10 @@ export function renderDiplomaticView(
       timedLineHides.delete(lineId);
     }
     // Hide all other lines immediately:
-    timedLineHides.forEach(t => {
-      clearTimeout(t.timeout)
+    timedLineHides.forEach((t) => {
+      clearTimeout(t.timeout);
       t.callback();
-    })
+    });
     $lineNumbers[lineId].style.display = 'block';
   }
 
@@ -57,7 +58,7 @@ export function renderDiplomaticView(
       timedLineHides.delete(lineId);
     }
 
-    timedLineHides.set(lineId, {timeout, callback});
+    timedLineHides.set(lineId, { timeout, callback });
   }
 
   function showBlock(blockId: Id) {
