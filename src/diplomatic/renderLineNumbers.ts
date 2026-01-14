@@ -1,4 +1,4 @@
-import {Annotation, AnnotationPage} from "./AnnoModel";
+import {Annotation} from "./AnnoModel";
 import {Id} from "./Id";
 import {Point} from "./Point";
 import {Rect} from "./Rect";
@@ -13,15 +13,16 @@ import {orThrow} from "../util/orThrow";
 import {px} from "./px";
 import {findResourceTarget} from "./findResourceTarget";
 import {createBlockBoundaries} from "./createBlockBoundaries";
+import {Scale} from "./Scale";
 
 type LineNumbersConfig = {
-  factor: number
+  scale: Scale
 };
 
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $text: HTMLDivElement,
-  {factor}: LineNumbersConfig
+  {scale}: LineNumbersConfig
 ): Record<Id, HTMLElement> {
   const lineAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'line');
   const wordAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'word');
@@ -40,17 +41,13 @@ export function renderLineNumbers(
     lineToBlock[line.id] = block.id;
   }
 
-  const scale = (toScale: number) => toScale * factor;
-  const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
-
   const padding: Point = [50, 100];
   const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
       const padded = padCorners(corners, padding);
-      const scaled = padded.map(scalePoint);
-      return [id, scaled];
+      return [id, padded];
     }),
   );
 
@@ -70,7 +67,7 @@ export function renderLineNumbers(
         const leftMostWord: Rect =
           words.reduce<Rect | null>((prev, curr) => {
             const bbox = calcBoundingBox(
-              createPoints(findSvgPath(curr)).map(scalePoint),
+              createPoints(findSvgPath(curr)),
             );
             if (!prev) {
               return bbox;

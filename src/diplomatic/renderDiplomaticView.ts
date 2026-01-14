@@ -17,6 +17,15 @@ import {findResourceTarget} from './findResourceTarget';
 import {calcScaleFactor, ViewFit} from './calcScaleFactor';
 import {renderLineNumbers} from "./renderLineNumbers";
 import {renderBlocks} from "./renderBlocks";
+import {isSpecificResourceTarget} from "./anno/isSpecificResourceTarget";
+import {
+  assertSpecificResourceTarget
+} from "./anno/assertSpecificResourceTarget";
+import {assertSvgSelector} from "./anno/assertSvgSelector";
+import {createPoints} from "./createPoints";
+import {parseSvgPath} from "./anno/parseSvgPath";
+import {createPath} from "./createPath";
+import {createScale, Scale} from "./Scale";
 
 export interface DiplomaticViewConfig {
   showBoundaries: boolean;
@@ -41,10 +50,6 @@ export function renderDiplomaticView(
   };
   $view.innerHTML = '';
   const {width: scanWidth, height: scanHeight} = page.partOf;
-  const annotations = page.items.reduce((prev, curr) => {
-    prev[curr.id] = curr
-    return prev
-  }, {} as Record<Id, Annotation>)
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
@@ -68,15 +73,31 @@ export function renderDiplomaticView(
   const contentHeight = showScanMargin
     ? scanHeight
     : marginlessRect.height + overflowPadding * 2;
-  // TODO: scale words here, remove all other scaling?
-  const factor = calcScaleFactor(fit, $view, contentWidth, contentHeight);
 
-  const scale = (toScale: number) => toScale * factor;
-  const scalePoint = (p: Point): Point => [scale(p[0]), scale(p[1])];
+  const factor = calcScaleFactor(fit, $view, contentWidth, contentHeight);
+  const scale = createScale(factor)
+
+  const annotations = page.items.reduce((prev, curr) => {
+    prev[curr.id] = curr
+    return prev
+  }, {} as Record<Id, Annotation>)
+  for (const anno of Object.values(annotations)) {
+    if (anno.textGranularity === 'word') {
+      const target = Array.isArray(anno.target)
+        ? anno.target.find(isSpecificResourceTarget)
+        : anno.target;
+      assertSpecificResourceTarget(target);
+      assertSvgSelector(target.selector);
+
+      const points = createPoints(parseSvgPath(target.selector.value));
+      const scaled = points.map(scale.point);
+      target.selector.value = `<path d="M${createPath(scaled)}z"/>`;
+    }
+  }
 
   if (fit !== 'contain') {
-    $view.style.width = px(scale(contentWidth));
-    $view.style.height = px(scale(contentHeight));
+    $view.style.width = px(contentWidth);
+    $view.style.height = px(contentHeight);
   }
 
   if (!showScanMargin) {
@@ -103,7 +124,7 @@ export function renderDiplomaticView(
   const resizer = new TextResizer();
   const $words: Record<Id, HTMLElement> = Object.fromEntries(
     words.map(({id, text, hull, angle}) => {
-      const $word = renderWord(text, hull.map(scalePoint), scale(angle), $text);
+      const $word = renderWord(text, scale.path(hull), scale(angle), $text);
       return [id, $word];
     }),
   );
@@ -112,14 +133,14 @@ export function renderDiplomaticView(
     const $word = $words[id];
     resizer.resize($word);
     if (showBoundaries) {
-      const scaledHulls = hull.map(scalePoint);
-      const scaledBases = base.map(scalePoint);
-      renderWordBoundaries($word, scaledHulls, scaledBases, $highlights);
+      const scaledHull = scale.path(hull);
+      const scaledBase = scale.path(base);
+      renderWordBoundaries($word, scaledHull, scaledBase, $highlights);
     }
   });
 
-  const $blockHighlights = renderBlocks(annotations, $highlights, {factor});
-  const $lineNumbers = renderLineNumbers(annotations, $text, {factor});
+  const $blockHighlights = renderBlocks(annotations, $highlights, {scale});
+  const $lineNumbers = renderLineNumbers(annotations, $text, {scale});
 
   /**
    * Prevent flickering of blocks and lines when hovering words
