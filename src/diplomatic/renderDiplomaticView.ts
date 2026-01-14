@@ -15,7 +15,7 @@ export function renderDiplomaticView(
 ) {
   $view.innerHTML = '';
   const originalLayout = renderOriginalLayout($view, page, config);
-  const {$svg, $text, $words, scale} = originalLayout;
+  const {layout: $text, overlay: $svg, scale} = originalLayout;
 
   const annotations = page.items.reduce((prev, curr) => {
     prev[curr.id] = curr
@@ -64,19 +64,29 @@ export function renderDiplomaticView(
     hideBlockTimeouts.set(blockId, timeoutId);
   }
 
-  const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
-  wordAnnos.forEach((word) => {
-    const id = word.id;
-    const $word = $words[id];
-    const line = annotations[findResourceTarget(word).id];
-    const block = annotations[findResourceTarget(line).id];
-    $word.addEventListener('mouseenter', () => {
-      showLine(line.id);
-      showBlock(block.id);
-    });
-    $word.addEventListener('mouseleave', () => {
-      hideLine(line.id);
-      hideBlock(block.id);
-    });
-  });
+  const wordsToLine: Record<Id, Id> = {}
+  const linesToBlock: Record<Id, Id> = {}
+  Object.entries(annotations).forEach(([id, anno]) => {
+    if(anno.textGranularity === 'word') {
+      wordsToLine[id] = findResourceTarget(anno).id
+    }
+    if(anno.textGranularity === 'line') {
+      linesToBlock[id] = findResourceTarget(anno).id
+    }
+  })
+
+  originalLayout.onMouseEnter((id) => {
+    const anno = annotations[id]
+    if (anno?.textGranularity !== 'word') return;
+    const lineId = wordsToLine[id]
+    showLine(lineId);
+    showBlock(linesToBlock[lineId]);
+  })
+  originalLayout.onMouseLeave((id) => {
+    const anno = annotations[id]
+    if (anno?.textGranularity !== 'word') return;
+    const lineId = wordsToLine[id]
+    hideLine(lineId);
+    hideBlock(linesToBlock[lineId]);
+  })
 }

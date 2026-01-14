@@ -5,14 +5,16 @@ import {createBlockBoundaries} from "./createBlockBoundaries";
 import {calcBoundingCorners, padCorners} from "./calcBoundingBox";
 import {createPath} from "./createPath";
 import {Scale} from "./Scale";
+import {select} from "d3-selection";
 
 type BlocksConfig = { scale: Scale };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
-  $svg: D3El<SVGSVGElement>,
+  overlay: SVGSVGElement,
   {scale}: BlocksConfig
 ) {
+  const $svg = select(overlay)
   const words = Object.values(annotations)
     .filter(a => a.textGranularity === 'word')
   const blockBoundaries = createBlockBoundaries(words, annotations);

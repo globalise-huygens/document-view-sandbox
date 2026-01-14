@@ -15,6 +15,7 @@ import {TextResizer} from "./TextResizer";
 import {Id} from "./Id";
 import {renderWord} from "./renderWord";
 import {renderWordBoundaries} from "./renderWordBoundaries";
+import {orThrow} from "../util/orThrow";
 
 export interface OriginalLayoutConfig {
   showBoundaries: boolean;
@@ -31,7 +32,7 @@ export const defaultConfig: OriginalLayoutConfig = {
 export function renderOriginalLayout(
   $view: HTMLDivElement,
   page: AnnotationPage,
-  config?: Partial<OriginalLayoutConfig>
+  config?: Partial<OriginalLayoutConfig>,
 ) {
   const {fit, showBoundaries, showScanMargin} = {
     ...defaultConfig,
@@ -111,6 +112,10 @@ export function renderOriginalLayout(
     }),
   );
   resizer.calibrate(Object.values($words).slice(0, 10));
+
+  let onMouseEnter: (id: Id) => void = () => {}
+  let onMouseLeave: (id: Id) => void = () => {}
+
   words.forEach(({id, hull, base}) => {
     const $word = $words[id];
     resizer.resize($word);
@@ -119,6 +124,19 @@ export function renderOriginalLayout(
       const scaledBase = scale.path(base);
       renderWordBoundaries($word, scaledHull, scaledBase, $svg);
     }
+    $word.addEventListener('mouseenter', () => onMouseEnter(id))
+    $word.addEventListener('mouseleave', () => onMouseLeave(id))
   });
-  return {$svg, $text, $words, scale};
+
+  return {
+    layout: $text,
+    overlay: $svg.node() ?? orThrow('No svg element'),
+    scale,
+    onMouseEnter: (callback: (id: Id) => void): void => {
+      onMouseEnter = callback;
+    },
+    onMouseLeave: (callback: (id: Id) => void): void => {
+      onMouseLeave = callback;
+    },
+  };
 }
