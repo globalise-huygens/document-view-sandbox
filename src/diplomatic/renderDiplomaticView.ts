@@ -50,6 +50,10 @@ export function renderDiplomaticView(
   };
   $view.innerHTML = '';
   const {width: scanWidth, height: scanHeight} = page.partOf;
+  const annotations = page.items.reduce((prev, curr) => {
+    prev[curr.id] = curr
+    return prev
+  }, {} as Record<Id, Annotation>)
   const $text = document.createElement('div');
   $text.classList.add('text');
   $view.appendChild($text);
@@ -65,7 +69,10 @@ export function renderDiplomaticView(
     return {id, text, hull, base, angle};
   });
   const marginlessRect = calcTextRect(words);
-
+  /**
+   * Add some vertical padding to show overflowing characters.
+   * Characters are fit into their bounding boxes using width only.
+   */
   const overflowPadding = Math.round(marginlessRect.width * 0.05);
   const contentWidth = showScanMargin
     ? scanWidth
@@ -77,27 +84,9 @@ export function renderDiplomaticView(
   const factor = calcScaleFactor(fit, $view, contentWidth, contentHeight);
   const scale = createScale(factor)
 
-  const annotations = page.items.reduce((prev, curr) => {
-    prev[curr.id] = curr
-    return prev
-  }, {} as Record<Id, Annotation>)
-  for (const anno of Object.values(annotations)) {
-    if (anno.textGranularity === 'word') {
-      const target = Array.isArray(anno.target)
-        ? anno.target.find(isSpecificResourceTarget)
-        : anno.target;
-      assertSpecificResourceTarget(target);
-      assertSvgSelector(target.selector);
-
-      const points = createPoints(parseSvgPath(target.selector.value));
-      const scaled = points.map(scale.point);
-      target.selector.value = `<path d="M${createPath(scaled)}z"/>`;
-    }
-  }
-
   if (fit !== 'contain') {
-    $view.style.width = px(contentWidth);
-    $view.style.height = px(contentHeight);
+    $view.style.width = px(scale(contentWidth));
+    $view.style.height = px(scale(contentHeight));
   }
 
   if (!showScanMargin) {

@@ -41,12 +41,12 @@ export function renderLineNumbers(
     lineToBlock[line.id] = block.id;
   }
 
-  const padding = scale.point([50, 100]);
+  const padding: Point = [50, 100];
   const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
       const corners = calcBoundingCorners(block);
-      const padded = padCorners(corners, padding);
+      const padded = scale.path(padCorners(corners, padding));
       return [id, padded];
     }),
   );
@@ -67,7 +67,7 @@ export function renderLineNumbers(
         const leftMostWord: Rect =
           words.reduce<Rect | null>((prev, curr) => {
             const bbox = calcBoundingBox(
-              createPoints(findSvgPath(curr)),
+              scale.path(createPoints(findSvgPath(curr))),
             );
             if (!prev) {
               return bbox;
