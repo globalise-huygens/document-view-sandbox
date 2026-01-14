@@ -112,8 +112,8 @@ export function renderOriginalLayout(
   );
   resizer.calibrate(Object.values($words).slice(0, 10));
 
-  let onMouseEnter: (id: Id) => void = () => {};
-  let onMouseLeave: (id: Id) => void = () => {};
+  let mouseEnterCallback: (id: Id) => void = () => {};
+  let mouseLeaveCallback: (id: Id) => void = () => {};
 
   words.forEach(({ id, hull, base }) => {
     const $word = $words[id];
@@ -123,8 +123,8 @@ export function renderOriginalLayout(
       const scaledBase = scale.path(base);
       renderWordBoundaries($word, scaledHull, scaledBase, $svg);
     }
-    $word.addEventListener('mouseenter', () => onMouseEnter(id));
-    $word.addEventListener('mouseleave', () => onMouseLeave(id));
+    $word.addEventListener('mouseenter', () => mouseEnterCallback(id));
+    $word.addEventListener('mouseleave', () => mouseLeaveCallback(id));
   });
 
   return {
@@ -132,10 +132,10 @@ export function renderOriginalLayout(
     overlay: $svg.node() ?? orThrow('No svg element'),
     scale,
     onMouseEnter: (callback: (id: Id) => void): void => {
-      onMouseEnter = callback;
+      mouseEnterCallback = callback;
     },
     onMouseLeave: (callback: (id: Id) => void): void => {
-      onMouseLeave = callback;
+      mouseLeaveCallback = callback;
     },
   };
 }

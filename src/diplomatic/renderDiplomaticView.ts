@@ -36,7 +36,7 @@ export function renderDiplomaticView(
 
   function showLine(lineId: Id) {
     const existingHide = timedLineHides.get(lineId);
-    // Cancel hiding this line:
+    // Cancel hiding current line:
     if (existingHide) {
       clearTimeout(existingHide.timeout);
       timedLineHides.delete(lineId);
