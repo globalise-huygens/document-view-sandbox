@@ -10,7 +10,7 @@ type BlocksConfig = { scale: Scale };
 
 export function renderBlocks(
   annotations: Record<string, Annotation>,
-  $highlights: D3El<SVGSVGElement>,
+  $svg: D3El<SVGSVGElement>,
   {scale}: BlocksConfig
 ) {
   const words = Object.values(annotations)
@@ -26,7 +26,7 @@ export function renderBlocks(
   );
   const $blockHighlights = Object.fromEntries(
     Object.entries(blockCorners).map(([id, p]) => {
-      const $highlight = $highlights
+      const $highlight = $svg
         .append('polygon')
         .attr('points', createPath(p))
         .attr('fill', 'rgba(255,0,255,0.05)')

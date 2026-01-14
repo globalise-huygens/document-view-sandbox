@@ -2,10 +2,10 @@ import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
 import { renderScan } from './renderScan';
 import {
-  DiplomaticViewConfig,
   renderDiplomaticView,
 } from '../renderDiplomaticView';
 import { $ } from './$';
+import {OriginalLayoutConfig} from "../renderOriginalLayout";
 
 export async function renderScanExample($parent: HTMLElement) {
   const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
@@ -48,7 +48,7 @@ export async function renderScanExample($parent: HTMLElement) {
 
   const pageAttributes = { height, width, scanPath };
   renderScan(pageAttributes, scale, $scan);
-  const viewConfig: DiplomaticViewConfig = {
+  const viewConfig: OriginalLayoutConfig = {
     showBoundaries: false,
     showScanMargin: true,
     fit: 'contain',

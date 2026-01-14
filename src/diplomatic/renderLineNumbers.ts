@@ -21,11 +21,17 @@ type LineNumbersConfig = {
 
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
-  $text: HTMLDivElement,
+  $view: HTMLDivElement,
   {scale}: LineNumbersConfig
 ): Record<Id, HTMLElement> {
-  const lineAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'line');
-  const wordAnnos = Object.values(annotations).filter((a) => a.textGranularity === 'word');
+  const $text = document.createElement('div');
+  $view.appendChild($text);
+  $text.classList.add('text');
+
+  const lineAnnos = Object.values(annotations)
+    .filter((a) => a.textGranularity === 'line');
+  const wordAnnos = Object.values(annotations)
+    .filter((a) => a.textGranularity === 'word');
 
   const wordsByLine: Map<Id, Annotation[]> = new Map();
   for (const wordAnno of wordAnnos) {

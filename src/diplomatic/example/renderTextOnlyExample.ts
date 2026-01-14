@@ -1,7 +1,6 @@
 import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
 import {
-  DiplomaticViewConfig,
   renderDiplomaticView,
 } from '../renderDiplomaticView';
 import { $ } from './$';
