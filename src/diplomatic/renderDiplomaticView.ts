@@ -7,6 +7,7 @@ import {
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
+import {clearTimeout} from "node:timers";
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
@@ -30,31 +31,40 @@ export function renderDiplomaticView(
   /**
    * Prevent flickering of blocks and lines when hovering words
    */
-  const hideLineTimeouts: Map<Id, number> = new Map();
-  const hideBlockTimeouts: Map<Id, number> = new Map();
+  const timedLineHides: Map<Id, {timeout: number, callback: () => void}> = new Map();
+  const timedBlockHides: Map<Id, number> = new Map();
 
   function showLine(lineId: Id) {
-    const existingTimeout = hideLineTimeouts.get(lineId);
-    if (existingTimeout) {
-      clearTimeout(existingTimeout);
-      hideLineTimeouts.delete(lineId);
+    const existingHide = timedLineHides.get(lineId);
+    // Cancel hiding this line:
+    if (existingHide) {
+      clearTimeout(existingHide.timeout);
+      timedLineHides.delete(lineId);
     }
+    // Hide all other lines immediately:
+    timedLineHides.forEach(t => {
+      clearTimeout(t.timeout)
+      t.callback();
+    })
     $lineNumbers[lineId].style.display = 'block';
   }
 
   function hideLine(lineId: Id) {
-    const timeoutId = window.setTimeout(() => {
+    const timeout = window.setTimeout(callback, 50);
+
+    function callback() {
       $lineNumbers[lineId].style.display = 'none';
-      hideLineTimeouts.delete(lineId);
-    }, 50);
-    hideLineTimeouts.set(lineId, timeoutId);
+      timedLineHides.delete(lineId);
+    }
+
+    timedLineHides.set(lineId, {timeout, callback});
   }
 
   function showBlock(blockId: Id) {
-    const existingTimeout = hideBlockTimeouts.get(blockId);
+    const existingTimeout = timedBlockHides.get(blockId);
     if (existingTimeout) {
       clearTimeout(existingTimeout);
-      hideBlockTimeouts.delete(blockId);
+      timedBlockHides.delete(blockId);
     }
     $blockHighlights[blockId].attr('visibility', 'visible');
   }
@@ -62,9 +72,9 @@ export function renderDiplomaticView(
   function hideBlock(blockId: Id) {
     const timeoutId = window.setTimeout(() => {
       $blockHighlights[blockId].attr('visibility', 'hidden');
-      hideBlockTimeouts.delete(blockId);
+      timedBlockHides.delete(blockId);
     }, 150);
-    hideBlockTimeouts.set(blockId, timeoutId);
+    timedBlockHides.set(blockId, timeoutId);
   }
 
   const wordsToLine: Record<Id, Id> = {};
