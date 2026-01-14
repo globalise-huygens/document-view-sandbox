@@ -41,7 +41,7 @@ export function renderLineNumbers(
     lineToBlock[line.id] = block.id;
   }
 
-  const padding: Point = [50, 100];
+  const padding = scale.point([50, 100]);
   const blockBoundaries = createBlockBoundaries(wordAnnos, annotations);
   const blockCorners = Object.fromEntries(
     Object.entries(blockBoundaries).map(([id, block]) => {
