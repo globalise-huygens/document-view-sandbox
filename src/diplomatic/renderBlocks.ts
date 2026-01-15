@@ -41,7 +41,6 @@ export function renderBlocks(
       const body = Array.isArray(block.body) ? block.body[0] : block.body;
 
       const label = isBlockWithLabel(body) ? body.source.label : 'no label';
-      console.log('render', block);
       const $highlight = $svg.append('g').attr('visibility', 'hidden');
 
       $highlight

@@ -5,8 +5,7 @@ import { $ } from './$';
 import { Benchmark } from '../Benchmark';
 
 export async function renderTextOnlyExample($parent: HTMLElement) {
-  const jsonPath =
-    '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
   // const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
   // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
   // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
@@ -36,8 +35,9 @@ export async function renderTextOnlyExample($parent: HTMLElement) {
     const scale = Math.max(parentWidth / +width) * sliderScale;
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
+    const config = {showLines: true, showRegions: true};
     new Benchmark(renderDiplomaticView.name).run(() =>
-      renderDiplomaticView($view, annoPage, {showLines: true, showRegions: true}),
+      renderDiplomaticView($view, annoPage, config),
     );
   };
 
