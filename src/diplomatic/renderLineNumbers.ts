@@ -19,11 +19,13 @@ type LineNumbersConfig = {
   scale: Scale;
 };
 
+type TimedCallback = { timeout: number; callback: () => void };
+
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLDivElement,
   { scale }: LineNumbersConfig,
-): Record<Id, HTMLElement> {
+) {
   const $text = document.createElement('div');
   $view.appendChild($text);
   $text.classList.add('text');
@@ -59,7 +61,7 @@ export function renderLineNumbers(
     }),
   );
 
-  return Object.fromEntries(
+  const $lineNumbers = Object.fromEntries(
     lineAnnos
       .map((line, i) => {
         const id = line.id;
@@ -106,4 +108,38 @@ export function renderLineNumbers(
       })
       .filter((e) => !!e),
   );
+
+
+  /**
+   * Prevent flickering of blocks and lines when hovering words
+   */
+  const timedLineHides: Map<Id, TimedCallback> = new Map();
+
+  function showLine(lineId: Id) {
+    const existingHide = timedLineHides.get(lineId);
+    // Cancel hiding current line:
+    if (existingHide) {
+      clearTimeout(existingHide.timeout);
+      timedLineHides.delete(lineId);
+    }
+    // Hide all other lines immediately:
+    timedLineHides.forEach((t) => {
+      clearTimeout(t.timeout);
+      t.callback();
+    });
+    $lineNumbers[lineId].style.display = 'block';
+  }
+
+  function hideLine(lineId: Id) {
+    const timeout = window.setTimeout(callback, 50);
+
+    function callback() {
+      $lineNumbers[lineId].style.display = 'none';
+      timedLineHides.delete(lineId);
+    }
+
+    timedLineHides.set(lineId, {timeout, callback});
+  }
+
+  return {showLine, hideLine}
 }
