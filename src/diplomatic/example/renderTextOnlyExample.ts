@@ -9,11 +9,12 @@ import { Benchmark } from '../Benchmark';
 import {mapAnnotationsById} from "./mapAnnotationsById";
 
 export async function renderTextOnlyExample($parent: HTMLElement) {
-  const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
-  // const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
-  // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
-  // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
-  // const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
+  const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const entityPath = '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
+  // const pagePath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
+  // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
+  // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
   $parent.classList.add('text-only');
   $parent.innerHTML = `<div class="diplomatic-view"></div>`;
@@ -28,9 +29,14 @@ export async function renderTextOnlyExample($parent: HTMLElement) {
     max`;
   const $input: HTMLInputElement = $('input', $slider);
 
-  const annoResponse = await fetch(jsonPath);
-  const page: AnnotationPage = await annoResponse.json();
-  const annotations = mapAnnotationsById(page.items)
+  const pageResponse = await fetch(pagePath);
+  const page: AnnotationPage = await pageResponse.json();
+  const pageAnnotations = mapAnnotationsById(page.items)
+  const entityResponse = await fetch(entityPath)
+  const entityPage: AnnotationPage = await entityResponse.json();
+  const entityAnnotations = mapAnnotationsById(entityPage.items)
+  const annotations = Object.assign({}, pageAnnotations, entityAnnotations)
+
   const { width: parentWidth } = $parent.getBoundingClientRect();
   const { width } = page.partOf;
   const config: DiplomaticViewConfig = {
