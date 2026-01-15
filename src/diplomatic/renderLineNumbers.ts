@@ -97,9 +97,9 @@ export function renderLineNumbers(
         Object.assign($lineNumber.style, {
           left: px(blockTopLeft[0]),
           top: px(leftMostWord.top + leftMostWord.height / 2),
-          marginLeft: px(-scale(120)),
+          marginLeft: px(-scale(100)),
           marginTop: px(-scale(40)),
-          fontSize: px(scale(80)),
+          fontSize: px(scale(60)),
         });
         $lineNumber.style.display = 'none';
         return [id, $lineNumber];

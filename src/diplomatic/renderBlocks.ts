@@ -15,8 +15,8 @@ export function renderBlocks(
   $overlay: SVGSVGElement,
   {
     scale,
-    stroke = 'rgba(255,0,255,1)',
-    fill = 'rgba(255,0,255,0.05)',
+    stroke = 'rgba(0,200,0,1)',
+    fill = 'rgba(0,255,0,0.05)',
   }: BlocksConfig,
 ) {
   const $svg = select($overlay);
