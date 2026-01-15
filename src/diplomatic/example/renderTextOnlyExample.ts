@@ -37,7 +37,7 @@ export async function renderTextOnlyExample($parent: HTMLElement) {
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
     new Benchmark(renderDiplomaticView.name).run(() =>
-      renderDiplomaticView($view, annoPage),
+      renderDiplomaticView($view, annoPage, {showLines: true, showRegions: true}),
     );
   };
 
