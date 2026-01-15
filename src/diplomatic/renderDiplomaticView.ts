@@ -1,42 +1,39 @@
-import {Annotation, AnnotationPage} from './AnnoModel';
+import {Annotation} from './AnnoModel';
 import {Id} from './Id';
 import {findResourceTarget} from './findResourceTarget';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {
   defaultConfig as defaultOriginalLayoutConfig,
+  FullOriginalLayoutConfig,
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
 
-export type DiplomaticViewConfig = OriginalLayoutConfig & {
+export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showLines: boolean;
   showRegions: boolean;
 }
 
-export const defaultConfig = {
+export const defaultConfig: FullDiplomaticViewConfig = {
   ...defaultOriginalLayoutConfig,
   showLines: false,
   showRegions: false,
 }
 
+export type DiplomaticViewConfig =
+  & OriginalLayoutConfig
+  & Partial<FullDiplomaticViewConfig>;
+
 export function renderDiplomaticView(
   $view: HTMLDivElement,
-  page: AnnotationPage,
-  config?: Partial<DiplomaticViewConfig>,
+  annotations: Record<Id, Annotation>,
+  config: DiplomaticViewConfig,
 ) {
   const {showLines, showRegions} = {...defaultConfig, ...config}
   $view.innerHTML = '';
-  const originalLayout = renderOriginalLayout($view, page, config);
+  const originalLayout = renderOriginalLayout($view, annotations, config);
   const {layout: $text, overlay: $svg, scale} = originalLayout;
-
-  const annotations = page.items.reduce(
-    (prev, curr) => {
-      prev[curr.id] = curr;
-      return prev;
-    },
-    {} as Record<Id, Annotation>,
-  );
 
   const wordEnterCallbacks: ((wordId: Id) => void)[] = []
   const wordLeaveCallbacks: ((wordId: Id) => void)[] = []
@@ -58,7 +55,7 @@ export function renderDiplomaticView(
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
-  page.items.forEach((anno) => {
+  Object.values(annotations).forEach((anno) => {
     if (anno.textGranularity === 'word') {
       wordsToLine[anno.id] = findResourceTarget(anno).id;
     }

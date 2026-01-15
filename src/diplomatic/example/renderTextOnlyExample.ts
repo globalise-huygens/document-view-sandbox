@@ -1,8 +1,12 @@
 import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
-import { renderDiplomaticView } from '../renderDiplomaticView';
+import {
+  DiplomaticViewConfig,
+  renderDiplomaticView
+} from '../renderDiplomaticView';
 import { $ } from './$';
 import { Benchmark } from '../Benchmark';
+import {mapAnnotationsById} from "./mapAnnotationsById";
 
 export async function renderTextOnlyExample($parent: HTMLElement) {
   const jsonPath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
@@ -25,19 +29,23 @@ export async function renderTextOnlyExample($parent: HTMLElement) {
   const $input: HTMLInputElement = $('input', $slider);
 
   const annoResponse = await fetch(jsonPath);
-  const annoPage: AnnotationPage = await annoResponse.json();
-
+  const page: AnnotationPage = await annoResponse.json();
+  const annotations = mapAnnotationsById(page.items)
   const { width: parentWidth } = $parent.getBoundingClientRect();
-  const { width } = annoPage.partOf;
+  const { width } = page.partOf;
+  const config: DiplomaticViewConfig = {
+    showLines: true,
+    showRegions: true,
+    page: page.partOf
+  };
 
   const adjustScale = () => {
     const sliderScale = parseInt($input.value) / 100;
     const scale = Math.max(parentWidth / +width) * sliderScale;
     $view.style.height = px(0);
     $view.style.width = px(scale * width);
-    const config = {showLines: true, showRegions: true};
     new Benchmark(renderDiplomaticView.name).run(() =>
-      renderDiplomaticView($view, annoPage, config),
+      renderDiplomaticView($view, annotations, config),
     );
   };
 

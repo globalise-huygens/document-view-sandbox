@@ -1,4 +1,4 @@
-import { AnnotationPage } from './AnnoModel';
+import {Annotation, AnnotationPage} from './AnnoModel';
 import { assertTextualBody } from './anno/assertTextualBody';
 import { Point } from './Point';
 import { createHull } from './createHull';
@@ -17,30 +17,43 @@ import { renderWord } from './renderWord';
 import { renderWordBoundaries } from './renderWordBoundaries';
 import { orThrow } from '../util/orThrow';
 
-export interface OriginalLayoutConfig {
+export interface FullOriginalLayoutConfig {
   showBoundaries: boolean;
   showScanMargin: boolean;
   fit: ViewFit;
+  page: {
+    height: number,
+    width: number
+  }
 }
 
-export const defaultConfig: OriginalLayoutConfig = {
+export type OriginalLayoutConfig =
+  & Partial<FullOriginalLayoutConfig>
+  & Pick<FullOriginalLayoutConfig, 'page'>;
+
+export const defaultConfig: FullOriginalLayoutConfig = {
   showBoundaries: false,
   showScanMargin: false,
   fit: 'width',
+  page: {
+    height: 0,
+    width: 0
+  }
 };
 
 export function renderOriginalLayout(
   $view: HTMLDivElement,
-  page: AnnotationPage,
-  config?: Partial<OriginalLayoutConfig>,
+  annotations: Record<Id, Annotation>,
+  config: OriginalLayoutConfig,
 ) {
   const { fit, showBoundaries, showScanMargin } = {
     ...defaultConfig,
     ...config,
   };
-  const { width: pageWidth, height: pageHeight } = page.partOf;
+  const { width: pageWidth, height: pageHeight } = config.page;
 
-  const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
+  const wordAnnos = Object.values(annotations)
+    .filter((a) => a.textGranularity === 'word');
 
   const words = wordAnnos.map((word) => {
     const { id, body: bodies } = word;
