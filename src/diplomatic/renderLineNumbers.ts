@@ -66,7 +66,7 @@ export function renderLineNumbers(
         const $lineNumber = document.createElement('span');
         $text.appendChild($lineNumber);
         $lineNumber.classList.add('line-number');
-        $lineNumber.textContent = `${i + 1}`.padStart(2, '0');
+        $lineNumber.textContent = `${i + 1}`.padStart(2, '\u00A0');
         const words = wordsByLine.get(id);
         if (!words) {
           console.warn('Line without words');
