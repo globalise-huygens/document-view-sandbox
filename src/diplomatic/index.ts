@@ -1,6 +1,8 @@
 import { renderTextOnlyExample } from './example/renderTextOnlyExample';
 import { renderScanExample } from './example/renderScanExample';
 import { $ } from './example/$';
+import {getExampleFromUrl} from "./example/ExampleType";
+import {renderEntityExample} from "./example/renderEntityExample";
 
 if (DEV) {
   new EventSource('/esbuild').addEventListener('change', () =>
@@ -9,14 +11,15 @@ if (DEV) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const example =
-    new URLSearchParams(location.search).get('example') ?? 'with-scan';
+  const example = getExampleFromUrl()
   $('a.' + example).classList.add('active');
   const $example = $('#example');
 
   if (example === 'with-scan') {
     await renderScanExample($example);
-  } else {
+  } else if(example === 'text-only'){
     await renderTextOnlyExample($example);
+  } else {
+    await renderEntityExample($example);
   }
 });

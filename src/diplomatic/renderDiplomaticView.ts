@@ -13,12 +13,14 @@ import {
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showLines: boolean;
   showRegions: boolean;
+  showEntities: boolean
 }
 
 export const defaultConfig: FullDiplomaticViewConfig = {
   ...defaultOriginalLayoutConfig,
   showLines: false,
   showRegions: false,
+  showEntities: false
 }
 
 export type DiplomaticViewConfig =
