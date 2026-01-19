@@ -34,26 +34,8 @@ export function renderDiplomaticView(
 ) {
   const {showLines, showRegions} = {...defaultConfig, ...config}
   $view.innerHTML = '';
-  const originalLayout = renderOriginalLayout($view, annotations, config);
-  const {layout: $text, overlay: $svg, scale} = originalLayout;
-
-  const wordEnterCallbacks: ((wordId: Id) => void)[] = []
-  const wordLeaveCallbacks: ((wordId: Id) => void)[] = []
-
-  originalLayout.onMouseEnter((id) => {
-    const anno = annotations[id];
-    if (anno?.textGranularity !== 'word') {
-      return;
-    }
-    wordEnterCallbacks.forEach(c => c(id))
-  });
-  originalLayout.onMouseLeave((id) => {
-    const anno = annotations[id];
-    if (anno?.textGranularity !== 'word') {
-      return;
-    }
-    wordLeaveCallbacks.forEach(c => c(id))
-  });
+  const layout = renderOriginalLayout($view, annotations, config);
+  const {layout: $text, overlay: $svg, scale} = layout;
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
@@ -68,17 +50,13 @@ export function renderDiplomaticView(
 
   if (showRegions) {
     const {showBlock, hideBlock} = renderBlocks(annotations, $svg, {scale});
-    wordEnterCallbacks.push((wordId) => {
-      showBlock(linesToBlock[wordsToLine[wordId]])
-    })
-    wordLeaveCallbacks.push((wordId) => {
-      hideBlock(linesToBlock[wordsToLine[wordId]])
-    })
+    layout.onMouseEnter((id) => showBlock(linesToBlock[wordsToLine[id]]))
+    layout.onMouseLeave((id) => hideBlock(linesToBlock[wordsToLine[id]]))
   }
 
   if (showLines) {
     const {showLine, hideLine} = renderLineNumbers(annotations, $text, {scale});
-    wordEnterCallbacks.push((wordId) => showLine(wordsToLine[wordId]))
-    wordLeaveCallbacks.push((wordId) => hideLine(wordsToLine[wordId]))
+    layout.onMouseEnter((id) => showLine(wordsToLine[id]))
+    layout.onMouseLeave((id) => hideLine(wordsToLine[id]))
   }
 }
