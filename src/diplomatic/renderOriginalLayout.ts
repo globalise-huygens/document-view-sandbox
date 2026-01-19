@@ -125,9 +125,6 @@ export function renderOriginalLayout(
   );
   resizer.calibrate(Object.values($words).slice(0, 10));
 
-  const mouseEnterCallbacks: ((id: Id) => void)[] = [];
-  const mouseLeaveCallbacks: ((id: Id) => void)[] = [];
-
   words.forEach(({ id, hull, base }) => {
     const $word = $words[id];
     resizer.resize($word);
@@ -136,23 +133,11 @@ export function renderOriginalLayout(
       const scaledBase = scale.path(base);
       renderWordBoundaries($word, scaledHull, scaledBase, $svg);
     }
-    $word.addEventListener('mouseenter', () => {
-      mouseEnterCallbacks.forEach(c => c(id));
-    });
-    $word.addEventListener('mouseleave', () => {
-      mouseLeaveCallbacks.forEach(c => c(id));
-    });
   });
-
   return {
-    layout: $text,
-    overlay: $svg.node() ?? orThrow('No svg element'),
-    scale,
-    onMouseEnter: (callback: (id: Id) => void): void => {
-      mouseEnterCallbacks.push(callback);
-    },
-    onMouseLeave: (callback: (id: Id) => void): void => {
-      mouseLeaveCallbacks.push(callback);
-    },
+    $layout: $text,
+    $overlay: $svg.node() ?? orThrow('No svg element'),
+    $words,
+    scale
   };
 }

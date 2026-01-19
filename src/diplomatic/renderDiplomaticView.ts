@@ -9,6 +9,9 @@ import {
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
+import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
+import {orThrow} from "../util/orThrow";
+import {assertEntityBody, EntityBody} from "./EntityModel";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showLines: boolean;
@@ -32,10 +35,10 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  const {showLines, showRegions} = {...defaultConfig, ...config}
+  const {showLines, showRegions, showEntities} = {...defaultConfig, ...config}
   $view.innerHTML = '';
-  const layout = renderOriginalLayout($view, annotations, config);
-  const {layout: $text, overlay: $svg, scale} = layout;
+  const originalLayout = renderOriginalLayout($view, annotations, config);
+  const {$layout, $overlay, $words, scale} = originalLayout;
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
@@ -49,14 +52,39 @@ export function renderDiplomaticView(
   });
 
   if (showRegions) {
-    const {showBlock, hideBlock} = renderBlocks(annotations, $svg, {scale});
-    layout.onMouseEnter((id) => showBlock(linesToBlock[wordsToLine[id]]))
-    layout.onMouseLeave((id) => hideBlock(linesToBlock[wordsToLine[id]]))
+    const {showBlock, hideBlock} = renderBlocks(annotations, $overlay, {scale});
+    for (const [id, $word] of Object.entries($words)) {
+      const blockId = linesToBlock[wordsToLine[id]];
+      $word.addEventListener('mouseenter', () => showBlock(blockId));
+      $word.addEventListener('mouseleave', () => hideBlock(blockId));
+    }
   }
 
   if (showLines) {
-    const {showLine, hideLine} = renderLineNumbers(annotations, $text, {scale});
-    layout.onMouseEnter((id) => showLine(wordsToLine[id]))
-    layout.onMouseLeave((id) => hideLine(wordsToLine[id]))
+    const {showLine, hideLine} = renderLineNumbers(annotations, $layout, {scale});
+    for (const [id, $word] of Object.entries($words)) {
+      const lineId = wordsToLine[id];
+      $word.addEventListener('mouseenter', () => showLine(lineId))
+      $word.addEventListener('mouseleave', () => hideLine(lineId))
+    }
+  }
+  if (showEntities) {
+    const entities = Object.values(annotations)
+      .filter(a => a.motivation === 'classifying')
+    for (const entity of entities) {
+      const resourceTargets = entity.target.filter(isAnnotationResourceTarget)
+      const body = Array.isArray(entity.body) ? entity.body[0] : entity.body
+      assertEntityBody(body)
+      const entityType = body.classified_as._label
+      for (const resource of resourceTargets) {
+        const $word = $words[resource.id] ?? orThrow('No $word')
+        const typeClassname = entityType
+          .toLowerCase()
+          .replaceAll(' ', '-')
+          .replaceAll(/[^a-z0-9-]/gi, '');
+        $word.classList.add(typeClassname)
+        $word.title = `${entityType} | ${entity.id}`
+      }
+    }
   }
 }

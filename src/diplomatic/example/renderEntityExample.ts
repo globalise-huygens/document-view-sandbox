@@ -1,11 +1,11 @@
-import { AnnotationPage } from '../AnnoModel';
-import { px } from '../px';
+import {AnnotationPage} from '../AnnoModel';
+import {px} from '../px';
 import {
   DiplomaticViewConfig,
   renderDiplomaticView
 } from '../renderDiplomaticView';
-import { $ } from './$';
-import { Benchmark } from '../Benchmark';
+import {$} from './$';
+import {Benchmark} from '../Benchmark';
 import {mapAnnotationsById} from "./mapAnnotationsById";
 
 export async function renderEntityExample($parent: HTMLElement) {
@@ -16,7 +16,7 @@ export async function renderEntityExample($parent: HTMLElement) {
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
-  $parent.classList.add('text-only');
+  $parent.classList.add('with-entities');
   $parent.innerHTML = `<div class="diplomatic-view"></div>`;
   const $menu = $('#menu');
   const $view: HTMLDivElement = $('.diplomatic-view', $parent);
@@ -37,10 +37,11 @@ export async function renderEntityExample($parent: HTMLElement) {
   const entityAnnotations = mapAnnotationsById(entityPage.items)
   const annotations = Object.assign({}, pageAnnotations, entityAnnotations)
 
-  const { width: parentWidth } = $parent.getBoundingClientRect();
-  const { width } = page.partOf;
+  const {width: parentWidth} = $parent.getBoundingClientRect();
+  const {width} = page.partOf;
   const config: DiplomaticViewConfig = {
-    page: page.partOf
+    page: page.partOf,
+    showEntities: true
   };
 
   const adjustScale = () => {
