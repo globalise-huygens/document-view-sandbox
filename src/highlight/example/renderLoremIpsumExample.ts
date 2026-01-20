@@ -1,9 +1,7 @@
 import {
-  Offsets,
+  AnnotationRange,
   AnnotationId,
-  AnnotationType,
-  CharRange,
-  Rgb
+  TextRange,
 } from "../Model";
 import {orThrow} from "../../util/orThrow";
 import {createRanges} from "../createRanges";
@@ -13,7 +11,7 @@ import {RangeId} from "../Model";
 export async function renderLoremIpsumExample($app: HTMLElement) {
   const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
 
-  const annotations: Offsets<Annotation>[] = [
+  const annotations: AnnotationRange<Annotation>[] = [
     { begin: 6, end: 17, body: { id: 'p1', type: 'person' } }, // "ipsum dolor"
     {
       begin: 12,
@@ -44,8 +42,8 @@ function renderText(
   $style: HTMLStyleElement,
   $container: HTMLDivElement,
   text: string,
-  ranges: CharRange[],
-  annotations: Record<AnnotationId, Offsets<Annotation>>,
+  ranges: TextRange[],
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
 ) {
   createHighlightStyles(annotations, ranges, $style);
 
@@ -73,8 +71,8 @@ function renderText(
 }
 
 function createHighlightStyles(
-  annotationsById: Record<AnnotationId, Offsets<Annotation>>,
-  ranges: CharRange[],
+  annotationsById: Record<AnnotationId, AnnotationRange<Annotation>>,
+  ranges: TextRange[],
   styleElement: HTMLStyleElement,
 ) {
   let cssRules = `.highlight-hover {
@@ -131,8 +129,8 @@ function createHighlightStyles(
 
 function handleHovering(
   $text: HTMLDivElement,
-  textRanges: Map<RangeId, CharRange>,
-  annotations: Record<AnnotationId, Offsets>,
+  textRanges: Map<RangeId, TextRange>,
+  annotations: Record<AnnotationId, AnnotationRange>,
 ) {
   let currentHoveredAnnotation: AnnotationId | null = null;
 
@@ -192,9 +190,9 @@ function handleHovering(
  * 3. starts earliest
  */
 function findHoveredAnnotation(
-  annotations: Offsets[],
+  annotations: AnnotationRange[],
   charIndex: number,
-): Offsets | null {
+): AnnotationRange | null {
   const candidates = annotations.filter((a) => {
     const marker = a.begin === a.end && charIndex === a.begin;
     const annotation = charIndex >= a.begin && charIndex < a.end;
@@ -218,7 +216,7 @@ function findHoveredAnnotation(
 
 function createHighlightClass(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Offsets<Annotation>>,
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
   sortedTypes: AnnotationType[] = ['event', 'location', 'note', 'person'],
 ) {
   const { typeCounts } = countTypes(annotationIds, annotations);
@@ -236,7 +234,7 @@ function createHighlightClass(
 
 function createHighlight(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Offsets<Annotation>>,
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
   baseColors: Record<AnnotationType, Rgb>,
 ) {
   const { types } = countTypes(annotationIds, annotations);
@@ -247,7 +245,7 @@ function createHighlight(
 
 function countTypes(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Offsets<Annotation>>,
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
 ): { types: AnnotationType[]; typeCounts: Map<AnnotationType, number> } {
   const typeCounts = new Map<AnnotationType, number>();
   const types: AnnotationType[] = [];
@@ -300,3 +298,9 @@ type NoteBody = {
   type: 'note';
   note: string;
 };
+export type Rgb = {
+  r: number;
+  g: number;
+  b: number;
+};
+export type AnnotationType = 'location' | 'person' | 'event' | 'note';

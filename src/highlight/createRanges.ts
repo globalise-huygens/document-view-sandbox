@@ -1,4 +1,4 @@
-import {Offsets, AnnotationId, Offset, CharRange} from "./Model";
+import {AnnotationRange, AnnotationId, TextRange} from "./Model";
 import {RangeId} from "./Model";
 
 /**
@@ -10,12 +10,12 @@ import {RangeId} from "./Model";
  */
 export function createRanges(
   text: string,
-  annotations: Offsets[],
-): Map<RangeId, CharRange> {
-  const ranges = new Map<RangeId, CharRange>();
+  annotations: AnnotationRange[],
+): Map<RangeId, TextRange> {
+  const ranges = new Map<RangeId, TextRange>();
   let rangeCounter = 0;
 
-  const offsetMap = new Map<number, Offset>();
+  const offsetMap = new Map<number, AnnotationRangesByChar>();
 
   const getOrCreateOffset = (charIndex: number) => {
     if (offsetMap.has(charIndex)) {
@@ -72,3 +72,13 @@ export function createRanges(
 
   return ranges;
 }
+
+/**
+ * Intermediate type to annotations to the
+ * character indexes at which they start or end
+ */
+export type AnnotationRangesByChar = {
+  charIndex: number;
+  starting: AnnotationRange[];
+  ending: AnnotationRange[];
+};
