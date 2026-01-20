@@ -2,7 +2,7 @@ import type {
   Annotation as IiifAnnotation,
   AnnotationPage as IiifAnnotationPage,
   AnnotationTarget as IiifAnnotationTarget,
-  Body as IiifBody,
+  Body as IiifBody, TextPositionSelector,
 } from '@iiif/presentation-3';
 import { Id } from './Id';
 
@@ -38,28 +38,16 @@ export type TextualBody = {
   language?: string;
 };
 
-export type SpecificResource = {
-  type: 'SpecificResource';
-  source: string | Source;
-  selector?: Selector;
-  purpose?: string;
-};
-
-export type Source = {
-  id: string;
-  type: string;
-  label: string;
-};
-
-export type Selector = {
-  type: string;
-  value: string;
-};
-
 export type SpecificResourceTarget = {
   type: 'SpecificResource';
   source: string;
   selector: Selector;
+};
+export type Selector = ValueSelector | TextPositionSelector;
+
+export type ValueSelector = {
+  type: string;
+  value: string;
 };
 
 export type PartOf = {

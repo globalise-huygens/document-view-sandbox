@@ -1,7 +1,7 @@
 import {setUrlParams} from "../../util/setUrlParam";
 
-const defaultExample = 'lorem-ipsum';
-export const exampleType = [defaultExample] as const
+const defaultExample = 'page-entities';
+export const exampleType = [defaultExample, 'lorem-ipsum'] as const
 export type ExampleType = typeof exampleType[number]
 
 export function getExampleFromUrl(): ExampleType | void {

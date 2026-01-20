@@ -11,7 +11,8 @@ import {
 } from './renderOriginalLayout';
 import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
 import {orThrow} from "../util/orThrow";
-import {assertEntityBody, EntityBody} from "./EntityModel";
+import {getEntityType} from "./getEntityType";
+import {toClassName} from "./toClassName";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showLines: boolean;
@@ -73,15 +74,10 @@ export function renderDiplomaticView(
       .filter(a => a.motivation === 'classifying')
     for (const entity of entities) {
       const resourceTargets = entity.target.filter(isAnnotationResourceTarget)
-      const body = Array.isArray(entity.body) ? entity.body[0] : entity.body
-      assertEntityBody(body)
-      const entityType = body.classified_as._label
+      const entityType = getEntityType(entity);
       for (const resource of resourceTargets) {
         const $word = $words[resource.id] ?? orThrow('No $word')
-        const typeClassname = entityType
-          .toLowerCase()
-          .replaceAll(' ', '-')
-          .replaceAll(/[^a-z0-9-]/gi, '');
+        const typeClassname = toClassName(entityType);
         $word.classList.add(typeClassname)
         $word.title = `${entityType} | ${entity.id}`
       }
