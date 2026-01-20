@@ -1,5 +1,5 @@
 import {Annotation, AnnotationId, Offset, CharRange} from "./Model";
-import {RangeId} from "./RangeId";
+import {RangeId} from "./Model";
 
 /**
  * Split a text into character ranges linked to the annotations that apply to that range.

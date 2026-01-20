@@ -1,10 +1,14 @@
-export const exampleType = ['lorem-ipsum'] as const
+import {setUrlParams} from "../../util/setUrlParam";
+
+const defaultExample = 'lorem-ipsum';
+export const exampleType = [defaultExample] as const
 export type ExampleType = typeof exampleType[number]
 
-export function getExampleFromUrl(): ExampleType {
+export function getExampleFromUrl(): ExampleType | void {
   const param = new URLSearchParams(location.search).get('example') as ExampleType;
   if(exampleType.includes(param)) {
     return param;
   }
-  return 'lorem-ipsum'
+  setUrlParams({example: defaultExample})
+  return defaultExample
 }

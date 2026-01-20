@@ -1,4 +1,7 @@
-export const example = ['with-scan', 'text-only', 'with-entities'] as const
+import {setUrlParams} from "../../util/setUrlParam";
+
+const defaultExample = 'with-scan';
+export const example = [defaultExample, 'text-only', 'with-entities'] as const
 export type ExampleType = typeof example[number]
 
 export function getExampleFromUrl(): ExampleType {
@@ -6,5 +9,6 @@ export function getExampleFromUrl(): ExampleType {
   if(example.includes(param)) {
     return param;
   }
-  return 'with-scan'
+  setUrlParams({example: defaultExample})
+  return defaultExample
 }
