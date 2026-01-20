@@ -1,21 +1,11 @@
 export type AnnotationId = string;
 export type AnnotationType = 'location' | 'person' | 'event' | 'note';
-export type AnnotationBody = EntityBody | NoteBody;
-export type EntityBody = {
-  id: AnnotationId;
-  type: 'location' | 'person' | 'event';
-};
 
-export type NoteBody = {
-  id: AnnotationId;
-  type: 'note';
-  note: string;
-};
-
-export type Annotation = {
+export type WidthId = { id: AnnotationId };
+export type Offsets<T extends WidthId = WidthId> = {
   begin: number;
   end: number;
-  body: AnnotationBody;
+  body: T;
 };
 
 export type RangeId = string;
@@ -29,8 +19,8 @@ export type CharRange = {
 
 export type Offset = {
   charIndex: number;
-  starting: Annotation[];
-  ending: Annotation[];
+  starting: Offsets[];
+  ending: Offsets[];
 };
 
 export type Rgb = {

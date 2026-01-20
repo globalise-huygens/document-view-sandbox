@@ -1,7 +1,7 @@
 import {setUrlParams} from "../../util/setUrlParam";
 
 const defaultExample = 'with-scan';
-export const example = [defaultExample, 'text-only', 'with-entities'] as const
+export const example = [defaultExample, 'with-regions', 'with-entities'] as const
 export type ExampleType = typeof example[number]
 
 export function getExampleFromUrl(): ExampleType {

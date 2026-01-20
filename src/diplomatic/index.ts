@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (example === 'with-scan') {
     await renderScanExample($example);
-  } else if(example === 'text-only'){
+  } else if(example === 'with-regions'){
     await renderTextOnlyExample($example);
   } else {
     await renderEntityExample($example);

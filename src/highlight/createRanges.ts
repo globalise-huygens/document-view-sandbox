@@ -1,4 +1,4 @@
-import {Annotation, AnnotationId, Offset, CharRange} from "./Model";
+import {Offsets, AnnotationId, Offset, CharRange} from "./Model";
 import {RangeId} from "./Model";
 
 /**
@@ -10,7 +10,7 @@ import {RangeId} from "./Model";
  */
 export function createRanges(
   text: string,
-  annotations: Annotation[],
+  annotations: Offsets[],
 ): Map<RangeId, CharRange> {
   const ranges = new Map<RangeId, CharRange>();
   let rangeCounter = 0;
