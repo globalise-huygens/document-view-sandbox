@@ -12,7 +12,7 @@ https://globalise-huygens.github.io/document-view-sandbox/diplomatic/index.html
 
 ## Highlights
 
-https://globalise-huygens.github.io/document-view-sandbox/highlight.html
+https://globalise-huygens.github.io/document-view-sandbox/highlight/index.html
 
 ## Local
 
@@ -20,7 +20,7 @@ To run locally:
 
 - npm install
 - npm run dev
-- open 127.0.0.1:8000/diplomatic.html or /viewer.html
+- open 127.0.0.1:8000
 
 Before committing, run:
 

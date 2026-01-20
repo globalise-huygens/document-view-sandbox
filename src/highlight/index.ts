@@ -1,5 +1,5 @@
 import { debounce, keyBy } from 'lodash';
-import { orThrow } from './util/orThrow';
+import { orThrow } from '../util/orThrow';
 
 main();
 
