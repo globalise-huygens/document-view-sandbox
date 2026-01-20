@@ -60,6 +60,7 @@ function renderText(
         const a = annotations[id]
         return isEntityBody(a.body) ? 'no-entity' : getEntityType(a);
       })
+      $span.title = types.join(', ')
       $span.classList.add(...types.map(toClassName));
     }
     $container.appendChild($span);
