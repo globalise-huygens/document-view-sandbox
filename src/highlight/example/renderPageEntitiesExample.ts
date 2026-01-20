@@ -51,7 +51,6 @@ function renderText(
   ranges: TextRange[],
   annotations: Record<AnnotationId, Annotation>
 ) {
-  console.log('ranges', ranges)
   for (const range of ranges) {
     const $span = document.createElement('span');
     $span.classList.add('entity')
