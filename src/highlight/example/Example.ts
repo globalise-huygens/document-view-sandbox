@@ -1,4 +1,4 @@
-export const exampleType = ['with-scan', 'text-only', 'with-entities'] as const
+export const exampleType = ['lorem-ipsum'] as const
 export type ExampleType = typeof exampleType[number]
 
 export function getExampleFromUrl(): ExampleType {
@@ -6,5 +6,5 @@ export function getExampleFromUrl(): ExampleType {
   if(exampleType.includes(param)) {
     return param;
   }
-  return 'with-scan'
+  return 'lorem-ipsum'
 }

@@ -1,7 +1,7 @@
 import { renderTextOnlyExample } from './example/renderTextOnlyExample';
 import { renderScanExample } from './example/renderScanExample';
 import { $ } from './example/$';
-import {getExampleFromUrl} from "./example/ExampleType";
+import {getExampleFromUrl} from "./example/Example";
 import {renderEntityExample} from "./example/renderEntityExample";
 
 if (DEV) {
