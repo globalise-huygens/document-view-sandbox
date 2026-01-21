@@ -2,15 +2,17 @@ import { AnnotationPage } from '../AnnoModel';
 import { px } from '../px';
 import {
   DiplomaticViewConfig,
-  renderDiplomaticView
+  renderDiplomaticView,
 } from '../renderDiplomaticView';
 import { $ } from './$';
 import { Benchmark } from '../Benchmark';
-import {mapAnnotationsById} from "./mapAnnotationsById";
+import { mapAnnotationsById } from './mapAnnotationsById';
 
 export async function renderRegionsExample($parent: HTMLElement) {
-  const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
-  const entityPath = '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
+  const pagePath =
+    '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const entityPath =
+    '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
   // const pagePath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
@@ -31,14 +33,14 @@ export async function renderRegionsExample($parent: HTMLElement) {
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
-  const annotations = mapAnnotationsById(page.items)
+  const annotations = mapAnnotationsById(page.items);
 
   const { width: parentWidth } = $parent.getBoundingClientRect();
   const { width } = page.partOf;
   const config: DiplomaticViewConfig = {
     showLines: true,
     showRegions: true,
-    page: page.partOf
+    page: page.partOf,
   };
 
   const adjustScale = () => {

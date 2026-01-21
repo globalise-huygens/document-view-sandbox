@@ -1,19 +1,19 @@
 export type EntityBody = {
-  type: EntityType
-  classified_as: EntityClassification
+  type: EntityType;
+  classified_as: EntityClassification;
 };
 type EntityClassification = {
-  id: string,
-  type: string,
-  _label: string
+  id: string;
+  type: string;
+  _label: string;
 };
 const entityTypes = [
   'AppellativeStatus',
   'ClassificatoryStatus',
-  'Dimension'
+  'Dimension',
 ] as const;
 
-export type EntityType = typeof entityTypes[number]
+export type EntityType = (typeof entityTypes)[number];
 
 export function assertEntityBody(body: unknown): asserts body is EntityBody {
   if (!isEntityBody(body)) {

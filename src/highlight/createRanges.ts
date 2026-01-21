@@ -1,5 +1,5 @@
-import {AnnotationRange, AnnotationId, TextRange} from "./Model";
-import {RangeId} from "./Model";
+import { AnnotationRange, AnnotationId, TextRange } from './Model';
+import { RangeId } from './Model';
 
 /**
  * Split a text into character ranges linked to the annotations that apply to that range.
@@ -21,7 +21,7 @@ export function createRanges(
     if (offsetMap.has(charIndex)) {
       return offsetMap.get(charIndex)!;
     }
-    const newOffset = {charIndex, starting: [], ending: []};
+    const newOffset = { charIndex, starting: [], ending: [] };
     offsetMap.set(charIndex, newOffset);
     return newOffset;
   };

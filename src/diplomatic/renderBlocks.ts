@@ -1,13 +1,13 @@
-import {Annotation, isBlockWithLabel} from './AnnoModel';
-import {Point} from './Point';
-import {createBlockBoundaries} from './createBlockBoundaries';
-import {calcBoundingCorners, padCorners} from './calcBoundingBox';
-import {createPath} from './createPath';
-import {Scale} from './Scale';
-import {select} from 'd3-selection';
-import {px} from './px';
-import {pickBy} from 'lodash';
-import {Id} from "./Id";
+import { Annotation, isBlockWithLabel } from './AnnoModel';
+import { Point } from './Point';
+import { createBlockBoundaries } from './createBlockBoundaries';
+import { calcBoundingCorners, padCorners } from './calcBoundingBox';
+import { createPath } from './createPath';
+import { Scale } from './Scale';
+import { select } from 'd3-selection';
+import { px } from './px';
+import { pickBy } from 'lodash';
+import { Id } from './Id';
 
 type BlocksConfig = { scale: Scale; fill?: string; stroke?: string };
 
@@ -63,5 +63,5 @@ export function renderBlocks(
     }),
   );
 
-  return {$blocks};
+  return { $blocks };
 }

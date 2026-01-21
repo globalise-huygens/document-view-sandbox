@@ -1,5 +1,5 @@
-import {Annotation, AnnotationPage, PartOf} from "../AnnoModel";
-import {Id} from "../Id";
+import { Annotation, AnnotationPage, PartOf } from '../AnnoModel';
+import { Id } from '../Id';
 
 export function mapAnnotationsById(annotations: Annotation[]) {
   return annotations.reduce(

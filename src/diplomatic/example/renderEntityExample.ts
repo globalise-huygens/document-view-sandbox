@@ -1,16 +1,18 @@
-import {AnnotationPage} from '../AnnoModel';
-import {px} from '../px';
+import { AnnotationPage } from '../AnnoModel';
+import { px } from '../px';
 import {
   DiplomaticViewConfig,
-  renderDiplomaticView
+  renderDiplomaticView,
 } from '../renderDiplomaticView';
-import {$} from './$';
-import {Benchmark} from '../Benchmark';
-import {mapAnnotationsById} from "./mapAnnotationsById";
+import { $ } from './$';
+import { Benchmark } from '../Benchmark';
+import { mapAnnotationsById } from './mapAnnotationsById';
 
 export async function renderEntityExample($parent: HTMLElement) {
-  const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
-  const entityPath = '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
+  const pagePath =
+    '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const entityPath =
+    '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
   // const pagePath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
@@ -31,17 +33,17 @@ export async function renderEntityExample($parent: HTMLElement) {
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
-  const pageAnnotations = mapAnnotationsById(page.items)
-  const entityResponse = await fetch(entityPath)
+  const pageAnnotations = mapAnnotationsById(page.items);
+  const entityResponse = await fetch(entityPath);
   const entityPage: AnnotationPage = await entityResponse.json();
-  const entityAnnotations = mapAnnotationsById(entityPage.items)
-  const annotations = Object.assign({}, pageAnnotations, entityAnnotations)
+  const entityAnnotations = mapAnnotationsById(entityPage.items);
+  const annotations = Object.assign({}, pageAnnotations, entityAnnotations);
 
-  const {width: parentWidth} = $parent.getBoundingClientRect();
-  const {width} = page.partOf;
+  const { width: parentWidth } = $parent.getBoundingClientRect();
+  const { width } = page.partOf;
   const config: DiplomaticViewConfig = {
     page: page.partOf,
-    showEntities: true
+    showEntities: true,
   };
 
   const adjustScale = () => {

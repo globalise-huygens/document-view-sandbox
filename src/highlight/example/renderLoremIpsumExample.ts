@@ -1,12 +1,8 @@
-import {
-  AnnotationRange,
-  AnnotationId,
-  TextRange,
-} from "../Model";
-import {orThrow} from "../../util/orThrow";
-import {createRanges} from "../createRanges";
-import {debounce, keyBy} from "lodash";
-import {RangeId} from "../Model";
+import { AnnotationRange, AnnotationId, TextRange } from '../Model';
+import { orThrow } from '../../util/orThrow';
+import { createRanges } from '../createRanges';
+import { debounce, keyBy } from 'lodash';
+import { RangeId } from '../Model';
 
 export async function renderLoremIpsumExample($app: HTMLElement) {
   const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';

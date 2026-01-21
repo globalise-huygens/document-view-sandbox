@@ -1,19 +1,19 @@
-import {Annotation} from './AnnoModel';
-import {Id} from './Id';
-import {Point} from './Point';
-import {Rect} from './Rect';
+import { Annotation } from './AnnoModel';
+import { Id } from './Id';
+import { Point } from './Point';
+import { Rect } from './Rect';
 import {
   calcBoundingBox,
   calcBoundingCorners,
   padCorners,
 } from './calcBoundingBox';
-import {createPoints} from './createPoints';
-import {findSvgPath} from './anno/findSvgPath';
-import {orThrow} from '../util/orThrow';
-import {px} from './px';
-import {findResourceTarget} from './findResourceTarget';
-import {createBlockBoundaries} from './createBlockBoundaries';
-import {Scale} from './Scale';
+import { createPoints } from './createPoints';
+import { findSvgPath } from './anno/findSvgPath';
+import { orThrow } from '../util/orThrow';
+import { px } from './px';
+import { findResourceTarget } from './findResourceTarget';
+import { createBlockBoundaries } from './createBlockBoundaries';
+import { Scale } from './Scale';
 
 type LineNumbersConfig = {
   scale: Scale;
@@ -24,7 +24,7 @@ type TimedCallback = { timeout: number; callback: () => void };
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLDivElement,
-  {scale}: LineNumbersConfig,
+  { scale }: LineNumbersConfig,
 ) {
   const $text = document.createElement('div');
   $view.appendChild($text);
@@ -109,7 +109,6 @@ export function renderLineNumbers(
       .filter((e) => !!e),
   );
 
-
   function showLine(lineId: Id) {
     $lineNumbers[lineId].style.display = 'block';
   }
@@ -118,5 +117,5 @@ export function renderLineNumbers(
     $lineNumbers[lineId].style.display = 'none';
   }
 
-  return {showLine, hideLine}
+  return { showLine, hideLine };
 }

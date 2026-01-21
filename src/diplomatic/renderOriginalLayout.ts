@@ -1,4 +1,4 @@
-import {Annotation, AnnotationPage} from './AnnoModel';
+import { Annotation, AnnotationPage } from './AnnoModel';
 import { assertTextualBody } from './anno/assertTextualBody';
 import { Point } from './Point';
 import { createHull } from './createHull';
@@ -22,14 +22,13 @@ export interface FullOriginalLayoutConfig {
   showScanMargin: boolean;
   fit: ViewFit;
   page: {
-    height: number,
-    width: number
-  }
+    height: number;
+    width: number;
+  };
 }
 
-export type OriginalLayoutConfig =
-  & Partial<FullOriginalLayoutConfig>
-  & Pick<FullOriginalLayoutConfig, 'page'>;
+export type OriginalLayoutConfig = Partial<FullOriginalLayoutConfig> &
+  Pick<FullOriginalLayoutConfig, 'page'>;
 
 export const defaultConfig: FullOriginalLayoutConfig = {
   showBoundaries: false,
@@ -37,8 +36,8 @@ export const defaultConfig: FullOriginalLayoutConfig = {
   fit: 'width',
   page: {
     height: 0,
-    width: 0
-  }
+    width: 0,
+  },
 };
 
 export function renderOriginalLayout(
@@ -52,8 +51,9 @@ export function renderOriginalLayout(
   };
   const { width: pageWidth, height: pageHeight } = config.page;
 
-  const wordAnnos = Object.values(annotations)
-    .filter((a) => a.textGranularity === 'word');
+  const wordAnnos = Object.values(annotations).filter(
+    (a) => a.textGranularity === 'word',
+  );
 
   const words = wordAnnos.map((word) => {
     const { id, body: bodies } = word;
@@ -138,6 +138,6 @@ export function renderOriginalLayout(
     $layout: $text,
     $overlay: $svg.node() ?? orThrow('No svg element'),
     $words,
-    scale
+    scale,
   };
 }

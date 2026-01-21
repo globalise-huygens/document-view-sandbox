@@ -1,10 +1,10 @@
-import {AnnotationPage} from '../AnnoModel';
-import {px} from '../px';
-import {renderScan} from './renderScan';
-import {renderDiplomaticView} from '../renderDiplomaticView';
-import {$} from './$';
-import {FullOriginalLayoutConfig} from '../renderOriginalLayout';
-import {mapAnnotationsById} from "./mapAnnotationsById";
+import { AnnotationPage } from '../AnnoModel';
+import { px } from '../px';
+import { renderScan } from './renderScan';
+import { renderDiplomaticView } from '../renderDiplomaticView';
+import { $ } from './$';
+import { FullOriginalLayoutConfig } from '../renderOriginalLayout';
+import { mapAnnotationsById } from './mapAnnotationsById';
 
 export async function renderScanExample($parent: HTMLElement) {
   const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
@@ -51,7 +51,7 @@ export async function renderScanExample($parent: HTMLElement) {
     showBoundaries: false,
     showScanMargin: true,
     fit: 'contain',
-    page: page.partOf
+    page: page.partOf,
   };
   const annotations = mapAnnotationsById(page.items);
   renderDiplomaticView($view, annotations, viewConfig);

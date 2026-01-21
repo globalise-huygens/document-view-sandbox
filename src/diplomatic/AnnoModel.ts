@@ -2,7 +2,8 @@ import type {
   Annotation as IiifAnnotation,
   AnnotationPage as IiifAnnotationPage,
   AnnotationTarget as IiifAnnotationTarget,
-  Body as IiifBody, TextPositionSelector,
+  Body as IiifBody,
+  TextPositionSelector,
 } from '@iiif/presentation-3';
 import { Id } from './Id';
 

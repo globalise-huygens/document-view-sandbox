@@ -1,44 +1,43 @@
-import {Annotation} from './AnnoModel';
-import {Id} from './Id';
-import {findResourceTarget} from './findResourceTarget';
-import {renderLineNumbers} from './renderLineNumbers';
-import {renderBlocks} from './renderBlocks';
+import { Annotation } from './AnnoModel';
+import { Id } from './Id';
+import { findResourceTarget } from './findResourceTarget';
+import { renderLineNumbers } from './renderLineNumbers';
+import { renderBlocks } from './renderBlocks';
 import {
   defaultConfig as defaultOriginalLayoutConfig,
   FullOriginalLayoutConfig,
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
-import {orThrow} from "../util/orThrow";
-import {getEntityType} from "./getEntityType";
-import {toClassName} from "./toClassName";
-import {D3El} from "./D3El";
+import { isAnnotationResourceTarget } from './anno/isAnnotationResourceTarget';
+import { orThrow } from '../util/orThrow';
+import { getEntityType } from './getEntityType';
+import { toClassName } from './toClassName';
+import { D3El } from './D3El';
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
-  showEntities: boolean
-}
+  showEntities: boolean;
+};
 
 export const defaultConfig: FullDiplomaticViewConfig = {
   ...defaultOriginalLayoutConfig,
   showRegions: false,
-  showEntities: false
-}
+  showEntities: false,
+};
 
-export type DiplomaticViewConfig =
-  & OriginalLayoutConfig
-  & Partial<FullDiplomaticViewConfig>;
+export type DiplomaticViewConfig = OriginalLayoutConfig &
+  Partial<FullDiplomaticViewConfig>;
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  const {showRegions, showEntities} = {...defaultConfig, ...config}
+  const { showRegions, showEntities } = { ...defaultConfig, ...config };
   $view.innerHTML = '';
   const originalLayout = renderOriginalLayout($view, annotations, config);
-  const {$layout, $overlay, $words, scale} = originalLayout;
+  const { $layout, $overlay, $words, scale } = originalLayout;
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
@@ -60,50 +59,47 @@ export function renderDiplomaticView(
   });
 
   if (showRegions) {
-    const {$blocks} = renderBlocks(annotations, $overlay, {scale});
-    const {
-      showLine,
-      hideLine
-    } = renderLineNumbers(annotations, $layout, {scale});
+    const { $blocks } = renderBlocks(annotations, $overlay, { scale });
+    const lineNumbers = renderLineNumbers(annotations, $layout, { scale });
+    const { showLine, hideLine } = lineNumbers;
 
     function showRegion($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('opacity', 1)
-      lines.forEach(l => showLine(l));
-    }
-    function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
-      $block.attr('opacity', 0)
-      lines.forEach(l => hideLine(l));
+      $block.attr('opacity', 1);
+      lines.forEach((l) => showLine(l));
     }
 
-    // Show regions and lines when hovering words:
+    function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
+      $block.attr('opacity', 0);
+      lines.forEach((l) => hideLine(l));
+    }
+
     for (const [wordId, $word] of Object.entries($words)) {
       const blockId = linesToBlock[wordsToLine[wordId]];
-      const lineIds = blockToLines[blockId]
+      const lineIds = blockToLines[blockId];
       const $block = $blocks[blockId];
       $word.addEventListener('mouseenter', () => showRegion($block, lineIds));
       $word.addEventListener('mouseleave', () => hideRegion($block, lineIds));
     }
 
-    // Show regions and lines when hovering regions:
     for (const [blockId, $block] of Object.entries($blocks)) {
-      const lines = blockToLines[blockId]
-      $block.on('mouseenter', () => showRegion($block, lines))
-      $block.on('mouseleave', () => hideRegion($block, lines))
-
+      const lines = blockToLines[blockId];
+      $block.on('mouseenter', () => showRegion($block, lines));
+      $block.on('mouseleave', () => hideRegion($block, lines));
     }
   }
 
   if (showEntities) {
-    const entities = Object.values(annotations)
-      .filter(a => a.motivation === 'classifying')
+    const entities = Object.values(annotations).filter(
+      (a) => a.motivation === 'classifying',
+    );
     for (const entity of entities) {
-      const resourceTargets = entity.target.filter(isAnnotationResourceTarget)
+      const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
       const entityType = getEntityType(entity);
       for (const resource of resourceTargets) {
-        const $word = $words[resource.id] ?? orThrow('No $word')
+        const $word = $words[resource.id] ?? orThrow('No $word');
         const typeClassname = toClassName(entityType);
-        $word.classList.add(typeClassname)
-        $word.title = `${entityType} | ${entity.id}`
+        $word.classList.add(typeClassname);
+        $word.title = `${entityType} | ${entity.id}`;
       }
     }
   }
