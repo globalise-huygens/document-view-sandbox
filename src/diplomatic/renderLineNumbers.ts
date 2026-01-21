@@ -1,19 +1,19 @@
-import { Annotation } from './AnnoModel';
-import { Id } from './Id';
-import { Point } from './Point';
-import { Rect } from './Rect';
+import {Annotation} from './AnnoModel';
+import {Id} from './Id';
+import {Point} from './Point';
+import {Rect} from './Rect';
 import {
   calcBoundingBox,
   calcBoundingCorners,
   padCorners,
 } from './calcBoundingBox';
-import { createPoints } from './createPoints';
-import { findSvgPath } from './anno/findSvgPath';
-import { orThrow } from '../util/orThrow';
-import { px } from './px';
-import { findResourceTarget } from './findResourceTarget';
-import { createBlockBoundaries } from './createBlockBoundaries';
-import { Scale } from './Scale';
+import {createPoints} from './createPoints';
+import {findSvgPath} from './anno/findSvgPath';
+import {orThrow} from '../util/orThrow';
+import {px} from './px';
+import {findResourceTarget} from './findResourceTarget';
+import {createBlockBoundaries} from './createBlockBoundaries';
+import {Scale} from './Scale';
 
 type LineNumbersConfig = {
   scale: Scale;
@@ -24,7 +24,7 @@ type TimedCallback = { timeout: number; callback: () => void };
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLDivElement,
-  { scale }: LineNumbersConfig,
+  {scale}: LineNumbersConfig,
 ) {
   const $text = document.createElement('div');
   $view.appendChild($text);
@@ -110,35 +110,12 @@ export function renderLineNumbers(
   );
 
 
-  /**
-   * Prevent flickering of blocks and lines when hovering words
-   */
-  const timedLineHides: Map<Id, TimedCallback> = new Map();
-
   function showLine(lineId: Id) {
-    const existingHide = timedLineHides.get(lineId);
-    // Cancel hiding current line:
-    if (existingHide) {
-      clearTimeout(existingHide.timeout);
-      timedLineHides.delete(lineId);
-    }
-    // Hide all other lines immediately:
-    timedLineHides.forEach((t) => {
-      clearTimeout(t.timeout);
-      t.callback();
-    });
     $lineNumbers[lineId].style.display = 'block';
   }
 
   function hideLine(lineId: Id) {
-    const timeout = window.setTimeout(callback, 50);
-
-    function callback() {
-      $lineNumbers[lineId].style.display = 'none';
-      timedLineHides.delete(lineId);
-    }
-
-    timedLineHides.set(lineId, {timeout, callback});
+    $lineNumbers[lineId].style.display = 'none';
   }
 
   return {showLine, hideLine}

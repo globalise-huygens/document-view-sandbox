@@ -35,7 +35,7 @@ export function renderBlocks(
       return [id, padded];
     }),
   );
-  const $blockHighlights = Object.fromEntries(
+  const $blocks = Object.fromEntries(
     Object.entries(blockCorners).map(([id, corners]) => {
       const block = blocks[id];
       const body = Array.isArray(block.body) ? block.body[0] : block.body;
@@ -59,22 +59,9 @@ export function renderBlocks(
         .style('font-size', px(scale(60)))
         .attr('fill', stroke)
         .text(label);
-
-      $highlight
-        .on('mouseenter', () => showBlock(id))
-        .on('mouseleave', () => hideBlock(id))
-
       return [id, $highlight];
     }),
   );
 
-  function showBlock(blockId: Id) {
-    $blockHighlights[blockId].attr('opacity', 1);
-  }
-
-  function hideBlock(blockId: Id) {
-    $blockHighlights[blockId].attr('opacity', 0);
-  }
-
-  return {showBlock, hideBlock};
+  return {$blocks};
 }

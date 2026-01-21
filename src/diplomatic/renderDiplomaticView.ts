@@ -13,16 +13,15 @@ import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
 import {orThrow} from "../util/orThrow";
 import {getEntityType} from "./getEntityType";
 import {toClassName} from "./toClassName";
+import {D3El} from "./D3El";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
-  showLines: boolean;
   showRegions: boolean;
   showEntities: boolean
 }
 
 export const defaultConfig: FullDiplomaticViewConfig = {
   ...defaultOriginalLayoutConfig,
-  showLines: false,
   showRegions: false,
   showEntities: false
 }
@@ -36,13 +35,14 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ) {
-  const {showLines, showRegions, showEntities} = {...defaultConfig, ...config}
+  const {showRegions, showEntities} = {...defaultConfig, ...config}
   $view.innerHTML = '';
   const originalLayout = renderOriginalLayout($view, annotations, config);
   const {$layout, $overlay, $words, scale} = originalLayout;
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
+  const blockToLines: Record<Id, Id[]> = {};
   Object.values(annotations).forEach((anno) => {
     if (anno.textGranularity === 'word') {
       wordsToLine[anno.id] = findResourceTarget(anno).id;
@@ -50,25 +50,49 @@ export function renderDiplomaticView(
     if (anno.textGranularity === 'line') {
       linesToBlock[anno.id] = findResourceTarget(anno).id;
     }
+    if (anno.textGranularity === 'line') {
+      const blockId = findResourceTarget(anno).id;
+      if (!blockToLines[blockId]) {
+        blockToLines[blockId] = [];
+      }
+      blockToLines[blockId].push(anno.id);
+    }
   });
 
   if (showRegions) {
-    const {showBlock, hideBlock} = renderBlocks(annotations, $overlay, {scale});
-    for (const [id, $word] of Object.entries($words)) {
-      const blockId = linesToBlock[wordsToLine[id]];
-      $word.addEventListener('mouseenter', () => showBlock(blockId));
-      $word.addEventListener('mouseleave', () => hideBlock(blockId));
+    const {$blocks} = renderBlocks(annotations, $overlay, {scale});
+    const {
+      showLine,
+      hideLine
+    } = renderLineNumbers(annotations, $layout, {scale});
+
+    function showRegion($block: D3El<SVGGElement>, lines: Id[]) {
+      $block.attr('opacity', 1)
+      lines.forEach(l => showLine(l));
+    }
+    function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
+      $block.attr('opacity', 0)
+      lines.forEach(l => hideLine(l));
+    }
+
+    // Show regions and lines when hovering words:
+    for (const [wordId, $word] of Object.entries($words)) {
+      const blockId = linesToBlock[wordsToLine[wordId]];
+      const lineIds = blockToLines[blockId]
+      const $block = $blocks[blockId];
+      $word.addEventListener('mouseenter', () => showRegion($block, lineIds));
+      $word.addEventListener('mouseleave', () => hideRegion($block, lineIds));
+    }
+
+    // Show regions and lines when hovering regions:
+    for (const [blockId, $block] of Object.entries($blocks)) {
+      const lines = blockToLines[blockId]
+      $block.on('mouseenter', () => showRegion($block, lines))
+      $block.on('mouseleave', () => hideRegion($block, lines))
+
     }
   }
 
-  if (showLines) {
-    const {showLine, hideLine} = renderLineNumbers(annotations, $layout, {scale});
-    for (const [id, $word] of Object.entries($words)) {
-      const lineId = wordsToLine[id];
-      $word.addEventListener('mouseenter', () => showLine(lineId))
-      $word.addEventListener('mouseleave', () => hideLine(lineId))
-    }
-  }
   if (showEntities) {
     const entities = Object.values(annotations)
       .filter(a => a.motivation === 'classifying')
