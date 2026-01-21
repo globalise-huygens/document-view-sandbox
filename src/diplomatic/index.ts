@@ -1,4 +1,4 @@
-import { renderTextOnlyExample } from './example/renderTextOnlyExample';
+import { renderRegionsExample } from './example/renderRegionsExample';
 import { renderScanExample } from './example/renderScanExample';
 import { $ } from './example/$';
 import {getExampleFromUrl} from "./example/Example";
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (example === 'with-scan') {
     await renderScanExample($example);
   } else if(example === 'with-regions'){
-    await renderTextOnlyExample($example);
+    await renderRegionsExample($example);
   } else {
     await renderEntityExample($example);
   }

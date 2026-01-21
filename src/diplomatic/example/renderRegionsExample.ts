@@ -8,7 +8,7 @@ import { $ } from './$';
 import { Benchmark } from '../Benchmark';
 import {mapAnnotationsById} from "./mapAnnotationsById";
 
-export async function renderTextOnlyExample($parent: HTMLElement) {
+export async function renderRegionsExample($parent: HTMLElement) {
   const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
   const entityPath = '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
   // const pagePath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
