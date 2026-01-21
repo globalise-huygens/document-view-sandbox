@@ -1,12 +1,12 @@
-import { Annotation, isBlockWithLabel } from './AnnoModel';
-import { Point } from './Point';
-import { createBlockBoundaries } from './createBlockBoundaries';
-import { calcBoundingCorners, padCorners } from './calcBoundingBox';
-import { createPath } from './createPath';
-import { Scale } from './Scale';
-import { select } from 'd3-selection';
-import { px } from './px';
-import { pickBy } from 'lodash';
+import {Annotation, isBlockWithLabel} from './AnnoModel';
+import {Point} from './Point';
+import {createBlockBoundaries} from './createBlockBoundaries';
+import {calcBoundingCorners, padCorners} from './calcBoundingBox';
+import {createPath} from './createPath';
+import {Scale} from './Scale';
+import {select} from 'd3-selection';
+import {px} from './px';
+import {pickBy} from 'lodash';
 import {Id} from "./Id";
 
 type BlocksConfig = { scale: Scale; fill?: string; stroke?: string };
@@ -41,7 +41,7 @@ export function renderBlocks(
       const body = Array.isArray(block.body) ? block.body[0] : block.body;
 
       const label = isBlockWithLabel(body) ? body.source.label : 'no label';
-      const $highlight = $svg.append('g').attr('visibility', 'hidden');
+      const $highlight = $svg.append('g').attr('opacity', 0);
 
       $highlight
         .append('polygon')
@@ -60,30 +60,20 @@ export function renderBlocks(
         .attr('fill', stroke)
         .text(label);
 
+      $highlight
+        .on('mouseenter', () => showBlock(id))
+        .on('mouseleave', () => hideBlock(id))
+
       return [id, $highlight];
     }),
   );
 
-  /**
-   * Prevent flickering
-   */
-  const timedBlockHides: Map<Id, number> = new Map();
-
   function showBlock(blockId: Id) {
-    const existingTimeout = timedBlockHides.get(blockId);
-    if (existingTimeout) {
-      clearTimeout(existingTimeout);
-      timedBlockHides.delete(blockId);
-    }
-    $blockHighlights[blockId].attr('visibility', 'visible');
+    $blockHighlights[blockId].attr('opacity', 1);
   }
 
   function hideBlock(blockId: Id) {
-    const timeoutId = window.setTimeout(() => {
-      $blockHighlights[blockId].attr('visibility', 'hidden');
-      timedBlockHides.delete(blockId);
-    }, 150);
-    timedBlockHides.set(blockId, timeoutId);
+    $blockHighlights[blockId].attr('opacity', 0);
   }
 
   return {showBlock, hideBlock};
