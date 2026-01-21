@@ -40,9 +40,9 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
     };
   })
   const pageText = body.value;
-  const ranges = createRanges(pageText, entityRanges)
-  console.log('page entities', {page, pageAnnotation, body, entities, entityRanges, ranges})
-  renderText($view, pageText, [...ranges.values()], annotations)
+  const textRanges = createRanges(pageText, entityRanges)
+  console.log('page entities', {page, pageAnnotation, body, entities, entityRanges, textRanges})
+  renderText($view, pageText, [...textRanges.values()], annotations)
 }
 
 function renderText(
