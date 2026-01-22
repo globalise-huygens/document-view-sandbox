@@ -1,137 +1,76 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>highlight</title>
+    <link rel="stylesheet" href="../highlight/highlight.css" />
     <style>
-        * {
-            padding: 0;
-            margin: 0;
-            font-family: sans-serif;
-            font-size: 1rem;
+      * {
+        padding: 0;
+        margin: 0;
+        font-family: sans-serif;
+        font-size: 1rem;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+      }
+
+      :root {
+        --menu-height: 2rem;
+      }
+
+      body {
+        margin-top: var(--menu-height);
+      }
+
+      #menu * {
+        font-size: 0.8rem;
+      }
+      #menu {
+        height: var(--menu-height);
+        position: fixed;
+        top: 0;
+        right: 0;
+        box-sizing: border-box;
+        width: 100%;
+        z-index: 20;
+        background: white;
+        display: flex;
+        align-items: center;
+
+        a {
+          color: blue;
+
+          &:hover {
+            color: black;
+          }
+
+          &.active {
+            color: black;
+          }
         }
+      }
 
-        html,
-        body {
-            height: 100%;
-            width: 100%;
-        }
+      #menu,
+      #example {
+        padding-left: 0.25rem;
+      }
 
-        :root {
-            --menu-height: 2rem;
-        }
-
-        body {
-            margin-top: var(--menu-height);
-        }
-
-        #menu * {
-            font-size: 0.8rem;
-        }
-        #menu {
-            height: var(--menu-height);
-            position: fixed;
-            top: 0;
-            right: 0;
-            box-sizing: border-box;
-            width: 100%;
-            z-index: 20;
-            background: white;
-            display: flex;
-            align-items: center;
-
-            a {
-                color: blue;
-
-                &:hover {
-                    color: black;
-                }
-
-                &.active {
-                    color: black;
-                }
-            }
-        }
-
-        #menu,
-        #example {
-            padding-left: 0.25rem;
-        }
-
-        #example {
-            width: 500px;
-            line-height: 2em;
-            padding-top: 1rem;
-
-            .date {
-                --color: #6b72d4;
-            }
-
-            .document {
-                --color: #9ca3af;
-            }
-
-            .name-of-location {
-                --color: #4db88a;
-            }
-
-            .ship-type {
-                --color: #5a9bd8;
-            }
-
-            .civic-status {
-                --color: #d86a6a;
-            }
-
-            .name-of-person {
-                --color: #c9a832;
-            }
-
-            .ship-name {
-                --color: #2aa8ba;
-            }
-
-            .quantity {
-                --color: #a87ac4;
-            }
-
-            .other-persons-attributes-than-per-or-status {
-                --color: #dc8a4a;
-            }
-
-            .commodity-qualifier-colors-processing {
-                --color: #3aab9a;
-            }
-
-            .name-of-commodity {
-                --color: #42b8c8;
-            }
-
-            .ethno-religious-appellation-or-attribute-not-derived-from-location-name {
-                --color: #d07aa0;
-            }
-
-            .derived-adjectival-form-of-location-name {
-                --color: #4aab6a;
-            }
-
-            .profession-title {
-                --color: #7a7ab8;
-            }
-
-            .entity {
-                background: color-mix(in srgb, var(--color) 15%, transparent);
-                border-bottom: 1px solid var(--color);
-            }
-        }
+      #example {
+        width: 500px;
+        line-height: 2em;
+        padding-top: 1rem;
+      }
     </style>
   </head>
   <body>
     <div id="menu">
       <span><a href="../">index</a> &gt; highlight &gt;&nbsp;</span>
-      <span class="examples"
-        >
+      <span class="examples">
         <a class="lorem-ipsum" href="./index.html?example=lorem-ipsum"
           >lorem ipsum</a
         >

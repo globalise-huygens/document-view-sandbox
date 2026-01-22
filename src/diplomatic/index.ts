@@ -1,9 +1,9 @@
-import {renderRegionsExample} from './example/renderRegionsExample';
-import {renderScanExample} from './example/renderScanExample';
-import {$} from './example/$';
-import {getExampleFromUrl} from './example/Example';
-import {renderEntityExample} from './example/renderEntityExample';
-import {reloadOnEsBuild} from "../util/reloadOnEsBuild";
+import { renderRegionsExample } from './example/renderRegionsExample';
+import { renderScanExample } from './example/renderScanExample';
+import { $ } from './example/$';
+import { getExampleFromUrl } from './example/Example';
+import { renderEntityExample } from './example/renderEntityExample';
+import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
 
 reloadOnEsBuild();
 

@@ -46,7 +46,7 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
   console.log('page entities', {
     page,
     pageAnnotations,
-    texts: pageAnnotations.map((a: any) => ({t: a.body[0].value, id: a.id})),
+    texts: pageAnnotations.map((a: any) => ({ t: a.body[0].value, id: a.id })),
     pageAnnotation,
     body,
     entities,

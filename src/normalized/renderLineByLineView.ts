@@ -1,18 +1,19 @@
-import {Annotation} from "../diplomatic/AnnoModel";
-import {renderNormalizedLayout} from "./renderNormalizedLayout";
-import {
-  isAnnotationResourceTarget
-} from "../diplomatic/anno/isAnnotationResourceTarget";
-import {getEntityType} from "../diplomatic/getEntityType";
-import {orThrow} from "../util/orThrow";
-import {toClassName} from "../diplomatic/toClassName";
+import { Annotation } from '../diplomatic/AnnoModel';
+import { renderNormalizedLayout } from './renderNormalizedLayout';
+import { isAnnotationResourceTarget } from '../diplomatic/anno/isAnnotationResourceTarget';
+import { getEntityType } from '../diplomatic/getEntityType';
+import { orThrow } from '../util/orThrow';
+import { toClassName } from '../diplomatic/toClassName';
 
-export function renderLineByLineView({$view, annotations}: {
-  $view: HTMLElement,
-  annotations: Annotation[],
+export function renderLineByLineView({
+  $view,
+  annotations,
+}: {
+  $view: HTMLElement;
+  annotations: Annotation[];
 }) {
-  const {$words} = renderNormalizedLayout($view, annotations);
-  console.log('renderNormalizedView', {$words})
+  const { $words } = renderNormalizedLayout($view, annotations);
+  console.log('renderNormalizedView', { $words });
   const entities = Object.values(annotations).filter(
     (a) => a.motivation === 'classifying',
   );

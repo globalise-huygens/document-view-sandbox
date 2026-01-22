@@ -97,8 +97,8 @@ export function renderDiplomaticView(
       const entityType = getEntityType(entity);
       for (const resource of resourceTargets) {
         const $word = $words[resource.id] ?? orThrow('No $word');
-        const typeClassname = toClassName(entityType);
-        $word.classList.add(typeClassname);
+        $word.classList.add('entity');
+        $word.classList.add(toClassName(entityType));
         $word.title = `${entityType} | ${entity.id}`;
       }
     }
