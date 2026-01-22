@@ -38,7 +38,6 @@ export async function renderRegionsExample($parent: HTMLElement) {
   const { width: parentWidth } = $parent.getBoundingClientRect();
   const { width } = page.partOf;
   const config: DiplomaticViewConfig = {
-    showLines: true,
     showRegions: true,
     page: page.partOf,
   };

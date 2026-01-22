@@ -4,11 +4,11 @@ import {findResourceTarget} from "../diplomatic/findResourceTarget";
 import {findTextualBodyValue} from "./findTextualBodyValue";
 import {$} from "../diplomatic/example/$";
 
-export function renderNormalizedText(
+export function renderNormalizedLayout(
   $view: HTMLElement,
-  page: AnnotationPage
+  annotations: Annotation[]
 ) {
-  const wordAnnos = page.items.filter(a => a.textGranularity === 'word')
+  const wordAnnos = annotations.filter(a => a.textGranularity === 'word')
 
   const linesWithWords: Record<Id, Annotation[]> = {}
   for (const wordAnno of wordAnnos) {
@@ -18,21 +18,25 @@ export function renderNormalizedText(
     }
     linesWithWords[lineId].push(wordAnno)
   }
+  const $words: Record<Id, HTMLElement> = {}
   const $lines = Object
     .values(linesWithWords)
     .map((wordAnnos) => {
-      const $words = wordAnnos.map(anno => {
-        const word = findTextualBodyValue(anno)
+      const $lineWords = wordAnnos.map(wordAnno => {
+        const word = findTextualBodyValue(wordAnno)
         const $word = document.createElement('span')
         $word.textContent = `${word} `
         $word.classList.add('word')
+        $words[wordAnno.id] = $word
         return $word;
       });
       const $line = document.createElement('span')
       $line.classList.add('line')
-      $line.append(...$words)
+      $line.append(...$lineWords)
       return $line;
     })
 
   $view.append(...$lines)
+
+  return {$words}
 }
