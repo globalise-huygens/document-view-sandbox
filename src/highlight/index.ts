@@ -2,12 +2,9 @@ import { $ } from '../diplomatic/example/$';
 import { getExampleFromUrl } from './example/Example';
 import { renderLoremIpsumExample } from './example/renderLoremIpsumExample';
 import { renderPageEntitiesExample } from './example/renderPageEntitiesExample';
+import {reloadOnEsBuild} from "../util/reloadOnEsBuild";
 
-if (DEV) {
-  new EventSource('/esbuild').addEventListener('change', () =>
-    location.reload(),
-  );
-}
+reloadOnEsBuild()
 
 document.addEventListener('DOMContentLoaded', async () => {
   const example = getExampleFromUrl();

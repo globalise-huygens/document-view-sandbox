@@ -15,6 +15,7 @@ export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
 export type Annotation = Omit<IiifAnnotation, 'body' | 'target'> & {
   body: Body[] | Body;
   target: AnnotationTarget[];
+  purpose: string
 };
 
 export type AnnotationTarget = IiifAnnotationTarget | AnnotationResourceTarget;

@@ -45,6 +45,8 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
   const textRanges = createRanges(pageText, entityRanges);
   console.log('page entities', {
     page,
+    pageAnnotations,
+    texts: pageAnnotations.map((a: any) => ({t: a.body[0].value, id: a.id})),
     pageAnnotation,
     body,
     entities,

@@ -1,14 +1,11 @@
-import { renderRegionsExample } from './example/renderRegionsExample';
-import { renderScanExample } from './example/renderScanExample';
-import { $ } from './example/$';
-import { getExampleFromUrl } from './example/Example';
-import { renderEntityExample } from './example/renderEntityExample';
+import {renderRegionsExample} from './example/renderRegionsExample';
+import {renderScanExample} from './example/renderScanExample';
+import {$} from './example/$';
+import {getExampleFromUrl} from './example/Example';
+import {renderEntityExample} from './example/renderEntityExample';
+import {reloadOnEsBuild} from "../util/reloadOnEsBuild";
 
-if (DEV) {
-  new EventSource('/esbuild').addEventListener('change', () =>
-    location.reload(),
-  );
-}
+reloadOnEsBuild();
 
 document.addEventListener('DOMContentLoaded', async () => {
   const example = getExampleFromUrl();
