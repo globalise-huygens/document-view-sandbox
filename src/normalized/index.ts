@@ -4,6 +4,7 @@ import {orThrow} from "../util/orThrow";
 import {findTextualBodyValue} from "./findTextualBodyValue";
 import {reloadOnEsBuild} from "../util/reloadOnEsBuild";
 import {renderNormalizedText} from "./renderNormalizedText";
+import {Benchmark} from "../diplomatic/Benchmark";
 
 reloadOnEsBuild()
 
@@ -14,5 +15,6 @@ async function main() {
   const annoResponse = await fetch(path);
   const page: AnnotationPage = await annoResponse.json();
   const $viewer = $('#viewer')
-  renderNormalizedText($viewer, page);
+  new Benchmark(renderNormalizedText.name)
+    .run(() => renderNormalizedText($viewer, page));
 }

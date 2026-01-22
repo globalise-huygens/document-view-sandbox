@@ -2,6 +2,7 @@ import {Annotation, AnnotationPage} from "../diplomatic/AnnoModel";
 import {Id} from "../diplomatic/Id";
 import {findResourceTarget} from "../diplomatic/findResourceTarget";
 import {findTextualBodyValue} from "./findTextualBodyValue";
+import {$} from "../diplomatic/example/$";
 
 export function renderNormalizedText(
   $view: HTMLElement,
@@ -17,9 +18,21 @@ export function renderNormalizedText(
     }
     linesWithWords[lineId].push(wordAnno)
   }
-  const linesOfWords = Object
+  const $lines = Object
     .values(linesWithWords)
-    .map((wordAnnos) => wordAnnos.map(findTextualBodyValue).join(' '))
-    .join('\n');
-  $view.textContent = linesOfWords
+    .map((wordAnnos) => {
+      const $words = wordAnnos.map(anno => {
+        const word = findTextualBodyValue(anno)
+        const $word = document.createElement('span')
+        $word.textContent = `${word} `
+        $word.classList.add('word')
+        return $word;
+      });
+      const $line = document.createElement('span')
+      $line.classList.add('line')
+      $line.append(...$words)
+      return $line;
+    })
+
+  $view.append(...$lines)
 }
