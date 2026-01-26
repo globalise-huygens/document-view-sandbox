@@ -3,6 +3,7 @@ import { AnnotationPage } from '../diplomatic/AnnoModel';
 import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
 import { Benchmark } from '../diplomatic/Benchmark';
 import { renderLineByLineView } from './renderLineByLineView';
+import {mapAnnotationsById} from "../diplomatic/example/mapAnnotationsById";
 
 reloadOnEsBuild();
 
@@ -18,8 +19,8 @@ async function main() {
   const entityResponse = await fetch(entityPath);
   const entities: AnnotationPage = await entityResponse.json();
   const $view = $('#viewer');
-  const annotations = [...page.items, ...entities.items];
+  const annotations = mapAnnotationsById([...page.items, ...entities.items]);
   new Benchmark(renderLineByLineView.name).run(() => {
-    renderLineByLineView({ $view, annotations });
+    renderLineByLineView({ $parent: $view, annotations });
   });
 }

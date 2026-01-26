@@ -1,5 +1,5 @@
-import { Point } from './Point';
-import { Rect } from './Rect';
+import {Point} from './Point';
+import {Rect} from './Rect';
 
 type BoundingCorners = [Point, Point, Point, Point];
 

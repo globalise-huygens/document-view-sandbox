@@ -104,7 +104,7 @@ export function renderOriginalLayout(
   const { width, height } = $view.getBoundingClientRect();
   const $svg: D3El<SVGSVGElement> = select($view)
     .append('svg')
-    .attr('class', 'boundaries');
+    .attr('class', 'overlay');
 
   if (showScanMargin) {
     $svg.attr('width', width).attr('height', height);

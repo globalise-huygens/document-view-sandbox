@@ -1,35 +1,55 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Normalized Text View</title>
-    <link rel="stylesheet" href="../highlight/highlight.css" />
+    <link rel="stylesheet" href="../highlight/highlight.css"/>
     <style>
-      * {
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: sans-serif;
-        font-size: 1rem;
-        padding: 1rem;
-      }
-
-      #viewer {
-        white-space: pre-wrap;
-
-        .line {
-          display: block;
-
-          .line-number {
-            font-family: monospace;
-            margin-right: 1rem;
-          }
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
         }
-      }
+
+        body {
+            font-family: sans-serif;
+            font-size: 1rem;
+            padding: 1rem;
+        }
+
+        .normalized-view {
+            white-space: pre-wrap;
+            overflow: hidden;
+            display: grid;
+            width: fit-content;
+
+            .text,
+            .overlay {
+                grid-area: 1 / 1;
+            }
+
+            .overlay {
+                pointer-events: none;
+            }
+
+            .text {
+                width: fit-content;
+            }
+
+            .line {
+                display: block;
+                line-height: 1.5rem;
+                width: fit-content;
+
+                .line-number {
+                    font-family: monospace;
+                    margin-right: 0.5rem;
+                    margin-left: 1rem;
+                    color: grey;
+                }
+            }
+        }
     </style>
   </head>
   <body>

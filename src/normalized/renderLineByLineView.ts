@@ -4,19 +4,24 @@ import { isAnnotationResourceTarget } from '../diplomatic/anno/isAnnotationResou
 import { getEntityType } from '../diplomatic/getEntityType';
 import { orThrow } from '../util/orThrow';
 import { toClassName } from '../diplomatic/toClassName';
+import {renderBlocks} from "./renderBlocks";
+import {Id} from "../diplomatic/Id";
 
 export function renderLineByLineView({
-  $view,
+  $parent,
   annotations,
 }: {
-  $view: HTMLElement;
-  annotations: Annotation[];
+  $parent: HTMLElement;
+  annotations: Record<Id, Annotation>;
 }) {
-  const { $words } = renderNormalizedLayout($view, annotations);
-  console.log('renderNormalizedView', { $words });
+
+  const { $words, $lines, $overlay } = renderNormalizedLayout($parent, annotations);
   const entities = Object.values(annotations).filter(
     (a) => a.motivation === 'classifying',
   );
+
+  renderBlocks($lines, $overlay, annotations, {stroke: 'rgba(220,220,220,1)'})
+
   for (const entity of entities) {
     const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
     const entityType = getEntityType(entity);

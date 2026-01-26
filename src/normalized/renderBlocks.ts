@@ -1,0 +1,58 @@
+import {select} from "d3-selection";
+import {Annotation} from "../diplomatic/AnnoModel";
+import {Id} from "../diplomatic/Id";
+import {findResourceTarget} from "../diplomatic/findResourceTarget";
+import {createPoints} from "../diplomatic/createPoints";
+import {calcBoundingBox} from "../diplomatic/calcBoundingBox";
+
+type BlocksConfig = {
+  stroke: string
+}
+
+export function renderBlocks(
+  $lines: Record<Id, HTMLElement>,
+  $overlay: SVGSVGElement,
+  annotations: Record<Id, Annotation>,
+  {stroke}: BlocksConfig
+) {
+  const $d3Overlay = select($overlay);
+
+  const blockWithLines: Record<Id, Id[]> = {};
+  for (const lineId of Object.keys($lines)) {
+    const line = annotations[lineId];
+    const block = findResourceTarget(line);
+    if (!blockWithLines[block.id]) {
+      blockWithLines[block.id] = [];
+    }
+    blockWithLines[block.id].push(lineId);
+  }
+
+  const overlayOffset = $overlay.getBoundingClientRect().top;
+  const leftOffset = 5;
+
+  for (const lineIds of Object.values(blockWithLines)) {
+    const $blockLines = lineIds.map(l => $lines[l]);
+    const lineBoundingPoints = $blockLines.flatMap($line =>
+      createPoints($line.getBoundingClientRect())
+    );
+    const blockBbox = calcBoundingBox(lineBoundingPoints);
+
+    const $marker = $d3Overlay
+      .append("line")
+      .attr("x1", leftOffset)
+      .attr("y1", blockBbox.top - overlayOffset)
+      .attr("x2", leftOffset)
+      .attr("y2", blockBbox.top + blockBbox.height - overlayOffset)
+      .attr("stroke", stroke)
+      .attr("stroke-width", 2)
+      .attr("opacity", 0);
+
+    for (const lineId of lineIds) {
+      const $line = $lines[lineId];
+      $line.addEventListener("mouseenter", () => $marker.attr("opacity", 1));
+      $line.addEventListener("mouseleave", () => $marker.attr("opacity", 0));
+    }
+  }
+
+  return {};
+}
