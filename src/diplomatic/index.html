@@ -2,107 +2,120 @@
 <html>
   <head>
     <title>diplomatic view</title>
-    <link rel="stylesheet" href="../highlight/highlight.css" />
+    <link rel="stylesheet" href="../normalized/normalized.css"/>
+    <link rel="stylesheet" href="../highlight/highlight.css"/>
     <style>
-      * {
-        padding: 0;
-        margin: 0;
-        font-family: sans-serif;
-        font-size: 0.8rem;
-      }
-
-      html,
-      body {
-        height: 100%;
-        width: 100%;
-      }
-
-      :root {
-        --menu-height: 2rem;
-      }
-
-      body {
-        margin-top: var(--menu-height);
-      }
-
-      #menu {
-        height: var(--menu-height);
-        position: fixed;
-        top: 0;
-        right: 0;
-        box-sizing: border-box;
-        width: 100%;
-        z-index: 20;
-        background: white;
-        padding: 0.25rem 0.5rem;
-        display: flex;
-        align-items: center;
-
-        a {
-          color: blue;
-
-          &:hover {
-            color: black;
-          }
-
-          &.active {
-            color: black;
-          }
+        * {
+            padding: 0;
+            margin: 0;
+            font-family: sans-serif;
+            font-size: 0.8rem;
         }
 
-        .slider {
-          margin-left: auto;
-
-          input {
-            vertical-align: middle;
-          }
-        }
-      }
-
-      .diplomatic-view {
-        overflow: hidden;
-        position: relative;
-
-        .text {
-          position: absolute;
-          top: 0;
-          left: 0;
-
-          .line-number {
-            position: absolute;
-            color: rgba(0, 200, 0, 1);
-            font-family: monospace;
-          }
+        html,
+        body {
+            height: 100%;
+            width: 100%;
         }
 
-        .bounding-box {
-          border: dashed 1px blue;
+        :root {
+            --menu-height: 2rem;
         }
 
-        .word {
-          font-size: 8px;
-          font-family: monospace;
-          white-space: nowrap;
+        body {
+            margin-top: var(--menu-height);
         }
 
-        .overlay {
-          display: block;
-        }
-      }
+        #menu {
+            height: var(--menu-height);
+            position: fixed;
+            top: 0;
+            right: 0;
+            box-sizing: border-box;
+            width: 100%;
+            z-index: 20;
+            background: white;
+            padding: 0.25rem 0.5rem;
+            display: flex;
+            align-items: center;
 
-      #example {
-        &.with-scan {
-          #scan {
-            z-index: -1;
-            position: absolute;
-            top: var(--menu-height);
-            left: 0;
-            border-style: none;
-          }
+            a {
+                color: blue;
+
+                &:hover {
+                    color: black;
+                }
+
+                &.active {
+                    color: black;
+                }
+            }
+
+            .slider {
+                margin-left: auto;
+
+                input {
+                    vertical-align: middle;
+                }
+            }
+
+            .toggle {
+                margin-left: auto;
+            }
         }
-        &.with-entities {
+
+        .diplomatic-view {
+            overflow: hidden;
+            position: relative;
+
+            .text {
+                position: absolute;
+                top: 0;
+                left: 0;
+
+                .line-number {
+                    position: absolute;
+                    color: rgba(0, 200, 0, 1);
+                    font-family: monospace;
+                }
+            }
+
+            .bounding-box {
+                border: dashed 1px blue;
+            }
+
+            .word {
+                font-size: 8px;
+                font-family: monospace;
+                white-space: nowrap;
+            }
+
+            .overlay {
+                display: block;
+            }
         }
-      }
+
+        #example {
+            &.with-scan {
+                #scan {
+                    z-index: -1;
+                    position: absolute;
+                    top: var(--menu-height);
+                    left: 0;
+                    border-style: none;
+                }
+            }
+
+            &.with-line-by-line {
+                font-size: 2rem;
+                display: grid;
+
+                > * {
+                    grid-area: 1 / 1;
+                }
+            }
+
+        }
     </style>
   </head>
   <body>
@@ -112,11 +125,16 @@
         <a class="with-scan" href="./index.html?example=with-scan">with scan</a>
         |
         <a class="with-regions" href="./index.html?example=with-regions"
-          >with regions</a
+        >with regions</a
         >
         |
         <a class="with-entities" href="./index.html?example=with-entities"
-          >with entities</a
+        >with entities</a
+        >
+        |
+        <a class="with-line-by-line"
+           href="./index.html?example=with-line-by-line"
+        >with line-by-line</a
         >
       </span>
     </div>

@@ -5,6 +5,7 @@ export const example = [
   defaultExample,
   'with-regions',
   'with-entities',
+  'with-line-by-line',
 ] as const;
 export type ExampleType = (typeof example)[number];
 
