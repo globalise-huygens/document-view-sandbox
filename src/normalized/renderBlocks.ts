@@ -37,14 +37,13 @@ export function renderBlocks(
     const blockBbox = calcBoundingBox(lineBoundingPoints);
 
     const scaleFactor = $overlay.getBoundingClientRect().width / 1000
-    const strokeWidth = 5 * scaleFactor
-    const leftOffset = 15 * scaleFactor;
+    const strokeWidth = Math.ceil(5 * scaleFactor)
 
     const $marker = $d3Overlay
       .append("line")
-      .attr("x1", leftOffset)
+      .attr("x1", 0)
       .attr("y1", blockBbox.top - overlayOffset)
-      .attr("x2", leftOffset)
+      .attr("x2", 0)
       .attr("y2", blockBbox.top + blockBbox.height - overlayOffset)
       .attr("stroke", stroke)
       .attr("stroke-width", strokeWidth)
