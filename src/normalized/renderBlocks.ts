@@ -28,7 +28,6 @@ export function renderBlocks(
   }
 
   const overlayOffset = $overlay.getBoundingClientRect().top;
-  const leftOffset = 5;
 
   for (const lineIds of Object.values(blockWithLines)) {
     const $blockLines = lineIds.map(l => $lines[l]);
@@ -37,6 +36,10 @@ export function renderBlocks(
     );
     const blockBbox = calcBoundingBox(lineBoundingPoints);
 
+    const scaleFactor = $overlay.getBoundingClientRect().width / 1000
+    const strokeWidth = 5 * scaleFactor
+    const leftOffset = 15 * scaleFactor;
+
     const $marker = $d3Overlay
       .append("line")
       .attr("x1", leftOffset)
@@ -44,7 +47,7 @@ export function renderBlocks(
       .attr("x2", leftOffset)
       .attr("y2", blockBbox.top + blockBbox.height - overlayOffset)
       .attr("stroke", stroke)
-      .attr("stroke-width", 2)
+      .attr("stroke-width", strokeWidth)
       .attr("opacity", 0);
 
     for (const lineId of lineIds) {
