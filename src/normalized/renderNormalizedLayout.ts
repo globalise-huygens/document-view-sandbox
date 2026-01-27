@@ -48,7 +48,10 @@ export function renderNormalizedLayout(
       $line.append($lineNumber);
       $lineNumber.classList.add('line-number');
       $lineNumber.textContent = `${i}`.padStart(2, ' ');
-      $line.append(...joinElements($lineWords));
+      const $lineContent = document.createElement('span')
+      $lineContent.classList.add('line-content')
+      $line.append($lineContent)
+      $lineContent.append(...joinElements($lineWords));
       return [id, $line];
     }));
 

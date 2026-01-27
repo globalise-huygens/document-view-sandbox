@@ -1,7 +1,7 @@
 import { renderRegionsExample } from './example/renderRegionsExample';
 import { renderScanExample } from './example/renderScanExample';
 import { $ } from './example/$';
-import { getExampleFromUrl } from './example/Example';
+import { getDiplomaticExampleFromUrl } from './example/Examples';
 import { renderEntityExample } from './example/renderEntityExample';
 import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
 import {
@@ -11,7 +11,7 @@ import {
 reloadOnEsBuild();
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const example = getExampleFromUrl();
+  const example = getDiplomaticExampleFromUrl();
   $('a.' + example).classList.add('active');
   const $example = $('#example');
 

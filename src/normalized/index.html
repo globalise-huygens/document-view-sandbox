@@ -6,7 +6,7 @@
     <title>Normalized Text View</title>
     <link rel="stylesheet" href="../highlight/highlight.css"/>
     <link rel="stylesheet" href="./normalized.css"/>
-
+    <link rel="stylesheet" href="../diplomatic/menu.css"/>
     <style>
         * {
             padding: 0;
@@ -19,10 +19,33 @@
             font-size: 1rem;
             padding: 1rem;
         }
+
+        #example {
+            &.line-wrapping {
+                .narrow-container {
+                    width: 300px;
+                    height: 400px;
+                    border: 1px dashed rgb(220, 220, 220);
+                    overflow: scroll;
+                }
+            }
+        }
     </style>
   </head>
   <body>
-    <div id="viewer"></div>
+    <div id="menu">
+      <span><a href="../">index</a> &gt; line-by-line view &gt;&nbsp;</span>
+      <span class="examples">
+        <a class="minimal" href="./index.html?example=minimal"
+        >minimal</a
+        >
+        |
+        <a class="line-wrapping" href="./index.html?example=line-wrapping"
+        >with line wrapping</a
+        >
+      </span>
+    </div>
+    <div id="example"></div>
     <script type="module" src="./index.js"></script>
   </body>
 </html>
