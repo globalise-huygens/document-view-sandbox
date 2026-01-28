@@ -108,7 +108,20 @@ export function renderDiplomaticView(
     if(annotation.textGranularity === "word") {
       const $word = $words[id]
       $word.classList.add('selected')
+    } else {
+      console.warn(`Select not implemented: ${annotation.textGranularity}`)
     }
   }
-  return {}
+
+  function deselectAnnotation(id: Id) {
+    const annotation = annotations[id] ?? orThrow('Not found')
+    if(annotation.textGranularity === "word") {
+      const $word = $words[id]
+      $word.classList.remove('selected')
+    } else {
+      console.warn(`Deselect not implemented: ${annotation.textGranularity}`)
+    }
+  }
+
+  return {selectAnnotation, deselectAnnotation}
 }
