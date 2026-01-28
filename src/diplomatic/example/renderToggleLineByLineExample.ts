@@ -7,7 +7,7 @@ import {mapAnnotationsById} from './mapAnnotationsById';
 import {renderLineByLineView} from "../../normalized/renderLineByLineView";
 
 export async function renderToggleLineByLineExample($parent: HTMLElement) {
-  console.log('with-line-by-line')
+  console.log('line-by-line')
   const pagePath =
     '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
   const entityPath =
@@ -17,7 +17,7 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
-  $parent.classList.add('with-line-by-line');
+  $parent.classList.add('line-by-line');
   const $menu = $('#menu');
   const $toggle = document.createElement('button');
   $menu.appendChild($toggle);

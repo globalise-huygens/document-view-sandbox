@@ -18,7 +18,7 @@ export async function renderRegionsExample($parent: HTMLElement) {
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
-  $parent.classList.add('with-regions');
+  $parent.classList.add('regions');
   $parent.innerHTML = `<div class="diplomatic-view"></div>`;
   const $menu = $('#menu');
   const $view: HTMLDivElement = $('.diplomatic-view', $parent);

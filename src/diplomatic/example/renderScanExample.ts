@@ -10,7 +10,7 @@ export async function renderScanExample($parent: HTMLElement) {
   const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
   const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
 
-  $parent.classList.add('with-scan');
+  $parent.classList.add('scan');
   $parent.innerHTML = `
       <div class="diplomatic-view"></div>
       <img id="scan" alt="scan"/>`;

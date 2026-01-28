@@ -103,4 +103,12 @@ export function renderDiplomaticView(
       }
     }
   }
+  function selectAnnotation(id: Id) {
+    const annotation = annotations[id] ?? orThrow('Not found')
+    if(annotation.textGranularity === "word") {
+      const $word = $words[id]
+      $word.classList.add('selected')
+    }
+  }
+  return {}
 }

@@ -1,16 +1,8 @@
-import { setUrlParams } from '../../util/setUrlParam';
+import {getExampleFromUrl} from "../../normalized/example/getExampleFromUrl";
 
-const defaultExample = 'page-entities';
-export const exampleType = [defaultExample, 'lorem-ipsum'] as const;
-export type ExampleType = (typeof exampleType)[number];
+export const examples = ['page-entities', 'lorem-ipsum'] as const;
+export type ExampleType = (typeof examples)[number];
 
-export function getExampleFromUrl(): ExampleType | void {
-  const param = new URLSearchParams(location.search).get(
-    'example',
-  ) as ExampleType;
-  if (exampleType.includes(param)) {
-    return param;
-  }
-  setUrlParams({ example: defaultExample });
-  return defaultExample;
+export function getHighlightExampleFromUrl(): ExampleType | void {
+  return getExampleFromUrl(examples);
 }

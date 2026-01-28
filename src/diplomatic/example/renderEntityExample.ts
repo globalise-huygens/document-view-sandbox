@@ -18,7 +18,7 @@ export async function renderEntityExample($parent: HTMLElement) {
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
-  $parent.classList.add('with-entities');
+  $parent.classList.add('entities');
   $parent.innerHTML = `<div class="diplomatic-view"></div>`;
   const $menu = $('#menu');
   const $view: HTMLDivElement = $('.diplomatic-view', $parent);
