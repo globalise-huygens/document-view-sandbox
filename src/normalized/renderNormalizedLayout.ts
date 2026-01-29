@@ -1,13 +1,12 @@
 import {Annotation, AnnotationPage} from '../diplomatic/AnnoModel';
 import {Id} from '../diplomatic/Id';
 import {findResourceTarget} from '../diplomatic/findResourceTarget';
-import {findTextualBodyValue} from './findTextualBodyValue';
-import {$} from '../diplomatic/example/$';
 import {joinElements} from './joinElements';
 import {D3El} from "../diplomatic/D3El";
 import {select} from "d3-selection";
 import {orThrow} from "../util/orThrow";
 import {pickBy} from "lodash";
+import {findTextualBodyValue} from "../diplomatic/anno/findTextualBodyValue";
 
 export function renderNormalizedLayout(
   $parent: HTMLElement,

@@ -5,12 +5,11 @@ import {
   renderDiplomaticView,
 } from '../renderDiplomaticView';
 import {$} from './$';
-import {Benchmark} from '../Benchmark';
 import {mapAnnotationsById} from './mapAnnotationsById';
-import {words} from "lodash";
-import {findTextualBodyValue} from "../../normalized/findTextualBodyValue";
-import {orThrow} from "../../util/orThrow";
 import {Id} from "../Id";
+import {findTextualBodyValue} from "../anno/findTextualBodyValue";
+import {findSourceLabel} from "../anno/findSourceLabel";
+import {renderAnnotationDropdown} from "./renderAnnotationDropdown";
 
 export async function renderSelectExample($parent: HTMLElement) {
   const pagePath =
@@ -36,34 +35,20 @@ export async function renderSelectExample($parent: HTMLElement) {
   const config: DiplomaticViewConfig = {
     page: page.partOf,
     showEntities: true,
+    showRegions: true,
     fit: "height"
   };
 
   $view.style.height = px(window.innerHeight);
   const view = renderDiplomaticView($view, annotations, config);
   const {selectAnnotation, deselectAnnotation} = view
-  const words = page.items.filter(a => a.textGranularity === 'word')
 
-  const $dropdown = document.createElement('select');
-  $menu.appendChild($dropdown);
-  $dropdown.classList.add('select');
-
-  const $placeholder = document.createElement('option');
-  $placeholder.value = '';
-  $placeholder.textContent = 'Select / deselect annotations';
-  $placeholder.disabled = true;
-  $placeholder.selected = true;
-  $dropdown.appendChild($placeholder);
+  const $dropdowns = document.createElement('span')
+  $menu.append($dropdowns)
+  $dropdowns.classList.add('select')
 
   const selected: Set<Id> = new Set()
-  Object.values(words).forEach((annotation) => {
-    const $option = document.createElement('option');
-    $option.value = annotation.id;
-    $option.textContent = findTextualBodyValue(annotation);
-    $dropdown.appendChild($option);
-  });
-  $dropdown.addEventListener('change', () => {
-    const id = $dropdown.value;
+  function toggleAnnotation(id: Id) {
     if (selected.has(id)) {
       deselectAnnotation(id)
       selected.delete(id)
@@ -71,6 +56,24 @@ export async function renderSelectExample($parent: HTMLElement) {
       selectAnnotation(id);
       selected.add(id)
     }
-    $dropdown.selectedIndex = 0;
-  });
+  }
+
+  const words = page.items.filter(a => a.textGranularity === 'word')
+  renderAnnotationDropdown(
+    $dropdowns,
+    'Toggle words',
+    words,
+    findTextualBodyValue,
+    toggleAnnotation
+  );
+
+  const regions = page.items.filter(a => a.textGranularity === 'block')
+  renderAnnotationDropdown(
+    $dropdowns,
+    'Toggle regions',
+    regions,
+    findSourceLabel,
+    toggleAnnotation
+  );
+
 }

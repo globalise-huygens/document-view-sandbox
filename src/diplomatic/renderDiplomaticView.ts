@@ -58,6 +58,10 @@ export function renderDiplomaticView(
     }
   });
 
+  const selectedRegions = new Set<Id>()
+  let selectRegion: (id: Id) => void = () => console.warn('Not implemented')
+  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented')
+
   if (showRegions) {
     const { $blocks } = renderBlocks(annotations, $overlay, { scale });
     const lineNumbers = renderLineNumbers(annotations, $layout, { scale });
@@ -67,24 +71,61 @@ export function renderDiplomaticView(
       $block.attr('opacity', 1);
       lines.forEach((l) => showLine(l));
     }
-
     function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
       $block.attr('opacity', 0);
       lines.forEach((l) => hideLine(l));
     }
 
+    function enterRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
+      if (selectedRegions.has(id)) {
+        return;
+      }
+      showRegion($block, lines);
+    }
+    function leaveRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
+      if (selectedRegions.has(id)) {
+        return;
+      }
+      hideRegion($block, lines);
+    }
+
+
     for (const [wordId, $word] of Object.entries($words)) {
       const blockId = linesToBlock[wordsToLine[wordId]];
       const lineIds = blockToLines[blockId];
       const $block = $blocks[blockId];
-      $word.addEventListener('mouseenter', () => showRegion($block, lineIds));
-      $word.addEventListener('mouseleave', () => hideRegion($block, lineIds));
+      $word.addEventListener('mouseenter', () => enterRegion($block, lineIds, blockId));
+      $word.addEventListener('mouseleave', () => leaveRegion($block, lineIds, blockId));
     }
 
     for (const [blockId, $block] of Object.entries($blocks)) {
-      const lines = blockToLines[blockId];
-      $block.on('mouseenter', () => showRegion($block, lines));
-      $block.on('mouseleave', () => hideRegion($block, lines));
+      const lineIds = blockToLines[blockId];
+      $block.on('mouseenter', () => enterRegion($block, lineIds, blockId));
+      $block.on('mouseleave', () => leaveRegion($block, lineIds, blockId));
+    }
+    selectRegion = (id: Id) => {
+      const $block = $blocks[id]
+      if(!$block) {
+        return;
+      }
+      if(selectedRegions.has(id)) {
+        return;
+      }
+      selectedRegions.add(id)
+      const lines = blockToLines[id]
+      showRegion($block, lines);
+    }
+    deselectRegion = (id: Id) => {
+      const $block = $blocks[id]
+      if(!$block) {
+        return;
+      }
+      if(!selectedRegions.has(id)) {
+        return;
+      }
+      selectedRegions.delete(id)
+      const lines = blockToLines[id]
+      hideRegion($block, lines);
     }
   }
 
@@ -108,6 +149,8 @@ export function renderDiplomaticView(
     if(annotation.textGranularity === "word") {
       const $word = $words[id]
       $word.classList.add('selected')
+    } else if(annotation.textGranularity === "block") {
+      selectRegion(id)
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`)
     }
@@ -118,6 +161,8 @@ export function renderDiplomaticView(
     if(annotation.textGranularity === "word") {
       const $word = $words[id]
       $word.classList.remove('selected')
+    } else if(annotation.textGranularity === "block") {
+      deselectRegion(id)
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`)
     }

@@ -8,8 +8,8 @@ import { isBlock } from './anno/isBlock';
 import { isPage } from './anno/isPage';
 import { findResourceTarget } from './findResourceTarget';
 import { orThrow } from '../util/orThrow';
-import { findTextualBodyValue } from '../normalized/findTextualBodyValue';
 import { Id } from './Id';
+import {findTextualBodyValue} from "./anno/findTextualBodyValue";
 
 describe('AnnotationPage', () => {
   it('links every word to a line', () => {

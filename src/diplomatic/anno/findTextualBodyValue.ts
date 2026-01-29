@@ -1,5 +1,5 @@
-import { Annotation } from '../diplomatic/AnnoModel';
-import { assertTextualBody } from '../diplomatic/anno/assertTextualBody';
+import {Annotation} from "../AnnoModel";
+import {assertTextualBody} from "./assertTextualBody";
 
 export function findTextualBodyValue(annotation: Annotation) {
   const { body: bodies } = annotation;
