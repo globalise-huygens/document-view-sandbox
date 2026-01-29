@@ -5,6 +5,10 @@ import {$} from './$';
 import {Benchmark} from '../Benchmark';
 import {mapAnnotationsById} from './mapAnnotationsById';
 import {renderLineByLineView} from "../../normalized/renderLineByLineView";
+import {Id} from "../Id";
+import {renderAnnotationDropdown} from "./renderAnnotationDropdown";
+import {findTextualBodyValue} from "../anno/findTextualBodyValue";
+import {findSourceLabel} from "../anno/findSourceLabel";
 
 export async function renderToggleLineByLineExample($parent: HTMLElement) {
   console.log('line-by-line')
@@ -19,9 +23,12 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
 
   $parent.classList.add('line-by-line');
   const $menu = $('#menu');
+  const $controls = document.createElement('span')
+  $menu.append($controls)
+  $controls.classList.add('controls')
+
   const $toggle = document.createElement('button');
-  $menu.appendChild($toggle);
-  $toggle.classList.add('toggle');
+  $controls.appendChild($toggle);
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
@@ -43,25 +50,24 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
   $lineByLineView.classList.add('line-by-line-view')
   $lineByLineView.style.visibility = 'hidden'
 
-  new Benchmark(renderToggleLineByLineExample.name).run(() => {
-      $diplomaticView.style.height = px(windowHeight);
+  $diplomaticView.style.height = px(windowHeight);
 
-      renderDiplomaticView($diplomaticView, annotations, {
-        page: page.partOf,
-        showEntities: true,
-        fit: 'height'
-      });
-      renderLineByLineView({
-        $parent: $lineByLineView,
-        annotations
-      });
-    },
-  );
+  const diplomatic = renderDiplomaticView($diplomaticView, annotations, {
+    page: page.partOf,
+    showEntities: true,
+    fit: 'height',
+    showRegions: true
+  });
+  const lineByLine = renderLineByLineView({
+    $parent: $lineByLineView,
+    annotations
+  });
+
 
   let viewShown: 'line-by-line' | 'diplomatic' = 'diplomatic'
 
   const toggleView = () => {
-    if(viewShown === 'line-by-line') {
+    if (viewShown === 'line-by-line') {
       viewShown = 'diplomatic'
       $diplomaticView.style.visibility = 'visible'
       $lineByLineView.style.visibility = 'hidden'
@@ -76,4 +82,35 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
 
   toggleView()
   $toggle.addEventListener('click', toggleView);
+
+  const selected: Set<Id> = new Set()
+  function toggleAnnotation(id: Id) {
+    if (selected.has(id)) {
+      diplomatic.deselectAnnotation(id)
+      lineByLine.deselectAnnotation(id)
+      selected.delete(id)
+    } else {
+      diplomatic.selectAnnotation(id);
+      lineByLine.selectAnnotation(id);
+      selected.add(id)
+    }
+  }
+
+  const words = page.items.filter(a => a.textGranularity === 'word')
+  renderAnnotationDropdown(
+    $controls,
+    'Toggle words',
+    words,
+    findTextualBodyValue,
+    toggleAnnotation
+  );
+
+  const regions = page.items.filter(a => a.textGranularity === 'block')
+  renderAnnotationDropdown(
+    $controls,
+    'Toggle regions',
+    regions,
+    findSourceLabel,
+    toggleAnnotation
+  );
 }

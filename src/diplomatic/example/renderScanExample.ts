@@ -20,7 +20,7 @@ export async function renderScanExample($parent: HTMLElement) {
 
   const $slider = document.createElement('span');
   $menu.appendChild($slider);
-  $slider.classList.add('slider');
+  $slider.classList.add('controls');
   $slider.innerHTML = `
     text 
     <input type="range" value="20" min="0" max="100"/> 

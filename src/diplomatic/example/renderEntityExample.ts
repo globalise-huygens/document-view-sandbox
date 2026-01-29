@@ -24,7 +24,7 @@ export async function renderEntityExample($parent: HTMLElement) {
   const $view: HTMLDivElement = $('.diplomatic-view', $parent);
   const $slider = document.createElement('span');
   $menu.appendChild($slider);
-  $slider.classList.add('slider');
+  $slider.classList.add('controls');
   $slider.innerHTML = `
     zoom: min 
     <input type="range" value="42" min="30" max="200"/> 

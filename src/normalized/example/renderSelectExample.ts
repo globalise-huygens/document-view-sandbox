@@ -29,7 +29,7 @@ export async function renderSelectExample($parent: HTMLElement) {
   const $dropdowns = document.createElement('span')
 
   $('#menu').append($dropdowns)
-  $dropdowns.classList.add('select')
+  $dropdowns.classList.add('controls')
 
   const selected: Set<Id> = new Set()
   function toggleAnnotation(id: Id) {
