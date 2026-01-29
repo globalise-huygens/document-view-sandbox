@@ -1,5 +1,4 @@
 import {AnnotationPage} from "../../diplomatic/AnnoModel";
-import {$} from "../../diplomatic/example/$";
 import {mapAnnotationsById} from "../../diplomatic/example/mapAnnotationsById";
 import {Benchmark} from "../../diplomatic/Benchmark";
 import {renderLineByLineView} from "../renderLineByLineView";
@@ -15,6 +14,6 @@ export async function renderMinimalExample($parent: HTMLElement) {
   const entities: AnnotationPage = await entityResponse.json();
   const annotations = mapAnnotationsById([...page.items, ...entities.items]);
   new Benchmark(renderLineByLineView.name).run(() => {
-    renderLineByLineView({ $parent, annotations });
+    renderLineByLineView({ $view: $parent, annotations });
   });
 }

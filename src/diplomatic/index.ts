@@ -5,8 +5,8 @@ import {getDiplomaticExampleFromUrl} from './example/Examples';
 import {renderEntityExample} from './example/renderEntityExample';
 import {reloadOnEsBuild} from '../util/reloadOnEsBuild';
 import {
-  renderToggleLineByLineExample
-} from "./example/renderToggleLineByLineExample";
+  renderDualViewExample
+} from "./example/renderDualViewExample";
 import {renderSelectExample} from "./example/renderSelectExample";
 
 reloadOnEsBuild();
@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderScanExample($example);
   } else if (example === 'regions') {
     await renderRegionsExample($example);
-  } else if (example === 'line-by-line') {
-    await renderToggleLineByLineExample($example);
+  } else if (example === 'dual-view') {
+    await renderDualViewExample($example);
   } else if (example === 'entities') {
     await renderEntityExample($example);
   } else if (example === 'select') {

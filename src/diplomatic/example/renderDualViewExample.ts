@@ -2,16 +2,15 @@ import {AnnotationPage} from '../AnnoModel';
 import {px} from '../px';
 import {renderDiplomaticView,} from '../renderDiplomaticView';
 import {$} from './$';
-import {Benchmark} from '../Benchmark';
 import {mapAnnotationsById} from './mapAnnotationsById';
 import {renderLineByLineView} from "../../normalized/renderLineByLineView";
-import {Id} from "../Id";
 import {renderAnnotationDropdown} from "./renderAnnotationDropdown";
 import {findTextualBodyValue} from "../anno/findTextualBodyValue";
 import {findSourceLabel} from "../anno/findSourceLabel";
+import {combineViews} from "./combineViews";
 
-export async function renderToggleLineByLineExample($parent: HTMLElement) {
-  console.log('line-by-line')
+export async function renderDualViewExample($parent: HTMLElement) {
+  console.log('dual-view')
   const pagePath =
     '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
   const entityPath =
@@ -21,14 +20,11 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
-  $parent.classList.add('line-by-line');
+  $parent.classList.add('dual-view');
   const $menu = $('#menu');
   const $controls = document.createElement('span')
   $menu.append($controls)
   $controls.classList.add('controls')
-
-  const $toggle = document.createElement('button');
-  $controls.appendChild($toggle);
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
@@ -42,59 +38,35 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
 
   const $diplomaticView = document.createElement('div');
   $parent.append($diplomaticView)
-  $diplomaticView.classList.add('diplomatic-view')
-  $diplomaticView.style.visibility = 'hidden'
+  $diplomaticView.style.height = px(windowHeight);
 
   const $lineByLineView = document.createElement('div');
   $parent.append($lineByLineView)
-  $lineByLineView.classList.add('line-by-line-view')
-  $lineByLineView.style.visibility = 'hidden'
 
-  $diplomaticView.style.height = px(windowHeight);
-
-  const diplomatic = renderDiplomaticView($diplomaticView, annotations, {
+  const diplomaticView = renderDiplomaticView($diplomaticView, annotations, {
     page: page.partOf,
     showEntities: true,
     fit: 'height',
     showRegions: true
   });
-  const lineByLine = renderLineByLineView({
-    $parent: $lineByLineView,
+  diplomaticView.hide()
+
+  const lineByLineView = renderLineByLineView({
+    $view: $lineByLineView,
     annotations
   });
+  diplomaticView.hide()
 
+  const dualView = combineViews({
+    diplomaticView,
+    lineByLineView
+  })
 
-  let viewShown: 'line-by-line' | 'diplomatic' = 'diplomatic'
-
-  const toggleView = () => {
-    if (viewShown === 'line-by-line') {
-      viewShown = 'diplomatic'
-      $diplomaticView.style.visibility = 'visible'
-      $lineByLineView.style.visibility = 'hidden'
-      $toggle.textContent = 'show line-by-line'
-    } else {
-      viewShown = 'line-by-line'
-      $diplomaticView.style.visibility = 'hidden'
-      $lineByLineView.style.visibility = 'visible'
-      $toggle.textContent = 'show diplomatic'
-    }
-  };
-
-  toggleView()
-  $toggle.addEventListener('click', toggleView);
-
-  const selected: Set<Id> = new Set()
-  function toggleAnnotation(id: Id) {
-    if (selected.has(id)) {
-      diplomatic.deselectAnnotation(id)
-      lineByLine.deselectAnnotation(id)
-      selected.delete(id)
-    } else {
-      diplomatic.selectAnnotation(id);
-      lineByLine.selectAnnotation(id);
-      selected.add(id)
-    }
-  }
+  const $toggle = document.createElement('button');
+  $controls.appendChild($toggle);
+  $toggle.textContent = 'Toggle view'
+  $toggle.addEventListener('click', () => dualView.toggle())
+  dualView.toggle()
 
   const words = page.items.filter(a => a.textGranularity === 'word')
   renderAnnotationDropdown(
@@ -102,7 +74,7 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
     'Toggle words',
     words,
     findTextualBodyValue,
-    toggleAnnotation
+    dualView.toggleAnnotation
   );
 
   const regions = page.items.filter(a => a.textGranularity === 'block')
@@ -111,6 +83,7 @@ export async function renderToggleLineByLineExample($parent: HTMLElement) {
     'Toggle regions',
     regions,
     findSourceLabel,
-    toggleAnnotation
+    dualView.toggleAnnotation
   );
 }
+

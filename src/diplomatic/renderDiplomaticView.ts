@@ -14,7 +14,7 @@ import {orThrow} from '../util/orThrow';
 import {getEntityType} from './getEntityType';
 import {toClassName} from './toClassName';
 import {D3El} from './D3El';
-import {SelectableView} from "./SelectableView";
+import {View} from "./View";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -34,7 +34,9 @@ export function renderDiplomaticView(
   $view: HTMLDivElement,
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
-): SelectableView {
+): View {
+  $view.classList.add('diplomatic-view')
+
   const { showRegions, showEntities } = { ...defaultConfig, ...config };
   $view.innerHTML = '';
   const originalLayout = renderOriginalLayout($view, annotations, config);
@@ -169,5 +171,10 @@ export function renderDiplomaticView(
     }
   }
 
-  return {selectAnnotation, deselectAnnotation}
+  return {
+    selectAnnotation,
+    deselectAnnotation,
+    hide: () => $view.style.visibility = 'hidden',
+    show: () => $view.style.visibility = 'visible'
+  }
 }

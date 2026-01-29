@@ -4,7 +4,7 @@ export const examples = [
   'scan',
   'regions',
   'entities',
-  'line-by-line',
+  'dual-view',
   'select'
 ] as const;
 export type ExampleType = (typeof examples)[number];

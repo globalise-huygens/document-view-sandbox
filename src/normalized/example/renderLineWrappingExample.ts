@@ -19,6 +19,6 @@ export async function renderLineWrappingExample($parent: HTMLElement) {
   narrowContainer.classList.add('narrow-container')
   const annotations = mapAnnotationsById([...page.items, ...entities.items]);
   new Benchmark(renderLineByLineView.name).run(() => {
-    renderLineByLineView({ $parent: narrowContainer, annotations });
+    renderLineByLineView({ $view: narrowContainer, annotations });
   });
 }

@@ -1,6 +1,5 @@
 import {AnnotationPage} from "../../diplomatic/AnnoModel";
 import {mapAnnotationsById} from "../../diplomatic/example/mapAnnotationsById";
-import {Benchmark} from "../../diplomatic/Benchmark";
 import {renderLineByLineView} from "../renderLineByLineView";
 import {$} from "../../diplomatic/example/$";
 import {Id} from "../../diplomatic/Id";
@@ -23,7 +22,7 @@ export async function renderSelectExample($parent: HTMLElement) {
   $parent.append(narrowContainer)
   narrowContainer.classList.add('narrow-container')
   const annotations = mapAnnotationsById([...page.items, ...entities.items]);
-  const view = renderLineByLineView({$parent: narrowContainer, annotations});
+  const view = renderLineByLineView({$view: narrowContainer, annotations});
 
   const {selectAnnotation, deselectAnnotation} = view;
   const $dropdowns = document.createElement('span')
