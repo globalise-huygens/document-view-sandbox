@@ -11,6 +11,7 @@ export function combineViews(
 ): CombinedView {
 
   const viewNames = Object.keys(views)
+  const selectedAnnotations: Set<Id> = new Set()
   let currentIndex = 0
 
   function toggle() {
@@ -27,7 +28,6 @@ export function combineViews(
     Object.values(views).forEach(v => v.deselectAnnotation(id))
   }
 
-  const selectedAnnotations: Set<Id> = new Set()
   function toggleAnnotation(id: Id) {
     if (selectedAnnotations.has(id)) {
       deselectAnnotation(id)
@@ -46,6 +46,9 @@ export function combineViews(
   }
 }
 
+/**
+ * Loop around
+ */
 function nextIndex(current: number, length: number): number {
   return (current + 1) % length
 }
