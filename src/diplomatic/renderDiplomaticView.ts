@@ -1,19 +1,20 @@
-import { Annotation } from './AnnoModel';
-import { Id } from './Id';
-import { findResourceTarget } from './findResourceTarget';
-import { renderLineNumbers } from './renderLineNumbers';
-import { renderBlocks } from './renderBlocks';
+import {Annotation} from './AnnoModel';
+import {Id} from './Id';
+import {findResourceTarget} from './findResourceTarget';
+import {renderLineNumbers} from './renderLineNumbers';
+import {renderBlocks} from './renderBlocks';
 import {
   defaultConfig as defaultOriginalLayoutConfig,
   FullOriginalLayoutConfig,
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import { isAnnotationResourceTarget } from './anno/isAnnotationResourceTarget';
-import { orThrow } from '../util/orThrow';
-import { getEntityType } from './getEntityType';
-import { toClassName } from './toClassName';
-import { D3El } from './D3El';
+import {isAnnotationResourceTarget} from './anno/isAnnotationResourceTarget';
+import {orThrow} from '../util/orThrow';
+import {getEntityType} from './getEntityType';
+import {toClassName} from './toClassName';
+import {D3El} from './D3El';
+import {SelectableView} from "./SelectableView";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -33,7 +34,7 @@ export function renderDiplomaticView(
   $view: HTMLDivElement,
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
-) {
+): SelectableView {
   const { showRegions, showEntities } = { ...defaultConfig, ...config };
   $view.innerHTML = '';
   const originalLayout = renderOriginalLayout($view, annotations, config);

@@ -3,6 +3,7 @@ import {reloadOnEsBuild} from '../util/reloadOnEsBuild';
 import {getNormalizedExampleFromUrl} from "./example/Examples";
 import {renderMinimalExample} from "./example/renderMinimalExample";
 import {renderLineWrappingExample} from "./example/renderLineWrappingExample";
+import {renderSelectExample} from "./example/renderSelectExample";
 
 reloadOnEsBuild();
 
@@ -20,6 +21,8 @@ async function main() {
       await renderMinimalExample($example);
     } else if (example === 'line-wrapping') {
       await renderLineWrappingExample($example)
+    } else if (example === 'select') {
+      await renderSelectExample($example)
     }
   });
 }

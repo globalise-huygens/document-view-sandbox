@@ -2,7 +2,8 @@ import {getExampleFromUrl} from "./getExampleFromUrl";
 
 export const examples = [
   'minimal',
-  'line-wrapping'
+  'line-wrapping',
+  'select'
 ] as const;
 export type ExampleType = (typeof examples)[number];
 

@@ -22,8 +22,6 @@ export async function renderSelectExample($parent: HTMLElement) {
   $parent.append($view)
   $view.classList.add('diplomatic-view')
 
-  const $menu = $('#menu');
-
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
   const pageAnnotations = mapAnnotationsById(page.items);
@@ -44,7 +42,7 @@ export async function renderSelectExample($parent: HTMLElement) {
   const {selectAnnotation, deselectAnnotation} = view
 
   const $dropdowns = document.createElement('span')
-  $menu.append($dropdowns)
+  $('#menu').append($dropdowns)
   $dropdowns.classList.add('select')
 
   const selected: Set<Id> = new Set()
