@@ -1,19 +1,12 @@
-import {Point} from "./Point";
-import {TextHull} from "./TextHull";
-
-export type Rect = {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-};
+import { Point } from './Point';
+import { Rect } from './Rect';
 
 /**
  * Bounding rectangle that fits all text
  */
-export function calcTextRect(texts: TextHull[]): Rect {
+export function calcTextRect(texts: { hull: Point[] }[]): Rect {
   if (!texts.length) {
-    return {left: 0, top: 0, width: 0, height: 0};
+    return { left: 0, top: 0, width: 0, height: 0 };
   }
 
   let minX = Infinity;
@@ -21,8 +14,8 @@ export function calcTextRect(texts: TextHull[]): Rect {
   let maxX = -Infinity;
   let maxY = -Infinity;
 
-  for (const word of texts) {
-    for (const [x, y] of word.hull) {
+  for (const hull of texts) {
+    for (const [x, y] of hull.hull) {
       if (x < minX) {
         minX = x;
       }

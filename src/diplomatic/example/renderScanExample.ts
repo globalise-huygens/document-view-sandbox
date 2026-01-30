@@ -1,29 +1,30 @@
-import {IiifAnnotationPage} from "../AnnoModel";
-import {px} from "../px";
-import {renderScan} from "../renderScan";
-import {renderDiplomaticView} from "../renderDiplomaticView";
-import { $ } from "./$";
+import { AnnotationPage } from '../AnnoModel';
+import { px } from '../px';
+import { renderScan } from './renderScan';
+import { renderDiplomaticView } from '../renderDiplomaticView';
+import { $ } from './$';
+import { OriginalLayoutConfig } from '../renderOriginalLayout';
 
 export async function renderScanExample($parent: HTMLElement) {
-  const jsonPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
-  const scanPath = "../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg";
+  const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
+  const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
 
-  $parent.classList.add('with-scan')
+  $parent.classList.add('with-scan');
   $parent.innerHTML = `
       <div class="diplomatic-view"></div>
-      <img id="scan" alt="scan"/>`
-  const $menu = $('#menu')
+      <img id="scan" alt="scan"/>`;
+  const $menu = $('#menu');
   const $view: HTMLDivElement = $('.diplomatic-view', $parent);
   const $scan: HTMLImageElement = $('#scan', $parent);
 
-  const $slider = document.createElement('span')
-  $menu.appendChild($slider)
-  $slider.classList.add('slider')
+  const $slider = document.createElement('span');
+  $menu.appendChild($slider);
+  $slider.classList.add('slider');
   $slider.innerHTML = `
     text 
     <input type="range" value="20" min="0" max="100"/> 
-    scan`
-  const $input: HTMLInputElement = $('input', $slider)
+    scan`;
+  const $input: HTMLInputElement = $('input', $slider);
 
   const adjustOpacity = () => {
     const opacity = parseInt($input.value);
@@ -35,16 +36,20 @@ export async function renderScanExample($parent: HTMLElement) {
   $slider.addEventListener('input', adjustOpacity);
 
   const annoResponse = await fetch(jsonPath);
-  const annoPage: IiifAnnotationPage = await annoResponse.json();
-  const {width: parentWidth} = $parent.getBoundingClientRect();
-  const {width, height} = annoPage.partOf;
+  const annoPage: AnnotationPage = await annoResponse.json();
+  const { width: parentWidth } = $parent.getBoundingClientRect();
+  const { width, height } = annoPage.partOf;
 
   const scale = Math.max(parentWidth / +width);
   $view.style.height = px(scale * height);
   $view.style.width = px(scale * width);
 
-  const pageAttributes = {height, width, scanPath};
+  const pageAttributes = { height, width, scanPath };
   renderScan(pageAttributes, scale, $scan);
-  const viewConfig = {showBoundaries: false, showScanMargin: true};
+  const viewConfig: OriginalLayoutConfig = {
+    showBoundaries: false,
+    showScanMargin: true,
+    fit: 'contain',
+  };
   renderDiplomaticView($view, annoPage, viewConfig);
 }

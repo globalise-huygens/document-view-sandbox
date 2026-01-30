@@ -1,9 +1,35 @@
-import type { Annotation, AnnotationPage } from '@iiif/presentation-3';
+import type {
+  Annotation as IiifAnnotation,
+  AnnotationPage as IiifAnnotationPage,
+  AnnotationTarget as IiifAnnotationTarget,
+  Body as IiifBody,
+} from '@iiif/presentation-3';
+import { Id } from './Id';
 
-export type IiifAnnotationPage = Omit<AnnotationPage, 'partOf'> & {
+export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
   partOf: PartOf;
+  items: Annotation[];
 };
-export type { Annotation };
+
+export type Annotation = Omit<IiifAnnotation, 'body'> & {
+  body: Body[] | Body;
+  target: AnnotationTarget;
+};
+
+export type AnnotationTarget = IiifAnnotationTarget | AnnotationResourceTarget;
+
+type BlockWithLabel = {
+  id: Id;
+  textGranularity: 'block';
+  source: {
+    label: string;
+  };
+};
+export type Body = IiifBody | BlockWithLabel;
+
+export const isBlockWithLabel = (toTest: Body): toTest is BlockWithLabel => {
+  return !!(toTest as BlockWithLabel)?.source?.label;
+};
 
 export type TextualBody = {
   type: 'TextualBody';
@@ -41,4 +67,9 @@ export type PartOf = {
   type: 'Canvas';
   height: number;
   width: number;
+};
+
+export type AnnotationResourceTarget = {
+  id: string;
+  type: 'Annotation';
 };
