@@ -1,5 +1,5 @@
-import {setUrlParams} from "../../util/setUrlParam";
-import {orThrow} from "../../util/orThrow";
+import {orThrow} from "./orThrow";
+import {setUrlParams} from "./setUrlParam";
 
 export function getExampleFromUrl<T extends string>(
   options: readonly T[]

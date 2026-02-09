@@ -1,4 +1,4 @@
-import {getExampleFromUrl} from "../../normalized/example/getExampleFromUrl";
+import {getExampleFromUrl} from "../../util/getExampleFromUrl";
 
 export const examples = [
   'scan',

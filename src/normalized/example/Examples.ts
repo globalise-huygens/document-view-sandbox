@@ -1,4 +1,4 @@
-import {getExampleFromUrl} from "./getExampleFromUrl";
+import {getExampleFromUrl} from "../../util/getExampleFromUrl";
 
 export const examples = [
   'minimal',
