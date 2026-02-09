@@ -1,7 +1,14 @@
-import React, {forwardRef, useImperativeHandle, useRef,} from 'react';
+import React, {
+  forwardRef,
+  useImperativeHandle,
+  useLayoutEffect,
+  useRef,
+} from 'react';
 import {Id} from "../Id";
 import {Annotation} from "../AnnoModel";
 import {OriginalLayoutConfig} from "../renderOriginalLayout";
+import {renderLineByLineView} from "../../normalized/renderLineByLineView";
+import {renderNormalizedLayout} from "../../normalized/renderNormalizedLayout";
 
 export type OriginalLayoutProps = {
   annotations: Record<Id, Annotation>;
@@ -17,9 +24,19 @@ export type NormalizedLayoutRefResult = {
 export const NormalizedLayout = forwardRef<
   NormalizedLayoutRefResult,
   OriginalLayoutProps
->(function OriginalLayout({annotations, config, style}, ref) {
+>(function NormalizedLayout({annotations, config, style}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<NormalizedLayoutRefResult | null>(null);
+
+  useLayoutEffect(() => {
+    const $view = containerRef.current;
+    if (!$view) {
+      return;
+    }
+
+    $view.innerHTML = '';
+    handleRef.current = renderNormalizedLayout($view, annotations);
+  }, [annotations, config]);
 
   useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
 
