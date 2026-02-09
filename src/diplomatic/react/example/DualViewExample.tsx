@@ -56,10 +56,6 @@ export function DualViewExample() {
     });
   }
 
-  function toggleView() {
-    setShowDiplomatic(v => !v);
-  }
-
   const words = Object.values(pageAnnotations).filter(a => a.textGranularity === 'word');
   const regions = Object.values(pageAnnotations).filter(a => a.textGranularity === 'block');
 
@@ -69,7 +65,7 @@ export function DualViewExample() {
         <Controls
           words={words}
           regions={regions}
-          onToggleView={toggleView}
+          onToggleView={() => setShowDiplomatic(show => !show)}
           onToggleAnnotation={toggleAnnotation}
         />,
         $('#menu'),

@@ -28,8 +28,8 @@
     "vitest": "^4.0.16"
   },
   "scripts": {
-    "build": "./node_modules/.bin/esbuild src/index.html src/diplomatic/index.html src/diplomatic/index.ts src/diplomatic/diplomatic.css src/diplomatic/menu.css src/viewer.html src/viewer.js src/highlight/index.html src/highlight/index.ts src/highlight/highlight.css src/normalized/index.html src/normalized/index.ts src/normalized/normalized.css --define:DEV=false --bundle --outdir=./static/ --outbase=src --loader:.html=copy --jsx=automatic --loader:.tsx=tsx src/diplomatic/react/index.html src/diplomatic/react/index.tsx",
-    "dev": "./node_modules/.bin/esbuild src/index.html src/diplomatic/index.html src/diplomatic/index.ts src/diplomatic/menu.css src/diplomatic/diplomatic.css src/viewer.html src/viewer.js src/highlight/index.html src/highlight/index.ts  src/highlight/highlight.css src/normalized/index.html src/normalized/index.ts src/normalized/normalized.css --define:DEV=true  --bundle --outdir=./static/ --outbase=src --loader:.html=copy --watch --servedir=./static --sourcemap --jsx=automatic --loader:.tsx=tsx src/diplomatic/react/index.html src/diplomatic/react/index.tsx",
+    "build": "node build.mjs",
+    "dev": "node build.mjs --dev",
     "start": "npm run dev",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,html}\"",
     "test": "vitest"

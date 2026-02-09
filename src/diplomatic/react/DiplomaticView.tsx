@@ -35,7 +35,7 @@ export const DiplomaticView = forwardRef<
     visible = true,
   } = props
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<ViewRef | null>(null);
+  const handleRef = useRef<ViewRef>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
