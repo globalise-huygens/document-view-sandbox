@@ -11,6 +11,8 @@
     "openseadragon": "^5.0.1",
     "points-on-curve": "^1.0.1",
     "points-on-path": "^0.2.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "svg-path-commander": "^2.1.11"
   },
   "devDependencies": {
@@ -19,13 +21,15 @@
     "@types/d3-shape": "^3.1.7",
     "@types/lodash": "^4.17.20",
     "@types/node": "^24.10.1",
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
     "esbuild": "0.27.0",
     "prettier": "^3.6.2",
     "vitest": "^4.0.16"
   },
   "scripts": {
-    "build": "./node_modules/.bin/esbuild src/index.html src/diplomatic/index.html src/diplomatic/index.ts src/diplomatic/menu.css src/viewer.html src/viewer.js src/highlight/index.html src/highlight/index.ts src/highlight/highlight.css src/normalized/index.html src/normalized/index.ts src/normalized/normalized.css --define:DEV=false --bundle --outdir=./static/ --outbase=src --loader:.html=copy",
-    "dev": "./node_modules/.bin/esbuild src/index.html src/diplomatic/index.html src/diplomatic/index.ts src/diplomatic/menu.css src/viewer.html src/viewer.js src/highlight/index.html src/highlight/index.ts  src/highlight/highlight.css src/normalized/index.html src/normalized/index.ts src/normalized/normalized.css --define:DEV=true  --bundle --outdir=./static/ --outbase=src --loader:.html=copy --watch --servedir=./static --sourcemap",
+    "build": "./node_modules/.bin/esbuild src/index.html src/diplomatic/index.html src/diplomatic/index.ts src/diplomatic/diplomatic.css src/diplomatic/menu.css src/viewer.html src/viewer.js src/highlight/index.html src/highlight/index.ts src/highlight/highlight.css src/normalized/index.html src/normalized/index.ts src/normalized/normalized.css --define:DEV=false --bundle --outdir=./static/ --outbase=src --loader:.html=copy --jsx=automatic --loader:.tsx=tsx src/diplomatic/react/index.html src/diplomatic/react/index.tsx",
+    "dev": "./node_modules/.bin/esbuild src/index.html src/diplomatic/index.html src/diplomatic/index.ts src/diplomatic/menu.css src/diplomatic/diplomatic.css src/viewer.html src/viewer.js src/highlight/index.html src/highlight/index.ts  src/highlight/highlight.css src/normalized/index.html src/normalized/index.ts src/normalized/normalized.css --define:DEV=true  --bundle --outdir=./static/ --outbase=src --loader:.html=copy --watch --servedir=./static --sourcemap --jsx=automatic --loader:.tsx=tsx src/diplomatic/react/index.html src/diplomatic/react/index.tsx",
     "start": "npm run dev",
     "format": "prettier --write \"src/**/*.{ts,js,json,css,html}\"",
     "test": "vitest"

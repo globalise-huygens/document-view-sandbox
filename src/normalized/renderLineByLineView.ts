@@ -38,7 +38,7 @@ export function renderLineByLineView({
 
   const selectedRegions = new Set<Id>()
 
-  const blockConfig = {stroke: 'rgba(100,100,100,1)'};
+  const blockConfig = {stroke: 'rgba(0,150,0,0.5)'};
   const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig)
 
   for (const [lineId, $line] of Object.entries($lines)) {

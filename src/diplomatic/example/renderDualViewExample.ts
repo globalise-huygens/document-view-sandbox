@@ -16,7 +16,9 @@ export async function renderDualViewExample($parent: HTMLElement) {
   const entityPath =
     '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
   // const pagePath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
+  // const entityPath = "../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json";
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0799.json';
+  // const entityPath = '../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0799.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1007.json';
   // const pagePath = '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_1012.json';
 
@@ -65,6 +67,7 @@ export async function renderDualViewExample($parent: HTMLElement) {
   const $toggle = document.createElement('button');
   $controls.appendChild($toggle);
   $toggle.textContent = 'Toggle view'
+
   $toggle.addEventListener('click', () => dualView.toggle())
   dualView.toggle()
 
