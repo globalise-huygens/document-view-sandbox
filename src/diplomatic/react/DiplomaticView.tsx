@@ -17,10 +17,9 @@ export type DiplomaticViewProps = {
   config: DiplomaticViewConfig;
 };
 
-export type DiplomaticViewHandle = View;
 
 export const DiplomaticView = forwardRef<
-  DiplomaticViewHandle,
+  View,
   DiplomaticViewProps
 >(function DiplomaticView({ annotations, config }, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
