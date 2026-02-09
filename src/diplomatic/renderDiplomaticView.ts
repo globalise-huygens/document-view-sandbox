@@ -37,6 +37,14 @@ export function renderDiplomaticView(
 ): View {
   $view.classList.add('diplomatic-view')
 
+  function show() {
+    $view.style.visibility = 'visible';
+  }
+
+  function hide() {
+    $view.style.visibility = 'hidden';
+  }
+
   const { showRegions, showEntities } = { ...defaultConfig, ...config };
   $view.innerHTML = '';
   const originalLayout = renderOriginalLayout($view, annotations, config);
@@ -174,7 +182,7 @@ export function renderDiplomaticView(
   return {
     selectAnnotation,
     deselectAnnotation,
-    hide: () => $view.style.visibility = 'hidden',
-    show: () => $view.style.visibility = 'visible'
+    hide,
+    show
   }
 }

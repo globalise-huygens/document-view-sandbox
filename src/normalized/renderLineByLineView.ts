@@ -20,6 +20,14 @@ export function renderLineByLineView({
   annotations: Record<Id, Annotation>;
 }): View {
 
+  function show() {
+    $view.style.visibility = 'visible';
+  }
+
+  function hide() {
+    $view.style.visibility = 'hidden';
+  }
+
   const {$words, $lines, $overlay} = renderNormalizedLayout($view, annotations);
   const entities = Object.values(annotations).filter(
     (a) => a.motivation === 'classifying',
@@ -108,8 +116,9 @@ export function renderLineByLineView({
   }
 
   return {
-    selectAnnotation, deselectAnnotation,
-    hide: () => $view.style.visibility = 'hidden',
-    show: () => $view.style.visibility = 'visible'
+    selectAnnotation,
+    deselectAnnotation,
+    hide,
+    show
   }
 }

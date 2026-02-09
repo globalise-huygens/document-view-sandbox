@@ -6,8 +6,9 @@ import {getExampleFromUrl} from "../../../util/getExampleFromUrl";
 import {NormalizedExample} from "./NormalizedExample";
 import {LineByLineExample} from "./LineByLineExample";
 import {NormalizedLayout} from "../NormalizedLayout";
+import {DualViewExample} from "./DualViewExample";
 
-const examples = ['original-layout', 'diplomatic', 'normalized', 'line-by-line'] as const;
+const examples = ['original-layout', 'diplomatic', 'normalized', 'line-by-line', 'dual-view'] as const;
 
 export function Example() {
   const example = getExampleFromUrl(examples);
@@ -20,6 +21,8 @@ export function Example() {
     return <NormalizedExample/>;
   } else if (example === 'line-by-line') {
     return <LineByLineExample/>;
+  } else if (example === 'dual-view') {
+    return <DualViewExample/>;
   } else {
     return "Unknown example"
   }
