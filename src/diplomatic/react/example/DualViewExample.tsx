@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import type {Id} from '../../Id';
 import type {View} from '../../View';
@@ -19,7 +19,7 @@ export function DualViewExample() {
 
   const diplomaticRef = useRef<View>(null);
   const lineByLineRef = useRef<View>(null);
-  const [, setShowDiplomatic] = useState(true);
+  const [showDiplomatic, setShowDiplomatic] = useState(true);
   const [, setSelectedIds] = useState<Set<Id>>(new Set());
 
   const annotations = useMemo(
@@ -27,9 +27,15 @@ export function DualViewExample() {
     [pageAnnotations, entityAnnotations]
   );
 
+
+  useEffect(() => {
+    console.log({showDiplomatic})
+  }, [showDiplomatic]);
+
   if (!pageAnnotations || !entityAnnotations || !page) {
     return <div>Loading…</div>;
   }
+
 
   function toggleAnnotation(id: Id) {
     const views = [
@@ -51,23 +57,7 @@ export function DualViewExample() {
   }
 
   function toggleView() {
-    const diplomaticView = diplomaticRef.current as View
-    const lineByLineView = lineByLineRef.current as View
-    if (!diplomaticView || !lineByLineView) {
-      console.warn(`Missing view refs: ${diplomaticView}, ${lineByLineView}`)
-      return;
-    }
-    setShowDiplomatic(v => {
-      const next = !v;
-      if (next) {
-        diplomaticView.show();
-        lineByLineView.hide();
-      } else {
-        diplomaticView.hide();
-        lineByLineView.show();
-      }
-      return next;
-    });
+    setShowDiplomatic(v => !v);
   }
 
   const words = Object.values(pageAnnotations).filter(a => a.textGranularity === 'word');
@@ -87,6 +77,7 @@ export function DualViewExample() {
       <div className="dual-view" style={{display: 'grid'}}>
         <DiplomaticView
           ref={diplomaticRef}
+          visible={showDiplomatic}
           annotations={annotations}
           page={page}
           showEntities={true}
@@ -96,8 +87,9 @@ export function DualViewExample() {
         />
         <LineByLineLayout
           ref={lineByLineRef}
+          visible={!showDiplomatic}
           annotations={annotations}
-          style={{gridArea: '1 / 1', visibility: 'hidden'}}
+          style={{gridArea: '1 / 1'}}
         />
       </div>
     </>
