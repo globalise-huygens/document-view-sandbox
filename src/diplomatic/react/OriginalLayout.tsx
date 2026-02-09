@@ -1,8 +1,8 @@
 import React, {
+  forwardRef,
+  useImperativeHandle,
   useLayoutEffect,
   useRef,
-  useImperativeHandle,
-  forwardRef,
 } from 'react';
 import type {Annotation} from '../AnnoModel';
 import type {Id} from '../Id';
@@ -12,17 +12,9 @@ import {
   renderOriginalLayout,
 } from '../renderOriginalLayout';
 
-export type WordInteraction = {
-  className?: (id: Id) => string | undefined;
-  onMouseEnter?: (id: Id, el: HTMLElement) => void;
-  onMouseLeave?: (id: Id, el: HTMLElement) => void;
-  onClick?: (id: Id, el: HTMLElement) => void;
-};
-
 export type OriginalLayoutProps = {
   annotations: Record<Id, Annotation>;
   config: OriginalLayoutConfig;
-  wordInteraction?: WordInteraction;
   style?: React.CSSProperties;
 };
 
@@ -35,7 +27,7 @@ export type OriginalLayoutRefResult = {
 export const OriginalLayout = forwardRef<
   OriginalLayoutRefResult,
   OriginalLayoutProps
->(function OriginalLayout({annotations, config, wordInteraction, style}, ref) {
+>(function OriginalLayout({annotations, config, style}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<OriginalLayoutRefResult | null>(null);
 
@@ -46,32 +38,8 @@ export const OriginalLayout = forwardRef<
     }
 
     $view.innerHTML = '';
-    const layout = renderOriginalLayout($view, annotations, config);
-    const {$words} = layout;
-    handleRef.current = layout;
-
-    if (wordInteraction) {
-      const {className, onMouseEnter, onMouseLeave, onClick} =
-        wordInteraction;
-      for (const [id, $word] of Object.entries($words)) {
-        if (className) {
-          const cls = className(id);
-          if (cls) {
-            $word.classList.add(...cls.split(' '));
-          }
-        }
-        if (onMouseEnter) {
-          $word.addEventListener('mouseenter', () => onMouseEnter(id, $word));
-        }
-        if (onMouseLeave) {
-          $word.addEventListener('mouseleave', () => onMouseLeave(id, $word));
-        }
-        if (onClick) {
-          $word.addEventListener('click', () => onClick(id, $word));
-        }
-      }
-    }
-  }, [annotations, config, wordInteraction]);
+    handleRef.current = renderOriginalLayout($view, annotations, config);
+  }, [annotations, config]);
 
   useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
 
