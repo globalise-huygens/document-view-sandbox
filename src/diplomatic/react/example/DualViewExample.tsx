@@ -28,14 +28,6 @@ export function DualViewExample() {
     [pageAnnotations, entityAnnotations]
   );
 
-  const diplomaticViewConfig = useMemo(() => ({
-    page, showEntities: true, showRegions: true, fit: 'height'
-  }), [page]) as DiplomaticViewConfig;
-
-  const lineByLineViewConfig = useMemo(() => ({
-    page
-  }), [page]) as DiplomaticViewConfig;
-
   if (!pageAnnotations || !entityAnnotations || !page) {
     return <div>Loading…</div>;
   }
@@ -62,7 +54,7 @@ export function DualViewExample() {
   function toggleView() {
     const diplomaticView = diplomaticRef.current as View
     const lineByLineView = lineByLineRef.current as View
-    if(!diplomaticView || !lineByLineView) {
+    if (!diplomaticView || !lineByLineView) {
       return;
     }
     setShowDiplomatic(v => {
@@ -96,13 +88,15 @@ export function DualViewExample() {
         <DiplomaticView
           ref={diplomaticRef}
           annotations={annotations}
-          config={diplomaticViewConfig}
+          page={page}
+          showEntities={true}
+          showRegions={true}
+          fit="height"
           style={{height: '100vh', gridArea: '1 / 1'}}
         />
         <LineByLineLayout
           ref={lineByLineRef}
           annotations={annotations}
-          config={lineByLineViewConfig}
           style={{gridArea: '1 / 1', visibility: 'hidden'}}
         />
       </div>

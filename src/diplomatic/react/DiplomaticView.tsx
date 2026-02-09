@@ -7,21 +7,24 @@ import React, {
 import type {Annotation} from '../AnnoModel';
 import type {Id} from '../Id';
 import type {View} from '../View';
-import {
-  DiplomaticViewConfig,
-  renderDiplomaticView,
-} from '../renderDiplomaticView';
+import {renderDiplomaticView,} from '../renderDiplomaticView';
+import {ViewFit} from "../calcScaleFactor";
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
-  config: DiplomaticViewConfig;
+  page: { width: number; height: number };
+  fit?: ViewFit;
+  showRegions?: boolean;
+  showEntities?: boolean;
   style?: React.CSSProperties;
 };
 
 export const DiplomaticView = forwardRef<
-  View,
-  DiplomaticViewProps
->(function DiplomaticView({ annotations, config, style }, ref) {
+View,
+DiplomaticViewProps
+>(function DiplomaticView(props, ref) {
+
+  const {annotations, page, fit, showRegions, showEntities, style} = props
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<View | null>(null);
 
@@ -32,10 +35,15 @@ export const DiplomaticView = forwardRef<
     }
 
     $view.innerHTML = '';
+    const config = {page, fit, showRegions, showEntities};
     handleRef.current = renderDiplomaticView($view, annotations, config);
-  }, [annotations, config]);
+  }, [annotations, page, fit, showRegions, showEntities]);
 
-  useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
+  useImperativeHandle(
+    ref,
+    () => handleRef.current!,
+    [annotations, page, fit, showRegions, showEntities]
+  );
 
   return <div
     ref={containerRef}

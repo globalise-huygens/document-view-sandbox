@@ -7,14 +7,13 @@ import React, {
 import type {Annotation} from '../AnnoModel';
 import type {Id} from '../Id';
 import type {Scale} from '../Scale';
-import {
-  OriginalLayoutConfig,
-  renderOriginalLayout,
-} from '../renderOriginalLayout';
+import {renderOriginalLayout,} from '../renderOriginalLayout';
+import {ViewFit} from "../calcScaleFactor";
 
 export type OriginalLayoutProps = {
   annotations: Record<Id, Annotation>;
-  config: OriginalLayoutConfig;
+  page: { width: number; height: number };
+  fit?: ViewFit;
   style?: React.CSSProperties;
 };
 
@@ -27,7 +26,7 @@ export type OriginalLayoutRefResult = {
 export const OriginalLayout = forwardRef<
   OriginalLayoutRefResult,
   OriginalLayoutProps
->(function OriginalLayout({annotations, config, style}, ref) {
+>(function OriginalLayout({annotations, style, page, fit}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<OriginalLayoutRefResult | null>(null);
 
@@ -38,10 +37,10 @@ export const OriginalLayout = forwardRef<
     }
 
     $view.innerHTML = '';
-    handleRef.current = renderOriginalLayout($view, annotations, config);
-  }, [annotations, config]);
+    handleRef.current = renderOriginalLayout($view, annotations, {page, fit})
+  }, [annotations, page, fit]);
 
-  useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
+  useImperativeHandle(ref, () => handleRef.current!, [annotations, page, fit]);
 
   return <div
     ref={containerRef}

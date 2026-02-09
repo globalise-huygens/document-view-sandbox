@@ -10,9 +10,8 @@ import {OriginalLayoutConfig} from "../renderOriginalLayout";
 import {renderLineByLineView} from "../../normalized/renderLineByLineView";
 import {renderNormalizedLayout} from "../../normalized/renderNormalizedLayout";
 
-export type OriginalLayoutProps = {
+export type NormalizedLayoutProps = {
   annotations: Record<Id, Annotation>;
-  config: OriginalLayoutConfig;
   style?: React.CSSProperties;
 };
 
@@ -23,8 +22,8 @@ export type NormalizedLayoutRefResult = {
 
 export const NormalizedLayout = forwardRef<
   NormalizedLayoutRefResult,
-  OriginalLayoutProps
->(function NormalizedLayout({annotations, config, style}, ref) {
+  NormalizedLayoutProps
+>(function NormalizedLayout({annotations, style}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<NormalizedLayoutRefResult | null>(null);
 
@@ -36,9 +35,9 @@ export const NormalizedLayout = forwardRef<
 
     $view.innerHTML = '';
     handleRef.current = renderNormalizedLayout($view, annotations);
-  }, [annotations, config]);
+  }, [annotations]);
 
-  useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
+  useImperativeHandle(ref, () => handleRef.current!, [annotations]);
 
   return <div
     ref={containerRef}

@@ -7,19 +7,17 @@ import React, {
 import type {Annotation} from '../AnnoModel';
 import type {Id} from '../Id';
 import type {View} from '../View';
-import {DiplomaticViewConfig,} from '../renderDiplomaticView';
 import {renderLineByLineView} from "../../normalized/renderLineByLineView";
 
-export type DiplomaticViewProps = {
+export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;
-  config: DiplomaticViewConfig;
   style?: React.CSSProperties;
 };
 
 export const LineByLineLayout = forwardRef<
   View,
-  DiplomaticViewProps
->(function LineByLineLayout({ annotations, config, style }, ref) {
+  LineByLineLayoutProps
+>(function LineByLineLayout({annotations, style}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<View | null>(null);
 
@@ -31,9 +29,9 @@ export const LineByLineLayout = forwardRef<
 
     $view.innerHTML = '';
     handleRef.current = renderLineByLineView({$view, annotations});
-  }, [annotations, config]);
+  }, [annotations, annotations]);
 
-  useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
+  useImperativeHandle(ref, () => handleRef.current!, [annotations]);
 
   return <div
     ref={containerRef}

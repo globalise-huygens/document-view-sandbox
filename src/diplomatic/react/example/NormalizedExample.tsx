@@ -16,7 +16,6 @@ export function NormalizedExample() {
   return (
     <NormalizedLayout
       annotations={annotations}
-      config={{page, fit: "height"}}
       style={{height: '100vh'}}
     />
   );
