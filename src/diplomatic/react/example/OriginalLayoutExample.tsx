@@ -8,6 +8,10 @@ export function OriginalLayoutExample() {
   if (!annotations || !page) {
     return <div>Loading…</div>;
   }
-  return <OriginalLayout annotations={annotations} config={{ page }} />;
+  return <OriginalLayout
+    annotations={annotations}
+    config={{ page, fit: 'height' }}
+    style={{height: '100vh'}}
+  />;
 }
 

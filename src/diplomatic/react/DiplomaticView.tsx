@@ -15,13 +15,13 @@ import {
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
   config: DiplomaticViewConfig;
+  style?: React.CSSProperties;
 };
-
 
 export const DiplomaticView = forwardRef<
   View,
   DiplomaticViewProps
->(function DiplomaticView({ annotations, config }, ref) {
+>(function DiplomaticView({ annotations, config, style }, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<View | null>(null);
 
@@ -37,5 +37,8 @@ export const DiplomaticView = forwardRef<
 
   useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
 
-  return <div ref={containerRef} />;
+  return <div
+    ref={containerRef}
+    style={style}
+  />;
 });

@@ -4,9 +4,9 @@ import React, {
   useImperativeHandle,
   forwardRef,
 } from 'react';
-import type { Annotation } from '../AnnoModel';
-import type { Id } from '../Id';
-import type { Scale } from '../Scale';
+import type {Annotation} from '../AnnoModel';
+import type {Id} from '../Id';
+import type {Scale} from '../Scale';
 import {
   OriginalLayoutConfig,
   renderOriginalLayout,
@@ -23,24 +23,27 @@ export type OriginalLayoutProps = {
   annotations: Record<Id, Annotation>;
   config: OriginalLayoutConfig;
   wordInteraction?: WordInteraction;
+  style?: React.CSSProperties;
 };
 
-export type OriginalLayoutHandle = {
+export type OriginalLayoutRefResult = {
   scale: Scale;
   $words: Record<Id, HTMLElement>;
   $overlay: SVGSVGElement;
 };
 
 export const OriginalLayout = forwardRef<
-  OriginalLayoutHandle,
+  OriginalLayoutRefResult,
   OriginalLayoutProps
->(function OriginalLayout({ annotations, config, wordInteraction }, ref) {
+>(function OriginalLayout({annotations, config, wordInteraction, style}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<OriginalLayoutHandle | null>(null);
+  const handleRef = useRef<OriginalLayoutRefResult | null>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
-    if (!$view) return;
+    if (!$view) {
+      return;
+    }
 
     $view.innerHTML = '';
     const layout = renderOriginalLayout($view, annotations, config);
@@ -48,24 +51,33 @@ export const OriginalLayout = forwardRef<
     handleRef.current = layout;
 
     if (wordInteraction) {
-      const { className, onMouseEnter, onMouseLeave, onClick } =
+      const {className, onMouseEnter, onMouseLeave, onClick} =
         wordInteraction;
       for (const [id, $word] of Object.entries($words)) {
         if (className) {
           const cls = className(id);
-          if (cls) $word.classList.add(...cls.split(' '));
+          if (cls) {
+            $word.classList.add(...cls.split(' '));
+          }
         }
-        if (onMouseEnter)
+        if (onMouseEnter) {
           $word.addEventListener('mouseenter', () => onMouseEnter(id, $word));
-        if (onMouseLeave)
+        }
+        if (onMouseLeave) {
           $word.addEventListener('mouseleave', () => onMouseLeave(id, $word));
-        if (onClick)
+        }
+        if (onClick) {
           $word.addEventListener('click', () => onClick(id, $word));
+        }
       }
     }
   }, [annotations, config, wordInteraction]);
 
   useImperativeHandle(ref, () => handleRef.current!, [annotations, config]);
 
-  return <div ref={containerRef} className="diplomatic-view" />;
+  return <div
+    ref={containerRef}
+    className="diplomatic-view"
+    style={style}
+  />;
 });

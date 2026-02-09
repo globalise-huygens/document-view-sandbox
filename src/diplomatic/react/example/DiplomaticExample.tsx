@@ -16,7 +16,8 @@ export function DiplomaticExample() {
   return (
     <DiplomaticView
       annotations={annotations}
-      config={{page, showRegions: true, showEntities: true}}
+      config={{page, showRegions: true, showEntities: true, fit: "height"}}
+      style={{height: '100vh'}}
     />
   );
 }
