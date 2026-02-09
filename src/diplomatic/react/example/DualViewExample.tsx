@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import type {Id} from '../../Id';
 import type {View} from '../../View';
@@ -9,7 +9,6 @@ import {LineByLineLayout} from '../LineByLineLayout';
 import {findTextualBodyValue} from '../../anno/findTextualBodyValue';
 import {findSourceLabel} from '../../anno/findSourceLabel';
 import {$} from '../../example/$';
-import {DiplomaticViewConfig} from "../../renderDiplomaticView";
 
 export function DualViewExample() {
   const pagePath = '../../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
@@ -55,6 +54,7 @@ export function DualViewExample() {
     const diplomaticView = diplomaticRef.current as View
     const lineByLineView = lineByLineRef.current as View
     if (!diplomaticView || !lineByLineView) {
+      console.warn(`Missing view refs: ${diplomaticView}, ${lineByLineView}`)
       return;
     }
     setShowDiplomatic(v => {
