@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
 import type {Id} from '../../Id';
 import type {View} from '../../View';
@@ -9,6 +9,7 @@ import {LineByLineLayout} from '../LineByLineLayout';
 import {findTextualBodyValue} from '../../anno/findTextualBodyValue';
 import {findSourceLabel} from '../../anno/findSourceLabel';
 import {$} from '../../example/$';
+import {DiplomaticViewConfig} from "../../renderDiplomaticView";
 
 export function DualViewExample() {
   const pagePath = '../../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
@@ -21,6 +22,19 @@ export function DualViewExample() {
   const lineByLineRef = useRef<View>(null);
   const [, setShowDiplomatic] = useState(true);
   const [, setSelectedIds] = useState<Set<Id>>(new Set());
+
+  const annotations = useMemo(
+    () => ({...pageAnnotations, ...entityAnnotations}),
+    [pageAnnotations, entityAnnotations]
+  );
+
+  const diplomaticViewConfig = useMemo(() => ({
+    page, showEntities: true, showRegions: true, fit: 'height'
+  }), [page]) as DiplomaticViewConfig;
+
+  const lineByLineViewConfig = useMemo(() => ({
+    page
+  }), [page]) as DiplomaticViewConfig;
 
   if (!pageAnnotations || !entityAnnotations || !page) {
     return <div>Loading…</div>;
@@ -64,7 +78,6 @@ export function DualViewExample() {
     });
   }
 
-  const annotations = {...pageAnnotations, ...entityAnnotations};
   const words = Object.values(pageAnnotations).filter(a => a.textGranularity === 'word');
   const regions = Object.values(pageAnnotations).filter(a => a.textGranularity === 'block');
 
@@ -83,13 +96,13 @@ export function DualViewExample() {
         <DiplomaticView
           ref={diplomaticRef}
           annotations={annotations}
-          config={{page, showEntities: true, showRegions: true, fit: 'height'}}
+          config={diplomaticViewConfig}
           style={{height: '100vh', gridArea: '1 / 1'}}
         />
         <LineByLineLayout
           ref={lineByLineRef}
           annotations={annotations}
-          config={{page}}
+          config={lineByLineViewConfig}
           style={{gridArea: '1 / 1', visibility: 'hidden'}}
         />
       </div>
