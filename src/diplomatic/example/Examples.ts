@@ -1,11 +1,11 @@
-import {getExampleFromUrl} from "../../util/getExampleFromUrl";
+import { getExampleFromUrl } from '../../util/getExampleFromUrl';
 
 export const examples = [
   'scan',
   'regions',
   'entities',
   'dual-view',
-  'select'
+  'select',
 ] as const;
 export type ExampleType = (typeof examples)[number];
 

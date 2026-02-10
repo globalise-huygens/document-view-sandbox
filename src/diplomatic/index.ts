@@ -1,13 +1,11 @@
-import {renderRegionsExample} from './example/renderRegionsExample';
-import {renderScanExample} from './example/renderScanExample';
-import {$} from './example/$';
-import {getDiplomaticExampleFromUrl} from './example/Examples';
-import {renderEntityExample} from './example/renderEntityExample';
-import {reloadOnEsBuild} from '../util/reloadOnEsBuild';
-import {
-  renderDualViewExample
-} from "./example/renderDualViewExample";
-import {renderSelectExample} from "./example/renderSelectExample";
+import { renderRegionsExample } from './example/renderRegionsExample';
+import { renderScanExample } from './example/renderScanExample';
+import { $ } from './example/$';
+import { getDiplomaticExampleFromUrl } from './example/Examples';
+import { renderEntityExample } from './example/renderEntityExample';
+import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
+import { renderDualViewExample } from './example/renderDualViewExample';
+import { renderSelectExample } from './example/renderSelectExample';
 
 reloadOnEsBuild();
 

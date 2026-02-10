@@ -1,16 +1,14 @@
-import {Annotation} from '../diplomatic/AnnoModel';
-import {renderNormalizedLayout} from './renderNormalizedLayout';
-import {
-  isAnnotationResourceTarget
-} from '../diplomatic/anno/isAnnotationResourceTarget';
-import {getEntityType} from '../diplomatic/getEntityType';
-import {orThrow} from '../util/orThrow';
-import {toClassName} from '../diplomatic/toClassName';
-import {renderBlocks} from "./renderBlocks";
-import {Id} from "../diplomatic/Id";
-import {View} from "../diplomatic/View";
-import {line} from "d3-shape";
-import {findResourceTarget} from "../diplomatic/findResourceTarget";
+import { Annotation } from '../diplomatic/AnnoModel';
+import { renderNormalizedLayout } from './renderNormalizedLayout';
+import { isAnnotationResourceTarget } from '../diplomatic/anno/isAnnotationResourceTarget';
+import { getEntityType } from '../diplomatic/getEntityType';
+import { orThrow } from '../util/orThrow';
+import { toClassName } from '../diplomatic/toClassName';
+import { renderBlocks } from './renderBlocks';
+import { Id } from '../diplomatic/Id';
+import { View } from '../diplomatic/View';
+import { line } from 'd3-shape';
+import { findResourceTarget } from '../diplomatic/findResourceTarget';
 
 export function renderLineByLineView({
   $view,
@@ -19,7 +17,6 @@ export function renderLineByLineView({
   $view: HTMLElement;
   annotations: Record<Id, Annotation>;
 }): View {
-
   function show() {
     $view.style.visibility = 'visible';
   }
@@ -28,7 +25,10 @@ export function renderLineByLineView({
     $view.style.visibility = 'hidden';
   }
 
-  const {$words, $lines, $overlay} = renderNormalizedLayout($view, annotations);
+  const { $words, $lines, $overlay } = renderNormalizedLayout(
+    $view,
+    annotations,
+  );
   const entities = Object.values(annotations).filter(
     (a) => a.motivation === 'classifying',
   );
@@ -44,26 +44,26 @@ export function renderLineByLineView({
     }
   }
 
-  const selectedRegions = new Set<Id>()
+  const selectedRegions = new Set<Id>();
 
-  const blockConfig = {stroke: 'rgba(0,150,0,0.5)'};
-  const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig)
+  const blockConfig = { stroke: 'rgba(0,150,0,0.5)' };
+  const { $blocks } = renderBlocks($lines, $overlay, annotations, blockConfig);
 
   for (const [lineId, $line] of Object.entries($lines)) {
-    const line = annotations[lineId]
-    const blockId = findResourceTarget(line).id
-    const $block = $blocks[blockId]
-    $line.addEventListener("mouseenter", () => {
+    const line = annotations[lineId];
+    const blockId = findResourceTarget(line).id;
+    const $block = $blocks[blockId];
+    $line.addEventListener('mouseenter', () => {
       if (selectedRegions.has(blockId)) {
         return;
       }
-      $block.attr("opacity", 1);
+      $block.attr('opacity', 1);
     });
-    $line.addEventListener("mouseleave", () => {
+    $line.addEventListener('mouseleave', () => {
       if (selectedRegions.has(blockId)) {
         return;
       }
-      $block.attr("opacity", 0);
+      $block.attr('opacity', 0);
     });
   }
 
@@ -75,8 +75,8 @@ export function renderLineByLineView({
     if (selectedRegions.has(id)) {
       return;
     }
-    selectedRegions.add(id)
-    $block.attr('opacity', 1)
+    selectedRegions.add(id);
+    $block.attr('opacity', 1);
   }
 
   function deselectRegion(id: Id) {
@@ -87,31 +87,31 @@ export function renderLineByLineView({
     if (!selectedRegions.has(id)) {
       return;
     }
-    selectedRegions.delete(id)
-    $block.attr('opacity', 0)
+    selectedRegions.delete(id);
+    $block.attr('opacity', 0);
   }
 
   function selectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if (annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.add('selected')
-    } else if (annotation.textGranularity === "block") {
-      selectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const $word = $words[id];
+      $word.classList.add('selected');
+    } else if (annotation.textGranularity === 'block') {
+      selectRegion(id);
     } else {
-      console.warn(`Select not implemented: ${annotation.textGranularity}`)
+      console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
   }
 
   function deselectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if (annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.remove('selected')
-    } else if (annotation.textGranularity === "block") {
-      deselectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const $word = $words[id];
+      $word.classList.remove('selected');
+    } else if (annotation.textGranularity === 'block') {
+      deselectRegion(id);
     } else {
-      console.warn(`Deselect not implemented: ${annotation.textGranularity}`)
+      console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
@@ -119,6 +119,6 @@ export function renderLineByLineView({
     selectAnnotation,
     deselectAnnotation,
     hide,
-    show
-  }
+    show,
+  };
 }

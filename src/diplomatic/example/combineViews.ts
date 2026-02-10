@@ -1,40 +1,37 @@
-import {View} from "../View";
-import {Id} from "../Id";
+import { View } from '../View';
+import { Id } from '../Id';
 
 export type CombinedView = {
-  toggle: () => void,
-  toggleAnnotation: (id: Id) => void
-} & Omit<View, 'hide' | 'show'>
+  toggle: () => void;
+  toggleAnnotation: (id: Id) => void;
+} & Omit<View, 'hide' | 'show'>;
 
-export function combineViews(
-  views: Record<string, View>
-): CombinedView {
-
-  const viewNames = Object.keys(views)
-  const selectedAnnotations: Set<Id> = new Set()
-  let currentIndex = 0
+export function combineViews(views: Record<string, View>): CombinedView {
+  const viewNames = Object.keys(views);
+  const selectedAnnotations: Set<Id> = new Set();
+  let currentIndex = 0;
 
   function toggle() {
-    views[viewNames[currentIndex]].hide()
-    currentIndex = nextIndex(currentIndex, viewNames.length)
-    views[viewNames[currentIndex]].show()
+    views[viewNames[currentIndex]].hide();
+    currentIndex = nextIndex(currentIndex, viewNames.length);
+    views[viewNames[currentIndex]].show();
   }
 
   function selectAnnotation(id: Id) {
-    Object.values(views).forEach(v => v.selectAnnotation(id))
+    Object.values(views).forEach((v) => v.selectAnnotation(id));
   }
 
   function deselectAnnotation(id: Id) {
-    Object.values(views).forEach(v => v.deselectAnnotation(id))
+    Object.values(views).forEach((v) => v.deselectAnnotation(id));
   }
 
   function toggleAnnotation(id: Id) {
     if (selectedAnnotations.has(id)) {
-      deselectAnnotation(id)
-      selectedAnnotations.delete(id)
+      deselectAnnotation(id);
+      selectedAnnotations.delete(id);
     } else {
       selectAnnotation(id);
-      selectedAnnotations.add(id)
+      selectedAnnotations.add(id);
     }
   }
 
@@ -42,13 +39,13 @@ export function combineViews(
     toggle,
     selectAnnotation,
     deselectAnnotation,
-    toggleAnnotation
-  }
+    toggleAnnotation,
+  };
 }
 
 /**
  * Loop around
  */
 function nextIndex(current: number, length: number): number {
-  return (current + 1) % length
+  return (current + 1) % length;
 }

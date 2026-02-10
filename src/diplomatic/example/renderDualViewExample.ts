@@ -1,16 +1,16 @@
-import {AnnotationPage} from '../AnnoModel';
-import {px} from '../px';
-import {renderDiplomaticView,} from '../renderDiplomaticView';
-import {$} from './$';
-import {mapAnnotationsById} from './mapAnnotationsById';
-import {renderLineByLineView} from "../../normalized/renderLineByLineView";
-import {renderAnnotationDropdown} from "./renderAnnotationDropdown";
-import {findTextualBodyValue} from "../anno/findTextualBodyValue";
-import {findSourceLabel} from "../anno/findSourceLabel";
-import {combineViews} from "./combineViews";
+import { AnnotationPage } from '../AnnoModel';
+import { px } from '../px';
+import { renderDiplomaticView } from '../renderDiplomaticView';
+import { $ } from './$';
+import { mapAnnotationsById } from './mapAnnotationsById';
+import { renderLineByLineView } from '../../normalized/renderLineByLineView';
+import { renderAnnotationDropdown } from './renderAnnotationDropdown';
+import { findTextualBodyValue } from '../anno/findTextualBodyValue';
+import { findSourceLabel } from '../anno/findSourceLabel';
+import { combineViews } from './combineViews';
 
 export async function renderDualViewExample($parent: HTMLElement) {
-  console.log('dual-view')
+  console.log('dual-view');
   const pagePath =
     '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
   const entityPath =
@@ -24,9 +24,9 @@ export async function renderDualViewExample($parent: HTMLElement) {
 
   $parent.classList.add('dual-view');
   const $menu = $('#menu');
-  const $controls = document.createElement('span')
-  $menu.append($controls)
-  $controls.classList.add('controls')
+  const $controls = document.createElement('span');
+  $menu.append($controls);
+  $controls.classList.add('controls');
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
@@ -39,54 +39,53 @@ export async function renderDualViewExample($parent: HTMLElement) {
   const windowHeight = window.innerHeight;
 
   const $diplomaticView = document.createElement('div');
-  $parent.append($diplomaticView)
+  $parent.append($diplomaticView);
   $diplomaticView.style.height = px(windowHeight);
 
   const $lineByLineView = document.createElement('div');
-  $parent.append($lineByLineView)
+  $parent.append($lineByLineView);
 
   const diplomaticView = renderDiplomaticView($diplomaticView, annotations, {
     page: page.partOf,
     showEntities: true,
     fit: 'height',
-    showRegions: true
+    showRegions: true,
   });
-  diplomaticView.hide()
+  diplomaticView.hide();
 
   const lineByLineView = renderLineByLineView({
     $view: $lineByLineView,
-    annotations
+    annotations,
   });
-  diplomaticView.hide()
+  diplomaticView.hide();
 
   const dualView = combineViews({
     diplomaticView,
-    lineByLineView
-  })
+    lineByLineView,
+  });
 
   const $toggle = document.createElement('button');
   $controls.appendChild($toggle);
-  $toggle.textContent = 'Toggle view'
+  $toggle.textContent = 'Toggle view';
 
-  $toggle.addEventListener('click', () => dualView.toggle())
-  dualView.toggle()
+  $toggle.addEventListener('click', () => dualView.toggle());
+  dualView.toggle();
 
-  const words = page.items.filter(a => a.textGranularity === 'word')
+  const words = page.items.filter((a) => a.textGranularity === 'word');
   renderAnnotationDropdown(
     $controls,
     'Toggle words',
     words,
     findTextualBodyValue,
-    dualView.toggleAnnotation
+    dualView.toggleAnnotation,
   );
 
-  const regions = page.items.filter(a => a.textGranularity === 'block')
+  const regions = page.items.filter((a) => a.textGranularity === 'block');
   renderAnnotationDropdown(
     $controls,
     'Toggle regions',
     regions,
     findSourceLabel,
-    dualView.toggleAnnotation
+    dualView.toggleAnnotation,
   );
 }
-

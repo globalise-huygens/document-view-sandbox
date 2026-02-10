@@ -9,7 +9,7 @@ import { isPage } from './anno/isPage';
 import { findResourceTarget } from './findResourceTarget';
 import { orThrow } from '../util/orThrow';
 import { Id } from './Id';
-import {findTextualBodyValue} from "./anno/findTextualBodyValue";
+import { findTextualBodyValue } from './anno/findTextualBodyValue';
 
 describe('AnnotationPage', () => {
   it('links every word to a line', () => {

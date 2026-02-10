@@ -1,15 +1,15 @@
-import {AnnotationPage} from '../AnnoModel';
-import {px} from '../px';
+import { AnnotationPage } from '../AnnoModel';
+import { px } from '../px';
 import {
   DiplomaticViewConfig,
   renderDiplomaticView,
 } from '../renderDiplomaticView';
-import {$} from './$';
-import {mapAnnotationsById} from './mapAnnotationsById';
-import {Id} from "../Id";
-import {findTextualBodyValue} from "../anno/findTextualBodyValue";
-import {findSourceLabel} from "../anno/findSourceLabel";
-import {renderAnnotationDropdown} from "./renderAnnotationDropdown";
+import { $ } from './$';
+import { mapAnnotationsById } from './mapAnnotationsById';
+import { Id } from '../Id';
+import { findTextualBodyValue } from '../anno/findTextualBodyValue';
+import { findSourceLabel } from '../anno/findSourceLabel';
+import { renderAnnotationDropdown } from './renderAnnotationDropdown';
 
 export async function renderSelectExample($parent: HTMLElement) {
   const pagePath =
@@ -19,8 +19,8 @@ export async function renderSelectExample($parent: HTMLElement) {
 
   $parent.classList.add('select');
   const $view = document.createElement('div');
-  $parent.append($view)
-  $view.classList.add('diplomatic-view')
+  $parent.append($view);
+  $view.classList.add('diplomatic-view');
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();
@@ -34,44 +34,43 @@ export async function renderSelectExample($parent: HTMLElement) {
     page: page.partOf,
     showEntities: true,
     showRegions: true,
-    fit: "height"
+    fit: 'height',
   };
 
   $view.style.height = px(window.innerHeight);
   const view = renderDiplomaticView($view, annotations, config);
-  const {selectAnnotation, deselectAnnotation} = view
+  const { selectAnnotation, deselectAnnotation } = view;
 
-  const $dropdowns = document.createElement('span')
-  $('#menu').append($dropdowns)
-  $dropdowns.classList.add('controls')
+  const $dropdowns = document.createElement('span');
+  $('#menu').append($dropdowns);
+  $dropdowns.classList.add('controls');
 
-  const selected: Set<Id> = new Set()
+  const selected: Set<Id> = new Set();
   function toggleAnnotation(id: Id) {
     if (selected.has(id)) {
-      deselectAnnotation(id)
-      selected.delete(id)
+      deselectAnnotation(id);
+      selected.delete(id);
     } else {
       selectAnnotation(id);
-      selected.add(id)
+      selected.add(id);
     }
   }
 
-  const words = page.items.filter(a => a.textGranularity === 'word')
+  const words = page.items.filter((a) => a.textGranularity === 'word');
   renderAnnotationDropdown(
     $dropdowns,
     'Toggle words',
     words,
     findTextualBodyValue,
-    toggleAnnotation
+    toggleAnnotation,
   );
 
-  const regions = page.items.filter(a => a.textGranularity === 'block')
+  const regions = page.items.filter((a) => a.textGranularity === 'block');
   renderAnnotationDropdown(
     $dropdowns,
     'Toggle regions',
     regions,
     findSourceLabel,
-    toggleAnnotation
+    toggleAnnotation,
   );
-
 }

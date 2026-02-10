@@ -1,12 +1,12 @@
-import {Annotation} from "../AnnoModel";
-import {Id} from "../Id";
+import { Annotation } from '../AnnoModel';
+import { Id } from '../Id';
 
 export function renderAnnotationDropdown(
   $parent: HTMLElement,
   placeholder: string,
   options: Annotation[],
   toLabel: (a: Annotation) => string,
-  onSelect: (id: Id) => void
+  onSelect: (id: Id) => void,
 ) {
   const $select = document.createElement('select');
   $parent.appendChild($select);
@@ -28,7 +28,6 @@ export function renderAnnotationDropdown(
   $select.addEventListener('change', () => {
     const id = $select.value;
     $select.selectedIndex = 0;
-    onSelect(id)
-  })
-
+    onSelect(id);
+  });
 }

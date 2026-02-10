@@ -1,20 +1,20 @@
-import {Annotation} from './AnnoModel';
-import {Id} from './Id';
-import {findResourceTarget} from './findResourceTarget';
-import {renderLineNumbers} from './renderLineNumbers';
-import {renderBlocks} from './renderBlocks';
+import { Annotation } from './AnnoModel';
+import { Id } from './Id';
+import { findResourceTarget } from './findResourceTarget';
+import { renderLineNumbers } from './renderLineNumbers';
+import { renderBlocks } from './renderBlocks';
 import {
   defaultConfig as defaultOriginalLayoutConfig,
   FullOriginalLayoutConfig,
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import {isAnnotationResourceTarget} from './anno/isAnnotationResourceTarget';
-import {orThrow} from '../util/orThrow';
-import {getEntityType} from './getEntityType';
-import {toClassName} from './toClassName';
-import {D3El} from './D3El';
-import {View} from "./View";
+import { isAnnotationResourceTarget } from './anno/isAnnotationResourceTarget';
+import { orThrow } from '../util/orThrow';
+import { getEntityType } from './getEntityType';
+import { toClassName } from './toClassName';
+import { D3El } from './D3El';
+import { View } from './View';
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -35,7 +35,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ): View {
-  $view.classList.add('diplomatic-view')
+  $view.classList.add('diplomatic-view');
 
   function show() {
     $view.style.visibility = 'visible';
@@ -69,9 +69,9 @@ export function renderDiplomaticView(
     }
   });
 
-  const selectedRegions = new Set<Id>()
-  let selectRegion: (id: Id) => void = () => console.warn('Not implemented')
-  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented')
+  const selectedRegions = new Set<Id>();
+  let selectRegion: (id: Id) => void = () => console.warn('Not implemented');
+  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented');
 
   if (showRegions) {
     const { $blocks } = renderBlocks(annotations, $overlay, { scale });
@@ -100,13 +100,16 @@ export function renderDiplomaticView(
       hideRegion($block, lines);
     }
 
-
     for (const [wordId, $word] of Object.entries($words)) {
       const blockId = linesToBlock[wordsToLine[wordId]];
       const lineIds = blockToLines[blockId];
       const $block = $blocks[blockId];
-      $word.addEventListener('mouseenter', () => enterRegion($block, lineIds, blockId));
-      $word.addEventListener('mouseleave', () => leaveRegion($block, lineIds, blockId));
+      $word.addEventListener('mouseenter', () =>
+        enterRegion($block, lineIds, blockId),
+      );
+      $word.addEventListener('mouseleave', () =>
+        leaveRegion($block, lineIds, blockId),
+      );
     }
 
     for (const [blockId, $block] of Object.entries($blocks)) {
@@ -115,29 +118,29 @@ export function renderDiplomaticView(
       $block.on('mouseleave', () => leaveRegion($block, lineIds, blockId));
     }
     selectRegion = (id: Id) => {
-      const $block = $blocks[id]
-      if(!$block) {
+      const $block = $blocks[id];
+      if (!$block) {
         return;
       }
-      if(selectedRegions.has(id)) {
+      if (selectedRegions.has(id)) {
         return;
       }
-      selectedRegions.add(id)
-      const lines = blockToLines[id]
+      selectedRegions.add(id);
+      const lines = blockToLines[id];
       showRegion($block, lines);
-    }
+    };
     deselectRegion = (id: Id) => {
-      const $block = $blocks[id]
-      if(!$block) {
+      const $block = $blocks[id];
+      if (!$block) {
         return;
       }
-      if(!selectedRegions.has(id)) {
+      if (!selectedRegions.has(id)) {
         return;
       }
-      selectedRegions.delete(id)
-      const lines = blockToLines[id]
+      selectedRegions.delete(id);
+      const lines = blockToLines[id];
       hideRegion($block, lines);
-    }
+    };
   }
 
   if (showEntities) {
@@ -156,26 +159,26 @@ export function renderDiplomaticView(
     }
   }
   function selectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if(annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.add('selected')
-    } else if(annotation.textGranularity === "block") {
-      selectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const $word = $words[id];
+      $word.classList.add('selected');
+    } else if (annotation.textGranularity === 'block') {
+      selectRegion(id);
     } else {
-      console.warn(`Select not implemented: ${annotation.textGranularity}`)
+      console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
   }
 
   function deselectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if(annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.remove('selected')
-    } else if(annotation.textGranularity === "block") {
-      deselectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const $word = $words[id];
+      $word.classList.remove('selected');
+    } else if (annotation.textGranularity === 'block') {
+      deselectRegion(id);
     } else {
-      console.warn(`Deselect not implemented: ${annotation.textGranularity}`)
+      console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
@@ -183,6 +186,6 @@ export function renderDiplomaticView(
     selectAnnotation,
     deselectAnnotation,
     hide,
-    show
-  }
+    show,
+  };
 }

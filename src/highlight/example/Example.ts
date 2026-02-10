@@ -1,4 +1,4 @@
-import {getExampleFromUrl} from "../../util/getExampleFromUrl";
+import { getExampleFromUrl } from '../../util/getExampleFromUrl';
 
 export const examples = ['page-entities', 'lorem-ipsum'] as const;
 export type ExampleType = (typeof examples)[number];
