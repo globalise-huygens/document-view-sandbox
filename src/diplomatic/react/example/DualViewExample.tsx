@@ -17,16 +17,13 @@ export function DualViewExample() {
   const entityPath = '../../iiif/annotations/entities/NL-HaNA_1.04.02_3598_0797.json';
   const {annotations: entityAnnotations} = useAnnotationPage(entityPath);
 
-  const diplomaticRef = useRef<View>(null);
-  const lineByLineRef = useRef<View>(null);
   const [showDiplomatic, setShowDiplomatic] = useState(true);
-  const [, setSelectedIds] = useState<Set<Id>>(new Set());
+  const [selectedIds, setSelectedIds] = useState<Array<Id>>([]);
 
   const annotations = useMemo(
     () => ({...pageAnnotations, ...entityAnnotations}),
     [pageAnnotations, entityAnnotations]
   );
-
 
   useEffect(() => {
     console.log({showDiplomatic})
@@ -36,24 +33,12 @@ export function DualViewExample() {
     return <div>Loading…</div>;
   }
 
-
   function toggleAnnotation(id: Id) {
-    const views = [
-      diplomaticRef.current,
-      lineByLineRef.current
-    ].filter(v => !!v) as View[]
-
-    setSelectedIds(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
-        views.forEach(v => v.deselectAnnotation(id));
-      } else {
-        next.add(id);
-        views.forEach(v => v.selectAnnotation(id));
-      }
-      return next;
-    });
+    setSelectedIds(prev =>
+      prev.includes(id)
+        ? prev.filter(i => i !== id)
+        : [...prev, id]
+    );
   }
 
   const words = Object.values(pageAnnotations).filter(a => a.textGranularity === 'word');
@@ -72,9 +57,9 @@ export function DualViewExample() {
       )}
       <div className="dual-view" style={{display: 'grid'}}>
         <DiplomaticView
-          ref={diplomaticRef}
           visible={showDiplomatic}
           annotations={annotations}
+          selected={selectedIds}
           page={page}
           showEntities={true}
           showRegions={true}
@@ -82,9 +67,9 @@ export function DualViewExample() {
           style={{height: '100vh', gridArea: '1 / 1'}}
         />
         <LineByLineLayout
-          ref={lineByLineRef}
           visible={!showDiplomatic}
           annotations={annotations}
+          selected={selectedIds}
           style={{gridArea: '1 / 1'}}
         />
       </div>

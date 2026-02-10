@@ -1,15 +1,9 @@
-import React, {
-  forwardRef,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-} from 'react';
+import React, {useLayoutEffect, useRef} from 'react';
 import type {Annotation} from '../AnnoModel';
 import type {Id} from '../Id';
 import type {View} from '../View';
-import {renderDiplomaticView,} from '../renderDiplomaticView';
-import {ViewFit} from "../calcScaleFactor";
-import {ViewRef} from "./ViewRef";
+import {renderDiplomaticView} from '../renderDiplomaticView';
+import {ViewFit} from '../calcScaleFactor';
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -18,34 +12,38 @@ export type DiplomaticViewProps = {
   showRegions?: boolean;
   showEntities?: boolean;
   visible?: boolean;
+  selected?: Id[];
   style?: React.CSSProperties;
 };
 
-export const DiplomaticView = forwardRef<
-  ViewRef,
-  DiplomaticViewProps
->(function DiplomaticView(props, ref) {
+export function DiplomaticView(props: DiplomaticViewProps) {
   const {
     annotations,
     page,
     fit,
     showRegions,
     showEntities,
-    style,
     visible = true,
-  } = props
+    selected = [],
+    style,
+  } = props;
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<ViewRef>(null);
+  const viewRef = useRef<View | null>(null);
+  const prevSelectedRef = useRef<Id[]>([]);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
     if (!$view) {
       return;
     }
-
     $view.innerHTML = '';
-    const config = {page, fit, showRegions, showEntities};
-    handleRef.current = renderDiplomaticView($view, annotations, config);
+    viewRef.current = renderDiplomaticView($view, annotations, {
+      page,
+      fit,
+      showRegions,
+      showEntities
+    });
   }, [annotations, page, fit, showRegions, showEntities]);
 
   useLayoutEffect(() => {
@@ -56,14 +54,15 @@ export const DiplomaticView = forwardRef<
     $view.style.visibility = visible ? 'visible' : 'hidden';
   }, [visible]);
 
-  useImperativeHandle(
-    ref,
-    () => handleRef.current!,
-    [annotations, page, fit, showRegions, showEntities]
-  );
+  useLayoutEffect(() => {
+    const view = viewRef.current;
+    if (!view) {
+      return;
+    }
+    prevSelectedRef.current.forEach(id => view.deselectAnnotation(id));
+    selected.forEach(id => view.selectAnnotation(id));
+    prevSelectedRef.current = selected;
+  }, [selected]);
 
-  return <div
-    ref={containerRef}
-    style={style}
-  />;
-});
+  return <div ref={containerRef} style={style}/>;
+}
