@@ -1,5 +1,5 @@
 import React, {
-  forwardRef,
+  forwardRef, Ref,
   useImperativeHandle,
   useLayoutEffect,
   useRef,
@@ -15,6 +15,7 @@ export type OriginalLayoutProps = {
   page: { width: number; height: number };
   fit?: ViewFit;
   style?: React.CSSProperties;
+  ref?: Ref<OriginalLayoutRefResult>;
 };
 
 export type OriginalLayoutRefResult = {
@@ -23,10 +24,9 @@ export type OriginalLayoutRefResult = {
   $overlay: SVGSVGElement;
 };
 
-export const OriginalLayout = forwardRef<
-  OriginalLayoutRefResult,
-  OriginalLayoutProps
->(function OriginalLayout({annotations, style, page, fit}, ref) {
+export function OriginalLayout(
+  {annotations, style, page, fit, ref}: OriginalLayoutProps
+) {
   const containerRef = useRef<HTMLDivElement>(null);
   const handleRef = useRef<OriginalLayoutRefResult>(null);
 
@@ -46,4 +46,4 @@ export const OriginalLayout = forwardRef<
     className="diplomatic-view"
     style={style}
   />;
-});
+}
