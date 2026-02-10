@@ -2,7 +2,7 @@ import {RefObject, useLayoutEffect, useRef} from 'react';
 import type { Id } from '../Id';
 import type { View } from '../View';
 
-export function useViewSelection(
+export function useSelectedIds(
   viewRef: RefObject<View | null>,
   selected: Id[],
 ) {

@@ -4,7 +4,7 @@ import type {Id} from '../Id';
 import type {View} from '../View';
 import {renderLineByLineView} from '../../normalized/renderLineByLineView';
 import {useVisibility} from "./useVisibility";
-import {useViewSelection} from "./useViewSelection";
+import {useSelectedIds} from "./useSelectedIds";
 
 export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;
@@ -30,7 +30,7 @@ export function LineByLineLayout(props: LineByLineLayoutProps) {
   }, [annotations]);
 
   useVisibility(containerRef, visible);
-  useViewSelection(viewRef, selected);
+  useSelectedIds(viewRef, selected);
 
   return <div ref={containerRef} style={style} />;
 }

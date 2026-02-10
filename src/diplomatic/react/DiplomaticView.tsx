@@ -5,7 +5,7 @@ import type {View} from '../View';
 import {renderDiplomaticView} from '../renderDiplomaticView';
 import {ViewFit} from '../calcScaleFactor';
 import {useVisibility} from "./useVisibility";
-import {useViewSelection} from "./useViewSelection";
+import {useSelectedIds} from "./useSelectedIds";
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -48,7 +48,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   }, [annotations, page, fit, showRegions, showEntities]);
 
   useVisibility(containerRef, visible);
-  useViewSelection(viewRef, selected);
+  useSelectedIds(viewRef, selected);
 
   return <div ref={containerRef} style={style}/>;
 }
