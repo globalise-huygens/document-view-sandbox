@@ -6,6 +6,7 @@ import { renderEntityExample } from './example/renderEntityExample';
 import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
 import { renderDualViewExample } from './example/renderDualViewExample';
 import { renderSelectExample } from './example/renderSelectExample';
+import {renderOffsetExample} from "./example/renderOffsetExample";
 
 reloadOnEsBuild();
 
@@ -24,5 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderEntityExample($example);
   } else if (example === 'select') {
     await renderSelectExample($example);
+  } else if (example === 'offsets') {
+    await renderOffsetExample($example);
   }
 });

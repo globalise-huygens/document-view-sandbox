@@ -10,6 +10,8 @@ import { findResourceTarget } from './findResourceTarget';
 import { orThrow } from '../util/orThrow';
 import { Id } from './Id';
 import { findTextualBodyValue } from './anno/findTextualBodyValue';
+import {isTextualBody} from "./anno/isTextualBody";
+import {getBody} from "../highlight/example/getBody";
 
 describe('AnnotationPage', () => {
   it('links every word to a line', () => {
@@ -97,9 +99,12 @@ describe('AnnotationPage', () => {
     const page: AnnotationPage = JSON.parse(fs.readFileSync(pagePath, 'utf-8'));
     assert(page.items);
     const pageAnnos = page.items.filter((a) => a.textGranularity === 'page');
-
+    console.log({pageAnnos})
     const htrAnnotation =
-      pageAnnos.find((a) => a.purpose === 'transcription-diplomatic') ??
+      pageAnnos.find((a) => {
+        const body = getBody(a)
+        return isTextualBody(body) && body.purpose === 'transcription-diplomatic';
+      }) ??
       orThrow('No htr');
     const htr = findTextualBodyValue(htrAnnotation);
 

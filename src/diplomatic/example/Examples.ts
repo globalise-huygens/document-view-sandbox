@@ -6,6 +6,7 @@ export const examples = [
   'entities',
   'dual-view',
   'select',
+  'offsets',
 ] as const;
 export type ExampleType = (typeof examples)[number];
 

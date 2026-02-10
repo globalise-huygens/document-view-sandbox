@@ -1,13 +1,16 @@
-import { Annotation, AnnotationPage } from '../../diplomatic/AnnoModel';
-import { mapAnnotationsById } from '../../diplomatic/example/mapAnnotationsById';
-import { assertTextualBody } from '../../diplomatic/anno/assertTextualBody';
-import { findTextPositionSelector } from '../../diplomatic/findTextPositionSelector';
-import { AnnotationId, TextRange } from '../Model';
-import { createRanges } from '../createRanges';
-import { getEntityType } from '../../diplomatic/getEntityType';
-import { isEntityBody } from '../../diplomatic/EntityModel';
-import { toClassName } from '../../diplomatic/toClassName';
-import { orThrow } from '../../util/orThrow';
+import {Annotation, AnnotationPage} from '../../diplomatic/AnnoModel';
+import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
+import {assertTextualBody} from '../../diplomatic/anno/assertTextualBody';
+import {
+  findTextPositionSelector
+} from '../../diplomatic/findTextPositionSelector';
+import {AnnotationId, TextRange} from '../Model';
+import {createRanges} from '../createRanges';
+import {getEntityType} from '../../diplomatic/getEntityType';
+import {isEntityBody} from '../../diplomatic/EntityModel';
+import {toClassName} from '../../diplomatic/toClassName';
+import {orThrow} from '../../util/orThrow';
+import {getBody} from "./getBody";
 
 export async function renderPageEntitiesExample($view: HTMLElement) {
   const pagePath =
@@ -30,10 +33,16 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
     (a) => a.textGranularity === 'page',
   );
   // transcription-normalized vs. transcription-diplomatic (htr):
-  const htrPageAnno =
-    pageAnnotations.find((a) => a.purpose === 'transcription-diplomatic') ??
-    orThrow('No htr transcription');
-  const { body: bodies } = htrPageAnno;
+  console.log('pageAnnotations', pageAnnotations)
+  const htrPageAnno = pageAnnotations.find((a) => {
+    const body = getBody(a)
+    if (!body) {
+      return;
+    }
+    assertTextualBody(body)
+    return body.purpose;
+  }) ?? orThrow('No htr transcription');
+  const {body: bodies} = htrPageAnno;
   const htrBody = Array.isArray(bodies) ? bodies[0] : bodies;
   assertTextualBody(htrBody);
 

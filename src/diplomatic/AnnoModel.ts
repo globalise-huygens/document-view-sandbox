@@ -15,7 +15,6 @@ export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
 export type Annotation = Omit<IiifAnnotation, 'body' | 'target'> & {
   body: Body[] | Body;
   target: AnnotationTarget[];
-  purpose: string;
 };
 
 export type AnnotationTarget = IiifAnnotationTarget | AnnotationResourceTarget;
@@ -27,7 +26,7 @@ type BlockWithLabel = {
     label: string;
   };
 };
-export type Body = IiifBody | BlockWithLabel;
+export type Body = IiifBody | BlockWithLabel | TextualBody;
 
 export const isBlockWithLabel = (toTest: Body): toTest is BlockWithLabel => {
   return !!(toTest as BlockWithLabel)?.source?.label;
@@ -38,6 +37,7 @@ export type TextualBody = {
   value: string;
   format?: string;
   language?: string;
+  purpose: string;
 };
 
 export type SpecificResourceTarget = {
