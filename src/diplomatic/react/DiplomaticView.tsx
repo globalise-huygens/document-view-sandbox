@@ -4,6 +4,8 @@ import type {Id} from '../Id';
 import type {View} from '../View';
 import {renderDiplomaticView} from '../renderDiplomaticView';
 import {ViewFit} from '../calcScaleFactor';
+import {useVisibility} from "./useVisibility";
+import {useViewSelection} from "./useViewSelection";
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -29,8 +31,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const viewRef = useRef<View | null>(null);
-  const prevSelectedRef = useRef<Id[]>([]);
+  const viewRef = useRef<View>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
@@ -46,23 +47,8 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     });
   }, [annotations, page, fit, showRegions, showEntities]);
 
-  useLayoutEffect(() => {
-    const $view = containerRef.current;
-    if (!$view) {
-      return;
-    }
-    $view.style.visibility = visible ? 'visible' : 'hidden';
-  }, [visible]);
-
-  useLayoutEffect(() => {
-    const view = viewRef.current;
-    if (!view) {
-      return;
-    }
-    prevSelectedRef.current.forEach(id => view.deselectAnnotation(id));
-    selected.forEach(id => view.selectAnnotation(id));
-    prevSelectedRef.current = selected;
-  }, [selected]);
+  useVisibility(containerRef, visible);
+  useViewSelection(viewRef, selected);
 
   return <div ref={containerRef} style={style}/>;
 }

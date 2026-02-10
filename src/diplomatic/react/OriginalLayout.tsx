@@ -28,14 +28,13 @@ export const OriginalLayout = forwardRef<
   OriginalLayoutProps
 >(function OriginalLayout({annotations, style, page, fit}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<OriginalLayoutRefResult | null>(null);
+  const handleRef = useRef<OriginalLayoutRefResult>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
     if (!$view) {
       return;
     }
-
     $view.innerHTML = '';
     handleRef.current = renderOriginalLayout($view, annotations, {page, fit})
   }, [annotations, page, fit]);

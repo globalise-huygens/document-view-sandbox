@@ -6,8 +6,6 @@ import React, {
 } from 'react';
 import {Id} from "../Id";
 import {Annotation} from "../AnnoModel";
-import {OriginalLayoutConfig} from "../renderOriginalLayout";
-import {renderLineByLineView} from "../../normalized/renderLineByLineView";
 import {renderNormalizedLayout} from "../../normalized/renderNormalizedLayout";
 
 export type NormalizedLayoutProps = {
@@ -25,7 +23,7 @@ export const NormalizedLayout = forwardRef<
   NormalizedLayoutProps
 >(function NormalizedLayout({annotations, style}, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<NormalizedLayoutRefResult | null>(null);
+  const handleRef = useRef<NormalizedLayoutRefResult>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
