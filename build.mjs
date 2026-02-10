@@ -21,6 +21,9 @@ const entryPoints = [
   'src/normalized/normalized.css',
 ]
 
+const isDev = process.argv.includes('--dev')
+const DEV = `${isDev}`
+
 const sharedConfig = {
   entryPoints,
   bundle: true,
@@ -28,21 +31,16 @@ const sharedConfig = {
   outbase: 'src',
   loader: {'.html': 'copy', '.tsx': 'tsx'},
   jsx: 'automatic',
+  define: {DEV}
 }
 
-const isDev = process.argv.includes('--dev')
-
 if (isDev) {
-  const ctx = await esbuild.context({
+  const context = await esbuild.context({
     ...sharedConfig,
-    define: {DEV: 'true'},
     sourcemap: true
   })
-  await ctx.watch()
-  await ctx.serve({servedir: './static'})
+  await context.watch()
+  await context.serve({servedir: './static'})
 } else {
-  await esbuild.build({
-    ...sharedConfig,
-    define: {DEV: 'false'}
-  })
+  await esbuild.build(sharedConfig)
 }
