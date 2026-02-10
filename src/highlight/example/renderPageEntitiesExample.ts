@@ -1,12 +1,15 @@
-import { Annotation, AnnotationPage } from '../../diplomatic/AnnoModel';
-import { mapAnnotationsById } from '../../diplomatic/example/mapAnnotationsById';
-import { assertTextualBody } from '../../diplomatic/anno/assertTextualBody';
-import { findTextPositionSelector } from '../../diplomatic/findTextPositionSelector';
-import { AnnotationId, TextRange } from '../Model';
-import { createRanges } from '../createRanges';
-import { getEntityType } from '../../diplomatic/getEntityType';
-import { isEntityBody } from '../../diplomatic/EntityModel';
-import { toClassName } from '../../diplomatic/toClassName';
+import {Annotation, AnnotationPage} from '../../diplomatic/AnnoModel';
+import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
+import {assertTextualBody} from '../../diplomatic/anno/assertTextualBody';
+import {
+  findTextPositionSelector
+} from '../../diplomatic/findTextPositionSelector';
+import {AnnotationId, TextRange} from '../Model';
+import {createRanges} from '../createRanges';
+import {getEntityType} from '../../diplomatic/getEntityType';
+import {isEntityBody} from '../../diplomatic/EntityModel';
+import {toClassName} from '../../diplomatic/toClassName';
+import {orThrow} from "../../util/orThrow";
 
 export async function renderPageEntitiesExample($view: HTMLElement) {
   const pagePath =
@@ -28,27 +31,29 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
   const pageAnnotations = page.items.filter(
     (a) => a.textGranularity === 'page',
   );
-  const pageAnnotation = pageAnnotations[0];
-  const { body: bodies } = pageAnnotation;
-  const body = Array.isArray(bodies) ? bodies[0] : bodies;
-  assertTextualBody(body);
+  // transcription-normalized vs. transcription-diplomatic (htr):
+  const htrPageAnno = pageAnnotations
+      .find(a => a.purpose === 'transcription-diplomatic')
+    ?? orThrow('No htr transcription');
+  const {body: bodies} = htrPageAnno;
+  const htrBody = Array.isArray(bodies) ? bodies[0] : bodies;
+  assertTextualBody(htrBody);
 
   const entityRanges = Object.values(entities).map((annotation) => {
-    const selector = findTextPositionSelector(annotation);
+    const selector = findTextPositionSelector(annotation, htrPageAnno.id);
     return {
       begin: selector.start,
       end: selector.end,
       body: annotation,
     };
   });
-  const pageText = body.value;
+  const pageText = htrBody.value;
   const textRanges = createRanges(pageText, entityRanges);
   console.log('page entities', {
     page,
     pageAnnotations,
-    texts: pageAnnotations.map((a: any) => ({ t: a.body[0].value, id: a.id })),
-    pageAnnotation,
-    body,
+    htrPageAnno,
+    htrBody,
     entities,
     entityRanges,
     textRanges,
