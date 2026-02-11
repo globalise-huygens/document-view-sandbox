@@ -13,9 +13,13 @@ import {orThrow} from '../util/orThrow';
 import {D3El} from './D3El';
 import {View} from './View';
 import {createFragment} from "./createFragment";
-import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
 import {getEntityType} from "./getEntityType";
 import {toClassName} from "./toClassName";
+import {createRanges} from "../highlight/createRanges";
+import {findTextPositionSelector} from "./findTextPositionSelector";
+import {isEntity} from "./EntityModel";
+import {groupRanges} from "./groupRanges";
+import {getPageText} from "./getPageText";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -50,9 +54,51 @@ export function renderDiplomaticView(
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
-  const fragments = wordAnnos.map(createFragment)
+  const fragments = wordAnnos.map(createFragment);
   const originalLayout = renderOriginalLayout($view, fragments, config);
   const { $layout, $overlay, $fragments, scale } = originalLayout;
+
+  const {id: pageAnnoId, text: pageText} = getPageText(annotations);
+
+  const entityAnnos = Object.values(annotations).filter(isEntity);
+  const markedAnnos = [...wordAnnos, ...entityAnnos];
+  const annoRanges = markedAnnos.map((annotation) => {
+    const selector = findTextPositionSelector(annotation, pageAnnoId);
+    return {
+      begin: selector.start,
+      end: selector.end,
+      body: annotation,
+    };
+  });
+
+  const textRanges = [...Object.values(createRanges(pageText, annoRanges))];
+  const groupedByWord = groupRanges(
+    textRanges,
+    (id: Id) => id.includes('#word_'),
+  );
+
+  for (const group of groupedByWord) {
+    const $word = $fragments[group.group];
+    const $ranges: HTMLSpanElement[] = [];
+    for (const range of group.ranges) {
+      const $range = document.createElement('span');
+      $ranges.push($range);
+      $range.classList.add('range');
+      $range.textContent = pageText.substring(range.begin, range.end);
+
+      if (showEntities) {
+        for (const annoId of range.annotations) {
+          const annotation = annotations[annoId];
+          if (isEntity(annotation)) {
+            const entityType = getEntityType(annotation);
+            $range.classList.add(...['entity', toClassName(entityType)]);
+            $range.title = `${entityType} | ${annotation.id}`;
+          }
+        }
+      }
+    }
+    $word.replaceChildren(...$ranges);
+  }
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
@@ -147,21 +193,6 @@ export function renderDiplomaticView(
     };
   }
 
-  if (showEntities) {
-    const entities = Object.values(annotations).filter(
-      (a) => a.motivation === 'classifying',
-    );
-    for (const entity of entities) {
-      const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
-      const entityType = getEntityType(entity);
-      for (const resource of resourceTargets) {
-        const $word = $fragments[resource.id] ?? orThrow('No $word');
-        $word.classList.add('entity');
-        $word.classList.add(toClassName(entityType));
-        $word.title = `${entityType} | ${entity.id}`;
-      }
-    }
-  }
   function selectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {

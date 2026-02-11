@@ -10,10 +10,11 @@ import {renderOriginalLayout} from "../renderOriginalLayout";
 import {createFragment} from "../createFragment";
 import {Benchmark} from "../Benchmark";
 import {Id} from "../Id";
-import {groupRanges} from "./groupRanges";
+import {groupRanges} from "../groupRanges";
 import {getEntityType} from "../getEntityType";
 import {toClassName} from "../toClassName";
 import {isEntity} from "../EntityModel";
+import {getPageText} from "../getPageText";
 
 export async function renderOffsetExample($parent: HTMLElement) {
   const transcriptionPath =
@@ -36,16 +37,11 @@ export async function renderOffsetExample($parent: HTMLElement) {
   const annotations = Object.assign({}, transcriptionAnnotations, entityAnnotations);
   const words = transcription.items.filter(a => a.textGranularity === 'word')
   const fragments = words.map(createFragment)
-  const htrPageAnno = transcription.items.find((a) =>
-    a.textGranularity === 'page' && getBody(a)
-  ) ?? orThrow('No htr transcription');
-  const htrBody = getBody(htrPageAnno) ?? orThrow('No body')
-  assertTextualBody(htrBody);
-  const pageText = htrBody.value;
+  const {id: pageAnnoId, text: pageText} = getPageText(annotations);
 
   const markedAnnos = [...words, ...entityPage.items]
   const annoRanges = markedAnnos.map((annotation) => {
-    const selector = findTextPositionSelector(annotation, htrPageAnno.id);
+    const selector = findTextPositionSelector(annotation, pageAnnoId);
     return {
       begin: selector.start,
       end: selector.end,

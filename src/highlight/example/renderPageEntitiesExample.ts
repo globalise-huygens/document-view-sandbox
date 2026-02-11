@@ -1,6 +1,5 @@
 import {Annotation, AnnotationPage} from '../../diplomatic/AnnoModel';
 import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
-import {assertTextualBody} from '../../diplomatic/anno/assertTextualBody';
 import {
   findTextPositionSelector
 } from '../../diplomatic/findTextPositionSelector';
@@ -9,8 +8,7 @@ import {createRanges} from '../createRanges';
 import {getEntityType} from '../../diplomatic/getEntityType';
 import {isEntity} from '../../diplomatic/EntityModel';
 import {toClassName} from '../../diplomatic/toClassName';
-import {orThrow} from '../../util/orThrow';
-import {getBody} from "./getBody";
+import {getPageText} from "../../diplomatic/getPageText";
 
 export async function renderPageEntitiesExample($view: HTMLElement) {
   const pagePath =
@@ -34,33 +32,21 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
   );
   // transcription-normalized vs. transcription-diplomatic (htr):
   console.log('pageAnnotations', pageAnnotations)
-  const htrPageAnno = pageAnnotations.find((a) => {
-    const body = getBody(a)
-    if (!body) {
-      return;
-    }
-    assertTextualBody(body)
-    return body.purpose;
-  }) ?? orThrow('No htr transcription');
-  const {body: bodies} = htrPageAnno;
-  const htrBody = Array.isArray(bodies) ? bodies[0] : bodies;
-  assertTextualBody(htrBody);
+  const {id: pageAnnoId, text: pageText} = getPageText(annotations);
+
 
   const entityRanges = Object.values(entities).map((annotation) => {
-    const selector = findTextPositionSelector(annotation, htrPageAnno.id);
+    const selector = findTextPositionSelector(annotation, pageAnnoId);
     return {
       begin: selector.start,
       end: selector.end,
       body: annotation,
     };
   });
-  const pageText = htrBody.value;
   const textRanges = createRanges(pageText, entityRanges);
   console.log('page entities', {
     page,
     pageAnnotations,
-    htrPageAnno,
-    htrBody,
     entities,
     entityRanges,
     textRanges,

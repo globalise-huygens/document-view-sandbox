@@ -1,6 +1,6 @@
-import {TextRange} from "../../highlight/Model";
-import {Id} from "../Id";
-import {orThrow} from "../../util/orThrow";
+import {TextRange} from "../highlight/Model";
+import {Id} from "./Id";
+import {orThrow} from "../util/orThrow";
 
 type Group = { group: Id, ranges: TextRange[] };
 
