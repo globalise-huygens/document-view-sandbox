@@ -34,7 +34,6 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
   console.log('pageAnnotations', pageAnnotations)
   const {id: pageAnnoId, text: pageText} = getPageText(annotations);
 
-
   const entityRanges = Object.values(entities).map((annotation) => {
     const selector = findTextPositionSelector(annotation, pageAnnoId);
     return {
@@ -67,7 +66,7 @@ function renderText(
     if (range.annotations.length) {
       const types: string[] = range.annotations.map((id) => {
         const annotation = annotations[id];
-        return isEntity(annotation) ? 'no-entity' : getEntityType(annotation);
+        return isEntity(annotation) ? getEntityType(annotation) : 'no-entity';
       });
       $span.title = types.join(', ');
       $span.classList.add(...types.map(toClassName));
