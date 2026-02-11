@@ -7,8 +7,12 @@ import { FullOriginalLayoutConfig } from '../renderOriginalLayout';
 import { mapAnnotationsById } from './mapAnnotationsById';
 
 export async function renderScanExample($parent: HTMLElement) {
-  const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
-  const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
+  // const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
+  // const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
+  const jsonPath =
+    '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const scanPath =
+    '../images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
 
   $parent.classList.add('scan');
   $parent.innerHTML = `
