@@ -26,16 +26,17 @@ export function renderLineByLineView(
   const {$ranges, $lines, ranges, $overlay} = layout;
 
   const linesToBlock: Record<Id, Id> = {};
-  Object.values(annotations).forEach((anno) => {
+  for (const anno of Object.values(annotations)) {
     if (anno.textGranularity === 'line') {
       linesToBlock[anno.id] = findResourceTarget(anno).id;
     }
-  });
-
+  }
   const lineIds = Object.keys($lines);
   for (let i = 0; i < lineIds.length - 1; i++) {
-    if (linesToBlock[lineIds[i]] !== linesToBlock[lineIds[i + 1]]) {
-      $lines[lineIds[i]].classList.add('region-end');
+    const currentId = lineIds[i];
+    const nextId = lineIds[i + 1];
+    if (linesToBlock[currentId] !== linesToBlock[nextId]) {
+      $lines[currentId].classList.add('region-end');
     }
   }
 
