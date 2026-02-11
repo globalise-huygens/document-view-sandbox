@@ -1,12 +1,8 @@
 import { getExampleFromUrl } from '../../util/getExampleFromUrl';
 
 export const examples = [
-  'scan',
-  'regions',
-  'entities',
   'dual-view',
-  'select',
-  'offsets',
+  'scan',
 ] as const;
 export type ExampleType = (typeof examples)[number];
 

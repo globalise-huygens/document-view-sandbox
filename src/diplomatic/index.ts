@@ -1,12 +1,8 @@
-import { renderRegionsExample } from './example/renderRegionsExample';
 import { renderScanExample } from './example/renderScanExample';
 import { $ } from './example/$';
 import { getDiplomaticExampleFromUrl } from './example/Examples';
-import { renderEntityExample } from './example/renderEntityExample';
 import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
 import { renderDualViewExample } from './example/renderDualViewExample';
-import { renderSelectExample } from './example/renderSelectExample';
-import {renderOffsetExample} from "./example/renderOffsetExample";
 
 reloadOnEsBuild();
 
@@ -17,15 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (example === 'scan') {
     await renderScanExample($example);
-  } else if (example === 'regions') {
-    await renderRegionsExample($example);
   } else if (example === 'dual-view') {
     await renderDualViewExample($example);
-  } else if (example === 'entities') {
-    await renderEntityExample($example);
-  } else if (example === 'select') {
-    await renderSelectExample($example);
-  } else if (example === 'offsets') {
-    await renderOffsetExample($example);
   }
 });
