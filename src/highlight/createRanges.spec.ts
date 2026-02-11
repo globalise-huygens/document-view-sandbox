@@ -37,4 +37,20 @@ describe('createRanges', () => {
       { id: '2', begin: 2, end: 3, annotations: [] },
     ]);
   });
+
+  it('creates three ranges for two overlapping annotations', () => {
+    const text = 'abc';
+    const annotations: AnnotationRange[] = [
+      { begin: 0, end: 2, body: { id: 'ab' } },
+      { begin: 1, end: 3, body: { id: 'bc' } },
+    ];
+
+    const ranges = createRanges(text, annotations);
+
+    expect([...Object.values(ranges)]).toEqual([
+      { id: '0', begin: 0, end: 1, annotations: ['ab'] },
+      { id: '1', begin: 1, end: 2, annotations: ['ab', 'bc'] },
+      { id: '2', begin: 2, end: 3, annotations: ['bc'] },
+    ]);
+  });
 });
