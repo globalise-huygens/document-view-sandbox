@@ -1,23 +1,19 @@
 import {Annotation} from '../diplomatic/AnnoModel';
 import {renderNormalizedLayout} from './renderNormalizedLayout';
-import {
-  isAnnotationResourceTarget
-} from '../diplomatic/anno/isAnnotationResourceTarget';
-import {getEntityType} from '../diplomatic/getEntityType';
 import {orThrow} from '../util/orThrow';
-import {toClassName} from '../diplomatic/toClassName';
 import {renderBlocks} from './renderBlocks';
 import {Id} from '../diplomatic/Id';
 import {View} from '../diplomatic/View';
 import {findResourceTarget} from '../diplomatic/findResourceTarget';
 
-export function renderLineByLineView({
-  $view,
-  annotations,
-}: {
+type LineByLineViewProps = {
   $view: HTMLElement;
   annotations: Record<Id, Annotation>;
-}): View {
+};
+
+export function renderLineByLineView(
+  {$view, annotations}: LineByLineViewProps
+): View {
   function show() {
     $view.style.visibility = 'visible';
   }
@@ -26,29 +22,25 @@ export function renderLineByLineView({
     $view.style.visibility = 'hidden';
   }
 
-  const { $words, $lines, $overlay } = renderNormalizedLayout(
-    $view,
-    annotations,
-  );
+  const layout = renderNormalizedLayout($view, annotations);
+  const {$ranges, $lines, ranges, $overlay} = layout;
 
-  const entities = Object.values(annotations).filter(
-    (a) => a.motivation === 'classifying',
-  );
-  for (const entity of entities) {
-    const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
-    const entityType = getEntityType(entity);
-    for (const resource of resourceTargets) {
-      const $word = $words[resource.id] ?? orThrow('No $word');
-      $word.classList.add('entity');
-      $word.classList.add(toClassName(entityType));
-      $word.title = `${entityType} | ${entity.id}`;
+  const annotationToRanges: Record<Id, HTMLElement[]> = {};
+  for (const range of ranges) {
+    const $range = $ranges[range.id];
+    if (!$range) continue;
+    for (const annoId of range.annotations) {
+      if (!annotationToRanges[annoId]) {
+        annotationToRanges[annoId] = [];
+      }
+      annotationToRanges[annoId].push($range);
     }
   }
 
   const selectedRegions = new Set<Id>();
 
-  const blockConfig = { stroke: 'rgba(0,150,0,0.5)' };
-  const { $blocks } = renderBlocks($lines, $overlay, annotations, blockConfig);
+  const blockConfig = {stroke: 'rgba(0,150,0,0.5)'};
+  const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig);
 
   for (const [lineId, $line] of Object.entries($lines)) {
     const line = annotations[lineId];
@@ -95,8 +87,8 @@ export function renderLineByLineView({
   function selectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const $word = $words[id];
-      $word.classList.add('selected');
+      const spans = annotationToRanges[id] ?? [];
+      spans.forEach(($r) => $r.classList.add('selected'));
     } else if (annotation.textGranularity === 'block') {
       selectRegion(id);
     } else {
@@ -107,8 +99,8 @@ export function renderLineByLineView({
   function deselectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const $word = $words[id];
-      $word.classList.remove('selected');
+      const spans = annotationToRanges[id] ?? [];
+      spans.forEach(($r) => $r.classList.remove('selected'));
     } else if (annotation.textGranularity === 'block') {
       deselectRegion(id);
     } else {
