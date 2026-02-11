@@ -1,4 +1,4 @@
-import { Id } from './Id';
+import { Id } from './anno/Id';
 
 export type View = {
   hide: () => void;

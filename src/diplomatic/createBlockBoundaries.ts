@@ -1,10 +1,9 @@
-import { Annotation } from './AnnoModel';
-import { Id } from './Id';
-import { Point } from './Point';
-import { findResourceTarget } from './findResourceTarget';
-import { orThrow } from '../util/orThrow';
-import { createPoints } from './createPoints';
-import { findSvgPath } from './anno/findSvgPath';
+import {Annotation} from './anno/AnnoModel';
+import {Id} from './anno/Id';
+import {Point} from './Point';
+import {findResourceTarget} from './anno/findResourceTarget';
+import {createPoints} from './createPoints';
+import {findSvgPath} from './anno/findSvgPath';
 
 export function createBlockBoundaries(
   words: Annotation[],

@@ -1,10 +1,10 @@
-import {Annotation} from '../diplomatic/AnnoModel';
+import {Annotation} from '../diplomatic/anno/AnnoModel';
 import {renderNormalizedLayout} from './renderNormalizedLayout';
 import {orThrow} from '../util/orThrow';
 import {renderBlocks} from './renderBlocks';
-import {Id} from '../diplomatic/Id';
+import {Id} from '../diplomatic/anno/Id';
 import {View} from '../diplomatic/View';
-import {findResourceTarget} from '../diplomatic/findResourceTarget';
+import {findResourceTarget} from '../diplomatic/anno/findResourceTarget';
 
 type LineByLineViewProps = {
   $view: HTMLElement;

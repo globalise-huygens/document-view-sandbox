@@ -1,4 +1,4 @@
-import { SpecificResourceTarget } from '../AnnoModel';
+import { SpecificResourceTarget } from './AnnoModel';
 import { isSpecificResourceTarget } from './isSpecificResourceTarget';
 
 export function assertSpecificResourceTarget(

@@ -1,7 +1,7 @@
 import { select } from 'd3-selection';
-import { Annotation } from '../diplomatic/AnnoModel';
-import { Id } from '../diplomatic/Id';
-import { findResourceTarget } from '../diplomatic/findResourceTarget';
+import { Annotation } from '../diplomatic/anno/AnnoModel';
+import { Id } from '../diplomatic/anno/Id';
+import { findResourceTarget } from '../diplomatic/anno/findResourceTarget';
 import { createPoints } from '../diplomatic/createPoints';
 import { calcBoundingBox } from '../diplomatic/calcBoundingBox';
 import { D3El } from '../diplomatic/D3El';

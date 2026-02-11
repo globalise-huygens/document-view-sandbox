@@ -6,7 +6,7 @@ import type {
   TextPositionSelector,
 } from '@iiif/presentation-3';
 import { Id } from './Id';
-import {EntityBody} from "./EntityModel";
+import {EntityBody} from "../EntityModel";
 
 export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
   partOf: PartOf;

@@ -1,5 +1,5 @@
 import {RefObject, useLayoutEffect, useRef} from 'react';
-import type { Id } from '../Id';
+import type { Id } from '../anno/Id';
 import type { View } from '../View';
 
 export function useSelectedIds(

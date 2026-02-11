@@ -1,6 +1,6 @@
-import {Annotation} from './AnnoModel';
-import {Id} from './Id';
-import {findResourceTarget} from './findResourceTarget';
+import {Annotation} from './anno/AnnoModel';
+import {Id} from './anno/Id';
+import {findResourceTarget} from './anno/findResourceTarget';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {
@@ -16,7 +16,7 @@ import {createFragment} from "./createFragment";
 import {getEntityType} from "./getEntityType";
 import {toClassName} from "./toClassName";
 import {createRanges} from "../highlight/createRanges";
-import {findTextPositionSelector} from "./findTextPositionSelector";
+import {findTextPositionSelector} from "./anno/findTextPositionSelector";
 import {isEntity} from "./EntityModel";
 import {groupRanges} from "./groupRanges";
 import {getPageText} from "./getPageText";

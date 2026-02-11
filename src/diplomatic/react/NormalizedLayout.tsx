@@ -1,6 +1,6 @@
 import React, {Ref, useImperativeHandle, useLayoutEffect, useRef,} from 'react';
-import {Id} from "../Id";
-import {Annotation} from "../AnnoModel";
+import {Id} from "../anno/Id";
+import {Annotation} from "../anno/AnnoModel";
 import {
   NormalizedLayoutResult,
   renderNormalizedLayout

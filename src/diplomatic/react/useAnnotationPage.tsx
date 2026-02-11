@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
-import type {Id} from "../Id";
-import type {Annotation, AnnotationPage, PartOf} from "../AnnoModel";
+import type {Id} from "../anno/Id";
+import type {Annotation, AnnotationPage, PartOf} from "../anno/AnnoModel";
 
 export function useAnnotationPage(path: string) {
   const [annotations, setAnnotations] = useState<Record<Id, Annotation>>();

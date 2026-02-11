@@ -1,14 +1,14 @@
 import { assert, describe, expect, it } from 'vitest';
 import * as fs from 'node:fs';
-import { Annotation, AnnotationPage } from './AnnoModel';
+import { Annotation, AnnotationPage } from './anno/AnnoModel';
 import { isWord } from './anno/isWord';
 import { isAnnotationResourceTarget } from './anno/isAnnotationResourceTarget';
 import { isLine } from './anno/isLine';
 import { isBlock } from './anno/isBlock';
 import { isPage } from './anno/isPage';
-import { findResourceTarget } from './findResourceTarget';
+import { findResourceTarget } from './anno/findResourceTarget';
 import { orThrow } from '../util/orThrow';
-import { Id } from './Id';
+import { Id } from './anno/Id';
 import { findTextualBodyValue } from './anno/findTextualBodyValue';
 import {isTextualBody} from "./anno/isTextualBody";
 import {getBody} from "../highlight/example/getBody";

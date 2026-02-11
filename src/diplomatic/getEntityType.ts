@@ -1,4 +1,4 @@
-import { Annotation } from './AnnoModel';
+import { Annotation } from './anno/AnnoModel';
 import { assertEntityBody } from './EntityModel';
 import {getBody} from "../highlight/example/getBody";
 

@@ -1,4 +1,4 @@
-import { AnnotationPage } from '../AnnoModel';
+import { AnnotationPage } from '../anno/AnnoModel';
 import { px } from '../px';
 import { renderDiplomaticView } from '../renderDiplomaticView';
 import { $ } from './$';

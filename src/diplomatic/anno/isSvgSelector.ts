@@ -1,4 +1,4 @@
-import { ValueSelector } from '../AnnoModel';
+import { ValueSelector } from './AnnoModel';
 
 export const isSvgSelector = (selector: any): selector is ValueSelector =>
   selector &&

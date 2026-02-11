@@ -1,4 +1,4 @@
-import {Annotation} from "./AnnoModel";
+import {Annotation} from "./anno/AnnoModel";
 import {getBody} from "../highlight/example/getBody";
 import {assertTextualBody} from "./anno/assertTextualBody";
 import {findSvgPath} from "./anno/findSvgPath";

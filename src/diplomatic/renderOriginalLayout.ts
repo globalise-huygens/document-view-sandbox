@@ -9,7 +9,7 @@ import {px} from './px';
 import {D3El} from './D3El';
 import {select} from 'd3-selection';
 import {TextResizer} from './TextResizer';
-import {Id} from './Id';
+import {Id} from './anno/Id';
 import {renderFragment} from './renderFragment';
 import {renderFragmentBoundaries} from './renderFragmentBoundaries';
 import {orThrow} from '../util/orThrow';

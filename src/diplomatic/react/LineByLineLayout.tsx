@@ -1,6 +1,6 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import type {Annotation} from '../AnnoModel';
-import type {Id} from '../Id';
+import type {Annotation} from '../anno/AnnoModel';
+import type {Id} from '../anno/Id';
 import type {View} from '../View';
 import {renderLineByLineView} from '../../normalized/renderLineByLineView';
 import {useVisibility} from "./useVisibility";

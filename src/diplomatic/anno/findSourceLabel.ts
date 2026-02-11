@@ -1,4 +1,4 @@
-import { Annotation, isBlockWithLabel } from '../AnnoModel';
+import { Annotation, isBlockWithLabel } from './AnnoModel';
 
 export function findSourceLabel(annotation: Annotation) {
   const body = Array.isArray(annotation.body)

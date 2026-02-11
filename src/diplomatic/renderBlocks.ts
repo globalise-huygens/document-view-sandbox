@@ -1,4 +1,4 @@
-import { Annotation } from './AnnoModel';
+import { Annotation } from './anno/AnnoModel';
 import { Point } from './Point';
 import { createBlockBoundaries } from './createBlockBoundaries';
 import { calcBoundingCorners, padCorners } from './calcBoundingBox';

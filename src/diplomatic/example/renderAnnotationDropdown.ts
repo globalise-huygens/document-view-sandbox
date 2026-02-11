@@ -1,5 +1,5 @@
-import { Annotation } from '../AnnoModel';
-import { Id } from '../Id';
+import { Annotation } from '../anno/AnnoModel';
+import { Id } from '../anno/Id';
 
 export function renderAnnotationDropdown(
   $parent: HTMLElement,

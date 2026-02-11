@@ -1,8 +1,8 @@
-import {Annotation, AnnotationPage} from '../../diplomatic/AnnoModel';
+import {Annotation, AnnotationPage} from '../../diplomatic/anno/AnnoModel';
 import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
 import {
   findTextPositionSelector
-} from '../../diplomatic/findTextPositionSelector';
+} from '../../diplomatic/anno/findTextPositionSelector';
 import {AnnotationId, TextRange} from '../Model';
 import {createRanges} from '../createRanges';
 import {getEntityType} from '../../diplomatic/getEntityType';

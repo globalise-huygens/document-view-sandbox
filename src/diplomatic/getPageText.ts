@@ -1,5 +1,5 @@
-import {Id} from "./Id";
-import {Annotation} from "./AnnoModel";
+import {Id} from "./anno/Id";
+import {Annotation} from "./anno/AnnoModel";
 import {getBody} from "../highlight/example/getBody";
 import {orThrow} from "../util/orThrow";
 import {assertTextualBody} from "./anno/assertTextualBody";

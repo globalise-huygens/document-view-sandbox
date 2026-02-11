@@ -1,12 +1,6 @@
-import React, {
-  forwardRef, Ref,
-  useImperativeHandle,
-  useLayoutEffect,
-  useRef,
-} from 'react';
-import type {Annotation} from '../AnnoModel';
-import type {Id} from '../Id';
-import type {Scale} from '../Scale';
+import React, {Ref, useImperativeHandle, useLayoutEffect, useRef,} from 'react';
+import type {Annotation} from '../anno/AnnoModel';
+import type {Id} from '../anno/Id';
 import {
   OriginalLayoutResult,
   renderOriginalLayout,

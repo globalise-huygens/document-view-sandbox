@@ -1,8 +1,7 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
-import type {Id} from '../../Id';
-import type {View} from '../../View';
-import type {Annotation} from '../../AnnoModel';
+import type {Id} from '../../anno/Id';
+import type {Annotation} from '../../anno/AnnoModel';
 import {useAnnotationPage} from '../useAnnotationPage';
 import {DiplomaticView} from '../DiplomaticView';
 import {LineByLineLayout} from '../LineByLineLayout';

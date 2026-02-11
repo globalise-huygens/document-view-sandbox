@@ -1,9 +1,7 @@
-import { AnnotationPage } from '../../diplomatic/AnnoModel';
-import { $ } from '../../diplomatic/example/$';
-import { mapAnnotationsById } from '../../diplomatic/example/mapAnnotationsById';
-import { Benchmark } from '../../diplomatic/Benchmark';
-import { renderLineByLineView } from '../renderLineByLineView';
-import { px } from '../../diplomatic/px';
+import {AnnotationPage} from '../../diplomatic/anno/AnnoModel';
+import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
+import {Benchmark} from '../../util/Benchmark';
+import {renderLineByLineView} from '../renderLineByLineView';
 
 export async function renderLineWrappingExample($parent: HTMLElement) {
   const pagePath =

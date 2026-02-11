@@ -1,4 +1,4 @@
-import {Annotation, Body} from "./AnnoModel";
+import {Annotation, Body} from "./anno/AnnoModel";
 import {getBody} from "../highlight/example/getBody";
 
 export type EntityBody = {

@@ -1,5 +1,5 @@
 import { View } from '../View';
-import { Id } from '../Id';
+import { Id } from '../anno/Id';
 
 export type CombinedView = {
   toggle: () => void;

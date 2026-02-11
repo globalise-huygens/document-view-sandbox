@@ -1,6 +1,6 @@
 import { Annotation, SpecificResourceTarget } from './AnnoModel';
-import { orThrow } from '../util/orThrow';
-import { isSpecificResourceTarget } from './anno/isSpecificResourceTarget';
+import { orThrow } from '../../util/orThrow';
+import { isSpecificResourceTarget } from './isSpecificResourceTarget';
 import { TextPositionSelector } from '@iiif/presentation-3';
 import { Id } from './Id';
 

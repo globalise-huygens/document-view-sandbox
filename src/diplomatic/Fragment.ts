@@ -1,4 +1,4 @@
-import {Id} from "./Id";
+import {Id} from "./anno/Id";
 
 /**
  * Text unit as recognized by hcr mapped to
