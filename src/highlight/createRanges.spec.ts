@@ -7,7 +7,7 @@ describe('createRanges', () => {
     const text = 'a';
     const annotations: AnnotationRange[] = [];
     const ranges = createRanges(text, annotations);
-    expect([...ranges.values()]).toEqual([
+    expect([...Object.values(ranges)]).toEqual([
       { id: '0', begin: 0, end: 1, annotations: [] },
     ]);
   });
@@ -18,7 +18,7 @@ describe('createRanges', () => {
       { begin: 0, end: 1, body: { id: 'a' } },
     ];
     const ranges = createRanges(text, annotations);
-    expect([...ranges.values()]).toEqual([
+    expect([...Object.values(ranges)]).toEqual([
       { id: '0', begin: 0, end: 1, annotations: ['a'] },
     ]);
   });
@@ -31,7 +31,7 @@ describe('createRanges', () => {
 
     const ranges = createRanges(text, annotations);
 
-    expect([...ranges.values()]).toEqual([
+    expect([...Object.values(ranges)]).toEqual([
       { id: '0', begin: 0, end: 1, annotations: [] },
       { id: '1', begin: 1, end: 2, annotations: ['b'] },
       { id: '2', begin: 2, end: 3, annotations: [] },

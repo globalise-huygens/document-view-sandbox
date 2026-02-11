@@ -239,7 +239,7 @@ const renderStandardView = (
 
 const renderDiplomaticView = (ap, transcriptionContent) => {
   const diplomaticContent = document.createElement('div');
-  diplomaticContent.className = 'diplomatic-view';
+  diplomaticContent.className = 'original-layout';
   diplomaticContent.innerHTML =
     '<p><em>Diplomatic view coming soon...</em></p>';
 

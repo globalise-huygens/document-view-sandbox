@@ -6,14 +6,15 @@ import type {
   TextPositionSelector,
 } from '@iiif/presentation-3';
 import { Id } from './Id';
+import {EntityBody} from "./EntityModel";
 
 export type AnnotationPage = Omit<IiifAnnotationPage, 'partOf' | 'items'> & {
   partOf: PartOf;
   items: Annotation[];
 };
 
-export type Annotation = Omit<IiifAnnotation, 'body' | 'target'> & {
-  body: Body[] | Body;
+export type Annotation<BODY extends Body = Body> = Omit<IiifAnnotation, 'body' | 'target'> & {
+  body: BODY[] | BODY;
   target: AnnotationTarget[];
 };
 
@@ -26,7 +27,7 @@ type BlockWithLabel = {
     label: string;
   };
 };
-export type Body = IiifBody | BlockWithLabel | TextualBody;
+export type Body = IiifBody | BlockWithLabel | TextualBody | EntityBody;
 
 export const isBlockWithLabel = (toTest: Body): toTest is BlockWithLabel => {
   return !!(toTest as BlockWithLabel)?.source?.label;

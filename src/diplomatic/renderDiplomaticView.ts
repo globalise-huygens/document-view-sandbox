@@ -9,13 +9,13 @@ import {
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import {isAnnotationResourceTarget} from './anno/isAnnotationResourceTarget';
 import {orThrow} from '../util/orThrow';
-import {getEntityType} from './getEntityType';
-import {toClassName} from './toClassName';
 import {D3El} from './D3El';
 import {View} from './View';
 import {createFragment} from "./createFragment";
+import {isAnnotationResourceTarget} from "./anno/isAnnotationResourceTarget";
+import {getEntityType} from "./getEntityType";
+import {toClassName} from "./toClassName";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -36,7 +36,7 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ): View {
-  $view.classList.add('diplomatic-view');
+  $view.classList.add('original-layout');
 
   function show() {
     $view.style.visibility = 'visible';

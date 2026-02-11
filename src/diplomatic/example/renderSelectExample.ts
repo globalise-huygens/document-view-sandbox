@@ -20,7 +20,7 @@ export async function renderSelectExample($parent: HTMLElement) {
   $parent.classList.add('select');
   const $view = document.createElement('div');
   $parent.append($view);
-  $view.classList.add('diplomatic-view');
+  $view.classList.add('original-layout');
 
   const pageResponse = await fetch(pagePath);
   const page: AnnotationPage = await pageResponse.json();

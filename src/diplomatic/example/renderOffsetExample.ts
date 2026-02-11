@@ -6,6 +6,14 @@ import {findTextPositionSelector} from "../findTextPositionSelector";
 import {orThrow} from "../../util/orThrow";
 import {assertTextualBody} from "../anno/assertTextualBody";
 import {getBody} from "../../highlight/example/getBody";
+import {renderOriginalLayout} from "../renderOriginalLayout";
+import {createFragment} from "../createFragment";
+import {Benchmark} from "../Benchmark";
+import {Id} from "../Id";
+import {groupRanges} from "./groupRanges";
+import {getEntityType} from "../getEntityType";
+import {toClassName} from "../toClassName";
+import {isEntity} from "../EntityModel";
 
 export async function renderOffsetExample($parent: HTMLElement) {
   const transcriptionPath =
@@ -27,7 +35,7 @@ export async function renderOffsetExample($parent: HTMLElement) {
   const entityAnnotations = mapAnnotationsById(entityPage.items);
   const annotations = Object.assign({}, transcriptionAnnotations, entityAnnotations);
   const words = transcription.items.filter(a => a.textGranularity === 'word')
-
+  const fragments = words.map(createFragment)
   const htrPageAnno = transcription.items.find((a) =>
     a.textGranularity === 'page' && getBody(a)
   ) ?? orThrow('No htr transcription');
@@ -35,7 +43,8 @@ export async function renderOffsetExample($parent: HTMLElement) {
   assertTextualBody(htrBody);
   const pageText = htrBody.value;
 
-  const wordRanges = Object.values(words).map((annotation) => {
+  const markedAnnos = [...words, ...entityPage.items]
+  const annoRanges = markedAnnos.map((annotation) => {
     const selector = findTextPositionSelector(annotation, htrPageAnno.id);
     return {
       begin: selector.start,
@@ -44,15 +53,37 @@ export async function renderOffsetExample($parent: HTMLElement) {
     };
   });
 
-  const textRanges = createRanges(pageText, wordRanges);
+  const textRanges = [...Object.values(createRanges(pageText, annoRanges))];
 
-  console.log('offset-example', {
-    transcription,
-    annotations,
-    words,
-    entities: entityPage.items,
-    htrPageAnno,
-    textRanges
-  });
+  const $view = document.createElement('div')
+  $parent.append($view)
+  $view.classList.add('original-layout')
+
+  new Benchmark('renderOriginalLayout').run(() => {
+    const layout = renderOriginalLayout($view, fragments, {page: transcription.partOf})
+
+    const isWordAnnotation = (id: Id) => id.includes('#word_');
+    const groupedByWord = groupRanges(textRanges, isWordAnnotation);
+    for (const group of groupedByWord) {
+      const $word = layout.$words[group.group];
+      const $ranges = []
+      for (const range of group.ranges) {
+        const $range = document.createElement('span')
+        $ranges.push($range)
+        $range.classList.add('range')
+        $range.textContent = pageText.substring(range.begin, range.end)
+        for (const annoId of range.annotations) {
+          const annotation = annotations[annoId]
+          if (isEntity(annotation)) {
+            const entityType = getEntityType(annotation);
+            $range.classList.add(...['entity', toClassName(entityType)]);
+            $range.title = `${entityType} | ${annotation.id}`;
+          }
+        }
+      }
+      $word.replaceChildren(...$ranges)
+    }
+  })
+
 
 }

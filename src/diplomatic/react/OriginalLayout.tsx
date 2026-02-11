@@ -47,7 +47,7 @@ export function OriginalLayout(
 
   return <div
     ref={containerRef}
-    className="diplomatic-view"
+    className="original-layout"
     style={style}
   />;
 }

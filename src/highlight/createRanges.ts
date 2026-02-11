@@ -11,7 +11,7 @@ import { RangeId } from './Model';
 export function createRanges(
   text: string,
   annotations: AnnotationRange[],
-): Map<RangeId, TextRange> {
+): Record<RangeId, TextRange> {
   const ranges = new Map<RangeId, TextRange>();
   let rangeCounter = 0;
 
@@ -70,7 +70,7 @@ export function createRanges(
     lastOffset = offset.charIndex;
   }
 
-  return ranges;
+  return Object.fromEntries(ranges);
 }
 
 /**

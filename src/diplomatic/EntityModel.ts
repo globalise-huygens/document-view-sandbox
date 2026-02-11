@@ -1,3 +1,6 @@
+import {Annotation, Body} from "./AnnoModel";
+import {getBody} from "../highlight/example/getBody";
+
 export type EntityBody = {
   type: EntityType;
   classified_as: EntityClassification;
@@ -15,11 +18,22 @@ const entityTypes = [
 
 export type EntityType = (typeof entityTypes)[number];
 
-export function assertEntityBody(body: unknown): asserts body is EntityBody {
+export function assertEntityBody(body: Body): asserts body is EntityBody {
   if (!isEntityBody(body)) {
     throw new Error('Expected EntityBody');
   }
 }
 
-export const isEntityBody = (body: any): body is EntityBody =>
-  body && entityTypes.includes(body.type);
+export const isEntityBody = (body: Body): body is EntityBody => {
+  if(!body) {
+    return false;
+  }
+  const entityBody = body as EntityBody;
+  return entityTypes.includes(entityBody.type);
+};
+
+export const isEntity = (
+  annotation: Annotation
+): annotation is Annotation<EntityBody> => {
+  return isEntityBody(getBody(annotation))
+};

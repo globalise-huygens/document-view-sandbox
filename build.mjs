@@ -7,6 +7,7 @@ const entryPoints = [
 
   'src/diplomatic/index.html',
   'src/diplomatic/index.ts',
+  'src/diplomatic/reset.css',
   'src/diplomatic/diplomatic.css',
   'src/diplomatic/menu.css',
   'src/diplomatic/react/index.html',

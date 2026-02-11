@@ -7,7 +7,7 @@ import {
 import {AnnotationId, TextRange} from '../Model';
 import {createRanges} from '../createRanges';
 import {getEntityType} from '../../diplomatic/getEntityType';
-import {isEntityBody} from '../../diplomatic/EntityModel';
+import {isEntity} from '../../diplomatic/EntityModel';
 import {toClassName} from '../../diplomatic/toClassName';
 import {orThrow} from '../../util/orThrow';
 import {getBody} from "./getBody";
@@ -65,7 +65,7 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
     entityRanges,
     textRanges,
   });
-  renderText($view, pageText, [...textRanges.values()], annotations);
+  renderText($view, pageText, [...Object.values(textRanges)], annotations);
 }
 
 function renderText(
@@ -80,8 +80,8 @@ function renderText(
     $span.textContent = text.substring(range.begin, range.end);
     if (range.annotations.length) {
       const types: string[] = range.annotations.map((id) => {
-        const a = annotations[id];
-        return isEntityBody(a.body) ? 'no-entity' : getEntityType(a);
+        const annotation = annotations[id];
+        return isEntity(annotation) ? 'no-entity' : getEntityType(annotation);
       });
       $span.title = types.join(', ');
       $span.classList.add(...types.map(toClassName));

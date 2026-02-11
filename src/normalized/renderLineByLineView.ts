@@ -1,14 +1,15 @@
-import { Annotation } from '../diplomatic/AnnoModel';
-import { renderNormalizedLayout } from './renderNormalizedLayout';
-import { isAnnotationResourceTarget } from '../diplomatic/anno/isAnnotationResourceTarget';
-import { getEntityType } from '../diplomatic/getEntityType';
-import { orThrow } from '../util/orThrow';
-import { toClassName } from '../diplomatic/toClassName';
-import { renderBlocks } from './renderBlocks';
-import { Id } from '../diplomatic/Id';
-import { View } from '../diplomatic/View';
-import { line } from 'd3-shape';
-import { findResourceTarget } from '../diplomatic/findResourceTarget';
+import {Annotation} from '../diplomatic/AnnoModel';
+import {renderNormalizedLayout} from './renderNormalizedLayout';
+import {
+  isAnnotationResourceTarget
+} from '../diplomatic/anno/isAnnotationResourceTarget';
+import {getEntityType} from '../diplomatic/getEntityType';
+import {orThrow} from '../util/orThrow';
+import {toClassName} from '../diplomatic/toClassName';
+import {renderBlocks} from './renderBlocks';
+import {Id} from '../diplomatic/Id';
+import {View} from '../diplomatic/View';
+import {findResourceTarget} from '../diplomatic/findResourceTarget';
 
 export function renderLineByLineView({
   $view,
@@ -29,10 +30,10 @@ export function renderLineByLineView({
     $view,
     annotations,
   );
+
   const entities = Object.values(annotations).filter(
     (a) => a.motivation === 'classifying',
   );
-
   for (const entity of entities) {
     const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
     const entityType = getEntityType(entity);

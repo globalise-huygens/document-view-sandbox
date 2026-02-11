@@ -30,7 +30,7 @@ export async function renderLoremIpsumExample($app: HTMLElement) {
   const rangesById = createRanges(text, annotations);
   const annotationById = keyBy(annotations, (a) => a.body.id);
 
-  renderText($style, $text, text, [...rangesById.values()], annotationById);
+  renderText($style, $text, text, [...Object.values(rangesById)], annotationById);
   handleHovering($text, rangesById, annotationById);
 }
 
@@ -125,7 +125,7 @@ function createHighlightStyles(
 
 function handleHovering(
   $text: HTMLDivElement,
-  textRanges: Map<RangeId, TextRange>,
+  textRanges: Record<RangeId, TextRange>,
   annotations: Record<AnnotationId, AnnotationRange>,
 ) {
   let currentHoveredAnnotation: AnnotationId | null = null;
@@ -149,7 +149,7 @@ function handleHovering(
       return;
     }
 
-    const range = textRanges.get(rangeId);
+    const range = textRanges[rangeId];
     if (!range?.annotations.length) {
       setHoverHighlight(null);
       return;

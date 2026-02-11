@@ -12,10 +12,10 @@ export async function renderScanExample($parent: HTMLElement) {
 
   $parent.classList.add('scan');
   $parent.innerHTML = `
-      <div class="diplomatic-view"></div>
+      <div class="original-layout"></div>
       <img id="scan" alt="scan"/>`;
   const $menu = $('#menu');
-  const $view: HTMLDivElement = $('.diplomatic-view', $parent);
+  const $view: HTMLDivElement = $('.original-layout', $parent);
   const $scan: HTMLImageElement = $('#scan', $parent);
 
   const $slider = document.createElement('span');
