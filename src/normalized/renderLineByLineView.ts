@@ -25,6 +25,20 @@ export function renderLineByLineView(
   const layout = renderNormalizedLayout($view, annotations);
   const {$ranges, $lines, ranges, $overlay} = layout;
 
+  const linesToBlock: Record<Id, Id> = {};
+  Object.values(annotations).forEach((anno) => {
+    if (anno.textGranularity === 'line') {
+      linesToBlock[anno.id] = findResourceTarget(anno).id;
+    }
+  });
+
+  const lineIds = Object.keys($lines);
+  for (let i = 0; i < lineIds.length - 1; i++) {
+    if (linesToBlock[lineIds[i]] !== linesToBlock[lineIds[i + 1]]) {
+      $lines[lineIds[i]].classList.add('region-end');
+    }
+  }
+
   const annotationToRanges: Record<Id, HTMLElement[]> = {};
   for (const range of ranges) {
     const $range = $ranges[range.id];
