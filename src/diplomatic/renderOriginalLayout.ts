@@ -1,21 +1,19 @@
-import { Annotation, AnnotationPage } from './AnnoModel';
-import { assertTextualBody } from './anno/assertTextualBody';
-import { Point } from './Point';
-import { createHull } from './createHull';
-import { findSvgPath } from './anno/findSvgPath';
-import { calcBaseSegment } from './calcBaseSegment';
-import { calcTextAngle } from './calcTextAngle';
-import { calcTextRect } from './calcTextRect';
-import { calcScaleFactor, ViewFit } from './calcScaleFactor';
-import { createScale } from './Scale';
-import { px } from './px';
-import { D3El } from './D3El';
-import { select } from 'd3-selection';
-import { TextResizer } from './TextResizer';
-import { Id } from './Id';
-import { renderWord } from './renderWord';
-import { renderWordBoundaries } from './renderWordBoundaries';
-import { orThrow } from '../util/orThrow';
+import {Point} from './Point';
+import {createHull} from './createHull';
+import {calcBaseSegment} from './calcBaseSegment';
+import {calcTextAngle} from './calcTextAngle';
+import {calcTextRect} from './calcTextRect';
+import {calcScaleFactor, ViewFit} from './calcScaleFactor';
+import {createScale} from './Scale';
+import {px} from './px';
+import {D3El} from './D3El';
+import {select} from 'd3-selection';
+import {TextResizer} from './TextResizer';
+import {Id} from './Id';
+import {renderWord} from './renderWord';
+import {renderWordBoundaries} from './renderWordBoundaries';
+import {orThrow} from '../util/orThrow';
+import {Fragment} from "./Fragment";
 
 export interface FullOriginalLayoutConfig {
   showBoundaries: boolean;
@@ -42,7 +40,7 @@ export const defaultConfig: FullOriginalLayoutConfig = {
 
 export function renderOriginalLayout(
   $view: HTMLDivElement,
-  annotations: Record<Id, Annotation>,
+  fragments: Fragment[],
   config: OriginalLayoutConfig,
 ) {
   const { fit, showBoundaries, showScanMargin } = {
@@ -51,16 +49,9 @@ export function renderOriginalLayout(
   };
   const { width: pageWidth, height: pageHeight } = config.page;
 
-  const wordAnnos = Object.values(annotations).filter(
-    (a) => a.textGranularity === 'word',
-  );
-
-  const words = wordAnnos.map((word) => {
-    const { id, body: bodies } = word;
-    const body = Array.isArray(bodies) ? bodies[0] : bodies;
-    assertTextualBody(body);
-    const text = body.value;
-    const hull: Point[] = createHull(findSvgPath(word));
+  const words = fragments.map((fragment) => {
+    const {id, text, path} = fragment;
+    const hull: Point[] = createHull(path);
     const base = calcBaseSegment(hull);
     const angle = calcTextAngle(base);
     return { id, text, hull, base, angle };

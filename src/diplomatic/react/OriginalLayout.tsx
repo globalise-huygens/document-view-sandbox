@@ -9,6 +9,7 @@ import type {Id} from '../Id';
 import type {Scale} from '../Scale';
 import {renderOriginalLayout,} from '../renderOriginalLayout';
 import {ViewFit} from "../calcScaleFactor";
+import {createFragment} from "../createFragment";
 
 export type OriginalLayoutProps = {
   annotations: Record<Id, Annotation>;
@@ -36,7 +37,10 @@ export function OriginalLayout(
       return;
     }
     $view.innerHTML = '';
-    handleRef.current = renderOriginalLayout($view, annotations, {page, fit})
+    const wordAnnos = Object.values(annotations)
+      .filter(a => a.textGranularity === 'word')
+    const fragments = wordAnnos.map(createFragment)
+    handleRef.current = renderOriginalLayout($view, fragments, {page, fit})
   }, [annotations, page, fit]);
 
   useImperativeHandle(ref, () => handleRef.current!, [annotations, page, fit]);

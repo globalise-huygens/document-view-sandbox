@@ -1,20 +1,21 @@
-import { Annotation } from './AnnoModel';
-import { Id } from './Id';
-import { findResourceTarget } from './findResourceTarget';
-import { renderLineNumbers } from './renderLineNumbers';
-import { renderBlocks } from './renderBlocks';
+import {Annotation} from './AnnoModel';
+import {Id} from './Id';
+import {findResourceTarget} from './findResourceTarget';
+import {renderLineNumbers} from './renderLineNumbers';
+import {renderBlocks} from './renderBlocks';
 import {
   defaultConfig as defaultOriginalLayoutConfig,
   FullOriginalLayoutConfig,
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import { isAnnotationResourceTarget } from './anno/isAnnotationResourceTarget';
-import { orThrow } from '../util/orThrow';
-import { getEntityType } from './getEntityType';
-import { toClassName } from './toClassName';
-import { D3El } from './D3El';
-import { View } from './View';
+import {isAnnotationResourceTarget} from './anno/isAnnotationResourceTarget';
+import {orThrow} from '../util/orThrow';
+import {getEntityType} from './getEntityType';
+import {toClassName} from './toClassName';
+import {D3El} from './D3El';
+import {View} from './View';
+import {createFragment} from "./createFragment";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -47,7 +48,10 @@ export function renderDiplomaticView(
 
   const { showRegions, showEntities } = { ...defaultConfig, ...config };
   $view.innerHTML = '';
-  const originalLayout = renderOriginalLayout($view, annotations, config);
+  const wordAnnos = Object.values(annotations)
+    .filter((a) => a.textGranularity === 'word');
+  const words = wordAnnos.map(createFragment)
+  const originalLayout = renderOriginalLayout($view, words, config);
   const { $layout, $overlay, $words, scale } = originalLayout;
 
   const wordsToLine: Record<Id, Id> = {};
@@ -189,3 +193,4 @@ export function renderDiplomaticView(
     show,
   };
 }
+
