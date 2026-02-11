@@ -4,14 +4,14 @@ import {calcBaseSegment} from './calcBaseSegment';
 import {calcTextAngle} from './calcTextAngle';
 import {calcTextRect} from './calcTextRect';
 import {calcScaleFactor, ViewFit} from './calcScaleFactor';
-import {createScale} from './Scale';
+import {createScale, Scale} from './Scale';
 import {px} from './px';
 import {D3El} from './D3El';
 import {select} from 'd3-selection';
 import {TextResizer} from './TextResizer';
 import {Id} from './Id';
-import {renderWord} from './renderWord';
-import {renderWordBoundaries} from './renderWordBoundaries';
+import {renderFragment} from './renderFragment';
+import {renderFragmentBoundaries} from './renderFragmentBoundaries';
 import {orThrow} from '../util/orThrow';
 import {Fragment} from "./Fragment";
 
@@ -38,18 +38,25 @@ export const defaultConfig: FullOriginalLayoutConfig = {
   },
 };
 
+export type OriginalLayoutResult = {
+  scale: Scale;
+  $fragments: Record<Id, HTMLElement>;
+  $layout: HTMLElement;
+  $overlay: SVGSVGElement;
+};
+
 export function renderOriginalLayout(
   $view: HTMLDivElement,
   fragments: Fragment[],
   config: OriginalLayoutConfig,
-) {
+): OriginalLayoutResult {
   const { fit, showBoundaries, showScanMargin } = {
     ...defaultConfig,
     ...config,
   };
   const { width: pageWidth, height: pageHeight } = config.page;
 
-  const words = fragments.map((fragment) => {
+  const rotatedFragments = fragments.map((fragment) => {
     const {id, text, path} = fragment;
     const hull: Point[] = createHull(path);
     const base = calcBaseSegment(hull);
@@ -60,7 +67,7 @@ export function renderOriginalLayout(
   /**
    * Text without the whitespace surrounding the scanned page
    */
-  const marginlessRect = calcTextRect(words);
+  const marginlessRect = calcTextRect(rotatedFragments);
 
   /**
    * Add some padding to show line numbers and overflowing characters.
@@ -83,13 +90,13 @@ export function renderOriginalLayout(
     $view.style.height = px(scale(contentHeight));
   }
 
-  const $text = document.createElement('div');
-  $view.appendChild($text);
-  $text.classList.add('text');
+  const $layout = document.createElement('div');
+  $view.appendChild($layout);
+  $layout.classList.add('text');
 
   if (!showScanMargin) {
-    $text.style.marginTop = px(scale(-marginlessRect.top + overflowPadding));
-    $text.style.marginLeft = px(scale(-marginlessRect.left + overflowPadding));
+    $layout.style.marginTop = px(scale(-marginlessRect.top + overflowPadding));
+    $layout.style.marginLeft = px(scale(-marginlessRect.left + overflowPadding));
   }
 
   const { width, height } = $view.getBoundingClientRect();
@@ -108,27 +115,27 @@ export function renderOriginalLayout(
   }
 
   const resizer = new TextResizer();
-  const $words: Record<Id, HTMLElement> = Object.fromEntries(
-    words.map(({ id, text, hull, angle }) => {
-      const $word = renderWord(text, scale.path(hull), angle, $text);
-      return [id, $word];
+  const $fragments: Record<Id, HTMLElement> = Object.fromEntries(
+    rotatedFragments.map(({ id, text, hull, angle }) => {
+      const $fragment = renderFragment(text, scale.path(hull), angle, $layout);
+      return [id, $fragment];
     }),
   );
-  resizer.calibrate(Object.values($words).slice(0, 10));
+  resizer.calibrate(Object.values($fragments).slice(0, 10));
 
-  words.forEach(({ id, hull, base }) => {
-    const $word = $words[id];
-    resizer.resize($word);
+  rotatedFragments.forEach(({ id, hull, base }) => {
+    const $fragment = $fragments[id];
+    resizer.resize($fragment);
     if (showBoundaries) {
       const scaledHull = scale.path(hull);
       const scaledBase = scale.path(base);
-      renderWordBoundaries($word, scaledHull, scaledBase, $svg);
+      renderFragmentBoundaries($fragment, scaledHull, scaledBase, $svg);
     }
   });
   return {
-    $layout: $text,
+    $layout,
     $overlay: $svg.node() ?? orThrow('No svg element'),
-    $words,
+    $fragments,
     scale,
   };
 }

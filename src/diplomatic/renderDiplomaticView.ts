@@ -50,9 +50,9 @@ export function renderDiplomaticView(
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
-  const words = wordAnnos.map(createFragment)
-  const originalLayout = renderOriginalLayout($view, words, config);
-  const { $layout, $overlay, $words, scale } = originalLayout;
+  const fragments = wordAnnos.map(createFragment)
+  const originalLayout = renderOriginalLayout($view, fragments, config);
+  const { $layout, $overlay, $fragments, scale } = originalLayout;
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
@@ -104,7 +104,7 @@ export function renderDiplomaticView(
       hideRegion($block, lines);
     }
 
-    for (const [wordId, $word] of Object.entries($words)) {
+    for (const [wordId, $word] of Object.entries($fragments)) {
       const blockId = linesToBlock[wordsToLine[wordId]];
       const lineIds = blockToLines[blockId];
       const $block = $blocks[blockId];
@@ -155,7 +155,7 @@ export function renderDiplomaticView(
       const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
       const entityType = getEntityType(entity);
       for (const resource of resourceTargets) {
-        const $word = $words[resource.id] ?? orThrow('No $word');
+        const $word = $fragments[resource.id] ?? orThrow('No $word');
         $word.classList.add('entity');
         $word.classList.add(toClassName(entityType));
         $word.title = `${entityType} | ${entity.id}`;
@@ -165,7 +165,7 @@ export function renderDiplomaticView(
   function selectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const $word = $words[id];
+      const $word = $fragments[id];
       $word.classList.add('selected');
     } else if (annotation.textGranularity === 'block') {
       selectRegion(id);
@@ -177,7 +177,7 @@ export function renderDiplomaticView(
   function deselectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const $word = $words[id];
+      const $word = $fragments[id];
       $word.classList.remove('selected');
     } else if (annotation.textGranularity === 'block') {
       deselectRegion(id);

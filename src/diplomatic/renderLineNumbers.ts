@@ -19,11 +19,9 @@ type LineNumbersConfig = {
   scale: Scale;
 };
 
-type TimedCallback = { timeout: number; callback: () => void };
-
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
-  $view: HTMLDivElement,
+  $view: HTMLElement,
   { scale }: LineNumbersConfig,
 ) {
   const $text = document.createElement('div');

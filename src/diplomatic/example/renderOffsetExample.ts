@@ -59,13 +59,15 @@ export async function renderOffsetExample($parent: HTMLElement) {
   $parent.append($view)
   $view.classList.add('original-layout')
 
-  new Benchmark('renderOriginalLayout').run(() => {
+  new Benchmark(renderOriginalLayout.name).run(() => {
     const layout = renderOriginalLayout($view, fragments, {page: transcription.partOf})
 
-    const isWordAnnotation = (id: Id) => id.includes('#word_');
-    const groupedByWord = groupRanges(textRanges, isWordAnnotation);
+    const groupedByWord = groupRanges(
+      textRanges,
+      (id: Id) => id.includes('#word_')
+    );
     for (const group of groupedByWord) {
-      const $word = layout.$words[group.group];
+      const $word = layout.$fragments[group.group];
       const $ranges = []
       for (const range of group.ranges) {
         const $range = document.createElement('span')
@@ -84,6 +86,4 @@ export async function renderOffsetExample($parent: HTMLElement) {
       $word.replaceChildren(...$ranges)
     }
   })
-
-
 }

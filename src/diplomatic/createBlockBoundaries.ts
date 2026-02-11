@@ -17,8 +17,8 @@ export function createBlockBoundaries(
     if (!blockBoundaries[block.id]) {
       blockBoundaries[block.id] = [];
     }
-    const wordPoints = createPoints(findSvgPath(word));
-    blockBoundaries[block.id].push(...wordPoints);
+    const fragmentPoints = createPoints(findSvgPath(word));
+    blockBoundaries[block.id].push(...fragmentPoints);
   }
   return blockBoundaries;
 }

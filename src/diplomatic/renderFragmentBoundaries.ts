@@ -3,7 +3,7 @@ import { curveLinearClosed, line } from 'd3-shape';
 import { orThrow } from '../util/orThrow';
 import { D3El } from './D3El';
 
-export function renderWordBoundaries(
+export function renderFragmentBoundaries(
   el: HTMLElement,
   hull: Point[],
   base: Point[],

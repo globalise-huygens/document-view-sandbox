@@ -7,7 +7,10 @@ import React, {
 import type {Annotation} from '../AnnoModel';
 import type {Id} from '../Id';
 import type {Scale} from '../Scale';
-import {renderOriginalLayout,} from '../renderOriginalLayout';
+import {
+  OriginalLayoutResult,
+  renderOriginalLayout,
+} from '../renderOriginalLayout';
 import {ViewFit} from "../calcScaleFactor";
 import {createFragment} from "../createFragment";
 
@@ -16,20 +19,14 @@ export type OriginalLayoutProps = {
   page: { width: number; height: number };
   fit?: ViewFit;
   style?: React.CSSProperties;
-  ref?: Ref<OriginalLayoutRefResult>;
-};
-
-export type OriginalLayoutRefResult = {
-  scale: Scale;
-  $words: Record<Id, HTMLElement>;
-  $overlay: SVGSVGElement;
+  ref?: Ref<OriginalLayoutResult>;
 };
 
 export function OriginalLayout(
   {annotations, style, page, fit, ref}: OriginalLayoutProps
 ) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const handleRef = useRef<OriginalLayoutRefResult>(null);
+  const handleRef = useRef<OriginalLayoutResult>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
