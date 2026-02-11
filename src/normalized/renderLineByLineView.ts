@@ -102,8 +102,8 @@ export function renderLineByLineView(
   function selectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const spans = annotationToRanges[id] ?? [];
-      spans.forEach(($r) => $r.classList.add('selected'));
+      const ranges = annotationToRanges[id] ?? [];
+      ranges.forEach(($r) => $r.classList.add('selected'));
     } else if (annotation.textGranularity === 'block') {
       selectRegion(id);
     } else {
@@ -114,8 +114,8 @@ export function renderLineByLineView(
   function deselectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const spans = annotationToRanges[id] ?? [];
-      spans.forEach(($r) => $r.classList.remove('selected'));
+      const ranges = annotationToRanges[id] ?? [];
+      ranges.forEach(($r) => $r.classList.remove('selected'));
     } else if (annotation.textGranularity === 'block') {
       deselectRegion(id);
     } else {
