@@ -1,12 +1,13 @@
+import { AnnotationRange, AnnotationId, TextRange } from '../Model';
+import { orThrow } from '../../util/orThrow';
+import { createRanges } from '../createRanges';
 import { debounce, keyBy } from 'lodash';
-import { orThrow } from './util/orThrow';
+import { RangeId } from '../Model';
 
-main();
-
-function main() {
+export async function renderLoremIpsumExample($app: HTMLElement) {
   const text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
 
-  const annotations: Annotation[] = [
+  const annotations: AnnotationRange<Annotation>[] = [
     { begin: 6, end: 17, body: { id: 'p1', type: 'person' } }, // "ipsum dolor"
     {
       begin: 12,
@@ -19,10 +20,6 @@ function main() {
     { begin: 28, end: 50, body: { id: 'l1', type: 'location' } }, // "consectetur adipiscing"
     { begin: 40, end: 55, body: { id: 'l2', type: 'location' } }, // "adipiscing elit"
   ];
-
-  const $app =
-    document.querySelector<HTMLDivElement>('#app') ??
-    orThrow('app div not found');
 
   const $text = document.createElement('div');
   $app.appendChild($text);
@@ -37,83 +34,12 @@ function main() {
   handleHovering($text, rangesById, annotationById);
 }
 
-/**
- * Annotations can overlap, e.g. Aaaa<bc>bbbbb<cd>ccccc</bc>dddd<cd>eeee.
- * To apply the styling of both annotations to an overlapping region,
- * the annotated text is split into ranges, each range linked to all annotations
- * that apply.
- */
-function createRanges(
-  text: string,
-  annotations: Annotation[],
-): Map<RangeId, Range> {
-  const ranges = new Map<RangeId, Range>();
-  let rangeCounter = 0;
-
-  const offsetMap = new Map<number, Offset>();
-
-  const getOrCreateOffset = (charIndex: number) => {
-    if (offsetMap.has(charIndex)) {
-      return offsetMap.get(charIndex)!;
-    }
-    const newOffset = { charIndex, starting: [], ending: [] };
-    offsetMap.set(charIndex, newOffset);
-    return newOffset;
-  };
-
-  getOrCreateOffset(0);
-  getOrCreateOffset(text.length);
-
-  annotations.forEach((a) => {
-    getOrCreateOffset(a.begin).starting.push(a);
-    getOrCreateOffset(a.end).ending.push(a);
-  });
-
-  const sortedOffsets = [...offsetMap.values()].sort(
-    (a, b) => a.charIndex - b.charIndex,
-  );
-
-  const activeAnnotations = new Set<AnnotationId>();
-  let lastOffset = 0;
-  for (const offset of sortedOffsets) {
-    if (offset.charIndex > lastOffset) {
-      const id = `${rangeCounter++}` as RangeId;
-      ranges.set(id, {
-        id,
-        begin: lastOffset,
-        end: offset.charIndex,
-        annotations: [...activeAnnotations],
-      });
-    }
-
-    /**
-     * marker: annotation with a location and without any content
-     */
-    const markers = offset.starting.filter((a) => offset.ending.includes(a));
-    for (const marker of markers) {
-      const range = `${rangeCounter++}` as RangeId;
-      ranges.set(range, {
-        id: range,
-        begin: offset.charIndex,
-        end: offset.charIndex,
-        annotations: [marker.body.id, ...activeAnnotations],
-      });
-    }
-
-    offset.starting.forEach((a) => activeAnnotations.add(a.body.id));
-    offset.ending.forEach((a) => activeAnnotations.delete(a.body.id));
-    lastOffset = offset.charIndex;
-  }
-
-  return ranges;
-}
-
 function renderText(
   $style: HTMLStyleElement,
   $container: HTMLDivElement,
   text: string,
-  ranges: Range[],
-  annotations: Record<AnnotationId, Annotation>,
+  ranges: TextRange[],
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
 ) {
   createHighlightStyles(annotations, ranges, $style);
 
@@ -141,8 +67,8 @@ function renderText(
 }
 
 function createHighlightStyles(
-  annotationsById: Record<AnnotationId, Annotation>,
-  ranges: Range[],
+  annotationsById: Record<AnnotationId, AnnotationRange<Annotation>>,
+  ranges: TextRange[],
   styleElement: HTMLStyleElement,
 ) {
   let cssRules = `.highlight-hover {
@@ -199,8 +125,8 @@ function createHighlightStyles(
 
 function handleHovering(
   $text: HTMLDivElement,
-  textRanges: Map<RangeId, Range>,
-  annotations: Record<AnnotationId, Annotation>,
+  textRanges: Map<RangeId, TextRange>,
+  annotations: Record<AnnotationId, AnnotationRange>,
 ) {
   let currentHoveredAnnotation: AnnotationId | null = null;
 
@@ -260,9 +186,9 @@ function handleHovering(
  * 3. starts earliest
  */
 function findHoveredAnnotation(
-  annotations: Annotation[],
+  annotations: AnnotationRange[],
   charIndex: number,
-): Annotation | null {
+): AnnotationRange | null {
   const candidates = annotations.filter((a) => {
     const marker = a.begin === a.end && charIndex === a.begin;
     const annotation = charIndex >= a.begin && charIndex < a.end;
@@ -286,7 +212,7 @@ function findHoveredAnnotation(
 
 function createHighlightClass(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Annotation>,
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
   sortedTypes: AnnotationType[] = ['event', 'location', 'note', 'person'],
 ) {
   const { typeCounts } = countTypes(annotationIds, annotations);
@@ -304,7 +230,7 @@ function createHighlightClass(
 
 function createHighlight(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Annotation>,
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
   baseColors: Record<AnnotationType, Rgb>,
 ) {
   const { types } = countTypes(annotationIds, annotations);
@@ -315,7 +241,7 @@ function createHighlight(
 
 function countTypes(
   annotationIds: AnnotationId[],
-  annotations: Record<AnnotationId, Annotation>,
+  annotations: Record<AnnotationId, AnnotationRange<Annotation>>,
 ): { types: AnnotationType[]; typeCounts: Map<AnnotationType, number> } {
   const typeCounts = new Map<AnnotationType, number>();
   const types: AnnotationType[] = [];
@@ -358,42 +284,19 @@ function mergeTypeColors(
   return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-type AnnotationId = string;
-type AnnotationType = 'location' | 'person' | 'event' | 'note';
-type AnnotationBody = EntityBody | NoteBody;
+type Annotation = EntityBody | NoteBody;
 type EntityBody = {
   id: AnnotationId;
   type: 'location' | 'person' | 'event';
 };
-
 type NoteBody = {
   id: AnnotationId;
   type: 'note';
   note: string;
 };
-
-type Annotation = {
-  begin: number;
-  end: number;
-  body: AnnotationBody;
-};
-
-type RangeId = string;
-type Range = {
-  id: RangeId;
-  begin: number;
-  end: number;
-  annotations: AnnotationId[];
-};
-
-type Offset = {
-  charIndex: number;
-  starting: Annotation[];
-  ending: Annotation[];
-};
-
-type Rgb = {
+export type Rgb = {
   r: number;
   g: number;
   b: number;
 };
+export type AnnotationType = 'location' | 'person' | 'event' | 'note';

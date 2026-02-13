@@ -1,13 +1,13 @@
-import { Annotation, isBlockWithLabel } from './AnnoModel';
-import { Point } from './Point';
-import { createBlockBoundaries } from './createBlockBoundaries';
-import { calcBoundingCorners, padCorners } from './calcBoundingBox';
-import { createPath } from './createPath';
-import { Scale } from './Scale';
-import { select } from 'd3-selection';
-import { px } from './px';
-import { pickBy } from 'lodash';
-import {Id} from "./Id";
+import {Annotation} from './AnnoModel';
+import {Point} from './Point';
+import {createBlockBoundaries} from './createBlockBoundaries';
+import {calcBoundingCorners, padCorners} from './calcBoundingBox';
+import {createPath} from './createPath';
+import {Scale} from './Scale';
+import {select} from 'd3-selection';
+import {px} from './px';
+import {pickBy} from 'lodash';
+import {findSourceLabel} from "./anno/findSourceLabel";
 
 type BlocksConfig = { scale: Scale; fill?: string; stroke?: string };
 
@@ -35,13 +35,13 @@ export function renderBlocks(
       return [id, padded];
     }),
   );
-  const $blockHighlights = Object.fromEntries(
+  const $blocks = Object.fromEntries(
     Object.entries(blockCorners).map(([id, corners]) => {
       const block = blocks[id];
       const body = Array.isArray(block.body) ? block.body[0] : block.body;
 
-      const label = isBlockWithLabel(body) ? body.source.label : 'no label';
-      const $highlight = $svg.append('g').attr('visibility', 'hidden');
+      const label = findSourceLabel(block);
+      const $highlight = $svg.append('g').attr('opacity', 0);
 
       $highlight
         .append('polygon')
@@ -59,32 +59,9 @@ export function renderBlocks(
         .style('font-size', px(scale(60)))
         .attr('fill', stroke)
         .text(label);
-
       return [id, $highlight];
     }),
   );
 
-  /**
-   * Prevent flickering
-   */
-  const timedBlockHides: Map<Id, number> = new Map();
-
-  function showBlock(blockId: Id) {
-    const existingTimeout = timedBlockHides.get(blockId);
-    if (existingTimeout) {
-      clearTimeout(existingTimeout);
-      timedBlockHides.delete(blockId);
-    }
-    $blockHighlights[blockId].attr('visibility', 'visible');
-  }
-
-  function hideBlock(blockId: Id) {
-    const timeoutId = window.setTimeout(() => {
-      $blockHighlights[blockId].attr('visibility', 'hidden');
-      timedBlockHides.delete(blockId);
-    }, 150);
-    timedBlockHides.set(blockId, timeoutId);
-  }
-
-  return {showBlock, hideBlock};
+  return {$blocks};
 }

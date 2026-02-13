@@ -1,4 +1,4 @@
-import { AnnotationPage } from './AnnoModel';
+import { Annotation, AnnotationPage } from './AnnoModel';
 import { assertTextualBody } from './anno/assertTextualBody';
 import { Point } from './Point';
 import { createHull } from './createHull';
@@ -17,30 +17,43 @@ import { renderWord } from './renderWord';
 import { renderWordBoundaries } from './renderWordBoundaries';
 import { orThrow } from '../util/orThrow';
 
-export interface OriginalLayoutConfig {
+export interface FullOriginalLayoutConfig {
   showBoundaries: boolean;
   showScanMargin: boolean;
   fit: ViewFit;
+  page: {
+    height: number;
+    width: number;
+  };
 }
 
-export const defaultConfig: OriginalLayoutConfig = {
+export type OriginalLayoutConfig = Partial<FullOriginalLayoutConfig> &
+  Pick<FullOriginalLayoutConfig, 'page'>;
+
+export const defaultConfig: FullOriginalLayoutConfig = {
   showBoundaries: false,
   showScanMargin: false,
   fit: 'width',
+  page: {
+    height: 0,
+    width: 0,
+  },
 };
 
 export function renderOriginalLayout(
   $view: HTMLDivElement,
-  page: AnnotationPage,
-  config?: Partial<OriginalLayoutConfig>,
+  annotations: Record<Id, Annotation>,
+  config: OriginalLayoutConfig,
 ) {
   const { fit, showBoundaries, showScanMargin } = {
     ...defaultConfig,
     ...config,
   };
-  const { width: pageWidth, height: pageHeight } = page.partOf;
+  const { width: pageWidth, height: pageHeight } = config.page;
 
-  const wordAnnos = page.items.filter((a) => a.textGranularity === 'word');
+  const wordAnnos = Object.values(annotations).filter(
+    (a) => a.textGranularity === 'word',
+  );
 
   const words = wordAnnos.map((word) => {
     const { id, body: bodies } = word;
@@ -91,7 +104,7 @@ export function renderOriginalLayout(
   const { width, height } = $view.getBoundingClientRect();
   const $svg: D3El<SVGSVGElement> = select($view)
     .append('svg')
-    .attr('class', 'boundaries');
+    .attr('class', 'overlay');
 
   if (showScanMargin) {
     $svg.attr('width', width).attr('height', height);
@@ -112,9 +125,6 @@ export function renderOriginalLayout(
   );
   resizer.calibrate(Object.values($words).slice(0, 10));
 
-  let mouseEnterCallback: (id: Id) => void = () => {};
-  let mouseLeaveCallback: (id: Id) => void = () => {};
-
   words.forEach(({ id, hull, base }) => {
     const $word = $words[id];
     resizer.resize($word);
@@ -123,19 +133,11 @@ export function renderOriginalLayout(
       const scaledBase = scale.path(base);
       renderWordBoundaries($word, scaledHull, scaledBase, $svg);
     }
-    $word.addEventListener('mouseenter', () => mouseEnterCallback(id));
-    $word.addEventListener('mouseleave', () => mouseLeaveCallback(id));
   });
-
   return {
-    layout: $text,
-    overlay: $svg.node() ?? orThrow('No svg element'),
+    $layout: $text,
+    $overlay: $svg.node() ?? orThrow('No svg element'),
+    $words,
     scale,
-    onMouseEnter: (callback: (id: Id) => void): void => {
-      mouseEnterCallback = callback;
-    },
-    onMouseLeave: (callback: (id: Id) => void): void => {
-      mouseLeaveCallback = callback;
-    },
   };
 }

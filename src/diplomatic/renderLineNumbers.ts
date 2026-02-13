@@ -109,37 +109,13 @@ export function renderLineNumbers(
       .filter((e) => !!e),
   );
 
-
-  /**
-   * Prevent flickering of blocks and lines when hovering words
-   */
-  const timedLineHides: Map<Id, TimedCallback> = new Map();
-
   function showLine(lineId: Id) {
-    const existingHide = timedLineHides.get(lineId);
-    // Cancel hiding current line:
-    if (existingHide) {
-      clearTimeout(existingHide.timeout);
-      timedLineHides.delete(lineId);
-    }
-    // Hide all other lines immediately:
-    timedLineHides.forEach((t) => {
-      clearTimeout(t.timeout);
-      t.callback();
-    });
     $lineNumbers[lineId].style.display = 'block';
   }
 
   function hideLine(lineId: Id) {
-    const timeout = window.setTimeout(callback, 50);
-
-    function callback() {
-      $lineNumbers[lineId].style.display = 'none';
-      timedLineHides.delete(lineId);
-    }
-
-    timedLineHides.set(lineId, {timeout, callback});
+    $lineNumbers[lineId].style.display = 'none';
   }
 
-  return {showLine, hideLine}
+  return { showLine, hideLine };
 }

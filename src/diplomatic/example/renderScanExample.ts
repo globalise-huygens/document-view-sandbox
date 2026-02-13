@@ -3,13 +3,14 @@ import { px } from '../px';
 import { renderScan } from './renderScan';
 import { renderDiplomaticView } from '../renderDiplomaticView';
 import { $ } from './$';
-import { OriginalLayoutConfig } from '../renderOriginalLayout';
+import { FullOriginalLayoutConfig } from '../renderOriginalLayout';
+import { mapAnnotationsById } from './mapAnnotationsById';
 
 export async function renderScanExample($parent: HTMLElement) {
   const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
   const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
 
-  $parent.classList.add('with-scan');
+  $parent.classList.add('scan');
   $parent.innerHTML = `
       <div class="diplomatic-view"></div>
       <img id="scan" alt="scan"/>`;
@@ -19,7 +20,7 @@ export async function renderScanExample($parent: HTMLElement) {
 
   const $slider = document.createElement('span');
   $menu.appendChild($slider);
-  $slider.classList.add('slider');
+  $slider.classList.add('controls');
   $slider.innerHTML = `
     text 
     <input type="range" value="20" min="0" max="100"/> 
@@ -36,9 +37,9 @@ export async function renderScanExample($parent: HTMLElement) {
   $slider.addEventListener('input', adjustOpacity);
 
   const annoResponse = await fetch(jsonPath);
-  const annoPage: AnnotationPage = await annoResponse.json();
+  const page: AnnotationPage = await annoResponse.json();
   const { width: parentWidth } = $parent.getBoundingClientRect();
-  const { width, height } = annoPage.partOf;
+  const { width, height } = page.partOf;
 
   const scale = Math.max(parentWidth / +width);
   $view.style.height = px(scale * height);
@@ -46,10 +47,12 @@ export async function renderScanExample($parent: HTMLElement) {
 
   const pageAttributes = { height, width, scanPath };
   renderScan(pageAttributes, scale, $scan);
-  const viewConfig: OriginalLayoutConfig = {
+  const viewConfig: FullOriginalLayoutConfig = {
     showBoundaries: false,
     showScanMargin: true,
     fit: 'contain',
+    page: page.partOf,
   };
-  renderDiplomaticView($view, annoPage, viewConfig);
+  const annotations = mapAnnotationsById(page.items);
+  renderDiplomaticView($view, annotations, viewConfig);
 }
