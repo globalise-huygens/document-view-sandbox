@@ -1,10 +1,10 @@
 import React, {Ref, useImperativeHandle, useLayoutEffect, useRef,} from 'react';
-import {Id} from "../anno/Id";
-import {Annotation} from "../anno/AnnoModel";
 import {
   NormalizedLayoutResult,
   renderNormalizedLayout
 } from "../../normalized/renderNormalizedLayout";
+import {Annotation} from "@knaw-huc/original-layout/diplomatic";
+import {Id} from "@knaw-huc/original-layout";
 
 export type NormalizedLayoutProps = {
   annotations: Record<Id, Annotation>;

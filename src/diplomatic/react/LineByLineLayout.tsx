@@ -1,10 +1,9 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import type {Annotation} from '../anno/AnnoModel';
-import type {Id} from '../anno/Id';
-import type {View} from '../View';
 import {renderLineByLineView} from '../../normalized/renderLineByLineView';
 import {useVisibility} from "./useVisibility";
 import {useSelectedIds} from "./useSelectedIds";
+import {Id, View} from "@knaw-huc/original-layout";
+import {Annotation} from "@knaw-huc/original-layout/diplomatic";
 
 export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;

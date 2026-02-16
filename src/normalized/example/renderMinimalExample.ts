@@ -1,7 +1,7 @@
-import { AnnotationPage } from '../../diplomatic/anno/AnnoModel';
 import { mapAnnotationsById } from '../../diplomatic/example/mapAnnotationsById';
 import { Benchmark } from '../../util/Benchmark';
 import { renderLineByLineView } from '../renderLineByLineView';
+import {AnnotationPage} from "@knaw-huc/original-layout/diplomatic";
 
 export async function renderMinimalExample($parent: HTMLElement) {
   const pagePath =

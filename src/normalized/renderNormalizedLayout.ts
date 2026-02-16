@@ -1,16 +1,11 @@
-import {Annotation} from '../diplomatic/anno/AnnoModel';
-import {Id} from '../diplomatic/anno/Id';
-import {findResourceTarget} from '../diplomatic/anno/findResourceTarget';
-import {D3El} from '../diplomatic/D3El';
 import {select} from 'd3-selection';
 import {orThrow} from '../util/orThrow';
-import {getPageText} from '../diplomatic/getPageText';
-import {findTextPositionSelector} from '../diplomatic/anno/findTextPositionSelector';
-import {createRanges} from '../highlight/createRanges';
-import {isEntity} from '../diplomatic/EntityModel';
-import {getEntityType} from '../diplomatic/getEntityType';
-import {toClassName} from '../diplomatic/toClassName';
-import {TextRange} from '../highlight/Model';
+import {createRanges, D3El, Id, TextRange} from "@knaw-huc/original-layout";
+import {
+  Annotation, findResourceTarget, findTextPositionSelector, getEntityType,
+  getPageText,
+  isEntity, toClassName
+} from "@knaw-huc/original-layout/diplomatic";
 
 export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;

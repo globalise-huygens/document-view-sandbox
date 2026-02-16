@@ -1,13 +1,13 @@
-import { AnnotationPage } from '../anno/AnnoModel';
-import { px } from '../px';
-import { renderDiplomaticView } from '../renderDiplomaticView';
-import { $ } from './$';
 import { mapAnnotationsById } from './mapAnnotationsById';
 import { renderLineByLineView } from '../../normalized/renderLineByLineView';
 import { renderAnnotationDropdown } from './renderAnnotationDropdown';
-import { findTextualBodyValue } from '../anno/findTextualBodyValue';
-import { findSourceLabel } from '../anno/findSourceLabel';
 import { combineViews } from './combineViews';
+import {
+  AnnotationPage, findSourceLabel, findTextualBodyValue,
+  renderDiplomaticView
+} from "@knaw-huc/original-layout/diplomatic";
+import {px} from "./px";
+import {$} from "./$";
 
 export async function renderDualViewExample($parent: HTMLElement) {
   console.log('dual-view');

@@ -1,13 +1,14 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {createPortal} from 'react-dom';
-import type {Id} from '../../anno/Id';
-import type {Annotation} from '../../anno/AnnoModel';
-import {useAnnotationPage} from '../useAnnotationPage';
-import {DiplomaticView} from '../DiplomaticView';
 import {LineByLineLayout} from '../LineByLineLayout';
-import {findTextualBodyValue} from '../../anno/findTextualBodyValue';
-import {findSourceLabel} from '../../anno/findSourceLabel';
 import {$} from '../../example/$';
+import {
+  Annotation,
+  DiplomaticView,
+  findSourceLabel,
+  findTextualBodyValue, useAnnotationPage,
+} from "@knaw-huc/original-layout/diplomatic";
+import {Id} from "@knaw-huc/original-layout";
 
 export function DualViewExample() {
   const pagePath = '../../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';

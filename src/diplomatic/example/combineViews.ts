@@ -1,5 +1,4 @@
-import { View } from '../View';
-import { Id } from '../anno/Id';
+import {Id, View} from "@knaw-huc/original-layout";
 
 export type CombinedView = {
   toggle: () => void;

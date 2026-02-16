@@ -1,10 +1,11 @@
-import {Annotation} from '../diplomatic/anno/AnnoModel';
 import {renderNormalizedLayout} from './renderNormalizedLayout';
 import {orThrow} from '../util/orThrow';
 import {renderBlocks} from './renderBlocks';
-import {Id} from '../diplomatic/anno/Id';
-import {View} from '../diplomatic/View';
-import {findResourceTarget} from '../diplomatic/anno/findResourceTarget';
+import {
+  Annotation,
+  findResourceTarget
+} from "@knaw-huc/original-layout/diplomatic";
+import {Id, View} from "@knaw-huc/original-layout";
 
 type LineByLineViewProps = {
   $view: HTMLElement;

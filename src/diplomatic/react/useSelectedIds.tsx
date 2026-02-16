@@ -1,6 +1,6 @@
 import {RefObject, useLayoutEffect, useRef} from 'react';
-import type { Id } from '../anno/Id';
-import type { View } from '../View';
+import {View} from "@knaw-huc/original-layout";
+import {Id} from "@knaw-huc/original-layout";
 
 export function useSelectedIds(
   viewRef: RefObject<View | null>,
