@@ -39,7 +39,7 @@ export function renderNormalizedLayout(
     };
   });
 
-  const ranges = [...Object.values(createRanges(pageText, annoRanges))];
+  const ranges = createRanges(pageText, annoRanges);
 
   const wordsToLine: Record<Id, Id> = {};
   for (const wordAnno of wordAnnos) {
