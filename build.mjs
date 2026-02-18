@@ -41,10 +41,12 @@ const sharedConfig = {
 if (isDev) {
   const context = await esbuild.context({
     ...sharedConfig,
-    sourcemap: true
+    sourcemap: true,
   })
   await context.watch()
-  await context.serve({servedir: './static'})
+  const host = '127.0.0.1';
+  const { port } = await context.serve({host, servedir: './static'})
+  console.log(`Running at: http://${host}:${port} `)
 } else {
   await esbuild.build(sharedConfig)
 }
