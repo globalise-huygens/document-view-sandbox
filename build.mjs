@@ -18,6 +18,9 @@ const entryPoints = [
   'src/normalized/index.html',
   'src/normalized/index.ts',
   'src/normalized/normalized.css',
+
+  'src/facsimile/index.html',
+  'src/facsimile/index.tsx',
 ]
 
 const isDev = process.argv.includes('--dev')
