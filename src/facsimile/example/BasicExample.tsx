@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {ViewerCanvas, ViewerProvider,} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from '../ManifestLoader';
-import {Toolbar} from './Toolbar';
+import {ControlBar} from './ControlBar';
 import {NavigationBar} from './NavigationBar';
 import {LineHighlightOverlay} from "./LineHighlightOverlay";
 
@@ -24,7 +24,7 @@ export function BasicExample() {
         >
           <ViewerCanvas showControls={false}/>
           <LineHighlightOverlay/>
-          <Toolbar fullscreenRef={fullscreenRef}/>
+          <ControlBar fullscreenRef={fullscreenRef}/>
           <NavigationBar/>
         </div>
       </ManifestLoader>

@@ -3,7 +3,7 @@ import React, {type RefObject} from "react";
 
 type ToolbarProps = {fullscreenRef: RefObject<HTMLDivElement | null>};
 
-export function Toolbar({fullscreenRef}: ToolbarProps) {
+export function ControlBar({fullscreenRef}: ToolbarProps) {
   const {
     zoomIn,
     zoomOut,
