@@ -103,12 +103,9 @@ export function renderNormalizedLayout(
 
   $text.append(...Object.values($lines));
 
-  const {width, height} = $view.getBoundingClientRect();
   const $overlay: D3El<SVGSVGElement> = select($view)
     .append('svg')
-    .attr('class', 'overlay')
-    .attr('width', width)
-    .attr('height', height);
+    .attr('class', 'overlay');
 
   return {
     $ranges,
