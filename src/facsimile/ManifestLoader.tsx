@@ -9,11 +9,10 @@ import {
 type ManifestLoaderProps = {
   children: React.ReactNode,
   url: string,
-  canvas: number
 };
 
 export function ManifestLoader(
-  {children, url, canvas}: ManifestLoaderProps
+  {children, url}: ManifestLoaderProps
 ) {
   const loadManifest = useLoadManifest();
   const {goTo} = useCanvas();
@@ -22,12 +21,6 @@ export function ManifestLoader(
   useEffect(() => {
     loadManifest(url);
   }, [loadManifest, url]);
-
-  useEffect(() => {
-    if (manifest.data) {
-      goTo(canvas);
-    }
-  }, [manifest.data, goTo, canvas]);
 
   if (manifest.isLoading) {
     return <>Loading manifest</>;
