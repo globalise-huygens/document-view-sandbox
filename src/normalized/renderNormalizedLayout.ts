@@ -1,58 +1,110 @@
-import {Annotation, AnnotationPage} from '../diplomatic/AnnoModel';
-import {Id} from '../diplomatic/Id';
-import {findResourceTarget} from '../diplomatic/findResourceTarget';
-import {joinElements} from './joinElements';
-import {D3El} from "../diplomatic/D3El";
-import {select} from "d3-selection";
-import {orThrow} from "../util/orThrow";
-import {pickBy} from "lodash";
-import {findTextualBodyValue} from "../diplomatic/anno/findTextualBodyValue";
+import {Annotation} from '../diplomatic/anno/AnnoModel';
+import {Id} from '../diplomatic/anno/Id';
+import {findResourceTarget} from '../diplomatic/anno/findResourceTarget';
+import {D3El} from '../diplomatic/D3El';
+import {select} from 'd3-selection';
+import {orThrow} from '../util/orThrow';
+import {getPageText} from '../diplomatic/getPageText';
+import {findTextPositionSelector} from '../diplomatic/anno/findTextPositionSelector';
+import {createRanges} from '../highlight/createRanges';
+import {isEntity} from '../diplomatic/EntityModel';
+import {getEntityType} from '../diplomatic/getEntityType';
+import {toClassName} from '../diplomatic/toClassName';
+import {TextRange} from '../highlight/Model';
+
+export type NormalizedLayoutResult = {
+  $ranges: Record<Id, HTMLElement>;
+  $lines: Record<Id, HTMLElement>;
+  $overlay: SVGSVGElement;
+  ranges: TextRange[];
+};
 
 export function renderNormalizedLayout(
   $parent: HTMLElement,
   annotations: Record<Id, Annotation>,
-) {
-  const $view = document.createElement('div')
-  $parent.append($view)
-  $view.classList.add('normalized-view')
-  const wordAnnos = pickBy(annotations, (a) => a.textGranularity === 'word');
+): NormalizedLayoutResult {
+  const $view = document.createElement('div');
+  $parent.append($view);
+  $view.classList.add('normalized-view');
 
-  const linesWithWords: Record<Id, Annotation[]> = {};
-  for (const wordAnno of Object.values(wordAnnos)) {
-    const lineId = findResourceTarget(wordAnno).id;
-    if (!linesWithWords[lineId]) {
-      linesWithWords[lineId] = [];
+  const {id: pageAnnoId, text: pageText} = getPageText(annotations);
+
+  const wordAnnos = Object.values(annotations).filter(
+    (a) => a.textGranularity === 'word',
+  );
+  const entityAnnos = Object.values(annotations).filter(isEntity);
+  const markedAnnos = [...wordAnnos, ...entityAnnos];
+
+  const annoRanges = markedAnnos.map((annotation) => {
+    const selector = findTextPositionSelector(annotation, pageAnnoId);
+    return {
+      begin: selector.start,
+      end: selector.end,
+      body: annotation,
+    };
+  });
+
+  const ranges = [...Object.values(createRanges(pageText, annoRanges))];
+
+  const wordsToLine: Record<Id, Id> = {};
+  for (const wordAnno of wordAnnos) {
+    wordsToLine[wordAnno.id] = findResourceTarget(wordAnno).id;
+  }
+
+  const rangesByLine: Record<Id, TextRange[]> = {};
+  let lastLineId: Id | null = null;
+  for (const range of ranges) {
+    const wordId = range.annotations.find((id) => id in wordsToLine);
+    const lineId: Id | null = wordId ? wordsToLine[wordId] : lastLineId;
+    if (!lineId) {
+      continue;
     }
-    linesWithWords[lineId].push(wordAnno);
+    lastLineId = lineId;
+    if (!rangesByLine[lineId]) {
+      rangesByLine[lineId] = [];
+    }
+    rangesByLine[lineId].push(range);
   }
 
   const $text = document.createElement('div');
   $view.appendChild($text);
   $text.classList.add('text');
 
-  const $words: Record<Id, HTMLElement> = {};
-  const $lines = Object.fromEntries(
-    Object.entries(linesWithWords).map(([id, wordAnnos], i) => {
-      const $lineWords = wordAnnos.map((wordAnno) => {
-        const word = findTextualBodyValue(wordAnno);
-        const $word = document.createElement('span');
-        $word.textContent = word;
-        $word.classList.add('word');
-        $words[wordAnno.id] = $word;
-        return $word;
-      });
-      const $line = document.createElement('span');
-      $line.classList.add('line');
-      const $lineNumber = document.createElement('span');
-      $line.append($lineNumber);
-      $lineNumber.classList.add('line-number');
-      $lineNumber.textContent = `${i}`.padStart(2, ' ');
-      const $lineContent = document.createElement('span')
-      $lineContent.classList.add('line-content')
-      $line.append($lineContent)
-      $lineContent.append(...joinElements($lineWords));
-      return [id, $line];
-    }));
+  const $ranges: Record<Id, HTMLSpanElement> = {};
+  const $lines: Record<Id, HTMLElement> = {};
+
+  const lines = Object.keys(rangesByLine);
+  for (const [i, lineId] of lines.entries()) {
+    const lineRanges = rangesByLine[lineId];
+    const $line = document.createElement('span');
+    $line.classList.add('line');
+
+    const $number = document.createElement('span');
+    $number.classList.add('line-number');
+    $number.textContent = `${i + 1}`.padStart(2, ' ');
+    $line.append($number);
+
+    const $content = document.createElement('span');
+    $content.classList.add('line-content');
+    $line.append($content);
+
+    for (const range of lineRanges) {
+      const $range = document.createElement('span');
+      $range.classList.add('range');
+      $range.textContent = pageText.substring(range.begin, range.end);
+      for (const annoId of range.annotations) {
+        const annotation = annotations[annoId];
+        if (isEntity(annotation)) {
+          const entityType = getEntityType(annotation);
+          $range.classList.add(...['entity', toClassName(entityType)]);
+          $range.title = `${entityType} | ${annotation.id}`;
+        }
+      }
+      $ranges[range.id] = $range;
+      $content.appendChild($range);
+    }
+    $lines[lineId] = $line;
+  }
 
   $text.append(...Object.values($lines));
 
@@ -64,8 +116,9 @@ export function renderNormalizedLayout(
     .attr('height', height);
 
   return {
-    $words,
+    $ranges,
     $lines,
-    $overlay: $overlay.node() ?? orThrow('No svg element')
+    ranges,
+    $overlay: $overlay.node() ?? orThrow('No svg element'),
   };
 }

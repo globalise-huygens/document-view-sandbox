@@ -1,61 +1,77 @@
-import {Annotation} from '../diplomatic/AnnoModel';
+import {Annotation} from '../diplomatic/anno/AnnoModel';
 import {renderNormalizedLayout} from './renderNormalizedLayout';
-import {
-  isAnnotationResourceTarget
-} from '../diplomatic/anno/isAnnotationResourceTarget';
-import {getEntityType} from '../diplomatic/getEntityType';
 import {orThrow} from '../util/orThrow';
-import {toClassName} from '../diplomatic/toClassName';
-import {renderBlocks} from "./renderBlocks";
-import {Id} from "../diplomatic/Id";
-import {View} from "../diplomatic/View";
-import {line} from "d3-shape";
-import {findResourceTarget} from "../diplomatic/findResourceTarget";
+import {renderBlocks} from './renderBlocks';
+import {Id} from '../diplomatic/anno/Id';
+import {View} from '../diplomatic/View';
+import {findResourceTarget} from '../diplomatic/anno/findResourceTarget';
 
-export function renderLineByLineView({
-  $view,
-  annotations,
-}: {
+type LineByLineViewProps = {
   $view: HTMLElement;
   annotations: Record<Id, Annotation>;
-}): View {
+};
 
-  const {$words, $lines, $overlay} = renderNormalizedLayout($view, annotations);
-  const entities = Object.values(annotations).filter(
-    (a) => a.motivation === 'classifying',
-  );
+export function renderLineByLineView(
+  {$view, annotations}: LineByLineViewProps
+): View {
+  function show() {
+    $view.style.visibility = 'visible';
+  }
 
-  for (const entity of entities) {
-    const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
-    const entityType = getEntityType(entity);
-    for (const resource of resourceTargets) {
-      const $word = $words[resource.id] ?? orThrow('No $word');
-      $word.classList.add('entity');
-      $word.classList.add(toClassName(entityType));
-      $word.title = `${entityType} | ${entity.id}`;
+  function hide() {
+    $view.style.visibility = 'hidden';
+  }
+
+  const layout = renderNormalizedLayout($view, annotations);
+  const {$ranges, $lines, ranges, $overlay} = layout;
+
+  const linesToBlock: Record<Id, Id> = {};
+  for (const anno of Object.values(annotations)) {
+    if (anno.textGranularity === 'line') {
+      linesToBlock[anno.id] = findResourceTarget(anno).id;
+    }
+  }
+  const lineIds = Object.keys($lines);
+  for (let i = 0; i < lineIds.length - 1; i++) {
+    const currentId = lineIds[i];
+    const nextId = lineIds[i + 1];
+    if (linesToBlock[currentId] !== linesToBlock[nextId]) {
+      $lines[currentId].classList.add('region-end');
     }
   }
 
-  const selectedRegions = new Set<Id>()
+  const annotationToRanges: Record<Id, HTMLElement[]> = {};
+  for (const range of ranges) {
+    const $range = $ranges[range.id];
+    if (!$range) continue;
+    for (const annoId of range.annotations) {
+      if (!annotationToRanges[annoId]) {
+        annotationToRanges[annoId] = [];
+      }
+      annotationToRanges[annoId].push($range);
+    }
+  }
 
-  const blockConfig = {stroke: 'rgba(100,100,100,1)'};
-  const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig)
+  const selectedRegions = new Set<Id>();
+
+  const blockConfig = {stroke: 'rgba(0,150,0,0.5)'};
+  const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig);
 
   for (const [lineId, $line] of Object.entries($lines)) {
-    const line = annotations[lineId]
-    const blockId = findResourceTarget(line).id
-    const $block = $blocks[blockId]
-    $line.addEventListener("mouseenter", () => {
+    const line = annotations[lineId];
+    const blockId = findResourceTarget(line).id;
+    const $block = $blocks[blockId];
+    $line.addEventListener('mouseenter', () => {
       if (selectedRegions.has(blockId)) {
         return;
       }
-      $block.attr("opacity", 1);
+      $block.attr('opacity', 1);
     });
-    $line.addEventListener("mouseleave", () => {
+    $line.addEventListener('mouseleave', () => {
       if (selectedRegions.has(blockId)) {
         return;
       }
-      $block.attr("opacity", 0);
+      $block.attr('opacity', 0);
     });
   }
 
@@ -67,8 +83,8 @@ export function renderLineByLineView({
     if (selectedRegions.has(id)) {
       return;
     }
-    selectedRegions.add(id)
-    $block.attr('opacity', 1)
+    selectedRegions.add(id);
+    $block.attr('opacity', 1);
   }
 
   function deselectRegion(id: Id) {
@@ -79,37 +95,38 @@ export function renderLineByLineView({
     if (!selectedRegions.has(id)) {
       return;
     }
-    selectedRegions.delete(id)
-    $block.attr('opacity', 0)
+    selectedRegions.delete(id);
+    $block.attr('opacity', 0);
   }
 
   function selectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if (annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.add('selected')
-    } else if (annotation.textGranularity === "block") {
-      selectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const ranges = annotationToRanges[id] ?? [];
+      ranges.forEach(($r) => $r.classList.add('selected'));
+    } else if (annotation.textGranularity === 'block') {
+      selectRegion(id);
     } else {
-      console.warn(`Select not implemented: ${annotation.textGranularity}`)
+      console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
   }
 
   function deselectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if (annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.remove('selected')
-    } else if (annotation.textGranularity === "block") {
-      deselectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const ranges = annotationToRanges[id] ?? [];
+      ranges.forEach(($r) => $r.classList.remove('selected'));
+    } else if (annotation.textGranularity === 'block') {
+      deselectRegion(id);
     } else {
-      console.warn(`Deselect not implemented: ${annotation.textGranularity}`)
+      console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
   return {
-    selectAnnotation, deselectAnnotation,
-    hide: () => $view.style.visibility = 'hidden',
-    show: () => $view.style.visibility = 'visible'
-  }
+    selectAnnotation,
+    deselectAnnotation,
+    hide,
+    show,
+  };
 }

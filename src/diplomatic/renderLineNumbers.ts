@@ -1,5 +1,5 @@
-import { Annotation } from './AnnoModel';
-import { Id } from './Id';
+import { Annotation } from './anno/AnnoModel';
+import { Id } from './anno/Id';
 import { Point } from './Point';
 import { Rect } from './Rect';
 import {
@@ -11,7 +11,7 @@ import { createPoints } from './createPoints';
 import { findSvgPath } from './anno/findSvgPath';
 import { orThrow } from '../util/orThrow';
 import { px } from './px';
-import { findResourceTarget } from './findResourceTarget';
+import { findResourceTarget } from './anno/findResourceTarget';
 import { createBlockBoundaries } from './createBlockBoundaries';
 import { Scale } from './Scale';
 
@@ -19,11 +19,9 @@ type LineNumbersConfig = {
   scale: Scale;
 };
 
-type TimedCallback = { timeout: number; callback: () => void };
-
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
-  $view: HTMLDivElement,
+  $view: HTMLElement,
   { scale }: LineNumbersConfig,
 ) {
   const $text = document.createElement('div');

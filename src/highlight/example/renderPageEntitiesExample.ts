@@ -1,12 +1,14 @@
-import { Annotation, AnnotationPage } from '../../diplomatic/AnnoModel';
-import { mapAnnotationsById } from '../../diplomatic/example/mapAnnotationsById';
-import { assertTextualBody } from '../../diplomatic/anno/assertTextualBody';
-import { findTextPositionSelector } from '../../diplomatic/findTextPositionSelector';
-import { AnnotationId, TextRange } from '../Model';
-import { createRanges } from '../createRanges';
-import { getEntityType } from '../../diplomatic/getEntityType';
-import { isEntityBody } from '../../diplomatic/EntityModel';
-import { toClassName } from '../../diplomatic/toClassName';
+import {Annotation, AnnotationPage} from '../../diplomatic/anno/AnnoModel';
+import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
+import {
+  findTextPositionSelector
+} from '../../diplomatic/anno/findTextPositionSelector';
+import {AnnotationId, TextRange} from '../Model';
+import {createRanges} from '../createRanges';
+import {getEntityType} from '../../diplomatic/getEntityType';
+import {isEntity} from '../../diplomatic/EntityModel';
+import {toClassName} from '../../diplomatic/toClassName';
+import {getPageText} from "../../diplomatic/getPageText";
 
 export async function renderPageEntitiesExample($view: HTMLElement) {
   const pagePath =
@@ -28,32 +30,27 @@ export async function renderPageEntitiesExample($view: HTMLElement) {
   const pageAnnotations = page.items.filter(
     (a) => a.textGranularity === 'page',
   );
-  const pageAnnotation = pageAnnotations[0];
-  const { body: bodies } = pageAnnotation;
-  const body = Array.isArray(bodies) ? bodies[0] : bodies;
-  assertTextualBody(body);
+  // transcription-normalized vs. transcription-diplomatic (htr):
+  console.log('pageAnnotations', pageAnnotations)
+  const {id: pageAnnoId, text: pageText} = getPageText(annotations);
 
   const entityRanges = Object.values(entities).map((annotation) => {
-    const selector = findTextPositionSelector(annotation);
+    const selector = findTextPositionSelector(annotation, pageAnnoId);
     return {
       begin: selector.start,
       end: selector.end,
       body: annotation,
     };
   });
-  const pageText = body.value;
   const textRanges = createRanges(pageText, entityRanges);
   console.log('page entities', {
     page,
     pageAnnotations,
-    texts: pageAnnotations.map((a: any) => ({ t: a.body[0].value, id: a.id })),
-    pageAnnotation,
-    body,
     entities,
     entityRanges,
     textRanges,
   });
-  renderText($view, pageText, [...textRanges.values()], annotations);
+  renderText($view, pageText, [...Object.values(textRanges)], annotations);
 }
 
 function renderText(
@@ -68,8 +65,8 @@ function renderText(
     $span.textContent = text.substring(range.begin, range.end);
     if (range.annotations.length) {
       const types: string[] = range.annotations.map((id) => {
-        const a = annotations[id];
-        return isEntityBody(a.body) ? 'no-entity' : getEntityType(a);
+        const annotation = annotations[id];
+        return isEntity(annotation) ? getEntityType(annotation) : 'no-entity';
       });
       $span.title = types.join(', ');
       $span.classList.add(...types.map(toClassName));

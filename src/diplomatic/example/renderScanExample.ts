@@ -1,4 +1,4 @@
-import { AnnotationPage } from '../AnnoModel';
+import { AnnotationPage } from '../anno/AnnoModel';
 import { px } from '../px';
 import { renderScan } from './renderScan';
 import { renderDiplomaticView } from '../renderDiplomaticView';
@@ -7,15 +7,19 @@ import { FullOriginalLayoutConfig } from '../renderOriginalLayout';
 import { mapAnnotationsById } from './mapAnnotationsById';
 
 export async function renderScanExample($parent: HTMLElement) {
-  const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
-  const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
+  // const jsonPath = '../data/3965_selection/NL-HaNA_1.04.02_3965_0177.json';
+  // const scanPath = '../images/3965_selection/NL-HaNA_1.04.02_3965_0177.jpg';
+  const jsonPath =
+    '../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
+  const scanPath =
+    '../images/3598_selection/NL-HaNA_1.04.02_3598_0797.jpg';
 
   $parent.classList.add('scan');
   $parent.innerHTML = `
-      <div class="diplomatic-view"></div>
+      <div class="original-layout"></div>
       <img id="scan" alt="scan"/>`;
   const $menu = $('#menu');
-  const $view: HTMLDivElement = $('.diplomatic-view', $parent);
+  const $view: HTMLDivElement = $('.original-layout', $parent);
   const $scan: HTMLImageElement = $('#scan', $parent);
 
   const $slider = document.createElement('span');

@@ -1,10 +1,9 @@
-import { Annotation } from './AnnoModel';
-import { Id } from './Id';
-import { Point } from './Point';
-import { findResourceTarget } from './findResourceTarget';
-import { orThrow } from '../util/orThrow';
-import { createPoints } from './createPoints';
-import { findSvgPath } from './anno/findSvgPath';
+import {Annotation} from './anno/AnnoModel';
+import {Id} from './anno/Id';
+import {Point} from './Point';
+import {findResourceTarget} from './anno/findResourceTarget';
+import {createPoints} from './createPoints';
+import {findSvgPath} from './anno/findSvgPath';
 
 export function createBlockBoundaries(
   words: Annotation[],
@@ -17,8 +16,8 @@ export function createBlockBoundaries(
     if (!blockBoundaries[block.id]) {
       blockBoundaries[block.id] = [];
     }
-    const wordPoints = createPoints(findSvgPath(word));
-    blockBoundaries[block.id].push(...wordPoints);
+    const fragmentPoints = createPoints(findSvgPath(word));
+    blockBoundaries[block.id].push(...fragmentPoints);
   }
   return blockBoundaries;
 }

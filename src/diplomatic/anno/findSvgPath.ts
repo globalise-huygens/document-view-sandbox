@@ -1,4 +1,4 @@
-import type { Annotation } from '../AnnoModel';
+import type { Annotation } from './AnnoModel';
 import { isEmpty } from 'lodash';
 import { isSpecificResourceTarget } from './isSpecificResourceTarget';
 import { assertSpecificResourceTarget } from './assertSpecificResourceTarget';

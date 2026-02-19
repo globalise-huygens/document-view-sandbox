@@ -1,20 +1,20 @@
-import {select} from "d3-selection";
-import {Annotation} from "../diplomatic/AnnoModel";
-import {Id} from "../diplomatic/Id";
-import {findResourceTarget} from "../diplomatic/findResourceTarget";
-import {createPoints} from "../diplomatic/createPoints";
-import {calcBoundingBox} from "../diplomatic/calcBoundingBox";
-import {D3El} from "../diplomatic/D3El";
+import { select } from 'd3-selection';
+import { Annotation } from '../diplomatic/anno/AnnoModel';
+import { Id } from '../diplomatic/anno/Id';
+import { findResourceTarget } from '../diplomatic/anno/findResourceTarget';
+import { createPoints } from '../diplomatic/createPoints';
+import { calcBoundingBox } from '../diplomatic/calcBoundingBox';
+import { D3El } from '../diplomatic/D3El';
 
 type BlocksConfig = {
-  stroke: string
-}
+  stroke: string;
+};
 
 export function renderBlocks(
   $lines: Record<Id, HTMLElement>,
   $overlay: SVGSVGElement,
   annotations: Record<Id, Annotation>,
-  {stroke}: BlocksConfig
+  { stroke }: BlocksConfig,
 ) {
   const $d3Overlay = select($overlay);
 
@@ -30,26 +30,26 @@ export function renderBlocks(
 
   const overlayOffset = $overlay.getBoundingClientRect().top;
 
-  const $blocks: Record<Id, D3El<SVGLineElement>> = {}
+  const $blocks: Record<Id, D3El<SVGLineElement>> = {};
   for (const [blockId, lineIds] of Object.entries(blockWithLines)) {
-    const $blockLines = lineIds.map(l => $lines[l]);
-    const lineBoundingPoints = $blockLines.flatMap($line =>
-      createPoints($line.getBoundingClientRect())
+    const $blockLines = lineIds.map((l) => $lines[l]);
+    const lineBoundingPoints = $blockLines.flatMap(($line) =>
+      createPoints($line.getBoundingClientRect()),
     );
     const blockBbox = calcBoundingBox(lineBoundingPoints);
 
-    const scaleFactor = $overlay.getBoundingClientRect().width / 1000
-    const strokeWidth = Math.ceil(5 * scaleFactor)
+    const scaleFactor = $overlay.getBoundingClientRect().width / 1000;
+    const strokeWidth = Math.ceil(5 * scaleFactor);
 
     $blocks[blockId] = $d3Overlay
-      .append("line")
-      .attr("x1", 0)
-      .attr("y1", blockBbox.top - overlayOffset)
-      .attr("x2", 0)
-      .attr("y2", blockBbox.top + blockBbox.height - overlayOffset)
-      .attr("stroke", stroke)
-      .attr("stroke-width", strokeWidth)
-      .attr("opacity", 0)
+      .append('line')
+      .attr('x1', 0)
+      .attr('y1', blockBbox.top - overlayOffset)
+      .attr('x2', 0)
+      .attr('y2', blockBbox.top + blockBbox.height - overlayOffset)
+      .attr('stroke', stroke)
+      .attr('stroke-width', strokeWidth)
+      .attr('opacity', 0);
   }
-  return {$blocks};
+  return { $blocks };
 }

@@ -1,6 +1,6 @@
-import {Annotation} from './AnnoModel';
-import {Id} from './Id';
-import {findResourceTarget} from './findResourceTarget';
+import {Annotation} from './anno/AnnoModel';
+import {Id} from './anno/Id';
+import {findResourceTarget} from './anno/findResourceTarget';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {
@@ -9,12 +9,17 @@ import {
   OriginalLayoutConfig,
   renderOriginalLayout,
 } from './renderOriginalLayout';
-import {isAnnotationResourceTarget} from './anno/isAnnotationResourceTarget';
 import {orThrow} from '../util/orThrow';
-import {getEntityType} from './getEntityType';
-import {toClassName} from './toClassName';
 import {D3El} from './D3El';
-import {View} from "./View";
+import {View} from './View';
+import {createFragment} from "./createFragment";
+import {getEntityType} from "./getEntityType";
+import {toClassName} from "./toClassName";
+import {createRanges} from "../highlight/createRanges";
+import {findTextPositionSelector} from "./anno/findTextPositionSelector";
+import {isEntity} from "./EntityModel";
+import {groupRanges} from "./groupRanges";
+import {getPageText} from "./getPageText";
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -35,12 +40,65 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ): View {
-  $view.classList.add('diplomatic-view')
+  $view.classList.add('original-layout');
+
+  function show() {
+    $view.style.visibility = 'visible';
+  }
+
+  function hide() {
+    $view.style.visibility = 'hidden';
+  }
 
   const { showRegions, showEntities } = { ...defaultConfig, ...config };
   $view.innerHTML = '';
-  const originalLayout = renderOriginalLayout($view, annotations, config);
-  const { $layout, $overlay, $words, scale } = originalLayout;
+  const wordAnnos = Object.values(annotations)
+    .filter((a) => a.textGranularity === 'word');
+  const fragments = wordAnnos.map(createFragment);
+  const originalLayout = renderOriginalLayout($view, fragments, config);
+  const { $layout, $overlay, $fragments, scale } = originalLayout;
+
+  const {id: pageAnnoId, text: pageText} = getPageText(annotations);
+
+  const entityAnnos = Object.values(annotations).filter(isEntity);
+  const markedAnnos = [...wordAnnos, ...entityAnnos];
+  const annoRanges = markedAnnos.map((annotation) => {
+    const selector = findTextPositionSelector(annotation, pageAnnoId);
+    return {
+      begin: selector.start,
+      end: selector.end,
+      body: annotation,
+    };
+  });
+
+  const textRanges = [...Object.values(createRanges(pageText, annoRanges))];
+  const groupedByWord = groupRanges(
+    textRanges,
+    (id: Id) => id.includes('#word_'),
+  );
+
+  for (const group of groupedByWord) {
+    const $word = $fragments[group.group];
+    const $ranges: HTMLSpanElement[] = [];
+    for (const range of group.ranges) {
+      const $range = document.createElement('span');
+      $ranges.push($range);
+      $range.classList.add('range');
+      $range.textContent = pageText.substring(range.begin, range.end);
+
+      if (showEntities) {
+        for (const annoId of range.annotations) {
+          const annotation = annotations[annoId];
+          if (isEntity(annotation)) {
+            const entityType = getEntityType(annotation);
+            $range.classList.add(...['entity', toClassName(entityType)]);
+            $range.title = `${entityType} | ${annotation.id}`;
+          }
+        }
+      }
+    }
+    $word.replaceChildren(...$ranges);
+  }
 
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
@@ -61,9 +119,9 @@ export function renderDiplomaticView(
     }
   });
 
-  const selectedRegions = new Set<Id>()
-  let selectRegion: (id: Id) => void = () => console.warn('Not implemented')
-  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented')
+  const selectedRegions = new Set<Id>();
+  let selectRegion: (id: Id) => void = () => console.warn('Not implemented');
+  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented');
 
   if (showRegions) {
     const { $blocks } = renderBlocks(annotations, $overlay, { scale });
@@ -92,13 +150,16 @@ export function renderDiplomaticView(
       hideRegion($block, lines);
     }
 
-
-    for (const [wordId, $word] of Object.entries($words)) {
+    for (const [wordId, $word] of Object.entries($fragments)) {
       const blockId = linesToBlock[wordsToLine[wordId]];
       const lineIds = blockToLines[blockId];
       const $block = $blocks[blockId];
-      $word.addEventListener('mouseenter', () => enterRegion($block, lineIds, blockId));
-      $word.addEventListener('mouseleave', () => leaveRegion($block, lineIds, blockId));
+      $word.addEventListener('mouseenter', () =>
+        enterRegion($block, lineIds, blockId),
+      );
+      $word.addEventListener('mouseleave', () =>
+        leaveRegion($block, lineIds, blockId),
+      );
     }
 
     for (const [blockId, $block] of Object.entries($blocks)) {
@@ -107,74 +168,60 @@ export function renderDiplomaticView(
       $block.on('mouseleave', () => leaveRegion($block, lineIds, blockId));
     }
     selectRegion = (id: Id) => {
-      const $block = $blocks[id]
-      if(!$block) {
+      const $block = $blocks[id];
+      if (!$block) {
         return;
       }
-      if(selectedRegions.has(id)) {
+      if (selectedRegions.has(id)) {
         return;
       }
-      selectedRegions.add(id)
-      const lines = blockToLines[id]
+      selectedRegions.add(id);
+      const lines = blockToLines[id];
       showRegion($block, lines);
-    }
+    };
     deselectRegion = (id: Id) => {
-      const $block = $blocks[id]
-      if(!$block) {
+      const $block = $blocks[id];
+      if (!$block) {
         return;
       }
-      if(!selectedRegions.has(id)) {
+      if (!selectedRegions.has(id)) {
         return;
       }
-      selectedRegions.delete(id)
-      const lines = blockToLines[id]
+      selectedRegions.delete(id);
+      const lines = blockToLines[id];
       hideRegion($block, lines);
-    }
+    };
   }
 
-  if (showEntities) {
-    const entities = Object.values(annotations).filter(
-      (a) => a.motivation === 'classifying',
-    );
-    for (const entity of entities) {
-      const resourceTargets = entity.target.filter(isAnnotationResourceTarget);
-      const entityType = getEntityType(entity);
-      for (const resource of resourceTargets) {
-        const $word = $words[resource.id] ?? orThrow('No $word');
-        $word.classList.add('entity');
-        $word.classList.add(toClassName(entityType));
-        $word.title = `${entityType} | ${entity.id}`;
-      }
-    }
-  }
   function selectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if(annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.add('selected')
-    } else if(annotation.textGranularity === "block") {
-      selectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const $word = $fragments[id];
+      $word.classList.add('selected');
+    } else if (annotation.textGranularity === 'block') {
+      selectRegion(id);
     } else {
-      console.warn(`Select not implemented: ${annotation.textGranularity}`)
+      console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
   }
 
   function deselectAnnotation(id: Id) {
-    const annotation = annotations[id] ?? orThrow('Not found')
-    if(annotation.textGranularity === "word") {
-      const $word = $words[id]
-      $word.classList.remove('selected')
-    } else if(annotation.textGranularity === "block") {
-      deselectRegion(id)
+    const annotation = annotations[id] ?? orThrow('Not found');
+    if (annotation.textGranularity === 'word') {
+      const $word = $fragments[id];
+      $word.classList.remove('selected');
+    } else if (annotation.textGranularity === 'block') {
+      deselectRegion(id);
     } else {
-      console.warn(`Deselect not implemented: ${annotation.textGranularity}`)
+      console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
   return {
     selectAnnotation,
     deselectAnnotation,
-    hide: () => $view.style.visibility = 'hidden',
-    show: () => $view.style.visibility = 'visible'
-  }
+    hide,
+    show,
+  };
 }
+

@@ -2,7 +2,7 @@ import { Point } from './Point';
 import { calcBoundingBox } from './calcBoundingBox';
 import { px } from './px';
 
-export const renderWord = (
+export const renderFragment = (
   text: string,
   hull: Point[],
   angle: number,
@@ -19,9 +19,9 @@ export const renderWord = (
   $boundingBox.style.height = px(boundingBox.height);
   $boundingBox.style.transform = `rotate(${angle}rad)`;
 
-  const $wordText = document.createElement('div');
-  $wordText.classList.add('word');
-  $boundingBox.appendChild($wordText);
-  $wordText.innerText = text;
-  return $wordText;
+  const $fragmentText = document.createElement('div');
+  $fragmentText.classList.add('fragment');
+  $boundingBox.appendChild($fragmentText);
+  $fragmentText.innerText = text;
+  return $fragmentText;
 };

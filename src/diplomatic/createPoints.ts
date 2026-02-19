@@ -1,9 +1,7 @@
 import { Point } from './Point';
 
-export function createPoints(
-  coordinates: string | DOMRect
-) {
-  if(typeof coordinates === 'string') {
+export function createPoints(coordinates: string | DOMRect) {
+  if (typeof coordinates === 'string') {
     return createPointsFromSvgPath(coordinates);
   } else {
     return createPointsFromDomRect(coordinates);
@@ -27,4 +25,3 @@ function createPointsFromDomRect(rect: DOMRect): Point[] {
     [rect.left, rect.bottom],
   ];
 }
-

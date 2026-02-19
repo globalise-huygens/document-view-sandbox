@@ -1,4 +1,4 @@
-import { ValueSelector } from '../AnnoModel';
+import { ValueSelector } from './AnnoModel';
 import { isSvgSelector } from './isSvgSelector';
 
 export function assertSvgSelector(

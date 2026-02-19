@@ -1,4 +1,4 @@
-import { AnnotationResourceTarget, AnnotationTarget } from '../AnnoModel';
+import { AnnotationResourceTarget, AnnotationTarget } from './AnnoModel';
 
 export function isAnnotationResourceTarget(
   toTest: AnnotationTarget,

@@ -1,10 +1,6 @@
-import {getExampleFromUrl} from "./getExampleFromUrl";
+import { getExampleFromUrl } from '../../util/getExampleFromUrl';
 
-export const examples = [
-  'minimal',
-  'line-wrapping',
-  'select'
-] as const;
+export const examples = ['minimal', 'line-wrapping'] as const;
 export type ExampleType = (typeof examples)[number];
 
 export function getNormalizedExampleFromUrl(): ExampleType {
