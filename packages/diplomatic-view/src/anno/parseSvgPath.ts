@@ -1,6 +1,6 @@
 /**
  * In: `<path d="M247,1799 297,1798 346,1795 376,1794z"/>`
- * Out: `247,1799 297,1798 346,1795 376,1794z`
+ * Out: `247,1799 297,1798 346,1795 376,1794  `
  */
 export function parseSvgPath(svgPath: string): string {
   const dMatch = svgPath.match(/d="([^"]+)"/);

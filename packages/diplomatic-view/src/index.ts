@@ -1,3 +1,5 @@
+export {parseSvgPath} from "./anno/parseSvgPath.ts";
+
 export {findSvgPath} from "./anno/findSvgPath.ts";
 
 export {toClassName} from "./toClassName.ts";

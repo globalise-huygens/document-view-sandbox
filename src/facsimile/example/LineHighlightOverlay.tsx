@@ -1,63 +1,109 @@
 import {
   useCanvas,
-  HighlightOverlay,
-  type Highlight,
+  Overlay,
+  useImageInfo,
 } from '@knaw-huc/osd-iiif-viewer';
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState} from 'react';
 import {
   type AnnotationPage,
   type Annotation,
   findTextualBodyValue,
   findSvgPath,
 } from '@globalise/diplomatic-view';
+import {parseSvgPath} from "@globalise/diplomatic-view";
+
+type Fragment = {
+  id: string;
+  path: string;
+  text: string;
+};
 
 export function LineHighlightOverlay() {
   const {current} = useCanvas();
-  const [fragments, setFragments] = useState<Highlight[]>([]);
-  const [texts, setTexts] = useState<Record<string, string>>({});
-  const [tooltip, setTooltip] = useState<TooltipProps | null>();
+  const imageInfo = useImageInfo();
+  const [fragments, setFragments] = useState<Fragment[]>([]);
+  const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
   useEffect(() => {
     const url = current?.annotationPageIds[0];
     if (!url) {
       setFragments([]);
-      setTexts({});
       return;
     }
     fetch(url)
       .then((r) => r.json())
       .then((page: AnnotationPage) => {
         const lines = page.items.filter(isSupplementingLine);
-        setFragments(lines.map((a) => ({id: a.id, path: findSvgPath(a)})));
-        setTexts(Object.fromEntries(
-          lines.map((a) => [a.id, findTextualBodyValue(a)])
-        ));
+        setFragments(lines.map((a) => {
+          const path = parseSvgPath(findSvgPath(a));
+          const text = findTextualBodyValue(a);
+          return ({id: a.id, path, text});
+        }));
       });
   }, [current]);
 
+  if (!imageInfo) {
+    return null;
+  }
+
   return (
     <>
-      <HighlightOverlay
-        highlights={fragments}
-        onHover={(id, event) => {
-          if (!id) {
-            setTooltip(null);
-          } else {
-            setTooltip({text: texts[id], x: event.clientX, y: event.clientY});
-          }
-        }}
-      />
+      <Overlay location={imageInfo.location}>
+        <svg
+          viewBox={`0 0 ${imageInfo.size.x} ${imageInfo.size.y}`}
+          style={{width: '100%', height: '100%', pointerEvents: 'none'}}
+        >
+          {fragments.map((fragment) => (
+            <Highlight
+              key={fragment.id}
+              points={fragment.path}
+              onHover={(hovering, e) => {
+                if (!hovering) {
+                  setTooltip(null);
+                  return;
+                }
+                setTooltip({text: fragment.text, x: e.clientX, y: e.clientY});
+              }}
+            />
+          ))}
+        </svg>
+      </Overlay>
       {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
 }
 
+type HighlightProps = {
+  points: string;
+  onHover: (hovering: boolean, event: React.MouseEvent) => void;
+};
+
+function Highlight({points, onHover}: HighlightProps) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <polygon
+      points={points}
+      fill={hovered ? 'rgba(0,0,0,0.1)' : 'transparent'}
+      style={{pointerEvents: 'auto', cursor: 'pointer'}}
+      onMouseEnter={(e) => {
+        setHovered(true);
+        onHover(true, e);
+      }}
+      onMouseMove={(e) => onHover(true, e)}
+      onMouseLeave={(e) => {
+        setHovered(false);
+        onHover(false, e);
+      }}
+    />
+  );
+}
 
 export type TooltipProps = { text: string; x: number; y: number };
 
 function Tooltip({x, y, text}: TooltipProps) {
   return (
-    <div className="tooltip" style={{left: x + 10, top: y - 30}}>
+    <div className='tooltip' style={{left: x + 10, top: y - 30}}>
       {text}
     </div>
   );
