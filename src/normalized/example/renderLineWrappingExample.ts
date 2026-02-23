@@ -1,7 +1,7 @@
 import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
 import {Benchmark} from '../../util/Benchmark';
 import {renderLineByLineView} from '../renderLineByLineView';
-import {AnnotationPage} from "@knaw-huc/original-layout/diplomatic";
+import {AnnotationPage} from "@globalise/diplomatic-view";
 
 export async function renderLineWrappingExample($parent: HTMLElement) {
   const pagePath =

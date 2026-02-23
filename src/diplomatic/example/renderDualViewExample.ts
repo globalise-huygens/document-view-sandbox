@@ -5,7 +5,7 @@ import { combineViews } from './combineViews';
 import {
   AnnotationPage, findSourceLabel, findTextualBodyValue,
   renderDiplomaticView
-} from "@knaw-huc/original-layout/diplomatic";
+} from "@globalise/diplomatic-view";
 import {px} from "./px";
 import {$} from "./$";
 

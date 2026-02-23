@@ -38,6 +38,7 @@ const sharedConfig = {
     'react': require.resolve('react'),
     'react-dom': path.dirname(require.resolve('react-dom/package.json')),
     'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+    '@globalise/diplomatic-view': path.resolve('packages/diplomatic-view/src/index.ts'),
   },
 }
 

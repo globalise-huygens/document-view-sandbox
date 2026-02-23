@@ -15,7 +15,6 @@ export function ManifestLoader(
   {children, url}: ManifestLoaderProps
 ) {
   const loadManifest = useLoadManifest();
-  const {goTo} = useCanvas();
   const manifest = useManifest();
 
   useEffect(() => {

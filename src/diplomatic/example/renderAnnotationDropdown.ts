@@ -1,4 +1,4 @@
-import {Annotation} from "@knaw-huc/original-layout/diplomatic";
+import {Annotation} from "@globalise/diplomatic-view";
 import {Id} from "@knaw-huc/original-layout";
 
 export function renderAnnotationDropdown(

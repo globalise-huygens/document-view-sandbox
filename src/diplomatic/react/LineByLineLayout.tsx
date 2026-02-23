@@ -3,7 +3,7 @@ import {renderLineByLineView} from '../../normalized/renderLineByLineView';
 import {useVisibility} from "./useVisibility";
 import {useSelectedIds} from "./useSelectedIds";
 import {Id, View} from "@knaw-huc/original-layout";
-import {Annotation} from "@knaw-huc/original-layout/diplomatic";
+import {Annotation} from "@globalise/diplomatic-view";
 
 export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;

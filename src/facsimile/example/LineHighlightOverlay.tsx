@@ -9,7 +9,7 @@ import {
   type Annotation,
   findTextualBodyValue,
   findSvgPath,
-} from '@knaw-huc/original-layout/diplomatic';
+} from '@globalise/diplomatic-view';
 
 export function LineHighlightOverlay() {
   const {current} = useCanvas();

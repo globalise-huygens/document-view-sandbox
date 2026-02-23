@@ -7,7 +7,7 @@ import {
   DiplomaticView,
   findSourceLabel,
   findTextualBodyValue, useAnnotationPage,
-} from "@knaw-huc/original-layout/diplomatic";
+} from "@globalise/diplomatic-view";
 import {Id} from "@knaw-huc/original-layout";
 
 export function DualViewExample() {

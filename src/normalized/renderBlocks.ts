@@ -2,12 +2,8 @@ import { select } from 'd3-selection';
 import {
   Annotation,
   findResourceTarget,
-} from "@knaw-huc/original-layout/diplomatic";
-import {D3El, Id} from "@knaw-huc/original-layout";
-import {
-  calcBoundingBox,
-  createPoints
-} from "@knaw-huc/original-layout/diplomatic";
+} from "@globalise/diplomatic-view";
+import {calcBoundingBox, createPoints, D3El, Id} from "@knaw-huc/original-layout";
 
 type BlocksConfig = {
   stroke: string;

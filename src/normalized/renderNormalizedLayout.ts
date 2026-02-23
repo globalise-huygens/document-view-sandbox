@@ -5,7 +5,7 @@ import {
   Annotation, findResourceTarget, findTextPositionSelector, getEntityType,
   getPageText,
   isEntity, toClassName
-} from "@knaw-huc/original-layout/diplomatic";
+} from "@globalise/diplomatic-view";
 
 export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;
