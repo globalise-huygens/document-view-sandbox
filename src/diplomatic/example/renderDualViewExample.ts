@@ -1,5 +1,4 @@
 import {mapAnnotationsById} from './mapAnnotationsById';
-import {renderLineByLineView} from '../../normalized/renderLineByLineView';
 import {renderAnnotationDropdown} from './renderAnnotationDropdown';
 import {combineViews} from './combineViews';
 import {renderDiplomaticView} from "@globalise/diplomatic";
@@ -10,6 +9,7 @@ import {
   findSourceLabel,
   findTextualBodyValue
 } from "@globalise/annotation";
+import {renderLineByLineView} from "@globalise/line-by-line";
 
 export async function renderDualViewExample($parent: HTMLElement) {
   console.log('dual-view');

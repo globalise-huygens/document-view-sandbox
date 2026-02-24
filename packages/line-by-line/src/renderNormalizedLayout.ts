@@ -1,14 +1,13 @@
 import {select} from 'd3-selection';
-import {orThrow} from '../util/orThrow';
 import {createRanges, D3El, Id, TextRange} from "@knaw-huc/original-layout";
 import {
-  Annotation, findResourceTarget, findTextPositionSelector, getEntityType,
-  isEntity
-} from "@globalise/annotation";
-import {
+  Annotation,
+  findResourceTarget,
+  findTextPositionSelector,
+  getEntityType,
   getPageText,
-  toClassName
-} from "@globalise/diplomatic";
+  isEntity, orThrow, toClassName
+} from "@globalise/annotation";
 
 export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;

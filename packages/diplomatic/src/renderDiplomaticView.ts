@@ -1,9 +1,6 @@
 import {
-  Annotation,
-  findResourceTarget,
-  findTextPositionSelector,
-  isEntity,
-  getEntityType
+  Annotation, findResourceTarget, findTextPositionSelector,
+  isEntity, getEntityType, toClassName, getPageText,
 } from '@globalise/annotation';
 import {Id} from '@knaw-huc/original-layout';
 import {renderLineNumbers} from './renderLineNumbers';
@@ -16,9 +13,7 @@ import {
 import {orThrow} from '@knaw-huc/original-layout';
 import {D3El} from '@knaw-huc/original-layout';
 import {View} from '@knaw-huc/original-layout';
-import {toClassName} from './toClassName';
 import {createRanges} from '@knaw-huc/original-layout';
-import {getPageText} from './getPageText';
 import {groupRanges} from '@knaw-huc/original-layout';
 import {createFragment} from './createFragment.ts';
 

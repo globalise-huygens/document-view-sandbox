@@ -1,9 +1,8 @@
 import {renderNormalizedLayout} from './renderNormalizedLayout';
-import {orThrow} from '../util/orThrow';
 import {renderBlocks} from './renderBlocks';
 import {
   Annotation,
-  findResourceTarget
+  findResourceTarget, orThrow
 } from "@globalise/annotation";
 import {Id, View} from "@knaw-huc/original-layout";
 

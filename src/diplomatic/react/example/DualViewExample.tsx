@@ -4,7 +4,7 @@ import {$} from '../../example/$';
 import {DiplomaticView, useAnnotationPage} from "@globalise/diplomatic";
 import {Id} from "@knaw-huc/original-layout";
 import {Controls} from "./Controls";
-import {LineByLineLayout} from "../../../normalized/react/LineByLineLayout";
+import {LineByLineLayout} from "@globalise/line-by-line";
 
 export function DualViewExample() {
   const pagePath = '../../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';

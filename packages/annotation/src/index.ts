@@ -22,3 +22,5 @@ export {assertSvgSelector} from './assertSvgSelector';
 export {assertTextualBody} from './assertTextualBody';
 export {isSpecificResourceTarget} from './isSpecificResourceTarget';
 export {isSvgSelector} from './isSvgSelector';
+export {getPageText} from './getPageText';
+export {toClassName} from './toClassName';

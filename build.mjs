@@ -17,7 +17,6 @@ const entryPoints = [
 
   'src/normalized/index.html',
   'src/normalized/index.ts',
-  'src/normalized/normalized.css',
 
   'src/facsimile/index.html',
   'src/facsimile/index.tsx',
@@ -39,10 +38,12 @@ const sharedConfig = {
     'react-dom': path.dirname(require.resolve('react-dom/package.json')),
     'react/jsx-runtime': require.resolve('react/jsx-runtime'),
 
-    // Pick up source changes in local packages:
+    // Pick up source changes in local packages, css needs an alias of its own:
     '@globalise/diplomatic': path.resolve('packages/diplomatic/src/index.ts'),
     '@globalise/annotation': path.resolve('packages/annotation/src/index.ts'),
     '@globalise/facsimile': path.resolve('packages/facsimile/src/index.ts'),
+    '@globalise/line-by-line': path.resolve('packages/line-by-line/src/index.ts'),
+    '@globalise/line-by-line/style.css': path.resolve('packages/line-by-line/src/normalized.css'),
   },
 }
 
