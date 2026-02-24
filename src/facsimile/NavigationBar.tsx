@@ -1,6 +1,11 @@
 import {useCanvas, useViewerReady} from "@knaw-huc/osd-iiif-viewer";
 import React from "react";
 
+/**
+ * WIP.
+ * TODO: Use icons and theme
+ * TODO: Remove `I'm Feeling Lucky`
+ */
 export function NavigationBar() {
   const ready = useViewerReady();
   const {currentIndex, current, total, goTo, next, prev} = useCanvas();

@@ -1,8 +1,8 @@
 import React, {useRef} from 'react';
 import {ViewerCanvas} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from './ManifestLoader';
-import {ControlBar} from './example/ControlBar';
-import {NavigationBar} from './example/NavigationBar';
+import {ControlBar} from './ControlBar';
+import {NavigationBar} from './NavigationBar';
 import {HighlightOverlay} from './HighlightOverlay';
 import {Id} from '@knaw-huc/original-layout';
 
