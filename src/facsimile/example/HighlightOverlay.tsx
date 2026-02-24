@@ -18,7 +18,7 @@ type Fragment = {
   text: string;
 };
 
-export function LineHighlightOverlay() {
+export function HighlightOverlay() {
   const {current} = useCanvas();
   const imageInfo = useImageInfo();
   const [fragments, setFragments] = useState<Fragment[]>([]);
@@ -111,5 +111,5 @@ function Tooltip({x, y, text}: TooltipProps) {
 
 function isSupplementingLine(a: Annotation): boolean {
   return a.motivation === 'supplementing' &&
-    a.textGranularity === 'line';
+    a.textGranularity === 'word';
 }

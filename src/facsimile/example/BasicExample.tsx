@@ -3,7 +3,7 @@ import {ViewerCanvas, ViewerProvider,} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from '../ManifestLoader';
 import {ControlBar} from './ControlBar';
 import {NavigationBar} from './NavigationBar';
-import {LineHighlightOverlay} from "./LineHighlightOverlay";
+import {HighlightOverlay} from "./HighlightOverlay";
 
 import '../facsimile.css';
 import '../tooltip.css';
@@ -23,7 +23,7 @@ export function BasicExample() {
           style={{position: 'relative', width: '100%', height: 'calc(100vh - 2em)'}}
         >
           <ViewerCanvas showControls={false}/>
-          <LineHighlightOverlay/>
+          <HighlightOverlay/>
           <ControlBar fullscreenRef={fullscreenRef}/>
           <NavigationBar/>
         </div>
