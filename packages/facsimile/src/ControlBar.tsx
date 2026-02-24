@@ -1,5 +1,5 @@
 import {useViewerControls} from "@knaw-huc/osd-iiif-viewer";
-import React, {type RefObject} from "react";
+import {type RefObject} from "react";
 
 type ToolbarProps = {fullscreenRef: RefObject<HTMLDivElement | null>};
 

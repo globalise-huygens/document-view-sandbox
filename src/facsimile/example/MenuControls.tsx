@@ -4,9 +4,9 @@ import {
   type Annotation,
   type AnnotationPage,
   findTextualBodyValue,
+  Id,
 } from '@globalise/annotation';
 import {AnnotationDropdown} from '../../diplomatic/react/example/AnnotationDropdown';
-import {Id} from '@knaw-huc/original-layout';
 
 type MenuControlsProps = {
   onToggleAnnotation: (id: Id) => void;

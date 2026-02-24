@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import {createPortal} from 'react-dom';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {FacsimileViewer} from '../FacsimileViewer';
+import {FacsimileViewer} from '@globalise/facsimile';
 import {MenuControls} from './MenuControls';
-import {Id} from '@knaw-huc/original-layout';
-import {$} from "../../diplomatic/example/$";
+import {Id} from '@globalise/annotation';
+import {$} from '../../diplomatic/example/$';
 
 const manifestUrl = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';

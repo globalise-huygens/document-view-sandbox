@@ -9,9 +9,8 @@ import {
   type Annotation,
   findTextualBodyValue,
   findSvgPath,
-  parseSvgPath,
+  parseSvgPath, Id,
 } from '@globalise/annotation';
-import {Id} from '@knaw-huc/original-layout';
 
 type Fragment = {
   id: string;

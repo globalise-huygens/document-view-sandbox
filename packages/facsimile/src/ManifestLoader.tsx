@@ -1,6 +1,5 @@
 import {useEffect} from 'react';
 import {
-  useCanvas,
   useLoadManifest,
   useManifest
 } from "@knaw-huc/osd-iiif-viewer";

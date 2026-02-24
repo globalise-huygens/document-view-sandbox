@@ -4,12 +4,12 @@ import {ManifestLoader} from './ManifestLoader';
 import {ControlBar} from './ControlBar';
 import {NavigationBar} from './NavigationBar';
 import {HighlightOverlay} from './HighlightOverlay';
-import {Id} from '@knaw-huc/original-layout';
+import {Id} from '@globalise/annotation';
 
 import './facsimile.css';
 import './tooltip.css';
 
-type FacsimileViewerProps = {
+export type FacsimileViewerProps = {
   manifestUrl: string;
   selectedIds: Id[];
   onToggleAnnotation: (id: Id) => void;

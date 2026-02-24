@@ -42,6 +42,7 @@ const sharedConfig = {
     // Pick up source changes in local packages:
     '@globalise/diplomatic': path.resolve('packages/diplomatic/src/index.ts'),
     '@globalise/annotation': path.resolve('packages/annotation/src/index.ts'),
+    '@globalise/facsimile': path.resolve('packages/facsimile/src/index.ts'),
   },
 }
 

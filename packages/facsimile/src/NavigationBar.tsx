@@ -1,5 +1,4 @@
 import {useCanvas, useViewerReady} from "@knaw-huc/osd-iiif-viewer";
-import React from "react";
 
 /**
  * WIP.
