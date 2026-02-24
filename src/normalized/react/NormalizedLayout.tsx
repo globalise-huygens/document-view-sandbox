@@ -2,7 +2,7 @@ import React, {Ref, useImperativeHandle, useLayoutEffect, useRef,} from 'react';
 import {
   NormalizedLayoutResult,
   renderNormalizedLayout
-} from "../../normalized/renderNormalizedLayout";
+} from "../renderNormalizedLayout";
 import {Annotation} from "@globalise/annotation";
 import {Id} from "@knaw-huc/original-layout";
 

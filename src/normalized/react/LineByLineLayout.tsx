@@ -1,5 +1,5 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import {renderLineByLineView} from '../../normalized/renderLineByLineView';
+import {renderLineByLineView} from '../renderLineByLineView';
 import {Id, useSelectedIds, useVisibility, View} from "@knaw-huc/original-layout";
 import {Annotation} from "@globalise/annotation";
 

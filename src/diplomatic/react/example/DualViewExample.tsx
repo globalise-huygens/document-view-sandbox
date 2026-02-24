@@ -1,10 +1,10 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {createPortal} from 'react-dom';
-import {LineByLineLayout} from '../LineByLineLayout';
 import {$} from '../../example/$';
 import {DiplomaticView, useAnnotationPage} from "@globalise/diplomatic";
 import {Id} from "@knaw-huc/original-layout";
 import {Controls} from "./Controls";
+import {LineByLineLayout} from "../../../normalized/react/LineByLineLayout";
 
 export function DualViewExample() {
   const pagePath = '../../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
