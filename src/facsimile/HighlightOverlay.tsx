@@ -104,7 +104,10 @@ function Highlight({points, selected, onClick, onHover}: HighlightProps) {
       points={points}
       fill={fill}
       style={{pointerEvents: 'auto', cursor: 'pointer'}}
-      onClick={onClick}
+      onPointerDown={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
       onMouseEnter={(e) => {
         setHovered(true);
         onHover(true, e);
