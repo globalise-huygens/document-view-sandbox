@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {createPortal} from 'react-dom';
 import {LineByLineLayout} from '../LineByLineLayout';
 import {$} from '../../example/$';
-import {DiplomaticView, useAnnotationPage} from "@globalise/diplomatic-view";
+import {DiplomaticView, useAnnotationPage} from "@globalise/diplomatic";
 import {Id} from "@knaw-huc/original-layout";
 import {Controls} from "./Controls";
 

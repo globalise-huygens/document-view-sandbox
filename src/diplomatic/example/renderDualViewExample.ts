@@ -2,7 +2,7 @@ import {mapAnnotationsById} from './mapAnnotationsById';
 import {renderLineByLineView} from '../../normalized/renderLineByLineView';
 import {renderAnnotationDropdown} from './renderAnnotationDropdown';
 import {combineViews} from './combineViews';
-import {renderDiplomaticView} from "@globalise/diplomatic-view";
+import {renderDiplomaticView} from "@globalise/diplomatic";
 import {px} from "./px";
 import {$} from "./$";
 import {

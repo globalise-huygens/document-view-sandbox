@@ -8,7 +8,7 @@ import {
 import {
   getPageText,
   toClassName
-} from "@globalise/diplomatic-view";
+} from "@globalise/diplomatic";
 
 export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;
