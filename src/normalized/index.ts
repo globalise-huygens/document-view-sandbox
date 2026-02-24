@@ -4,7 +4,7 @@ import { getNormalizedExampleFromUrl } from './example/Examples';
 import { renderMinimalExample } from './example/renderMinimalExample';
 import { renderLineWrappingExample } from './example/renderLineWrappingExample';
 
-import '../../packages/line-by-line/src/normalized.css';
+import '@globalise/line-by-line/style.css';
 
 reloadOnEsBuild();
 

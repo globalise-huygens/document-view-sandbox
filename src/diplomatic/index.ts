@@ -4,7 +4,7 @@ import { reloadOnEsBuild } from '../util/reloadOnEsBuild';
 import { renderDualViewExample } from './example/renderDualViewExample';
 
 import "@knaw-huc/original-layout/style.css";
-import '../../packages/line-by-line/src/normalized.css';
+import '@globalise/line-by-line/style.css';
 
 reloadOnEsBuild();
 
