@@ -38,7 +38,10 @@ const sharedConfig = {
     'react': require.resolve('react'),
     'react-dom': path.dirname(require.resolve('react-dom/package.json')),
     'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+
+    // Pick up source changes in local packages:
     '@globalise/diplomatic-view': path.resolve('packages/diplomatic-view/src/index.ts'),
+    '@globalise/annotation': path.resolve('packages/annotation/src/index.ts'),
   },
 }
 

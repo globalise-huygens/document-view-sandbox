@@ -1,6 +1,11 @@
-import {Annotation} from './anno/AnnoModel.ts';
+import {
+  Annotation,
+  findResourceTarget,
+  findTextPositionSelector,
+  isEntity,
+  getEntityType
+} from '@globalise/annotation';
 import {Id} from '@knaw-huc/original-layout';
-import {findResourceTarget} from './anno/findResourceTarget.ts';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {
@@ -13,12 +18,9 @@ import {D3El} from '@knaw-huc/original-layout';
 import {View} from '@knaw-huc/original-layout';
 import {toClassName} from './toClassName';
 import {createRanges} from '@knaw-huc/original-layout';
-import {findTextPositionSelector} from './anno/findTextPositionSelector.ts';
 import {getPageText} from './getPageText';
-import {groupRanges} from "@knaw-huc/original-layout";
-import {isEntity} from "./anno/EntityModel.ts";
-import {getEntityType} from "./anno/getEntityType.ts";
-import {createFragment} from "./createFragment.ts";
+import {groupRanges} from '@knaw-huc/original-layout';
+import {createFragment} from './createFragment.ts';
 
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
@@ -138,6 +140,7 @@ export function renderDiplomaticView(
       $block.attr('opacity', 1);
       lines.forEach((l) => showLine(l));
     }
+
     function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
       $block.attr('opacity', 0);
       lines.forEach((l) => hideLine(l));
@@ -149,6 +152,7 @@ export function renderDiplomaticView(
       }
       showRegion($block, lines);
     }
+
     function leaveRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
       if (selectedRegions.has(id)) {
         return;

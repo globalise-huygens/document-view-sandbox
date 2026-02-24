@@ -1,9 +1,11 @@
-import {Annotation} from './anno/AnnoModel';
-import {getBody} from './anno/getBody';
-import {assertTextualBody} from './anno/assertTextualBody';
-import {findSvgPath} from './anno/findSvgPath';
-import {Fragment} from "@knaw-huc/original-layout";
-import {parseSvgPath} from "./anno/parseSvgPath.ts";
+import {
+  Annotation,
+  getBody,
+  assertTextualBody,
+  findSvgPath,
+  parseSvgPath
+} from '@globalise/annotation';
+import {Fragment} from '@knaw-huc/original-layout';
 
 export function createFragment(word: Annotation): Fragment {
   const id = word.id;

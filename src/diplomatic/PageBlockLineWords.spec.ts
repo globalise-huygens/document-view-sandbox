@@ -8,7 +8,7 @@ import {
   getBody, isAnnotationResourceTarget, isLine, isBlock, isWord,
   isPage, findTextualBodyValue,
   isTextualBody
-} from '@globalise/diplomatic-view'
+} from '@globalise/annotation'
 import {Id} from "@knaw-huc/original-layout";
 
 describe('AnnotationPage', () => {

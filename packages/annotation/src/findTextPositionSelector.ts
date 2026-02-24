@@ -1,8 +1,8 @@
 import {Annotation, SpecificResourceTarget} from './AnnoModel';
 import {isSpecificResourceTarget} from './isSpecificResourceTarget';
 import {TextPositionSelector} from '@iiif/presentation-3';
-import {orThrow} from "@knaw-huc/original-layout";
-import {Id} from "@knaw-huc/original-layout";
+import {orThrow} from "./orThrow.ts";
+import { Id } from './Id.ts';
 
 export function findTextPositionSelector(
   annotation: Annotation,

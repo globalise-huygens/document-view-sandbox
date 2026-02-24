@@ -1,7 +1,5 @@
 import {Id, orThrow} from '@knaw-huc/original-layout';
-import {Annotation} from "./anno/AnnoModel.ts";
-import {getBody} from "./anno/getBody.ts";
-import {assertTextualBody} from "./anno/assertTextualBody.ts";
+import {Annotation, getBody, assertTextualBody} from '@globalise/annotation';
 
 export function getPageText(annotations: Record<Id, Annotation>) {
   const htrPageAnno = Object.values(annotations).find(

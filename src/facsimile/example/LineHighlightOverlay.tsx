@@ -9,8 +9,8 @@ import {
   type Annotation,
   findTextualBodyValue,
   findSvgPath,
-} from '@globalise/diplomatic-view';
-import {parseSvgPath} from "@globalise/diplomatic-view";
+  parseSvgPath
+} from '@globalise/annotation';
 
 type Fragment = {
   id: string;

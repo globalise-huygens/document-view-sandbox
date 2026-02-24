@@ -1,9 +1,11 @@
-import {Annotation} from './anno/AnnoModel';
-import {findResourceTarget} from './anno/findResourceTarget';
-import {findSvgPath} from './anno/findSvgPath';
 import {createPoints, Id} from "@knaw-huc/original-layout";
 import {Point} from "@knaw-huc/original-layout";
-import {parseSvgPath} from "./anno/parseSvgPath.ts";
+import {
+  Annotation,
+  findResourceTarget,
+  findSvgPath,
+  parseSvgPath
+} from '@globalise/annotation';
 
 export function createBlockBoundaries(
   words: Annotation[],

@@ -4,7 +4,7 @@ import {renderBlocks} from './renderBlocks';
 import {
   Annotation,
   findResourceTarget
-} from "@globalise/diplomatic-view";
+} from "@globalise/annotation";
 import {Id, View} from "@knaw-huc/original-layout";
 
 type LineByLineViewProps = {

@@ -5,7 +5,7 @@ import {renderDiplomaticView} from '../renderDiplomaticView';
 import {ViewFit} from '@knaw-huc/original-layout';
 import {useVisibility} from "@knaw-huc/original-layout";
 import {useSelectedIds} from "@knaw-huc/original-layout";
-import {Annotation} from "../anno/AnnoModel.ts";
+import { Annotation } from '@globalise/annotation';
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;

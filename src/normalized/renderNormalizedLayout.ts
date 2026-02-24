@@ -3,8 +3,11 @@ import {orThrow} from '../util/orThrow';
 import {createRanges, D3El, Id, TextRange} from "@knaw-huc/original-layout";
 import {
   Annotation, findResourceTarget, findTextPositionSelector, getEntityType,
+  isEntity
+} from "@globalise/annotation";
+import {
   getPageText,
-  isEntity, toClassName
+  toClassName
 } from "@globalise/diplomatic-view";
 
 export type NormalizedLayoutResult = {

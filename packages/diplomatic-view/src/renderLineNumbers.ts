@@ -1,3 +1,4 @@
+import {Annotation, findSvgPath, findResourceTarget, parseSvgPath} from '@globalise/annotation';
 import {Id} from '@knaw-huc/original-layout';
 import {Point} from '@knaw-huc/original-layout';
 import {Rect} from '@knaw-huc/original-layout';
@@ -7,15 +8,11 @@ import {
   padCorners,
 } from '@knaw-huc/original-layout';
 import {createPoints} from '@knaw-huc/original-layout';
-import {findSvgPath} from './anno/findSvgPath.ts';
 import {orThrow} from '@knaw-huc/original-layout';
 import {px} from '@knaw-huc/original-layout';
-import {findResourceTarget} from './anno/findResourceTarget.ts';
 import {Scale} from '@knaw-huc/original-layout';
-import {createBlockBoundaries} from "./createBlockBoundaries.ts";
-import {Offset} from "@knaw-huc/original-layout";
-import {parseSvgPath} from "./anno/parseSvgPath.ts";
-import {Annotation} from "./anno/AnnoModel.ts";
+import {createBlockBoundaries} from './createBlockBoundaries.ts';
+import {Offset} from '@knaw-huc/original-layout';
 
 type LineNumbersConfig = {
   scale: Scale;

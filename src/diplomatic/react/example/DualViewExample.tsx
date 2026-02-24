@@ -4,9 +4,12 @@ import {LineByLineLayout} from '../LineByLineLayout';
 import {$} from '../../example/$';
 import {
   Annotation,
-  DiplomaticView,
   findSourceLabel,
-  findTextualBodyValue, useAnnotationPage,
+  findTextualBodyValue,
+} from "@globalise/annotation";
+import {
+  DiplomaticView,
+  useAnnotationPage
 } from "@globalise/diplomatic-view";
 import {Id} from "@knaw-huc/original-layout";
 
