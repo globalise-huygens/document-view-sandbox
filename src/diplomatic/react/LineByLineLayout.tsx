@@ -1,8 +1,6 @@
 import React, {useLayoutEffect, useRef} from 'react';
 import {renderLineByLineView} from '../../normalized/renderLineByLineView';
-import {useVisibility} from "./useVisibility";
-import {useSelectedIds} from "./useSelectedIds";
-import {Id, View} from "@knaw-huc/original-layout";
+import {Id, useSelectedIds, useVisibility, View} from "@knaw-huc/original-layout";
 import {Annotation} from "@globalise/annotation";
 
 export type LineByLineLayoutProps = {
