@@ -9,8 +9,9 @@ import {
   type Annotation,
   findTextualBodyValue,
   findSvgPath,
-  parseSvgPath
+  parseSvgPath,
 } from '@globalise/annotation';
+import {Id} from '@knaw-huc/original-layout';
 
 type Fragment = {
   id: string;
@@ -18,7 +19,14 @@ type Fragment = {
   text: string;
 };
 
-export function HighlightOverlay() {
+type HighlightOverlayProps = {
+  selectedIds: Id[];
+  onToggleAnnotation: (id: Id) => void;
+};
+
+export function HighlightOverlay(
+  {selectedIds, onToggleAnnotation}: HighlightOverlayProps
+) {
   const {current} = useCanvas();
   const imageInfo = useImageInfo();
   const [fragments, setFragments] = useState<Fragment[]>([]);
@@ -37,7 +45,7 @@ export function HighlightOverlay() {
         setFragments(lines.map((a) => {
           const path = parseSvgPath(findSvgPath(a));
           const text = findTextualBodyValue(a);
-          return ({id: a.id, path, text});
+          return {id: a.id, path, text};
         }));
       });
   }, [current]);
@@ -57,6 +65,8 @@ export function HighlightOverlay() {
             <Highlight
               key={fragment.id}
               points={fragment.path}
+              selected={selectedIds.includes(fragment.id)}
+              onClick={() => onToggleAnnotation(fragment.id)}
               onHover={(hovering, e) => {
                 if (!hovering) {
                   setTooltip(null);
@@ -68,24 +78,33 @@ export function HighlightOverlay() {
           ))}
         </svg>
       </Overlay>
-      {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
+      {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text} />}
     </>
   );
 }
 
 type HighlightProps = {
   points: string;
+  selected: boolean;
+  onClick: () => void;
   onHover: (hovering: boolean, event: React.MouseEvent) => void;
 };
 
-function Highlight({points, onHover}: HighlightProps) {
+function Highlight({points, selected, onClick, onHover}: HighlightProps) {
   const [hovered, setHovered] = useState(false);
+
+  const fill = selected
+    ? 'rgba(31,255,0,0.25)'
+    : hovered
+      ? 'rgba(0, 0, 0, 0.1)'
+      : 'transparent';
 
   return (
     <polygon
       points={points}
-      fill={hovered ? 'rgba(0,0,0,0.1)' : 'transparent'}
+      fill={fill}
       style={{pointerEvents: 'auto', cursor: 'pointer'}}
+      onClick={onClick}
       onMouseEnter={(e) => {
         setHovered(true);
         onHover(true, e);
@@ -99,11 +118,11 @@ function Highlight({points, onHover}: HighlightProps) {
   );
 }
 
-export type TooltipProps = { text: string; x: number; y: number };
+export type TooltipProps = {text: string; x: number; y: number};
 
 function Tooltip({x, y, text}: TooltipProps) {
   return (
-    <div className='tooltip' style={{left: x + 10, top: y - 30}}>
+    <div className="tooltip" style={{left: x + 10, top: y - 30}}>
       {text}
     </div>
   );
