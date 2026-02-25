@@ -1,13 +1,9 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useCanvas, ViewerCanvas} from '@knaw-huc/osd-iiif-viewer';
-import {
-  Annotation,
-  AnnotationPage,
-  Id,
-  PartOf,
-} from '@globalise/annotation';
+import {Annotation, AnnotationPage, Id, PartOf,} from '@globalise/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
+import {LoadingStatus} from "./LoadingStatus";
 
 type TranscriptionViewProps = {
   selected: Id[];
@@ -22,7 +18,8 @@ export function TranscriptionView(
   const [showDiplomatic, setShowDiplomatic] = useState(true);
   const [annotations, setAnnotations] = useState<Record<Id, Annotation> | null>(null);
   const [page, setPage] = useState<PartOf | null>(null);
-
+  const [status, setStatus] = useState<LoadingStatus>('loading');
+  
   useEffect(() => {
     if(!current) {
       return;
@@ -36,7 +33,8 @@ export function TranscriptionView(
       const transcriptionUrl = current.annotationPageIds[0];
       const entityUrl = current.annotationPageIds[1];
 
-      if(!transcriptionUrl) {
+      if (!transcriptionUrl) {
+        setStatus('no-transcription')
         return;
       }
 
@@ -56,14 +54,17 @@ export function TranscriptionView(
       }
       setAnnotations(mapped);
       setPage(transcriptionPage.partOf);
+      setStatus('ready')
     }
 
   }, [current]);
 
-  if (!annotations || !page) {
-    return <div>
-      Loading...
-    </div>;
+  if (status === 'loading' || !annotations || !page) {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'no-transcription') {
+    return <div>No transcription</div>;
   }
 
   return (
