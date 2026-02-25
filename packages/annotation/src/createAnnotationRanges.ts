@@ -21,7 +21,7 @@ export function createAnnotationRanges(
       };
     } catch (error) {
       const context = {error, annotation, pageAnnoId};
-      console.info('Warning: skipping annotation', annotation.id, context)
+      console.debug('Skipping annotation', annotation.id, context)
       return;
     }
   }).filter(range => !!range);

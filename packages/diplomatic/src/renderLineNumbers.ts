@@ -66,13 +66,13 @@ export function renderLineNumbers(
   for (const [i, line] of lineAnnos.entries()) {
     const words = wordsByLine.get(line.id);
     if (!words) {
-      console.warn('Line without words:', line.id);
+      console.debug('Line without words:', line.id);
       continue;
     }
 
     const blockId = lineToBlock[line.id];
     if (!blockId) {
-      console.warn('Line without block:', line.id);
+      console.debug('Line without block:', line.id);
       continue;
     }
 
