@@ -10,6 +10,7 @@ import {
 
 export type NormalizedLayoutConfig = {
   onHover?: (id: Id | null) => void;
+  onClick?: (id: Id) => void;
 };
 
 export type NormalizedLayoutResult = {
@@ -19,11 +20,17 @@ export type NormalizedLayoutResult = {
   ranges: TextRange[];
 };
 
+const noop = () => {
+};
+const defaultConfig = {onClick: noop, onHover: noop};
+
 export function renderNormalizedLayout(
   $parent: HTMLElement,
   annotations: Record<Id, Annotation>,
   config?: NormalizedLayoutConfig,
 ): NormalizedLayoutResult {
+  const {onClick, onHover} = config ?? defaultConfig
+
   const $view = document.createElement('div');
   $parent.append($view);
   $view.classList.add('normalized-view');
@@ -95,13 +102,16 @@ export function renderNormalizedLayout(
         }
       }
 
-      if (config?.onHover) {
-        const wordId = range.annotations
-          .find(id => annotations[id].textGranularity === 'word');
-        if (wordId) {
-          $range.addEventListener('mouseenter', () => config.onHover!(wordId));
-          $range.addEventListener('mouseleave', () => config.onHover!(null));
-        }
+      const wordId = range.annotations
+        .find(id => annotations[id].textGranularity === 'word');
+
+      if (onHover && wordId) {
+        $range.addEventListener('mouseenter', () => onHover(wordId));
+        $range.addEventListener('mouseleave', () => onHover(null));
+      }
+
+      if (onClick && wordId) {
+        $range.addEventListener('click', () => onClick(wordId));
       }
 
       $ranges[range.id] = $range;

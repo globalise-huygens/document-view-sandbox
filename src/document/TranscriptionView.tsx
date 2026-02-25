@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {useCanvas} from '@knaw-huc/osd-iiif-viewer';
+import {useCanvas, ViewerCanvas} from '@knaw-huc/osd-iiif-viewer';
 import {
   Annotation,
   AnnotationPage,
@@ -8,16 +8,15 @@ import {
 } from '@globalise/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
-import {orThrow} from "../util/orThrow";
-import {ViewerCanvasModel} from "@knaw-huc/osd-iiif-viewer";
 
 type TranscriptionViewProps = {
   selected: Id[];
   onHover: (id: Id | null) => void;
+  onClick: (id: Id) => void;
 };
 
 export function TranscriptionView(
-  {selected, onHover}: TranscriptionViewProps
+  {selected, onHover, onClick}: TranscriptionViewProps
 ) {
   const {current} = useCanvas();
   const [showDiplomatic, setShowDiplomatic] = useState(true);
@@ -32,7 +31,7 @@ export function TranscriptionView(
     loadAnnotations(current);
 
     async function loadAnnotations(
-      current: ViewerCanvasModel
+      current: ViewerCanvas
     ) {
       const transcriptionUrl = current.annotationPageIds[0];
       const entityUrl = current.annotationPageIds[1];
@@ -93,6 +92,7 @@ export function TranscriptionView(
           showRegions={true}
           fit="height"
           onHover={onHover}
+          onClick={onClick}
           style={{height: '100%', gridArea: '1 / 1'}}
         />
         <LineByLineLayout
@@ -100,6 +100,7 @@ export function TranscriptionView(
           annotations={annotations}
           selected={selected}
           onHover={onHover}
+          onClick={onClick}
           style={{gridArea: '1 / 1'}}
         />
       </div>

@@ -78,6 +78,7 @@ export function DocumentView(
         <TranscriptionView
           selected={selectedIds}
           onHover={setHoveredId}
+          onClick={handleToggle}
         />
       </div>
     </div>

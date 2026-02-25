@@ -16,6 +16,7 @@ export type DiplomaticViewProps = {
   visible?: boolean;
   selected?: Id[];
   onHover?: (id: Id | null) => void;
+  onClick?: (id: Id) => void;
   style?: React.CSSProperties;
 };
 
@@ -29,6 +30,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     visible = true,
     selected = [],
     onHover,
+    onClick,
     style,
   } = props;
 
@@ -47,6 +49,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       showRegions,
       showEntities,
       onHover,
+      onClick
     });
   }, [annotations, page, fit, showRegions, showEntities, onHover]);
 

@@ -13,11 +13,19 @@ export type LineByLineLayoutProps = {
   visible?: boolean;
   selected?: Id[];
   onHover?: (id: Id | null) => void;
+  onClick?: (id: Id) => void;
   style?: React.CSSProperties;
 };
 
 export function LineByLineLayout(props: LineByLineLayoutProps) {
-  const {annotations, visible = true, selected = [], onHover, style} = props;
+  const {
+    annotations,
+    visible = true,
+    selected = [],
+    onHover,
+    onClick,
+    style
+  } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<View>(null);
@@ -29,11 +37,12 @@ export function LineByLineLayout(props: LineByLineLayoutProps) {
     }
 
     $view.innerHTML = '';
-    viewRef.current = renderLineByLineView({$view, annotations, onHover});
-  }, [annotations, onHover]);
+    const lineByLineProps = {$view, annotations, onHover, onClick};
+    viewRef.current = renderLineByLineView(lineByLineProps);
+  }, [annotations, onHover, onClick]);
 
   useVisibility(containerRef, visible);
   useSelectedIds(viewRef, selected);
 
-  return <div ref={containerRef} style={style} />;
+  return <div ref={containerRef} style={style}/>;
 }

@@ -41,6 +41,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 export type DiplomaticViewConfig = OriginalLayoutConfig &
   Partial<FullDiplomaticViewConfig> & {
   onHover?: (id: Id | null) => void;
+  onClick?: (id: Id) => void;
 };
 
 export function renderDiplomaticView(
@@ -58,7 +59,8 @@ export function renderDiplomaticView(
     $view.style.visibility = 'hidden';
   }
 
-  const {showRegions, showEntities, onHover} = {...defaultConfig, ...config};
+  const mergedConfig = {...defaultConfig, ...config};
+  const {showRegions, showEntities, onHover, onClick} = mergedConfig;
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
@@ -79,7 +81,7 @@ export function renderDiplomaticView(
   );
 
   for (const group of groupedByWord) {
-    const $word = $fragments[group.group];
+    const $word = $fragments[group.id];
     const $ranges: HTMLSpanElement[] = [];
     for (const range of group.ranges) {
       const $range = document.createElement('span');
@@ -98,9 +100,13 @@ export function renderDiplomaticView(
         }
       }
 
-      if (onHover && annotations[group.group]?.textGranularity === 'word') {
-        $range.addEventListener('mouseenter', () => onHover(group.group));
+      const isWord = annotations[group.id]?.textGranularity === 'word';
+      if (onHover && isWord) {
+        $range.addEventListener('mouseenter', () => onHover(group.id));
         $range.addEventListener('mouseleave', () => onHover(null));
+      }
+      if (onClick && isWord) {
+        $range.addEventListener('click', () => onClick(group.id));
       }
     }
     $word.replaceChildren(...$ranges);

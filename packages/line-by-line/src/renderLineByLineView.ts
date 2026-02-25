@@ -10,10 +10,11 @@ type LineByLineViewProps = {
   $view: HTMLElement;
   annotations: Record<Id, Annotation>;
   onHover?: (id: Id | null) => void;
+  onClick?: (id: Id) => void;
 };
 
 export function renderLineByLineView(
-  {$view, annotations, onHover}: LineByLineViewProps
+  {$view, annotations, onHover, onClick}: LineByLineViewProps
 ): View {
   function show() {
     $view.style.visibility = 'visible';
@@ -23,7 +24,7 @@ export function renderLineByLineView(
     $view.style.visibility = 'hidden';
   }
 
-  const layout = renderNormalizedLayout($view, annotations, {onHover});
+  const layout = renderNormalizedLayout($view, annotations, {onHover, onClick});
   const {$ranges, $lines, ranges, $overlay} = layout;
 
   const linesToBlock: Record<Id, Id> = {};
