@@ -6,6 +6,9 @@ import {ViewFit} from '@knaw-huc/original-layout';
 import {useVisibility} from '@knaw-huc/original-layout';
 import {useSelectedIds} from '@knaw-huc/original-layout';
 import {Annotation} from '@globalise/annotation';
+import {Benchmark} from "../../../../src/util/Benchmark.ts";
+
+const bench = new Benchmark(renderDiplomaticView.name)
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -38,19 +41,22 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const viewRef = useRef<View>(null);
 
   useLayoutEffect(() => {
-    const $view = containerRef.current;
-    if (!$view) {
-      return;
+    function render() {
+      const $view = containerRef.current;
+      if (!$view) {
+        return;
+      }
+      $view.innerHTML = '';
+      viewRef.current = renderDiplomaticView($view, annotations, {
+        page,
+        fit,
+        showRegions,
+        showEntities,
+        onHover,
+        onClick
+      });
     }
-    $view.innerHTML = '';
-    viewRef.current = renderDiplomaticView($view, annotations, {
-      page,
-      fit,
-      showRegions,
-      showEntities,
-      onHover,
-      onClick
-    });
+    bench.run(() => render());
   }, [annotations, page, fit, showRegions, showEntities, onHover]);
 
   useVisibility(containerRef, visible);

@@ -4,6 +4,9 @@ import {Annotation, AnnotationPage, Id, PartOf,} from '@globalise/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
 import {LoadingStatus} from "./LoadingStatus";
+import {Benchmark} from "../util/Benchmark";
+
+const bench = new Benchmark('loadAnnotations')
 
 type TranscriptionViewProps = {
   selected: Id[];
@@ -25,11 +28,12 @@ export function TranscriptionView(
       return;
     }
 
-    loadAnnotations(current);
+    bench.run(async () => await loadAnnotations(current));
 
     async function loadAnnotations(
       current: ViewerCanvas
     ) {
+      setStatus('loading')
       const transcriptionUrl = current.annotationPageIds[0];
       const entityUrl = current.annotationPageIds[1];
 
@@ -60,11 +64,11 @@ export function TranscriptionView(
   }, [current]);
 
   if (status === 'loading' || !annotations || !page) {
-    return <div>Loading...</div>;
+    return <div className="message">Loading...</div>;
   }
 
   if (status === 'no-transcription') {
-    return <div>No transcription</div>;
+    return <div className="message">No transcription</div>;
   }
 
   return (

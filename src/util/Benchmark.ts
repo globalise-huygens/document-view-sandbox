@@ -7,9 +7,9 @@ export class Benchmark {
   private callDurations: number[] = [];
   constructor(private name: string) {}
 
-  public run(toCall: () => void) {
+  public async run(toCall: () => Promise<void> | void) {
     const start = performance.now();
-    toCall();
+    await toCall();
     const end = performance.now();
     const duration = end - start;
     this.callDurations.push(duration);
