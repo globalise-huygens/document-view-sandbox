@@ -110,11 +110,17 @@ export function renderLineNumbers(
   );
 
   function showLine(lineId: Id) {
-    $lineNumbers[lineId].style.display = 'block';
+    const $lineNumber = $lineNumbers[lineId];
+    if($lineNumber) {
+      $lineNumber.style.display = 'block';
+    }
   }
 
   function hideLine(lineId: Id) {
-    $lineNumbers[lineId].style.display = 'none';
+    const $lineNumber = $lineNumbers[lineId];
+    if($lineNumber) {
+      $lineNumber.style.display = 'none';
+    }
   }
 
   return {showLine, hideLine};
