@@ -79,7 +79,7 @@ export function HighlightOverlay(
           ))}
         </svg>
       </Overlay>
-      {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text} />}
+      {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
   );
 }
@@ -94,10 +94,8 @@ type HighlightProps = {
 function Highlight({points, selected, onClick, onHover}: HighlightProps) {
   const [hovered, setHovered] = useState(false);
 
-  const fill = selected
-    ? 'rgba(31,255,0,0.25)'
-    : hovered
-      ? 'rgba(0, 0, 0, 0.1)'
+  const fill = selected ? 'rgba(255, 255, 0, 0.35)'
+    : hovered ? 'rgba(0, 0, 0, 0.1)'
       : 'transparent';
 
   return (
@@ -122,7 +120,7 @@ function Highlight({points, selected, onClick, onHover}: HighlightProps) {
   );
 }
 
-export type TooltipProps = {text: string; x: number; y: number};
+export type TooltipProps = { text: string; x: number; y: number };
 
 function Tooltip({x, y, text}: TooltipProps) {
   return (

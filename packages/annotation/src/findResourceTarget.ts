@@ -13,6 +13,6 @@ export function findResourceTarget(
   }
   return (
     annotation.target.find((t) => isAnnotationResourceTarget(t)) ??
-    orThrow('No annotation resource target found')
+    orThrow('No annotation resource target')
   );
 }

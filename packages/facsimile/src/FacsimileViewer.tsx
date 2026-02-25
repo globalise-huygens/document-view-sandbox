@@ -11,7 +11,7 @@ import './tooltip.css';
 
 export type FacsimileViewerProps = {
   manifestUrl: string;
-  selectedIds: Id[];
+  selected: Id[];
   onToggle: (id: Id) => void;
   onHover?: (id: Id | null) => void;
   style?: React.CSSProperties;
@@ -20,7 +20,7 @@ export type FacsimileViewerProps = {
 export function FacsimileViewer(
   {
     manifestUrl,
-    selectedIds,
+    selected,
     onToggle,
     onHover,
     style
@@ -37,7 +37,7 @@ export function FacsimileViewer(
       >
         <ViewerCanvas showControls={false}/>
         <HighlightOverlay
-          selected={selectedIds}
+          selected={selected}
           onToggle={onToggle}
           onHover={onHover}
         />

@@ -46,7 +46,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       fit,
       showRegions,
       showEntities,
-      onHover: onHover,
+      onHover,
     });
   }, [annotations, page, fit, showRegions, showEntities, onHover]);
 

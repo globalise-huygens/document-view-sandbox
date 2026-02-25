@@ -26,7 +26,7 @@ export function BasicExample() {
       )}
       <FacsimileViewer
         manifestUrl={manifestUrl}
-        selectedIds={selectedIds}
+        selected={selectedIds}
         onToggle={toggleAnnotation}
         style={{height: 'calc(100vh - 2em)'}}
       />
