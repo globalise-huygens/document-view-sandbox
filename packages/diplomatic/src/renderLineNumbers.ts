@@ -61,53 +61,40 @@ export function renderLineNumbers(
     }),
   );
 
-  const $lineNumbers = Object.fromEntries(
-    lineAnnos
-      .map((line, i) => {
-        const id = line.id;
-        const words = wordsByLine.get(id);
-        if (!words) {
-          console.warn('Line without words');
-          return;
-        }
-        const $lineNumber = document.createElement('span');
-        $container.appendChild($lineNumber);
-        $lineNumber.classList.add('line-number');
-        $lineNumber.textContent = `${i + 1}`.padStart(2, '\u00A0');
-        const leftMostWord: Rect =
-          words.reduce<Rect | null>((prev, curr) => {
-            const bbox = calcBoundingBox(
-              scale.path(createPoints(parseSvgPath(findSvgPath(curr)))),
-            );
-            if (!prev) {
-              return bbox;
-            }
-            if (prev.left < bbox.left) {
-              return prev;
-            }
-            return bbox;
-          }, null) ?? orThrow('No leftmost word found');
+  const $lineNumbers: Record<Id, HTMLSpanElement> = {};
 
-        const blockId = lineToBlock[id];
-        if (!blockId) {
-          console.warn('Line without block');
-          return;
-        }
-        const corners = blockCorners[blockId] ?? orThrow(`No block ${blockId}`);
-        const blockTopLeft = corners[0];
+  for (const [i, line] of lineAnnos.entries()) {
+    const words = wordsByLine.get(line.id);
+    if (!words) {
+      console.warn('Line without words:', line.id);
+      continue;
+    }
 
-        Object.assign($lineNumber.style, {
-          left: px(blockTopLeft[0]),
-          top: px(leftMostWord.top + leftMostWord.height / 2),
-          marginLeft: px(-scale(100)),
-          marginTop: px(-scale(40)),
-          fontSize: px(scale(60)),
-        });
-        $lineNumber.style.display = 'none';
-        return [id, $lineNumber];
-      })
-      .filter((e) => !!e),
-  );
+    const blockId = lineToBlock[line.id];
+    if (!blockId) {
+      console.warn('Line without block:', line.id);
+      continue;
+    }
+
+    const corners = blockCorners[blockId] ?? orThrow(`No block ${blockId}`);
+    const blockTopLeft = corners[0];
+    const leftMostWord = findLeftMostWord(words, scale);
+
+    const $lineNumber = document.createElement('span');
+    $container.appendChild($lineNumber);
+    $lineNumber.classList.add('line-number');
+    $lineNumber.textContent = `${i + 1}`.padStart(2, '\u00A0');
+    $lineNumber.style.display = 'none';
+    Object.assign($lineNumber.style, {
+      left: px(blockTopLeft[0]),
+      top: px(leftMostWord.top + leftMostWord.height / 2),
+      marginLeft: px(-scale(100)),
+      marginTop: px(-scale(40)),
+      fontSize: px(scale(60)),
+    });
+
+    $lineNumbers[line.id] = $lineNumber;
+  }
 
   function showLine(lineId: Id) {
     const $lineNumber = $lineNumbers[lineId];
@@ -124,4 +111,20 @@ export function renderLineNumbers(
   }
 
   return {showLine, hideLine};
+}
+
+function findLeftMostWord(
+  words: Annotation[],
+  scale: Scale
+): Rect {
+  let leftMost: Rect | null = null;
+  for (const word of words) {
+    const bbox = calcBoundingBox(
+      scale.path(createPoints(parseSvgPath(findSvgPath(word)))),
+    );
+    if (!leftMost || bbox.left < leftMost.left) {
+      leftMost = bbox;
+    }
+  }
+  return leftMost ?? orThrow('No leftmost word found');
 }
