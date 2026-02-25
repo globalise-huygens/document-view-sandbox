@@ -1,3 +1,5 @@
+export {createAnnotationRanges} from "./createAnnotationRanges.ts";
+
 export * from './AnnoModel';
 export * from './EntityModel';
 export type {Id} from './Id';

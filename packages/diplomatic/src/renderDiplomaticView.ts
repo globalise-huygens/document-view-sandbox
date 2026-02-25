@@ -1,22 +1,25 @@
 import {
-  Annotation, findResourceTarget, findTextPositionSelector,
-  isEntity, getEntityType, toClassName, getPageText,
+  Annotation, createAnnotationRanges,
+  findResourceTarget,
+  getEntityType,
+  getPageText,
+  isEntity,
+  toClassName,
 } from '@globalise/annotation';
-import {Id} from '@knaw-huc/original-layout';
+import {
+  createRanges,
+  D3El,
+  FullOriginalLayoutConfig,
+  groupRanges,
+  Id,
+  OriginalLayoutConfig,
+  orThrow,
+  renderOriginalLayout,
+  View
+} from '@knaw-huc/original-layout';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
-import {
-  FullOriginalLayoutConfig,
-  OriginalLayoutConfig,
-  renderOriginalLayout,
-} from '@knaw-huc/original-layout';
-import {orThrow} from '@knaw-huc/original-layout';
-import {D3El} from '@knaw-huc/original-layout';
-import {View} from '@knaw-huc/original-layout';
-import {createRanges} from '@knaw-huc/original-layout';
-import {groupRanges} from '@knaw-huc/original-layout';
 import {createFragment} from './createFragment.ts';
-
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showRegions: boolean;
@@ -67,14 +70,7 @@ export function renderDiplomaticView(
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
   const markedAnnos = [...wordAnnos, ...entityAnnos];
-  const annoRanges = markedAnnos.map((annotation) => {
-    const selector = findTextPositionSelector(annotation, pageAnnoId);
-    return {
-      begin: selector.start,
-      end: selector.end,
-      body: annotation,
-    };
-  });
+  const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
 
   const textRanges = createRanges(pageText, annoRanges);
   const groupedByWord = groupRanges(

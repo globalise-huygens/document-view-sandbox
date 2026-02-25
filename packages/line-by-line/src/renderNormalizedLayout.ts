@@ -1,9 +1,8 @@
 import {select} from 'd3-selection';
 import {createRanges, D3El, Id, TextRange} from '@knaw-huc/original-layout';
 import {
-  Annotation,
+  Annotation, createAnnotationRanges,
   findResourceTarget,
-  findTextPositionSelector,
   getEntityType,
   getPageText,
   isEntity, orThrow, toClassName
@@ -37,14 +36,7 @@ export function renderNormalizedLayout(
   const entityAnnos = Object.values(annotations).filter(isEntity);
   const markedAnnos = [...wordAnnos, ...entityAnnos];
 
-  const annoRanges = markedAnnos.map((annotation) => {
-    const selector = findTextPositionSelector(annotation, pageAnnoId);
-    return {
-      begin: selector.start,
-      end: selector.end,
-      body: annotation,
-    };
-  });
+  const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
 
   const ranges = createRanges(pageText, annoRanges);
 

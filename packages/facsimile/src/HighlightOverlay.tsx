@@ -94,7 +94,7 @@ type HighlightProps = {
 function Highlight({points, selected, onClick, onHover}: HighlightProps) {
   const [hovered, setHovered] = useState(false);
 
-  const fill = selected ? 'rgba(255, 255, 0, 0.35)'
+  const fill = selected ? 'rgba(0,255,0,0.35)'
     : hovered ? 'rgba(0, 0, 0, 0.1)'
       : 'transparent';
 
