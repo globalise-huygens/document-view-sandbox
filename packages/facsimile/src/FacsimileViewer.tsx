@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {ViewerCanvas} from '@knaw-huc/osd-iiif-viewer';
+import {Viewer} from '@knaw-huc/osd-iiif-viewer';
 import {ManifestLoader} from './ManifestLoader';
 import {ControlBar} from './ControlBar';
 import {NavigationBar} from './NavigationBar';
@@ -35,7 +35,7 @@ export function FacsimileViewer(
         ref={fullscreenRef}
         style={{position: 'relative', width: '100%', height: '100%', ...style}}
       >
-        <ViewerCanvas showControls={false}/>
+        <Viewer showControls={false}/>
         <HighlightOverlay
           selected={selected}
           onToggle={onToggle}
