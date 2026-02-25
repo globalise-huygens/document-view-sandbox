@@ -3,9 +3,9 @@ import type {Id} from '@knaw-huc/original-layout';
 import type {View} from '@knaw-huc/original-layout';
 import {renderDiplomaticView} from '../renderDiplomaticView';
 import {ViewFit} from '@knaw-huc/original-layout';
-import {useVisibility} from "@knaw-huc/original-layout";
-import {useSelectedIds} from "@knaw-huc/original-layout";
-import { Annotation } from '@globalise/annotation';
+import {useVisibility} from '@knaw-huc/original-layout';
+import {useSelectedIds} from '@knaw-huc/original-layout';
+import {Annotation} from '@globalise/annotation';
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -15,6 +15,7 @@ export type DiplomaticViewProps = {
   showEntities?: boolean;
   visible?: boolean;
   selected?: Id[];
+  onHover?: (id: Id | null) => void;
   style?: React.CSSProperties;
 };
 
@@ -27,6 +28,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     showEntities,
     visible = true,
     selected = [],
+    onHover,
     style,
   } = props;
 
@@ -44,8 +46,9 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       fit,
       showRegions,
       showEntities,
+      onHover: onHover,
     });
-  }, [annotations, page, fit, showRegions, showEntities]);
+  }, [annotations, page, fit, showRegions, showEntities, onHover]);
 
   useVisibility(containerRef, visible);
   useSelectedIds(viewRef, selected);

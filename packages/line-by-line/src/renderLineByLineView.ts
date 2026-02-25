@@ -3,16 +3,17 @@ import {renderBlocks} from './renderBlocks';
 import {
   Annotation,
   findResourceTarget, orThrow
-} from "@globalise/annotation";
-import {Id, View} from "@knaw-huc/original-layout";
+} from '@globalise/annotation';
+import {Id, View} from '@knaw-huc/original-layout';
 
 type LineByLineViewProps = {
   $view: HTMLElement;
   annotations: Record<Id, Annotation>;
+  onHover?: (id: Id | null) => void;
 };
 
 export function renderLineByLineView(
-  {$view, annotations}: LineByLineViewProps
+  {$view, annotations, onHover}: LineByLineViewProps
 ): View {
   function show() {
     $view.style.visibility = 'visible';
@@ -22,7 +23,7 @@ export function renderLineByLineView(
     $view.style.visibility = 'hidden';
   }
 
-  const layout = renderNormalizedLayout($view, annotations);
+  const layout = renderNormalizedLayout($view, annotations, {onHover});
   const {$ranges, $lines, ranges, $overlay} = layout;
 
   const linesToBlock: Record<Id, Id> = {};
@@ -43,7 +44,9 @@ export function renderLineByLineView(
   const annotationToRanges: Record<Id, HTMLElement[]> = {};
   for (const range of ranges) {
     const $range = $ranges[range.id];
-    if (!$range) continue;
+    if (!$range) {
+      continue;
+    }
     for (const annoId of range.annotations) {
       if (!annotationToRanges[annoId]) {
         annotationToRanges[annoId] = [];

@@ -19,12 +19,13 @@ type Fragment = {
 };
 
 type HighlightOverlayProps = {
-  selectedIds: Id[];
-  onToggleAnnotation: (id: Id) => void;
+  selected: Id[];
+  onToggle: (id: Id) => void;
+  onHover?: (id: Id | null) => void;
 };
 
 export function HighlightOverlay(
-  {selectedIds, onToggleAnnotation}: HighlightOverlayProps
+  {selected, onToggle, onHover}: HighlightOverlayProps
 ) {
   const {current} = useCanvas();
   const imageInfo = useImageInfo();
@@ -64,9 +65,10 @@ export function HighlightOverlay(
             <Highlight
               key={fragment.id}
               points={fragment.path}
-              selected={selectedIds.includes(fragment.id)}
-              onClick={() => onToggleAnnotation(fragment.id)}
+              selected={selected.includes(fragment.id)}
+              onClick={() => onToggle(fragment.id)}
               onHover={(hovering, e) => {
+                onHover?.(hovering ? fragment.id : null);
                 if (!hovering) {
                   setTooltip(null);
                   return;

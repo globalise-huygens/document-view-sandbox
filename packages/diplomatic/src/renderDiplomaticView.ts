@@ -36,7 +36,9 @@ export const defaultConfig: FullDiplomaticViewConfig = {
 };
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
-  Partial<FullDiplomaticViewConfig>;
+  Partial<FullDiplomaticViewConfig> & {
+  onHover?: (id: Id | null) => void;
+};
 
 export function renderDiplomaticView(
   $view: HTMLDivElement,
@@ -53,7 +55,7 @@ export function renderDiplomaticView(
     $view.style.visibility = 'hidden';
   }
 
-  const {showRegions, showEntities} = {...defaultConfig, ...config};
+  const {showRegions, showEntities, onHover} = {...defaultConfig, ...config};
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
@@ -98,6 +100,11 @@ export function renderDiplomaticView(
             $range.title = `${entityType} | ${annotation.id}`;
           }
         }
+      }
+
+      if (onHover && annotations[group.group]?.textGranularity === 'word') {
+        $range.addEventListener('mouseenter', () => onHover(group.group));
+        $range.addEventListener('mouseleave', () => onHover(null));
       }
     }
     $word.replaceChildren(...$ranges);

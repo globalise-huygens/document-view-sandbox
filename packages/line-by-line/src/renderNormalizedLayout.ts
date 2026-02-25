@@ -1,5 +1,5 @@
 import {select} from 'd3-selection';
-import {createRanges, D3El, Id, TextRange} from "@knaw-huc/original-layout";
+import {createRanges, D3El, Id, TextRange} from '@knaw-huc/original-layout';
 import {
   Annotation,
   findResourceTarget,
@@ -7,7 +7,11 @@ import {
   getEntityType,
   getPageText,
   isEntity, orThrow, toClassName
-} from "@globalise/annotation";
+} from '@globalise/annotation';
+
+export type NormalizedLayoutConfig = {
+  onHover?: (id: Id | null) => void;
+};
 
 export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;
@@ -19,6 +23,7 @@ export type NormalizedLayoutResult = {
 export function renderNormalizedLayout(
   $parent: HTMLElement,
   annotations: Record<Id, Annotation>,
+  config?: NormalizedLayoutConfig,
 ): NormalizedLayoutResult {
   const $view = document.createElement('div');
   $parent.append($view);
@@ -97,6 +102,16 @@ export function renderNormalizedLayout(
           $range.title = `${entityType} | ${annotation.id}`;
         }
       }
+
+      if (config?.onHover) {
+        const wordId = range.annotations
+          .find(id => annotations[id].textGranularity === 'word');
+        if (wordId) {
+          $range.addEventListener('mouseenter', () => config.onHover!(wordId));
+          $range.addEventListener('mouseleave', () => config.onHover!(null));
+        }
+      }
+
       $ranges[range.id] = $range;
       $content.appendChild($range);
     }

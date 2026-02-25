@@ -12,12 +12,19 @@ import './tooltip.css';
 export type FacsimileViewerProps = {
   manifestUrl: string;
   selectedIds: Id[];
-  onToggleAnnotation: (id: Id) => void;
+  onToggle: (id: Id) => void;
+  onHover?: (id: Id | null) => void;
   style?: React.CSSProperties;
 };
 
 export function FacsimileViewer(
-  {manifestUrl, selectedIds, onToggleAnnotation, style}: FacsimileViewerProps
+  {
+    manifestUrl,
+    selectedIds,
+    onToggle,
+    onHover,
+    style
+  }: FacsimileViewerProps
 ) {
   const fullscreenRef = useRef<HTMLDivElement>(null);
 
@@ -28,13 +35,14 @@ export function FacsimileViewer(
         ref={fullscreenRef}
         style={{position: 'relative', width: '100%', height: '100%', ...style}}
       >
-        <ViewerCanvas showControls={false} />
+        <ViewerCanvas showControls={false}/>
         <HighlightOverlay
-          selectedIds={selectedIds}
-          onToggleAnnotation={onToggleAnnotation}
+          selected={selectedIds}
+          onToggle={onToggle}
+          onHover={onHover}
         />
-        <ControlBar fullscreenRef={fullscreenRef} />
-        <NavigationBar />
+        <ControlBar fullscreenRef={fullscreenRef}/>
+        <NavigationBar/>
       </div>
     </ManifestLoader>
   );
