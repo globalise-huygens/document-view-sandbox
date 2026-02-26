@@ -11,6 +11,7 @@ export function ControlBar({fullscreenRef}: ToolbarProps) {
   const {
     zoomIn,
     zoomOut,
+    rotateRight,
     toggleFullPage,
     isFullPage,
   } = useViewerControls(fullscreenRef);
@@ -19,6 +20,7 @@ export function ControlBar({fullscreenRef}: ToolbarProps) {
     <div className="controls">
       <button onClick={zoomIn}>zoom in</button>
       <button onClick={zoomOut}>zoom out</button>
+      <button onClick={rotateRight}>rotate</button>
       <button onClick={toggleFullPage}>
         {isFullPage ? 'exit fullscreen' : 'fullscreen'}
       </button>
