@@ -41,9 +41,12 @@ export function DocumentView(
   }, [manifest.data, pageId, isInit, goTo]);
 
   useEffect(() => {
-    if(current) {
-      onPageChange(current.id)
+    if (!current) {
+      return;
     }
+    setClickedIds([]);
+    setHoveredId(null);
+    onPageChange(current.id);
   }, [current]);
 
   const toggleClickedIds = useCallback((id: Id) => {
