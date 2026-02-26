@@ -4,47 +4,44 @@
     height: 100vh;
     overflow: hidden;
 
-    .facsimile {
+    > .facsimile-view {
         overflow: hidden;
         border-right: 1px solid #ccc;
     }
 
-    .transcription {
+    > .transcription-view {
         overflow: hidden;
-    }
-}
-
-.transcription-view {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: relative;
-
-    .controls {
-        position: absolute;
-        top: 1em;
-        right: 1em;
-        z-index: 10;
         display: flex;
-        gap: 0.5em;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
 
-        button.active {
-            font-weight: bold;
+        .controls {
+            position: absolute;
+            top: 1em;
+            right: 1em;
+            z-index: 10;
+            display: flex;
+            gap: 0.5em;
+
+            button.active {
+                font-weight: bold;
+            }
+        }
+
+        .content {
+            flex: 1;
+            overflow: auto;
+            display: grid;
+
+            > * {
+                grid-area: 1 / 1;
+            }
         }
     }
 
-    .content {
-        flex: 1;
-        overflow: auto;
-        display: grid;
-
-        > * {
-            grid-area: 1 / 1;
-        }
+    .message {
+        margin: 2rem;
+        color: grey;
     }
-}
-
-.message {
-    margin: 2rem;
-    color: grey;
 }

@@ -65,22 +65,18 @@ export function DocumentView(
 
   return (
     <div className="document-view">
-      <div className="facsimile">
-        <FacsimileViewer
-          manifestUrl={manifestUrl}
-          selected={selectedIds}
-          onToggle={toggleClickedIds}
-          onHover={setHoveredId}
-          style={{height: '100%'}}
-        />
-      </div>
-      <div className="transcription">
-        <TranscriptionView
-          selected={selectedIds}
-          onHover={setHoveredId}
-          onClick={toggleClickedIds}
-        />
-      </div>
+      <FacsimileViewer
+        manifestUrl={manifestUrl}
+        selected={selectedIds}
+        onToggle={toggleClickedIds}
+        onHover={setHoveredId}
+        style={{height: '100%'}}
+      />
+      <TranscriptionView
+        selected={selectedIds}
+        onHover={setHoveredId}
+        onClick={toggleClickedIds}
+      />
     </div>
   );
 }
