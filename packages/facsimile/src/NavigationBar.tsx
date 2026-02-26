@@ -1,4 +1,6 @@
-import {useCanvas, useViewerReady} from "@knaw-huc/osd-iiif-viewer";
+import {useCanvas, useViewerReady} from '@knaw-huc/osd-iiif-viewer';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 
 /**
  * WIP.
@@ -29,7 +31,7 @@ export function NavigationBar() {
           onClick={prev}
           disabled={!currentIndex}
         >
-          Prev
+          <NavigateBeforeIcon />
         </button>
         <button onClick={handleLuck}>
           I'm Feeling Lucky
@@ -38,7 +40,7 @@ export function NavigationBar() {
           onClick={next}
           disabled={currentIndex === total - 1}
         >
-          Next
+          <NavigateNextIcon />
         </button>
       </div>
     </div>

@@ -1,5 +1,11 @@
-import {useViewerControls} from "@knaw-huc/osd-iiif-viewer";
-import {type RefObject} from "react";
+import {useViewerControls} from '@knaw-huc/osd-iiif-viewer';
+import {type RefObject} from 'react';
+
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import RotateRightIcon from '@mui/icons-material/RotateRight';
+import FullscreenIcon from '@mui/icons-material/Fullscreen';
+import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 type ToolbarProps = {fullscreenRef: RefObject<HTMLDivElement | null>};
 
@@ -18,11 +24,17 @@ export function ControlBar({fullscreenRef}: ToolbarProps) {
 
   return (
     <div className="controls">
-      <button onClick={zoomIn}>zoom in</button>
-      <button onClick={zoomOut}>zoom out</button>
-      <button onClick={rotateRight}>rotate</button>
+      <button onClick={zoomIn}>
+        <ZoomInIcon />
+      </button>
+      <button onClick={zoomOut}>
+        <ZoomOutIcon />
+      </button>
+      <button onClick={rotateRight}>
+        <RotateRightIcon />
+      </button>
       <button onClick={toggleFullPage}>
-        {isFullPage ? 'exit fullscreen' : 'fullscreen'}
+        {isFullPage ? <FullscreenExitIcon /> : <FullscreenIcon />}
       </button>
     </div>
   );
