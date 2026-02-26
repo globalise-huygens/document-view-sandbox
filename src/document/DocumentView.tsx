@@ -46,7 +46,7 @@ export function DocumentView(
     }
   }, [current]);
 
-  const handleToggle = useCallback((id: Id) => {
+  const toggleClickedIds = useCallback((id: Id) => {
     setClickedIds(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
     );
@@ -69,7 +69,7 @@ export function DocumentView(
         <FacsimileViewer
           manifestUrl={manifestUrl}
           selected={selectedIds}
-          onToggle={handleToggle}
+          onToggle={toggleClickedIds}
           onHover={setHoveredId}
           style={{height: '100%'}}
         />
@@ -78,7 +78,7 @@ export function DocumentView(
         <TranscriptionView
           selected={selectedIds}
           onHover={setHoveredId}
-          onClick={handleToggle}
+          onClick={toggleClickedIds}
         />
       </div>
     </div>

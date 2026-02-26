@@ -9,11 +9,16 @@ import {D3El} from '@knaw-huc/original-layout';
 import {createBlockBoundaries} from './createBlockBoundaries.ts';
 import {Offset} from '@knaw-huc/original-layout';
 
+type BlockColors = {
+  text: string;
+  stroke: string;
+  fill: string;
+};
+
 type BlocksConfig = {
   scale: Scale;
   offset: Offset;
-  fill?: string;
-  stroke?: string;
+  colors?: BlockColors;
 };
 
 export function renderBlocks(
@@ -22,8 +27,11 @@ export function renderBlocks(
   {
     scale,
     offset,
-    stroke = 'rgba(0,200,0,1)',
-    fill = 'rgba(0,255,0,0.05)',
+    colors = {
+      text: 'rgba(0,200,0,1)',
+      stroke: 'rgba(0,200,0,0.25)',
+      fill: 'rgba(0,255,0,0.01)',
+    },
   }: BlocksConfig,
 ) {
   const {width, height} = $view.getBoundingClientRect();
@@ -60,8 +68,8 @@ export function renderBlocks(
       $highlight
         .append('polygon')
         .attr('points', createPath(corners))
-        .attr('fill', fill)
-        .attr('stroke', stroke);
+        .attr('fill', colors.fill)
+        .attr('stroke', colors.stroke);
 
       const blockTopLeft = corners[0];
       $highlight
@@ -71,7 +79,7 @@ export function renderBlocks(
         .attr('x', blockTopLeft[0] + scale(30))
         .attr('y', blockTopLeft[1] + scale(30))
         .style('font-size', px(scale(60)))
-        .attr('fill', stroke)
+        .attr('fill', colors.text)
         .text(label);
       return [id, $highlight];
     }),
