@@ -17,7 +17,7 @@ export function ControlBar({fullscreenRef}: ToolbarProps) {
   const {
     zoomIn,
     zoomOut,
-    rotateRight,
+    rotate,
     toggleFullPage,
     isFullPage,
   } = useViewerControls(fullscreenRef);
@@ -30,7 +30,7 @@ export function ControlBar({fullscreenRef}: ToolbarProps) {
       <button onClick={zoomOut}>
         <ZoomOutIcon />
       </button>
-      <button onClick={rotateRight}>
+      <button onClick={() => rotate(90)}>
         <RotateRightIcon />
       </button>
       <button onClick={toggleFullPage}>
