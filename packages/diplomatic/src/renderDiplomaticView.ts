@@ -7,16 +7,15 @@ import {
   toClassName,
 } from '@globalise/annotation';
 import {
-  createRanges,
   D3El,
   FullOriginalLayoutConfig,
-  groupRanges,
   Id,
   OriginalLayoutConfig,
   orThrow,
   renderOriginalLayout,
   View
 } from '@knaw-huc/original-layout';
+import {segment, groupSegments} from '@knaw-huc/text-annotation-segmenter';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {createFragment} from './createFragment.ts';
@@ -74,16 +73,16 @@ export function renderDiplomaticView(
   const markedAnnos = [...wordAnnos, ...entityAnnos];
   const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
 
-  const textRanges = createRanges(pageText, annoRanges);
-  const groupedByWord = groupRanges(
-    textRanges,
+  const textSegments = segment<Id>(pageText, annoRanges);
+  const groupedByWord = groupSegments(
+    textSegments,
     (id: Id) => id.includes('#word_'),
   );
 
   for (const group of groupedByWord) {
-    const $word = $fragments[group.id];
+    const $word = $fragments[group.annotation];
     const $ranges: HTMLSpanElement[] = [];
-    for (const range of group.ranges) {
+    for (const range of group.segments) {
       const $range = document.createElement('span');
       $ranges.push($range);
       $range.classList.add('range');
@@ -100,13 +99,13 @@ export function renderDiplomaticView(
         }
       }
 
-      const isWord = annotations[group.id]?.textGranularity === 'word';
+      const isWord = annotations[group.annotation]?.textGranularity === 'word';
       if (onHover && isWord) {
-        $range.addEventListener('mouseenter', () => onHover(group.id));
+        $range.addEventListener('mouseenter', () => onHover(group.annotation));
         $range.addEventListener('mouseleave', () => onHover(null));
       }
       if (onClick && isWord) {
-        $range.addEventListener('click', () => onClick(group.id));
+        $range.addEventListener('click', () => onClick(group.annotation));
       }
     }
     $word.replaceChildren(...$ranges);

@@ -1,5 +1,6 @@
 import {select} from 'd3-selection';
-import {createRanges, D3El, Id, TextRange} from '@knaw-huc/original-layout';
+import {D3El, Id} from '@knaw-huc/original-layout';
+import {segment, TextSegment} from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation, createAnnotationRanges,
   findResourceTarget,
@@ -17,7 +18,7 @@ export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;
   $lines: Record<Id, HTMLElement>;
   $overlay: SVGSVGElement;
-  ranges: TextRange[];
+  ranges: TextSegment<Id>[];
 };
 
 const noop = () => {
@@ -45,14 +46,14 @@ export function renderNormalizedLayout(
 
   const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
 
-  const ranges = createRanges(pageText, annoRanges);
+  const ranges = segment<Id>(pageText, annoRanges);
 
   const wordsToLine: Record<Id, Id> = {};
   for (const wordAnno of wordAnnos) {
     wordsToLine[wordAnno.id] = findResourceTarget(wordAnno).id;
   }
 
-  const rangesByLine: Record<Id, TextRange[]> = {};
+  const rangesByLine: Record<Id, TextSegment<Id>[]> = {};
   let lastLineId: Id | null = null;
   for (const range of ranges) {
     const wordId = range.annotations.find((id) => id in wordsToLine);
