@@ -1,4 +1,4 @@
-import {Annotation, findTextPositionSelector, Id} from "@globalise/annotation";
+import {Annotation, findTextPositionSelector} from "@globalise/annotation";
 import {AnnotationSegment} from "@knaw-huc/text-annotation-segmenter";
 
 /**
@@ -9,14 +9,14 @@ import {AnnotationSegment} from "@knaw-huc/text-annotation-segmenter";
 export function createAnnotationRanges(
   markedAnnos: Annotation[],
   pageAnnoId: string
-): AnnotationSegment<Id>[] {
+): AnnotationSegment<Annotation>[] {
   return markedAnnos.map((annotation) => {
     try {
       const selector = findTextPositionSelector(annotation, pageAnnoId);
       return {
         begin: selector.start,
         end: selector.end,
-        body: annotation.id,
+        body: annotation,
       };
     } catch (error) {
       const context = {error, annotation, pageAnnoId};

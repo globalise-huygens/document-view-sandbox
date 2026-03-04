@@ -18,7 +18,7 @@ export type NormalizedLayoutResult = {
   $ranges: Record<Id, HTMLElement>;
   $lines: Record<Id, HTMLElement>;
   $overlay: SVGSVGElement;
-  ranges: TextSegment<Id>[];
+  ranges: TextSegment<Annotation>[];
 };
 
 const noop = () => {
@@ -46,18 +46,18 @@ export function renderNormalizedLayout(
 
   const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
 
-  const ranges = segment<Id>(pageText, annoRanges);
+  const ranges = segment<Annotation>(pageText, annoRanges);
 
   const wordsToLine: Record<Id, Id> = {};
   for (const wordAnno of wordAnnos) {
     wordsToLine[wordAnno.id] = findResourceTarget(wordAnno).id;
   }
 
-  const rangesByLine: Record<Id, TextSegment<Id>[]> = {};
+  const rangesByLine: Record<Id, TextSegment<Annotation>[]> = {};
   let lastLineId: Id | null = null;
   for (const range of ranges) {
-    const wordId = range.annotations.find((id) => id in wordsToLine);
-    const lineId: Id | null = wordId ? wordsToLine[wordId] : lastLineId;
+    const word = range.annotations.find((a) => a.id in wordsToLine);
+    const lineId: Id | null = word ? wordsToLine[word.id] : lastLineId;
     if (!lineId) {
       continue;
     }
@@ -94,8 +94,7 @@ export function renderNormalizedLayout(
       const $range = document.createElement('span');
       $range.classList.add('range');
       $range.textContent = pageText.substring(range.begin, range.end);
-      for (const annoId of range.annotations) {
-        const annotation = annotations[annoId];
+      for (const annotation of range.annotations) {
         if (isEntity(annotation)) {
           const entityType = getEntityType(annotation);
           $range.classList.add(...['entity', toClassName(entityType)]);
@@ -103,16 +102,16 @@ export function renderNormalizedLayout(
         }
       }
 
-      const wordId = range.annotations
-        .find(id => annotations[id].textGranularity === 'word');
+      const word = range.annotations
+        .find(a => a.textGranularity === 'word');
 
-      if (onHover && wordId) {
-        $range.addEventListener('mouseenter', () => onHover(wordId));
+      if (onHover && word) {
+        $range.addEventListener('mouseenter', () => onHover(word.id));
         $range.addEventListener('mouseleave', () => onHover(null));
       }
 
-      if (onClick && wordId) {
-        $range.addEventListener('click', () => onClick(wordId));
+      if (onClick && word) {
+        $range.addEventListener('click', () => onClick(word.id));
       }
 
       $ranges[range.id] = $range;

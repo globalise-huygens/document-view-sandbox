@@ -73,14 +73,14 @@ export function renderDiplomaticView(
   const markedAnnos = [...wordAnnos, ...entityAnnos];
   const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
 
-  const textSegments = segment<Id>(pageText, annoRanges);
+  const textSegments = segment<Annotation>(pageText, annoRanges);
   const groupedByWord = groupSegments(
     textSegments,
-    (id: Id) => id.includes('#word_'),
+    (a) => a.textGranularity === 'word',
   );
 
   for (const group of groupedByWord) {
-    const $word = $fragments[group.annotation];
+    const $word = $fragments[group.annotation.id];
     const $ranges: HTMLSpanElement[] = [];
     for (const range of group.segments) {
       const $range = document.createElement('span');
@@ -89,8 +89,7 @@ export function renderDiplomaticView(
       $range.textContent = pageText.substring(range.begin, range.end);
 
       if (showEntities) {
-        for (const annoId of range.annotations) {
-          const annotation = annotations[annoId];
+        for (const annotation of range.annotations) {
           if (isEntity(annotation)) {
             const entityType = getEntityType(annotation);
             $range.classList.add(...['entity', toClassName(entityType)]);
@@ -99,13 +98,12 @@ export function renderDiplomaticView(
         }
       }
 
-      const isWord = annotations[group.annotation]?.textGranularity === 'word';
-      if (onHover && isWord) {
-        $range.addEventListener('mouseenter', () => onHover(group.annotation));
+      if (onHover) {
+        $range.addEventListener('mouseenter', () => onHover(group.annotation.id));
         $range.addEventListener('mouseleave', () => onHover(null));
       }
-      if (onClick && isWord) {
-        $range.addEventListener('click', () => onClick(group.annotation));
+      if (onClick) {
+        $range.addEventListener('click', () => onClick(group.annotation.id));
       }
     }
     $word.replaceChildren(...$ranges);
