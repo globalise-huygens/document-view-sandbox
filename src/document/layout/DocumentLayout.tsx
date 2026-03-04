@@ -14,6 +14,10 @@ export function DocumentLayout({ children }: DocumentLayoutProps) {
   const facsimile = "facsimile";
   const transcription = "transcription";
 
+  if(children.length !== 2) {
+    throw new Error('Expected two child components')
+  }
+
   const handleDoubleClick = useCallback(() => {
     groupRef.current?.setLayout({
       [facsimile]: 50,
