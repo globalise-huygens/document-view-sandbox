@@ -3,7 +3,7 @@ import {useCanvas, useLoadManifest, useManifest} from '@knaw-huc/osd-iiif-viewer
 import {FacsimileViewer} from '@globalise/facsimile';
 import {Id} from '@globalise/annotation';
 import {TranscriptionView} from './TranscriptionView';
-import {DocumentLayout} from "./DocumentLayout";
+import {DocumentLayout} from "./layout/DocumentLayout";
 
 type DocumentViewProps = {
   manifestUrl: string;
