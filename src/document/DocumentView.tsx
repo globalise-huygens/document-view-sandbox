@@ -3,6 +3,7 @@ import {useCanvas, useLoadManifest, useManifest} from '@knaw-huc/osd-iiif-viewer
 import {FacsimileViewer} from '@globalise/facsimile';
 import {Id} from '@globalise/annotation';
 import {TranscriptionView} from './TranscriptionView';
+import {DocumentLayout} from "./DocumentLayout";
 
 type DocumentViewProps = {
   manifestUrl: string;
@@ -67,7 +68,7 @@ export function DocumentView(
   }
 
   return (
-    <div className="document-view">
+    <DocumentLayout>
       <FacsimileViewer
         manifestUrl={manifestUrl}
         selected={selectedIds}
@@ -80,6 +81,6 @@ export function DocumentView(
         onHover={setHoveredId}
         onClick={toggleClickedIds}
       />
-    </div>
+    </DocumentLayout>
   );
 }
