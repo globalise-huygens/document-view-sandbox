@@ -48,11 +48,11 @@ export function renderLineByLineView(
     if (!$range) {
       continue;
     }
-    for (const annoId of range.annotations) {
-      if (!annotationToRanges[annoId]) {
-        annotationToRanges[annoId] = [];
+    for (const annotation of range.annotations) {
+      if (!annotationToRanges[annotation.id]) {
+        annotationToRanges[annotation.id] = [];
       }
-      annotationToRanges[annoId].push($range);
+      annotationToRanges[annotation.id].push($range);
     }
   }
 
