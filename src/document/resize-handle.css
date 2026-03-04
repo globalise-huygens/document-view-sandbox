@@ -2,9 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 0.75em;
     background: #eee;
-    border-inline: 1px solid #ccc;
 
     &:hover {
         background: #ddd;
@@ -25,8 +23,21 @@
         color: #999;
         font-size: 1em;
 
-        > svg {
+        .grip-icon {
             width: 0.75em;
         }
     }
+
+    &[data-direction="horizontal"] {
+        width: 0.75em;
+    }
+
+    &[data-direction="vertical"] {
+        height: 1rem;
+
+        .grip-icon {
+            transform: rotate(90deg);
+        }
+    }
+
 }

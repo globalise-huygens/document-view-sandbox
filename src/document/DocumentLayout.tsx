@@ -1,16 +1,18 @@
-import React, {ReactNode, useCallback} from 'react';
-import {Group, Panel, useGroupRef} from 'react-resizable-panels';
-import {ResizeHandle} from './ResizeHandle';
+import React, { ReactNode, useCallback } from 'react';
+import { Group, Panel, useGroupRef } from 'react-resizable-panels';
+import { ResizeHandle } from './ResizeHandle';
+import {useLayoutDirection} from "./useLayoutDirection";
 
 type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];
 };
 
-export function DocumentLayout({children}: DocumentLayoutProps) {
+export function DocumentLayout({ children }: DocumentLayoutProps) {
   const groupRef = useGroupRef();
+  const direction = useLayoutDirection(1024);
 
-  const facsimile = "facsimile"
-  const transcription = "transcription"
+  const facsimile = "facsimile";
+  const transcription = "transcription";
 
   const handleDoubleClick = useCallback(() => {
     groupRef.current?.setLayout({
@@ -20,12 +22,12 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
   }, [groupRef.current]);
 
   return (
-    <Group orientation="horizontal" groupRef={groupRef}>
-      <Panel id={facsimile} defaultSize={50} minSize={20}>
+    <Group orientation={direction} groupRef={groupRef}>
+      <Panel id={facsimile} defaultSize="50%" minSize="20%">
         {children[0]}
       </Panel>
-      <ResizeHandle onDoubleClick={handleDoubleClick} />
-      <Panel id={transcription} defaultSize={50} minSize={20}>
+      <ResizeHandle onDoubleClick={handleDoubleClick} direction={direction} />
+      <Panel id={transcription} defaultSize="50%" minSize="20%">
         {children[1]}
       </Panel>
     </Group>
