@@ -1,4 +1,4 @@
-.resize-handle {
+.splitter {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,11 +12,11 @@
         outline: none;
     }
 
-    &[data-resize-handle-active] {
+    &.active {
         background: #ccc;
     }
 
-    .resize-handle-grip {
+    .splitter-grip {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -28,16 +28,17 @@
         }
     }
 
-    &[data-direction="horizontal"] {
+    &.horizontal {
         width: 0.75em;
+        cursor: col-resize;
     }
 
-    &[data-direction="vertical"] {
+    &.vertical {
         height: 1rem;
+        cursor: row-resize;
 
         .grip-icon {
             transform: rotate(90deg);
         }
     }
-
 }

@@ -2,7 +2,7 @@ import {useState, useEffect} from 'react';
 
 export type Direction = 'horizontal' | 'vertical';
 
-export function useLayoutDirection(breakpoint: number = 1024): Direction {
+export function useLayoutDirection(breakpoint: number): Direction {
 
   const [direction, setDirection] = useState<Direction>(() => {
     const width = window.innerWidth;

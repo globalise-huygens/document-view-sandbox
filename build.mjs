@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { createRequire } from 'module'
+import {createRequire} from 'module'
 const require = createRequire(import.meta.url)
 import path from 'path'
 
@@ -50,7 +50,7 @@ if (isDev) {
   })
   await context.watch()
   const host = '127.0.0.1';
-  const { port } = await context.serve({host, servedir: './static'})
+  const {port} = await context.serve({host, servedir: './static'})
   console.log(`Running at: http://${host}:${port} `)
 } else {
   await esbuild.build(sharedConfig)

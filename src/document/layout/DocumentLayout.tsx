@@ -1,39 +1,44 @@
-import React, { ReactNode, useCallback } from 'react';
-import { Group, Panel, useGroupRef } from 'react-resizable-panels';
-import { ResizeHandle } from './ResizeHandle';
-import {useLayoutDirection} from "./useLayoutDirection";
+import React, {ReactNode, useState} from 'react';
+import {Pane, SplitPane} from 'react-split-pane';
+import {Splitter} from './Splitter';
+import {useLayoutDirection} from './useLayoutDirection';
 
 type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];
 };
 
-export function DocumentLayout({ children }: DocumentLayoutProps) {
-  const groupRef = useGroupRef();
-  const direction = useLayoutDirection(1024);
+const defaultMinSize = "20%";
+const defaultLayoutBreakpoint = 1024;
+const defaultPaneSizes: (string | number)[] = ['50%', '50%'];
 
-  const facsimile = "facsimile";
-  const transcription = "transcription";
+export function DocumentLayout({children}: DocumentLayoutProps) {
+  const direction = useLayoutDirection(defaultLayoutBreakpoint);
+  const [paneSizes, setPaneSizes] = useState(defaultPaneSizes);
+  const [isActive, setIsActive] = useState(false);
 
-  if(children.length !== 2) {
+  if (children.length !== 2) {
     throw new Error('Expected two child components')
   }
 
-  const handleDoubleClick = useCallback(() => {
-    groupRef.current?.setLayout({
-      [facsimile]: 50,
-      [transcription]: 50,
-    });
-  }, [groupRef.current]);
-
   return (
-    <Group orientation={direction} groupRef={groupRef}>
-      <Panel id={facsimile} defaultSize="50%" minSize="20%">
+    <SplitPane
+      direction={direction}
+      onResize={(newSizes) => setPaneSizes(newSizes)}
+      onResizeStart={() => setIsActive(true)}
+      onResizeEnd={() => setIsActive(false)}
+      divider={props => <Splitter
+        {...props}
+        direction={direction}
+        isActive={isActive}
+        onDoubleClick={() => setPaneSizes(defaultPaneSizes)}
+      />}
+    >
+      <Pane size={paneSizes[0]} minSize={defaultMinSize}>
         {children[0]}
-      </Panel>
-      <ResizeHandle onDoubleClick={handleDoubleClick} direction={direction} />
-      <Panel id={transcription} defaultSize="50%" minSize="20%">
+      </Pane>
+      <Pane size={paneSizes[1]} minSize={defaultMinSize}>
         {children[1]}
-      </Panel>
-    </Group>
+      </Pane>
+    </SplitPane>
   );
 }
