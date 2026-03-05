@@ -1,7 +1,7 @@
 import {
   useCanvas,
   Overlay,
-  useImageInfo,
+  useImageInfo, getAnnotationPageIds,
 } from '@knaw-huc/osd-iiif-viewer';
 import React, {useEffect, useState} from 'react';
 import {
@@ -33,7 +33,10 @@ export function HighlightOverlay(
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
   useEffect(() => {
-    const url = current?.annotationPageIds[0];
+    if(!current) {
+      return;
+    }
+    const url = getAnnotationPageIds(current)[0];
     if (!url) {
       setFragments([]);
       return;

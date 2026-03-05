@@ -1,6 +1,7 @@
 import {useCanvas, useViewerReady} from '@knaw-huc/osd-iiif-viewer';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import { getValue } from '@iiif/helpers/i18n';
 
 /**
  * WIP.
@@ -22,9 +23,7 @@ export function NavigationBar() {
   return (
     <div className="navigation">
       <span className="info">
-        {current?.label}
-        &nbsp;
-        ({currentIndex + 1}/{total})
+        {current ? getValue(current.label) : null}&nbsp;({currentIndex + 1}/{total})
       </span>
       <div className="buttons">
         <button

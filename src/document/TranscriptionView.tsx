@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {useCanvas, ViewerCanvas} from '@knaw-huc/osd-iiif-viewer';
+import {getAnnotationPageIds, useCanvas} from '@knaw-huc/osd-iiif-viewer';
 import {Annotation, AnnotationPage, Id, PartOf,} from '@globalise/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
 import {LoadingStatus} from "./LoadingStatus";
 import {Benchmark} from "../util/Benchmark";
+import {CanvasNormalized} from "@iiif/presentation-3-normalized";
 
 const bench = new Benchmark('loadAnnotations')
 
@@ -31,11 +32,16 @@ export function TranscriptionView(
     bench.run(async () => await loadAnnotations(current));
 
     async function loadAnnotations(
-      current: ViewerCanvas
+      current: CanvasNormalized
     ) {
       setStatus('loading')
-      const transcriptionUrl = current.annotationPageIds[0];
-      const entityUrl = current.annotationPageIds[1];
+      if(!current) {
+        return;
+      }
+      const pageIds = getAnnotationPageIds(current);
+
+      const transcriptionUrl = pageIds[0];
+      const entityUrl = pageIds[1];
 
       if (!transcriptionUrl) {
         setStatus('no-transcription')

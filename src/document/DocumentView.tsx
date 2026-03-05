@@ -15,21 +15,22 @@ export function DocumentView(
   {manifestUrl, pageId, onPageChange}: DocumentViewProps
 ) {
   const loadManifest = useLoadManifest();
-  const manifest = useManifest();
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
   const [clickedIds, setClickedIds] = useState<Id[]>([]);
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
+  const { vault, url, isReady } = useManifest();
 
   useEffect(() => {
     loadManifest(manifestUrl);
   }, [manifestUrl, loadManifest]);
 
   useEffect(() => {
-    if (!manifest.data || isInit) {
+    if (!isReady) {
       return;
     }
-    const canvases = manifest.data.canvases;
+    const manifest = vault.get({ id: url, type: 'Manifest' });
+    const canvases = vault.get(manifest.items);
     if (pageId) {
       const index = canvases.findIndex(c => c.id === pageId);
       if (index >= 0) {
@@ -39,7 +40,7 @@ export function DocumentView(
       goTo(0);
     }
     setInit(true);
-  }, [manifest.data, pageId, isInit, goTo]);
+  }, [isReady, url, vault, pageId, isInit, goTo]);
 
   useEffect(() => {
     if (!current) {
