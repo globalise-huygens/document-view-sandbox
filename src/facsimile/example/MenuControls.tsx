@@ -6,9 +6,10 @@ import {
   findTextualBodyValue,
   Id,
 } from '@globalise/annotation';
-import {AnnotationDropdown} from '../../diplomatic/react/example/AnnotationDropdown';
-import type { CanvasNormalized } from '@iiif/presentation-3-normalized';
-import {orThrow} from "../../util/orThrow";
+import {
+  AnnotationDropdown
+} from '../../diplomatic/react/example/AnnotationDropdown';
+
 type MenuControlsProps = {
   onToggleAnnotation: (id: Id) => void;
 };
@@ -46,4 +47,3 @@ export function MenuControls({onToggleAnnotation}: MenuControlsProps) {
     </span>
   );
 }
-
