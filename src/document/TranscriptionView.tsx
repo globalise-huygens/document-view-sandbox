@@ -23,7 +23,10 @@ export function TranscriptionView(
   const [annotations, setAnnotations] = useState<Record<Id, Annotation> | null>(null);
   const [page, setPage] = useState<PartOf | null>(null);
   const [status, setStatus] = useState<LoadingStatus>('loading');
-  
+
+  const emptyPageThreshold = 10
+  const [showScanMargin, setShowScanMargin] = useState<boolean>();
+
   useEffect(() => {
     if(!current) {
       return;
@@ -63,6 +66,8 @@ export function TranscriptionView(
         }
       }
       setAnnotations(mapped);
+      const words = transcriptionPage.items.filter(a => a.textGranularity === 'word')
+      setShowScanMargin(words.length < emptyPageThreshold)
       setPage(transcriptionPage.partOf);
       setStatus('ready')
     }
@@ -101,7 +106,8 @@ export function TranscriptionView(
           page={page}
           showEntities={true}
           showRegions={true}
-          fit="height"
+          showScanMargin={showScanMargin}
+          fit="contain"
           onHover={onHover}
           onClick={onClick}
           style={{height: '100%', gridArea: '1 / 1'}}

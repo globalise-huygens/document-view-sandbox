@@ -16,6 +16,7 @@ export type DiplomaticViewProps = {
   fit?: ViewFit;
   showRegions?: boolean;
   showEntities?: boolean;
+  showScanMargin?: boolean;
   visible?: boolean;
   selected?: Id[];
   onHover?: (id: Id | null) => void;
@@ -30,6 +31,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     fit,
     showRegions,
     showEntities,
+    showScanMargin,
     visible = true,
     selected = [],
     onHover,
@@ -52,6 +54,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
         fit,
         showRegions,
         showEntities,
+        showScanMargin,
         onHover,
         onClick
       });
