@@ -3,7 +3,7 @@ import {createPortal} from 'react-dom';
 import {$} from '../../example/$';
 import {DiplomaticView, useAnnotationPage} from "@globalise/diplomatic";
 import {Id} from "@knaw-huc/original-layout";
-import {Controls} from "./Controls";
+import {ControlBar} from "./ControlBar";
 import {LineByLineLayout} from "@globalise/line-by-line";
 
 export function DualViewExample() {
@@ -43,7 +43,7 @@ export function DualViewExample() {
   return (
     <>
       {createPortal(
-        <Controls
+        <ControlBar
           words={words}
           regions={regions}
           onToggleView={() => setShowDiplomatic(show => !show)}

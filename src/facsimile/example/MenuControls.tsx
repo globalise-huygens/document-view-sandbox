@@ -37,7 +37,7 @@ export function MenuControls({onToggleAnnotation}: MenuControlsProps) {
   }, [current]);
 
   return (
-    <span className="controls">
+    <span className="control-bar">
       <AnnotationDropdown
         placeholder="Toggle words"
         options={words}

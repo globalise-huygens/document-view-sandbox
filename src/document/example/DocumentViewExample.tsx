@@ -20,7 +20,7 @@ export function DocumentViewExample() {
     url.searchParams.set('page', pageId);
     history.replaceState({}, '', url);
   }
-  console.log('init with:', {pageId, defaultManifestUrl})
+  console.log('Init with:', {pageId, defaultManifestUrl})
   return (
     <ViewerProvider>
       <DocumentView

@@ -25,7 +25,7 @@ export function NavigationBar() {
       <span className="info">
         {current ? getValue(current.label) : null}&nbsp;({currentIndex + 1}/{total})
       </span>
-      <div className="buttons">
+      <div className="control-bar">
         <button
           onClick={prev}
           disabled={!currentIndex}

@@ -1,13 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {getAnnotationPageIds, useCanvas} from '@knaw-huc/osd-iiif-viewer';
-import {Annotation, AnnotationPage, Id, PartOf,} from '@globalise/annotation';
+import {Annotation, AnnotationPage, Id, PartOf} from '@globalise/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
-import {LoadingStatus} from "./LoadingStatus";
-import {Benchmark} from "../util/Benchmark";
-import {CanvasNormalized} from "@iiif/presentation-3-normalized";
+import {LoadingStatus} from './LoadingStatus';
+import {Benchmark} from '../util/Benchmark';
+import {CanvasNormalized} from '@iiif/presentation-3-normalized';
+import {Size} from "./Size";
 
-const bench = new Benchmark('loadAnnotations')
+import '@globalise/facsimile/control-bar.css';
+
+const bench = new Benchmark('loadAnnotations');
 
 type TranscriptionViewProps = {
   selected: Id[];
@@ -23,12 +26,30 @@ export function TranscriptionView(
   const [annotations, setAnnotations] = useState<Record<Id, Annotation> | null>(null);
   const [page, setPage] = useState<PartOf | null>(null);
   const [status, setStatus] = useState<LoadingStatus>('loading');
+  const [scale, setScale] = useState(100);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [containerSize, setContainerSize] = useState({width: 0, height: 0});
 
-  const emptyPageThreshold = 10
+  const emptyPageThreshold = 10;
   const [showScanMargin, setShowScanMargin] = useState<boolean>();
 
   useEffect(() => {
-    if(!current) {
+    const scrollSlider = scrollRef.current;
+    if (!scrollSlider) {
+      return;
+    }
+    const observer = new ResizeObserver(([entry]) => {
+      setContainerSize({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height
+      });
+    });
+    observer.observe(scrollSlider);
+    return () => observer.disconnect();
+  }, [status]);
+
+  useEffect(() => {
+    if (!current) {
       return;
     }
 
@@ -37,8 +58,7 @@ export function TranscriptionView(
     async function loadAnnotations(
       current: CanvasNormalized
     ) {
-      setStatus('loading')
-      if(!current) {
+      if (!current) {
         return;
       }
       const pageIds = getAnnotationPageIds(current);
@@ -47,7 +67,7 @@ export function TranscriptionView(
       const entityUrl = pageIds[1];
 
       if (!transcriptionUrl) {
-        setStatus('no-transcription')
+        setStatus('no-transcription');
         return;
       }
 
@@ -60,16 +80,16 @@ export function TranscriptionView(
       }
       if (entityUrl) {
         const entityPage: AnnotationPage = await fetch(entityUrl)
-          .then(r => r.json())
+          .then(r => r.json());
         for (const item of entityPage.items) {
           mapped[item.id] = item;
         }
       }
       setAnnotations(mapped);
-      const words = transcriptionPage.items.filter(a => a.textGranularity === 'word')
-      setShowScanMargin(words.length < emptyPageThreshold)
+      const words = transcriptionPage.items.filter(a => a.textGranularity === 'word');
+      setShowScanMargin(words.length < emptyPageThreshold);
       setPage(transcriptionPage.partOf);
-      setStatus('ready')
+      setStatus('ready');
     }
 
   }, [current]);
@@ -82,9 +102,24 @@ export function TranscriptionView(
     return <div className="message">No transcription</div>;
   }
 
+  const scaleFactor = scale / 100;
+  const size = calcSize(page, containerSize, scaleFactor);
+  const hasSize = containerSize.width > 0 && containerSize.height > 0;
+
   return (
     <div className="transcription-view">
-      <div className="controls">
+      <div className="control-bar">
+        {showDiplomatic && (
+          <span className="zoom-slider">
+            <input
+              type="range"
+              min={30}
+              max={200}
+              value={scale}
+              onChange={(e) => setScale(parseInt(e.target.value))}
+            />
+          </span>
+        )}
         <button
           className={showDiplomatic ? 'active' : ''}
           onClick={() => setShowDiplomatic(true)}
@@ -99,28 +134,58 @@ export function TranscriptionView(
         </button>
       </div>
       <div className="content">
-        <DiplomaticView
-          visible={showDiplomatic}
-          annotations={annotations}
-          selected={selected}
-          page={page}
-          showEntities={true}
-          showRegions={true}
-          showScanMargin={showScanMargin}
-          fit="contain"
-          onHover={onHover}
-          onClick={onClick}
-          style={{height: '100%', gridArea: '1 / 1'}}
-        />
+        <div className="zoom-viewport" ref={scrollRef}>
+          {hasSize && (
+            <div style={size}>
+              <DiplomaticView
+                key={scale}
+                visible={showDiplomatic}
+                annotations={annotations}
+                selected={selected}
+                page={page}
+                showEntities={true}
+                showRegions={true}
+                showScanMargin={showScanMargin}
+                fit="contain"
+                onHover={onHover}
+                onClick={onClick}
+                style={{height: '100%'}}
+              />
+            </div>
+          )}
+        </div>
         <LineByLineLayout
           visible={!showDiplomatic}
           annotations={annotations}
           selected={selected}
           onHover={onHover}
           onClick={onClick}
-          style={{gridArea: '1 / 1'}}
         />
       </div>
     </div>
   );
+}
+
+function calcSize(
+  page: Size,
+  containerSize: Size,
+  scaleFactor: number
+): Size {
+  const pageRatio = page.width / page.height;
+  const containerRatio = containerSize.width / containerSize.height;
+
+  let width: number;
+  let height: number;
+  if (pageRatio > containerRatio) {
+    width = containerSize.width;
+    height = width / pageRatio;
+  } else {
+    height = containerSize.height;
+    width = height * pageRatio;
+  }
+
+  return {
+    width: width * scaleFactor,
+    height: height * scaleFactor
+  };
 }

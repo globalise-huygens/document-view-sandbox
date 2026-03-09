@@ -9,10 +9,8 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 
 type ToolbarProps = {fullscreenRef: RefObject<HTMLDivElement | null>};
 
-/**
- * WIP.
- * TODO: Use icons and theme
- */
+import './control-bar.css'
+
 export function ControlBar({fullscreenRef}: ToolbarProps) {
   const {
     zoomIn,
@@ -23,7 +21,7 @@ export function ControlBar({fullscreenRef}: ToolbarProps) {
   } = useViewerControls(fullscreenRef);
 
   return (
-    <div className="controls">
+    <div className="control-bar">
       <button onClick={zoomIn}>
         <ZoomInIcon />
       </button>
