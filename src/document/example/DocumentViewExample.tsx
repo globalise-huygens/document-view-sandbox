@@ -18,7 +18,7 @@ export function DocumentViewExample() {
   function handlePageChange(pageId: Id) {
     const url = new URL(window.location.href);
     url.searchParams.set('page', pageId);
-    history.replaceState({}, '', url);
+    history.pushState({}, '', url);
   }
   console.log('Init with:', {pageId, defaultManifestUrl})
   return (
