@@ -29,24 +29,22 @@ export function TranscriptionView(
   const [page, setPage] = useState<PartOf | null>(null);
   const [status, setStatus] = useState<LoadingStatus>('loading');
   const [scale, setScale] = useState(100);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const zoomRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({width: 0, height: 0});
 
   const emptyPageThreshold = 10;
   const [showScanMargin, setShowScanMargin] = useState<boolean>();
 
   useEffect(() => {
-    const scrollSlider = scrollRef.current;
-    if (!scrollSlider) {
+    const zoomViewport = zoomRef.current;
+    if (!zoomViewport) {
       return;
     }
-    const observer = new ResizeObserver(([entry]) => {
-      setContainerSize({
-        width: entry.contentRect.width,
-        height: entry.contentRect.height
-      });
+    const observer = new ResizeObserver(([zoomEvent]) => {
+      const {width, height} = zoomEvent.contentRect;
+      setContainerSize({width, height});
     });
-    observer.observe(scrollSlider);
+    observer.observe(zoomViewport);
     return () => observer.disconnect();
   }, [status]);
 
@@ -95,6 +93,22 @@ export function TranscriptionView(
     }
 
   }, [current]);
+
+  useEffect(() => {
+    if (!showDiplomatic) {
+      return;
+    }
+    resizeOnToggle();
+
+    function resizeOnToggle() {
+      const zoomViewport = zoomRef.current;
+      if (!zoomViewport) {
+        return;
+      }
+      const {width, height} = zoomViewport.getBoundingClientRect()
+      setContainerSize({width, height});
+    }
+  }, [showDiplomatic]);
 
   if (status === 'loading' || !annotations || !page) {
     return <div className="message">Loading...</div>;
@@ -148,12 +162,14 @@ export function TranscriptionView(
         </button>
       </div>
       <div className="content">
-        <div className="zoom-viewport" ref={scrollRef}>
+        <div
+          className={`zoom-viewport ${showDiplomatic ? 'active' : ''}`}
+          ref={zoomRef}
+        >
           {hasSize && (
             <div style={size}>
               <DiplomaticView
                 key={rerenderKey}
-                visible={showDiplomatic}
                 annotations={annotations}
                 selected={selected}
                 page={page}
@@ -168,13 +184,16 @@ export function TranscriptionView(
             </div>
           )}
         </div>
-        <LineByLineLayout
-          visible={!showDiplomatic}
-          annotations={annotations}
-          selected={selected}
-          onHover={onHover}
-          onClick={onClick}
-        />
+        <div
+          className={`line-by-line-viewport ${showDiplomatic ? '' : 'active'}`}
+        >
+          <LineByLineLayout
+            annotations={annotations}
+            selected={selected}
+            onHover={onHover}
+            onClick={onClick}
+          />
+        </div>
       </div>
     </div>
   );
