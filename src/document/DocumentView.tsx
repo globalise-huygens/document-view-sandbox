@@ -14,7 +14,6 @@ type DocumentViewProps = {
 export function DocumentView(
   {manifestUrl, pageId, onPageChange}: DocumentViewProps
 ) {
-  const loadManifest = useLoadManifest();
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
   const [clickedIds, setClickedIds] = useState<Id[]>([]);

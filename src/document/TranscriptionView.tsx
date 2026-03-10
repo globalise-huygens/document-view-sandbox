@@ -30,8 +30,8 @@ export function TranscriptionView(
   const [page, setPage] = useState<PartOf | null>(null);
   const [status, setStatus] = useState<LoadingStatus>('loading');
   const [scale, setScale] = useState(100);
-  const zoomRef = useRef<HTMLDivElement>(null);
-  const [containerSize, setContainerSize] = useState({width: 0, height: 0});
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
 
   const emptyPageThreshold = 10;
   const [showScanMargin, setShowScanMargin] = useState<boolean>();
@@ -83,16 +83,16 @@ export function TranscriptionView(
   }, [current]);
 
   useEffect(() => {
-    if (!showDiplomatic || status !== 'ready') {
+    if (status !== 'ready' || viewportSize.width > 0) {
       return;
     }
-    const zoomViewport = zoomRef.current;
+    const zoomViewport = viewportRef.current;
     if (!zoomViewport) {
       return;
     }
     const {width, height} = zoomViewport.getBoundingClientRect();
-    setContainerSize({width, height});
-  }, [showDiplomatic, status]);
+    setViewportSize({width, height});
+  }, [status]);
 
   if (status === 'loading' || !annotations || !page) {
     return <div className="message">Loading...</div>;
@@ -103,10 +103,10 @@ export function TranscriptionView(
   }
 
   const scaleFactor = scale / 100;
-  const size = calcSize(page, containerSize, scaleFactor);
-  const hasSize = containerSize.width > 0 && containerSize.height > 0;
+  const layoutSize = calcSize(page, viewportSize, scaleFactor);
+  const hasSize = viewportSize.width > 0 && viewportSize.height > 0;
 
-  const rerenderKey = `${scale}-${containerSize.width}-${containerSize.height}`;
+  const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
 
   return (
     <div className="transcription-view">
@@ -147,11 +147,11 @@ export function TranscriptionView(
       </div>
       <div className="content">
         <div
-          className={`zoom-viewport ${showDiplomatic ? 'active' : ''}`}
-          ref={zoomRef}
+          className={`diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
+          ref={viewportRef}
         >
           {hasSize && (
-            <div style={size}>
+            <div style={layoutSize}>
               <DiplomaticView
                 key={rerenderKey}
                 annotations={annotations}
