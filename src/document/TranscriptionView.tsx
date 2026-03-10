@@ -151,7 +151,7 @@ export function TranscriptionView(
           ref={viewportRef}
         >
           {hasSize && (
-            <div style={layoutSize}>
+            <div className="ratio-box" style={layoutSize}>
               <DiplomaticView
                 key={rerenderKey}
                 annotations={annotations}
@@ -169,7 +169,7 @@ export function TranscriptionView(
           )}
         </div>
         <div
-          className={`line-by-line-viewport ${showDiplomatic ? '' : 'active'}`}
+          className={`line-by-line-viewport ${(!showDiplomatic ? 'active' : '')}`}
         >
           <LineByLineLayout
             annotations={annotations}
