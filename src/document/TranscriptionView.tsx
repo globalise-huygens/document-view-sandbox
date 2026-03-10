@@ -6,7 +6,7 @@ import {LineByLineLayout} from '@globalise/line-by-line';
 import {LoadingStatus} from './LoadingStatus';
 import {Benchmark} from '../util/Benchmark';
 import {CanvasNormalized} from '@iiif/presentation-3-normalized';
-import {Size} from "./Size";
+import {Size} from './Size';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
@@ -34,19 +34,6 @@ export function TranscriptionView(
 
   const emptyPageThreshold = 10;
   const [showScanMargin, setShowScanMargin] = useState<boolean>();
-
-  useEffect(() => {
-    const zoomViewport = zoomRef.current;
-    if (!zoomViewport) {
-      return;
-    }
-    const observer = new ResizeObserver(([zoomEvent]) => {
-      const {width, height} = zoomEvent.contentRect;
-      setContainerSize({width, height});
-    });
-    observer.observe(zoomViewport);
-    return () => observer.disconnect();
-  }, [status]);
 
   useEffect(() => {
     if (!current) {
@@ -95,20 +82,16 @@ export function TranscriptionView(
   }, [current]);
 
   useEffect(() => {
-    if (!showDiplomatic) {
+    if (!showDiplomatic || status !== 'ready') {
       return;
     }
-    resizeOnToggle();
-
-    function resizeOnToggle() {
-      const zoomViewport = zoomRef.current;
-      if (!zoomViewport) {
-        return;
-      }
-      const {width, height} = zoomViewport.getBoundingClientRect()
-      setContainerSize({width, height});
+    const zoomViewport = zoomRef.current;
+    if (!zoomViewport) {
+      return;
     }
-  }, [showDiplomatic]);
+    const {width, height} = zoomViewport.getBoundingClientRect();
+    setContainerSize({width, height});
+  }, [showDiplomatic, status]);
 
   if (status === 'loading' || !annotations || !page) {
     return <div className="message">Loading...</div>;
