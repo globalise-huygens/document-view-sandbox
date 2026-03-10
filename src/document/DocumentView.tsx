@@ -21,10 +21,6 @@ export function DocumentView(
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
 
   useEffect(() => {
-    loadManifest(manifestUrl);
-  }, [manifestUrl, loadManifest]);
-
-  useEffect(() => {
     if (!manifest.data || isInit) {
       return;
     }
