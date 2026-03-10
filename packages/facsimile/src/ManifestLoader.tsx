@@ -15,19 +15,23 @@ export function ManifestLoader(
 ) {
   const loadManifest = useLoadManifest();
 
-  const {isLoading, error, isReady} = useManifest();
+  const manifest = useManifest();
+
+  useEffect(() => {
+    console.log('Manifest state:', manifest);
+  }, [manifest]);
 
   useEffect(() => {
     loadManifest(url);
   }, [loadManifest, url]);
 
-  if (isLoading) {
+  if (manifest.isLoading) {
     return <>Loading manifest...</>;
   }
-  if (error) {
-    return <>Error: {error}</>;
+  if (manifest.error) {
+    return <>Error: {manifest.error}</>;
   }
-  if (!isReady) {
+  if (!manifest.isReady) {
     return null;
   }
 

@@ -22,10 +22,6 @@ export function DocumentView(
   const { vault, url, isReady } = useManifest();
 
   useEffect(() => {
-    loadManifest(manifestUrl);
-  }, [manifestUrl, loadManifest]);
-
-  useEffect(() => {
     if (!isReady) {
       return;
     }
