@@ -11,6 +11,7 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 import '@globalise/facsimile/control-bar.css';
+import './transcription-view.css'
 
 const bench = new Benchmark('loadAnnotations');
 

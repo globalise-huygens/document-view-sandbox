@@ -9,7 +9,7 @@ type DocumentLayoutProps = {
 
 const defaultMinSize = "20%";
 const defaultLayoutBreakpoint = 1024;
-const defaultPaneSizes: (string | number)[] = ['50%', '50%'];
+const defaultPaneSizes: (string | number)[] = ['49.7%', '49.7%'];
 
 export function DocumentLayout({children}: DocumentLayoutProps) {
   const direction = useLayoutDirection(defaultLayoutBreakpoint);
