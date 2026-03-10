@@ -106,6 +106,8 @@ export function TranscriptionView(
   const size = calcSize(page, containerSize, scaleFactor);
   const hasSize = containerSize.width > 0 && containerSize.height > 0;
 
+  const rerenderKey = `${scale}-${containerSize.width}-${containerSize.height}`;
+
   return (
     <div className="transcription-view">
       <div className="control-bar">
@@ -138,7 +140,7 @@ export function TranscriptionView(
           {hasSize && (
             <div style={size}>
               <DiplomaticView
-                key={scale}
+                key={rerenderKey}
                 visible={showDiplomatic}
                 annotations={annotations}
                 selected={selected}
