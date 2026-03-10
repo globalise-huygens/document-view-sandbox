@@ -7,6 +7,8 @@ import {LoadingStatus} from './LoadingStatus';
 import {Benchmark} from '../util/Benchmark';
 import {CanvasNormalized} from '@iiif/presentation-3-normalized';
 import {Size} from "./Size";
+import ZoomInIcon from '@mui/icons-material/ZoomIn';
+import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 
 import '@globalise/facsimile/control-bar.css';
 
@@ -113,12 +115,22 @@ export function TranscriptionView(
       <div className="control-bar">
         {showDiplomatic && (
           <span className="zoom-slider">
+            <ZoomOutIcon
+              className="icon"
+              fontSize="small"
+              onClick={() => setScale(prev => Math.max(30, prev - 10))}
+            />
             <input
               type="range"
               min={30}
               max={200}
               value={scale}
               onChange={(e) => setScale(parseInt(e.target.value))}
+            />
+            <ZoomInIcon
+              className="icon"
+              fontSize="small"
+              onClick={() => setScale(prev => Math.min(200, prev + 10))}
             />
           </span>
         )}
