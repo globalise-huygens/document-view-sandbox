@@ -8,19 +8,6 @@ const entryPoints = [
   'src/viewer.html',
   'src/viewer.js',
 
-  'src/diplomatic/index.html',
-  'src/diplomatic/index.ts',
-  'src/diplomatic/menu.css',
-  'src/diplomatic/highlight.css',
-  'src/diplomatic/react/index.html',
-  'src/diplomatic/react/index.tsx',
-
-  'src/normalized/index.html',
-  'src/normalized/index.ts',
-
-  'src/facsimile/index.html',
-  'src/facsimile/index.tsx',
-
   'src/document/index.html',
   'src/document/index.tsx',
 ]
