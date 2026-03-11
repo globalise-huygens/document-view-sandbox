@@ -1,3 +1,4 @@
+export * from './PageStore.ts'
 export {createAnnotationRanges} from "./createAnnotationRanges.ts";
 
 export * from './AnnoModel';

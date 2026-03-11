@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileViewer} from '@globalise/facsimile';
-import {Id} from '@globalise/annotation';
+import {Id, useLoadPages} from '@globalise/annotation';
 import {TranscriptionView} from './TranscriptionView';
-import {DocumentLayout} from "./layout/DocumentLayout";
+import {DocumentLayout} from './layout/DocumentLayout';
 
 import './DocumentView.css';
 
@@ -20,13 +20,14 @@ export function DocumentView(
   const [isInit, setInit] = useState(false);
   const [clickedIds, setClickedIds] = useState<Id[]>([]);
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
-  const { vault, url, isReady } = useManifest();
+  const {vault, url, isReady} = useManifest();
+  const loadPages = useLoadPages();
 
   useEffect(() => {
     if (!isReady) {
       return;
     }
-    const manifest = vault.get({ id: url, type: 'Manifest' });
+    const manifest = vault.get({id: url, type: 'Manifest'});
     const canvases = vault.get(manifest.items);
     if (pageId) {
       const index = canvases.findIndex(c => c.id === pageId);
@@ -43,6 +44,10 @@ export function DocumentView(
     if (!current) {
       return;
     }
+    const urls = current.annotations
+      .filter(a => a.type === 'AnnotationPage')
+      .map(a => a.id);
+    loadPages(current.id, urls);
     setClickedIds([]);
     setHoveredId(null);
     onPageChange(current.id);

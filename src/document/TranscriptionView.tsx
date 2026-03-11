@@ -1,11 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {getAnnotationPageIds, useCanvas} from '@knaw-huc/osd-iiif-viewer';
-import {Annotation, AnnotationPage, Id, PartOf} from '@globalise/annotation';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {Id, useAnnotations, usePages, usePartOf} from '@globalise/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
-import {LoadingStatus} from './LoadingStatus';
-import {Benchmark} from '../util/Benchmark';
-import {CanvasNormalized} from '@iiif/presentation-3-normalized';
 import {Size} from './Size';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
@@ -13,77 +9,36 @@ import {ControlBar} from '@globalise/facsimile';
 
 import './TranscriptionView.css'
 
-const bench = new Benchmark('loadAnnotations');
-
 type TranscriptionViewProps = {
   selected: Id[];
   onHover: (id: Id | null) => void;
   onClick: (id: Id) => void;
 };
 
+const emptyPageThreshold = 10;
+
 export function TranscriptionView(
   {selected, onHover, onClick}: TranscriptionViewProps
 ) {
-  const {current} = useCanvas();
+  const annotations = useAnnotations();
+  const page = usePartOf();
+  const {isReady, pages, error} = usePages();
   const [showDiplomatic, setShowDiplomatic] = useState(true);
-  const [annotations, setAnnotations] = useState<Record<Id, Annotation> | null>(null);
-  const [page, setPage] = useState<PartOf | null>(null);
-  const [status, setStatus] = useState<LoadingStatus>('loading');
   const [scale, setScale] = useState(100);
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
 
-  const emptyPageThreshold = 10;
-  const [showScanMargin, setShowScanMargin] = useState<boolean>();
+  const showScanMargin = useMemo(() => {
+    if (!annotations) {
+      return false;
+    }
+    const words = Object.values(annotations)
+      .filter(a => a.textGranularity === 'word');
+    return words.length < emptyPageThreshold;
+  }, [annotations]);
 
   useEffect(() => {
-    if (!current) {
-      return;
-    }
-
-    bench.run(async () => await loadAnnotations(current));
-
-    async function loadAnnotations(
-      current: CanvasNormalized
-    ) {
-      if (!current) {
-        return;
-      }
-      const pageIds = getAnnotationPageIds(current);
-
-      const transcriptionUrl = pageIds[0];
-      const entityUrl = pageIds[1];
-
-      if (!transcriptionUrl) {
-        setStatus('no-transcription');
-        return;
-      }
-
-      const transcriptionPage: AnnotationPage = await fetch(transcriptionUrl)
-        .then(r => r.json());
-
-      const mapped: Record<Id, Annotation> = {};
-      for (const item of transcriptionPage.items) {
-        mapped[item.id] = item;
-      }
-      if (entityUrl) {
-        const entityPage: AnnotationPage = await fetch(entityUrl)
-          .then(r => r.json());
-        for (const item of entityPage.items) {
-          mapped[item.id] = item;
-        }
-      }
-      setAnnotations(mapped);
-      const words = transcriptionPage.items.filter(a => a.textGranularity === 'word');
-      setShowScanMargin(words.length < emptyPageThreshold);
-      setPage(transcriptionPage.partOf);
-      setStatus('ready');
-    }
-
-  }, [current]);
-
-  useEffect(() => {
-    if (status !== 'ready' || viewportSize.width > 0) {
+    if (!isReady || viewportSize.width > 0) {
       return;
     }
     const zoomViewport = viewportRef.current;
@@ -92,14 +47,22 @@ export function TranscriptionView(
     }
     const {width, height} = zoomViewport.getBoundingClientRect();
     setViewportSize({width, height});
-  }, [status]);
+  }, [isReady]);
 
-  if (status === 'loading' || !annotations || !page) {
+  if (!isReady) {
     return <div className="message">Loading...</div>;
   }
 
-  if (status === 'no-transcription') {
+  if (error) {
+    return <div className="message">Error: {error}</div>;
+  }
+
+  if (!pages.length) {
     return <div className="message">No transcription</div>;
+  }
+
+  if (!annotations || !page) {
+    return <div className="message">Loading...</div>;
   }
 
   const scaleFactor = scale / 100;

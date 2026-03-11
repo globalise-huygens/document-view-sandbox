@@ -1,25 +1,13 @@
+import {Overlay, useImageInfo,} from '@knaw-huc/osd-iiif-viewer';
+import React, {useMemo, useState} from 'react';
 import {
-  getAnnotationPageIds,
-  Overlay,
-  useCanvas,
-  useImageInfo,
-} from '@knaw-huc/osd-iiif-viewer';
-import React, {useEffect, useState} from 'react';
-import {
-  type Annotation,
-  type AnnotationPage,
   findSvgPath,
   findTextualBodyValue,
   Id,
-  parseSvgPath,
+  isWord,
+  parseSvgPath, useAnnotations,
 } from '@globalise/annotation';
 import {Tooltip, TooltipProps} from './Tooltip';
-
-type Fragment = {
-  id: string;
-  path: string;
-  text: string;
-};
 
 type HighlightOverlayProps = {
   selected: Id[];
@@ -30,31 +18,22 @@ type HighlightOverlayProps = {
 export function HighlightOverlay(
   {selected, onToggle, onHover}: HighlightOverlayProps
 ) {
-  const {current} = useCanvas();
   const imageInfo = useImageInfo();
-  const [fragments, setFragments] = useState<Fragment[]>([]);
+  const annotations = useAnnotations();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
-  useEffect(() => {
-    if(!current) {
-      return;
+  const fragments = useMemo(() => {
+    if (!annotations) {
+      return [];
     }
-    const url = getAnnotationPageIds(current)[0];
-    if (!url) {
-      setFragments([]);
-      return;
-    }
-    fetch(url)
-      .then((r) => r.json())
-      .then((page: AnnotationPage) => {
-        const lines = page.items.filter(isSupplementingLine);
-        setFragments(lines.map((a) => {
-          const path = parseSvgPath(findSvgPath(a));
-          const text = findTextualBodyValue(a);
-          return {id: a.id, path, text};
-        }));
-      });
-  }, [current]);
+    return Object.values(annotations)
+      .filter(isWord)
+      .map(a => ({
+        id: a.id,
+        path: parseSvgPath(findSvgPath(a)),
+        text: findTextualBodyValue(a),
+      }));
+  }, [annotations]);
 
   if (!imageInfo) {
     return null;
@@ -124,9 +103,4 @@ function Highlight({points, selected, onClick, onHover}: HighlightProps) {
       }}
     />
   );
-}
-
-function isSupplementingLine(a: Annotation): boolean {
-  return a.motivation === 'supplementing' &&
-    a.textGranularity === 'word';
 }
