@@ -26,12 +26,13 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
       onResize={(newSizes) => setPaneSizes(newSizes)}
       onResizeStart={() => setIsActive(true)}
       onResizeEnd={() => setIsActive(false)}
-      divider={props => <Splitter
-        {...props}
-        direction={direction}
-        isActive={isActive}
-        onDoubleClick={() => setPaneSizes(defaultPaneSizes)}
-      />}
+      divider={({isDragging, currentSize, minSize, maxSize, ...props}) =>
+        <Splitter
+          {...props}
+          direction={direction}
+          isActive={isActive}
+          onDoubleClick={() => setPaneSizes(defaultPaneSizes)}
+        />}
     >
       <Pane size={paneSizes[0]} minSize={defaultMinSize}>
         {children[0]}
