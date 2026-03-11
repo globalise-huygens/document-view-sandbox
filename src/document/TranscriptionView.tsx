@@ -9,9 +9,9 @@ import {CanvasNormalized} from '@iiif/presentation-3-normalized';
 import {Size} from './Size';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+import {ControlBar} from '@globalise/facsimile';
 
-import '@globalise/facsimile/control-bar.css';
-import './transcription-view.css'
+import './TranscriptionView.css'
 
 const bench = new Benchmark('loadAnnotations');
 
@@ -110,7 +110,7 @@ export function TranscriptionView(
 
   return (
     <div className="transcription-view">
-      <div className="control-bar">
+      <ControlBar>
         {showDiplomatic && (
           <span className="zoom-slider">
             <ZoomOutIcon
@@ -144,7 +144,7 @@ export function TranscriptionView(
         >
           Line by line
         </button>
-      </div>
+      </ControlBar>
       <div className="content">
         <div
           className={`diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}

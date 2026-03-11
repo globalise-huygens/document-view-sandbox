@@ -1,9 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {useCanvas, useLoadManifest, useManifest} from '@knaw-huc/osd-iiif-viewer';
+import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileViewer} from '@globalise/facsimile';
 import {Id} from '@globalise/annotation';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from "./layout/DocumentLayout";
+
+import './DocumentView.css';
 
 type DocumentViewProps = {
   manifestUrl: string;

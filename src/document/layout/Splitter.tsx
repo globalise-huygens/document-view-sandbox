@@ -2,7 +2,7 @@ import React, {HTMLAttributes} from 'react';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {Direction} from './useLayoutDirection';
 
-import './splitter.css';
+import './Splitter.css';
 
 type ResizeHandleProps = HTMLAttributes<HTMLDivElement> & {
   onDoubleClick?: () => void;

@@ -1,16 +1,19 @@
 import {
-  useCanvas,
+  getAnnotationPageIds,
   Overlay,
-  useImageInfo, getAnnotationPageIds,
+  useCanvas,
+  useImageInfo,
 } from '@knaw-huc/osd-iiif-viewer';
 import React, {useEffect, useState} from 'react';
 import {
-  type AnnotationPage,
   type Annotation,
-  findTextualBodyValue,
+  type AnnotationPage,
   findSvgPath,
-  parseSvgPath, Id,
+  findTextualBodyValue,
+  Id,
+  parseSvgPath,
 } from '@globalise/annotation';
+import {Tooltip, TooltipProps} from './Tooltip';
 
 type Fragment = {
   id: string;
@@ -120,16 +123,6 @@ function Highlight({points, selected, onClick, onHover}: HighlightProps) {
         onHover(false, e);
       }}
     />
-  );
-}
-
-export type TooltipProps = { text: string; x: number; y: number };
-
-function Tooltip({x, y, text}: TooltipProps) {
-  return (
-    <div className="tooltip" style={{left: x + 10, top: y - 30}}>
-      {text}
-    </div>
   );
 }
 

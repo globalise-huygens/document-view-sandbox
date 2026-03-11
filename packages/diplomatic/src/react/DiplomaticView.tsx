@@ -8,6 +8,8 @@ import {useSelectedIds} from '@knaw-huc/original-layout';
 import {Annotation} from '@globalise/annotation';
 import {Benchmark} from "../../../../src/util/Benchmark.ts";
 
+import '@knaw-huc/original-layout/style.css';
+
 const bench = new Benchmark(renderDiplomaticView.name)
 
 export type DiplomaticViewProps = {
