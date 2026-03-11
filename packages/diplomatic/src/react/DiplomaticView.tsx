@@ -1,16 +1,14 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import type {Id} from '@knaw-huc/original-layout';
-import type {View} from '@knaw-huc/original-layout';
+import type {Id, View} from '@knaw-huc/original-layout';
+import {
+  useSelectedIds,
+  useVisibility,
+  ViewFit
+} from '@knaw-huc/original-layout';
 import {renderDiplomaticView} from '../renderDiplomaticView';
-import {ViewFit} from '@knaw-huc/original-layout';
-import {useVisibility} from '@knaw-huc/original-layout';
-import {useSelectedIds} from '@knaw-huc/original-layout';
 import {Annotation} from '@globalise/annotation';
-import {Benchmark} from "../../../../src/util/Benchmark.ts";
 
 import '@knaw-huc/original-layout/style.css';
-
-const bench = new Benchmark(renderDiplomaticView.name)
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -45,23 +43,20 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const viewRef = useRef<View>(null);
 
   useLayoutEffect(() => {
-    function render() {
-      const $view = containerRef.current;
-      if (!$view) {
-        return;
-      }
-      $view.innerHTML = '';
-      viewRef.current = renderDiplomaticView($view, annotations, {
-        page,
-        fit,
-        showRegions,
-        showEntities,
-        showScanMargin,
-        onHover,
-        onClick
-      });
+    const $view = containerRef.current;
+    if (!$view) {
+      return;
     }
-    bench.run(() => render());
+    $view.innerHTML = '';
+    viewRef.current = renderDiplomaticView($view, annotations, {
+      page,
+      fit,
+      showRegions,
+      showEntities,
+      showScanMargin,
+      onHover,
+      onClick
+    });
   }, [annotations, page, fit, showRegions, showEntities, onHover]);
 
   useVisibility(containerRef, visible);

@@ -48,7 +48,6 @@ export function renderDiplomaticView(
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
 ): View {
-  console.log(renderDiplomaticView.name, {config})
   $view.classList.add('original-layout');
 
   function show() {
