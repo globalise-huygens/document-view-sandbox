@@ -17,7 +17,7 @@ const defaultState: PageState = {
   error: null,
 };
 
-let currentRequest: Id | null = null;
+let abortController: AbortController | null = null;
 
 export const usePageStore = create<
   PageState & { load: (canvasId: Id, urls: string[]) => Promise<void> }
@@ -25,29 +25,29 @@ export const usePageStore = create<
   ...defaultState,
 
   load: async (canvasId, urls) => {
-    currentRequest = canvasId;
+    abortController?.abort();
+    abortController = new AbortController();
+
     set({...defaultState, canvasId, isLoading: true});
 
-    if (urls.length === 0) {
+    if (!urls.length) {
       set({canvasId, pages: [], isLoading: false});
       return;
     }
 
+    const {signal} = abortController;
     try {
-      const pages: AnnotationPage[] = await Promise.all(
-        urls.map(url => fetch(url).then(r => r.json()))
+      const pages = await Promise.all(
+        urls.map(url => fetch(url, {signal}).then(r => r.json()))
       ) as AnnotationPage[];
-
-      if (currentRequest !== canvasId) {
-        return;
-      }
 
       set({pages, isLoading: false});
     } catch (e) {
-      if (currentRequest === canvasId) {
-        const error = e instanceof Error ? e.message : 'Unknown error';
-        set({isLoading: false, error});
+      if (signal.aborted) {
+        return;
       }
+      const error = e instanceof Error ? e.message : 'Unknown error';
+      set({isLoading: false, error});
     }
   },
 }));
