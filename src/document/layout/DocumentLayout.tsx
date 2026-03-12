@@ -7,22 +7,26 @@ type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];
 };
 
-const defaultMinSize = "20%";
+const splitterThickness = {
+  horizontalLayout: 10,
+  verticalLayout: 16,
+};
+const defaultMinSize = '20%';
 const defaultLayoutBreakpoint = 1024;
-const defaultPaneSizes: (string | number)[] = ['49.7%', '49.7%'];
+const defaultPaneSizes: (string | number)[] = ['50%', '50%'];
 
 export function DocumentLayout({children}: DocumentLayoutProps) {
   const direction = useLayoutDirection(defaultLayoutBreakpoint);
   const [paneSizes, setPaneSizes] = useState(defaultPaneSizes);
   const [isActive, setIsActive] = useState(false);
 
-  if (children.length !== 2) {
-    throw new Error('Expected two child components')
-  }
-
   return (
     <SplitPane
       direction={direction}
+      dividerSize={direction === 'horizontal'
+        ? splitterThickness.horizontalLayout
+        : splitterThickness.verticalLayout
+      }
       onResize={(newSizes) => setPaneSizes(newSizes)}
       onResizeStart={() => setIsActive(true)}
       onResizeEnd={() => setIsActive(false)}
@@ -32,6 +36,10 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
           direction={direction}
           isActive={isActive}
           onDoubleClick={() => setPaneSizes(defaultPaneSizes)}
+          style={direction === 'horizontal'
+            ? {width: splitterThickness.horizontalLayout, height: '100%'}
+            : {width: '100%', height: splitterThickness.verticalLayout}
+          }
         />}
     >
       <Pane size={paneSizes[0]} minSize={defaultMinSize}>
