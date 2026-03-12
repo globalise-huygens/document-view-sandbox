@@ -3,11 +3,14 @@ import {Id, useAnnotations, usePages, usePartOf} from '@globalise/common/annotat
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
 import {Size} from './Size';
+import {ViewFit} from '@knaw-huc/original-layout';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {ControlBar} from '@globalise/facsimile';
 
 import './TranscriptionView.css'
+import {useLayoutDirection} from "./layout/useLayoutDirection";
+import {layoutBreakpoint} from "./layout/DocumentLayout";
 
 type TranscriptionViewProps = {
   selected: Id[];
@@ -27,6 +30,8 @@ export function TranscriptionView(
   const [scale, setScale] = useState(100);
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
+  const direction = useLayoutDirection(layoutBreakpoint);
+  const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
 
   const showScanMargin = useMemo(() => {
     if (!annotations) {
@@ -37,17 +42,22 @@ export function TranscriptionView(
     return words.length < emptyPageThreshold;
   }, [annotations]);
 
-  useEffect(() => {
-    if (!isReady || viewportSize.width > 0) {
+  useEffect(trackViewportSize, [isReady]);
+  function trackViewportSize() {
+    if (!isReady) {
       return;
     }
-    const zoomViewport = viewportRef.current;
-    if (!zoomViewport) {
+    const viewport = viewportRef.current;
+    if (!viewport) {
       return;
     }
-    const {width, height} = zoomViewport.getBoundingClientRect();
-    setViewportSize({width, height});
-  }, [isReady]);
+    const observer = new ResizeObserver(([change]) => {
+      const {width, height} = change.contentRect;
+      setViewportSize({width, height});
+    });
+    observer.observe(viewport);
+    return () => observer.disconnect();
+  }
 
   if (!isReady) {
     return <div className="message">Loading...</div>;
@@ -66,7 +76,7 @@ export function TranscriptionView(
   }
 
   const scaleFactor = scale / 100;
-  const layoutSize = calcSize(page, viewportSize, scaleFactor);
+  const ratioBoxSize = calcRatioBox(page, viewportSize, scaleFactor, fit);
   const hasSize = viewportSize.width > 0 && viewportSize.height > 0;
 
   const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
@@ -114,7 +124,7 @@ export function TranscriptionView(
           ref={viewportRef}
         >
           {hasSize && (
-            <div className="ratio-box" style={layoutSize}>
+            <div className="ratio-box" style={ratioBoxSize}>
               <DiplomaticView
                 key={rerenderKey}
                 annotations={annotations}
@@ -123,7 +133,7 @@ export function TranscriptionView(
                 showEntities={true}
                 showRegions={true}
                 showScanMargin={showScanMargin}
-                fit="contain"
+                fit={fit}
                 onHover={onHover}
                 onClick={onClick}
                 style={{height: '100%'}}
@@ -146,22 +156,38 @@ export function TranscriptionView(
   );
 }
 
-function calcSize(
+/**
+ * Fit page dimensions into container, then apply scale factor
+ * - page: original manuscript ratio
+ * - viewport: available space (window, splitter, direction)
+ * - fit: should fit in container vertically or horizontally, or both
+ * - scaleFactor: user controlled sliding scale
+ */
+function calcRatioBox(
   page: Size,
-  containerSize: Size,
-  scaleFactor: number
+  viewport: Size,
+  scaleFactor: number,
+  fit: ViewFit
 ): Size {
   const pageRatio = page.width / page.height;
-  const containerRatio = containerSize.width / containerSize.height;
-
   let width: number;
   let height: number;
-  if (pageRatio > containerRatio) {
-    width = containerSize.width;
+
+  if (fit === 'width') {
+    width = viewport.width;
     height = width / pageRatio;
-  } else {
-    height = containerSize.height;
+  } else if (fit === 'height') {
+    height = viewport.height;
     width = height * pageRatio;
+  } else {
+    const containerRatio = viewport.width / viewport.height;
+    if (pageRatio > containerRatio) {
+      width = viewport.width;
+      height = width / pageRatio;
+    } else {
+      height = viewport.height;
+      width = height * pageRatio;
+    }
   }
 
   return {

@@ -12,11 +12,11 @@ const splitterThickness = {
   verticalLayout: 16,
 };
 const defaultMinSize = '20%';
-const defaultLayoutBreakpoint = 1024;
+export const layoutBreakpoint = 1024;
 const defaultPaneSizes: (string | number)[] = ['50%', '50%'];
 
 export function DocumentLayout({children}: DocumentLayoutProps) {
-  const direction = useLayoutDirection(defaultLayoutBreakpoint);
+  const direction = useLayoutDirection(layoutBreakpoint);
   const [paneSizes, setPaneSizes] = useState(defaultPaneSizes);
   const [isActive, setIsActive] = useState(false);
 
