@@ -5,15 +5,15 @@ import {
   getPageText,
   isEntity,
   toClassName,
-} from '@globalise/annotation';
+} from '@globalise/common/annotation';
+import {View} from '@globalise/common';
 import {
   D3El,
   FullOriginalLayoutConfig,
   Id,
   OriginalLayoutConfig,
   orThrow,
-  renderOriginalLayout,
-  View
+  renderOriginalLayout
 } from '@knaw-huc/original-layout';
 import {segment, groupSegments} from '@knaw-huc/text-annotation-segmenter';
 import {renderLineNumbers} from './renderLineNumbers';
@@ -49,14 +49,6 @@ export function renderDiplomaticView(
   config: DiplomaticViewConfig,
 ): View {
   $view.classList.add('original-layout');
-
-  function show() {
-    $view.style.visibility = 'visible';
-  }
-
-  function hide() {
-    $view.style.visibility = 'hidden';
-  }
 
   const mergedConfig = {...defaultConfig, ...config};
   const {showRegions, showEntities, onHover, onClick} = mergedConfig;
@@ -228,10 +220,18 @@ export function renderDiplomaticView(
     }
   }
 
+  const selectedIds: Id[] = []
+
   return {
-    selectAnnotation,
-    deselectAnnotation,
-    hide,
-    show,
+    setSelected: (...ids: string[]) => {
+      const selected = ids.filter(id => !selectedIds.includes(id));
+      const deselected = selectedIds.filter(id => !ids.includes(id));
+
+      selected.forEach(id => selectAnnotation(id));
+      deselected.forEach(id => deselectAnnotation(id));
+
+      selectedIds.length = 0;
+      selectedIds.push(...ids);
+    }
   };
 }

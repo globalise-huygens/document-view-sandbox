@@ -7,7 +7,7 @@ import {
   getEntityType,
   getPageText,
   isEntity, orThrow, toClassName
-} from '@globalise/annotation';
+} from '@globalise/common/annotation';
 
 export type NormalizedLayoutConfig = {
   onHover?: (id: Id | null) => void;

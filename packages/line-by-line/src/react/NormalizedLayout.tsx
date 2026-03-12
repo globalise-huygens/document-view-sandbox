@@ -4,7 +4,7 @@ import {
   NormalizedLayoutResult,
   renderNormalizedLayout
 } from "../renderNormalizedLayout";
-import {Annotation} from "@globalise/annotation";
+import {Annotation} from "@globalise/common/annotation";
 import {Id} from "@knaw-huc/original-layout";
 
 export type NormalizedLayoutProps = {

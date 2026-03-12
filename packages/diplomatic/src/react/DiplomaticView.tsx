@@ -1,14 +1,13 @@
 import React, {useLayoutEffect, useRef} from 'react';
-import type {Id, View} from '@knaw-huc/original-layout';
+import type {Id} from '@knaw-huc/original-layout';
 import {
-  useSelectedIds,
-  useVisibility,
   ViewFit
 } from '@knaw-huc/original-layout';
 import {renderDiplomaticView} from '../renderDiplomaticView';
-import {Annotation} from '@globalise/annotation';
 
 import '@knaw-huc/original-layout/style.css';
+import {Annotation} from "@globalise/common/annotation";
+import {View} from "@globalise/common";
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -17,7 +16,6 @@ export type DiplomaticViewProps = {
   showRegions?: boolean;
   showEntities?: boolean;
   showScanMargin?: boolean;
-  visible?: boolean;
   selected?: Id[];
   onHover?: (id: Id | null) => void;
   onClick?: (id: Id) => void;
@@ -32,7 +30,6 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     showRegions,
     showEntities,
     showScanMargin,
-    visible = true,
     selected = [],
     onHover,
     onClick,
@@ -48,7 +45,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       return;
     }
     $view.innerHTML = '';
-    viewRef.current = renderDiplomaticView($view, annotations, {
+    const view = renderDiplomaticView($view, annotations, {
       page,
       fit,
       showRegions,
@@ -57,10 +54,13 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       onHover,
       onClick
     });
+    view.setSelected(...selected);
+    viewRef.current = view;
   }, [annotations, page, fit, showRegions, showEntities, onHover]);
 
-  useVisibility(containerRef, visible);
-  useSelectedIds(viewRef, selected);
+  useLayoutEffect(() => {
+    viewRef.current?.setSelected(...selected);
+  }, [selected]);
 
   return <div ref={containerRef} style={style} />;
 }

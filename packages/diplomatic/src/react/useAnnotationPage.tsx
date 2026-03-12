@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Id} from "@knaw-huc/original-layout";
-import {Annotation, AnnotationPage, PartOf} from '@globalise/annotation';
+import {Annotation, AnnotationPage, PartOf} from '@globalise/common/annotation';
 
 export function useAnnotationPage(path: string) {
   const [annotations, setAnnotations] = useState<Record<Id, Annotation>>();

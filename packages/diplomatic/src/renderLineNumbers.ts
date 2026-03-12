@@ -1,4 +1,4 @@
-import {Annotation, findSvgPath, findResourceTarget, parseSvgPath} from '@globalise/annotation';
+import {Annotation, findSvgPath, findResourceTarget, parseSvgPath} from '@globalise/common/annotation';
 import {Id} from '@knaw-huc/original-layout';
 import {Point} from '@knaw-huc/original-layout';
 import {Rect} from '@knaw-huc/original-layout';

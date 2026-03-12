@@ -2,7 +2,7 @@ import { select } from 'd3-selection';
 import {
   Annotation,
   findResourceTarget,
-} from "@globalise/annotation";
+} from "@globalise/common/annotation";
 import {calcBoundingBox, createPoints, D3El, Id} from "@knaw-huc/original-layout";
 
 type BlocksConfig = {

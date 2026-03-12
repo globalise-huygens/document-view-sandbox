@@ -3,7 +3,7 @@ import {Viewer} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileControlBar} from './FacsimileControlBar';
 import {NavigationBar} from './NavigationBar';
 import {HighlightOverlay} from './HighlightOverlay';
-import {Id} from '@globalise/annotation';
+import {Id} from '@globalise/common/annotation';
 
 import './FacsimileViewer.css';
 

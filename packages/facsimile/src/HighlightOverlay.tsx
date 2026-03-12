@@ -6,7 +6,7 @@ import {
   Id,
   isWord,
   parseSvgPath, useAnnotations,
-} from '@globalise/annotation';
+} from '@globalise/common/annotation';
 import {Tooltip, TooltipProps} from './Tooltip';
 
 type HighlightOverlayProps = {

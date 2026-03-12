@@ -1,10 +1,8 @@
 import {renderNormalizedLayout} from './renderNormalizedLayout';
 import {renderBlocks} from './renderBlocks';
-import {
-  Annotation,
-  findResourceTarget, orThrow
-} from '@globalise/annotation';
-import {Id, View} from '@knaw-huc/original-layout';
+import {Annotation, findResourceTarget, orThrow} from '@globalise/common/annotation';
+import {Id} from '@knaw-huc/original-layout';
+import {View} from "./View.ts";
 
 type LineByLineViewProps = {
   $view: HTMLElement;
@@ -16,14 +14,6 @@ type LineByLineViewProps = {
 export function renderLineByLineView(
   {$view, annotations, onHover, onClick}: LineByLineViewProps
 ): View {
-  function show() {
-    $view.style.visibility = 'visible';
-  }
-
-  function hide() {
-    $view.style.visibility = 'hidden';
-  }
-
   const layout = renderNormalizedLayout($view, annotations, {onHover, onClick});
   const {$ranges, $lines, ranges, $overlay} = layout;
 
@@ -127,10 +117,18 @@ export function renderLineByLineView(
     }
   }
 
+  const selectedIds: Id[] = []
+
   return {
-    selectAnnotation,
-    deselectAnnotation,
-    hide,
-    show,
+    setSelected: (...ids: string[]) => {
+      const selected = ids.filter(id => !selectedIds.includes(id));
+      const deselected = selectedIds.filter(id => !ids.includes(id));
+
+      selected.forEach(id => selectAnnotation(id));
+      deselected.forEach(id => deselectAnnotation(id));
+
+      selectedIds.length = 0;
+      selectedIds.push(...ids);
+    }
   };
 }

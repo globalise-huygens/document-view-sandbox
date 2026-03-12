@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Id, useAnnotations, usePages, usePartOf} from '@globalise/annotation';
+import {Id, useAnnotations, usePages, usePartOf} from '@globalise/common/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
 import {Size} from './Size';
@@ -132,7 +132,7 @@ export function TranscriptionView(
           )}
         </div>
         <div
-          className={`line-by-line-viewport ${(!showDiplomatic ? 'active' : '')}`}
+          className={`line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
         >
           <LineByLineLayout
             annotations={annotations}

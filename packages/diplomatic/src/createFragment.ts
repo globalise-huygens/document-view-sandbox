@@ -4,7 +4,7 @@ import {
   assertTextualBody,
   findSvgPath,
   parseSvgPath
-} from '@globalise/annotation';
+} from '@globalise/common/annotation';
 import {Fragment} from '@knaw-huc/original-layout';
 
 export function createFragment(word: Annotation): Fragment {

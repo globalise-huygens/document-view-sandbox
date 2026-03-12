@@ -5,7 +5,7 @@ import {
   findResourceTarget,
   findSvgPath,
   parseSvgPath
-} from '@globalise/annotation';
+} from '@globalise/common/annotation';
 
 export function createBlockBoundaries(
   words: Annotation[],

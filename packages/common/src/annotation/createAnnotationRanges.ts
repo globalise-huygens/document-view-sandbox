@@ -1,4 +1,4 @@
-import {Annotation, findTextPositionSelector} from "@globalise/annotation";
+import {Annotation, findTextPositionSelector} from "@globalise/common/annotation";
 import {AnnotationSegment} from "@knaw-huc/text-annotation-segmenter";
 
 /**
