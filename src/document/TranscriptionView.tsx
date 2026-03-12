@@ -7,10 +7,14 @@ import {ViewFit} from '@knaw-huc/original-layout';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {ControlBar} from '@globalise/facsimile';
+import {
+  useSettings,
+  setDiplomaticViewScale, setViewMode
+} from './SettingsStore';
+import {useLayoutDirection} from './layout/useLayoutDirection';
+import {layoutBreakpoint} from './layout/DocumentLayout';
 
-import './TranscriptionView.css'
-import {useLayoutDirection} from "./layout/useLayoutDirection";
-import {layoutBreakpoint} from "./layout/DocumentLayout";
+import './TranscriptionView.css';
 
 type TranscriptionViewProps = {
   selected: Id[];
@@ -26,8 +30,9 @@ export function TranscriptionView(
   const annotations = useAnnotations();
   const page = usePartOf();
   const {isReady, pages, error} = usePages();
-  const [showDiplomatic, setShowDiplomatic] = useState(true);
-  const [scale, setScale] = useState(100);
+  const {viewMode, diplomaticViewScale} = useSettings();
+  const scale = diplomaticViewScale;
+  const showDiplomatic = viewMode === 'diplomatic'
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
@@ -89,31 +94,31 @@ export function TranscriptionView(
             <ZoomOutIcon
               className="icon"
               fontSize="small"
-              onClick={() => setScale(prev => Math.max(30, prev - 10))}
+              onClick={() => setDiplomaticViewScale(Math.max(30, scale - 10))}
             />
             <input
               type="range"
               min={30}
               max={200}
               value={scale}
-              onChange={(e) => setScale(parseInt(e.target.value))}
+              onChange={(e) => setDiplomaticViewScale(parseInt(e.target.value))}
             />
             <ZoomInIcon
               className="icon"
               fontSize="small"
-              onClick={() => setScale(prev => Math.min(200, prev + 10))}
+              onClick={() => setDiplomaticViewScale(Math.min(200, scale + 10))}
             />
           </span>
         )}
         <button
           className={showDiplomatic ? 'active' : ''}
-          onClick={() => setShowDiplomatic(true)}
+          onClick={() => setViewMode('diplomatic')}
         >
           Diplomatic
         </button>
         <button
           className={!showDiplomatic ? 'active' : ''}
-          onClick={() => setShowDiplomatic(false)}
+          onClick={() => setViewMode('line-by-line')}
         >
           Line by line
         </button>
@@ -156,13 +161,6 @@ export function TranscriptionView(
   );
 }
 
-/**
- * Fit page dimensions into container, then apply scale factor
- * - page: original manuscript ratio
- * - viewport: available space (window, splitter, direction)
- * - fit: should fit in container vertically or horizontally, or both
- * - scaleFactor: user controlled sliding scale
- */
 function calcRatioBox(
   page: Size,
   viewport: Size,

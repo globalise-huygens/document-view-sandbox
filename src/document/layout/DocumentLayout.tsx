@@ -2,6 +2,7 @@ import React, {ReactNode, useState} from 'react';
 import {Pane, SplitPane} from 'react-split-pane';
 import {Splitter} from './Splitter';
 import {useLayoutDirection} from './useLayoutDirection';
+import {useSettings, setPaneRatio} from '../SettingsStore';
 
 type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];
@@ -13,11 +14,11 @@ const splitterThickness = {
 };
 const defaultMinSize = '20%';
 export const layoutBreakpoint = 1024;
-const defaultPaneSizes: (string | number)[] = ['50%', '50%'];
 
 export function DocumentLayout({children}: DocumentLayoutProps) {
   const direction = useLayoutDirection(layoutBreakpoint);
-  const [paneSizes, setPaneSizes] = useState(defaultPaneSizes);
+  const {paneRatio} = useSettings();
+  const paneSizes = [`${paneRatio * 100}%`, `${(1 - paneRatio) * 100}%`];
   const [isActive, setIsActive] = useState(false);
 
   return (
@@ -27,7 +28,9 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
         ? splitterThickness.horizontalLayout
         : splitterThickness.verticalLayout
       }
-      onResize={(newSizes) => setPaneSizes(newSizes)}
+      onResize={([pane1, pane2]) => {
+        setPaneRatio(pane1 / (pane1 + pane2));
+      }}
       onResizeStart={() => setIsActive(true)}
       onResizeEnd={() => setIsActive(false)}
       divider={({isDragging, currentSize, minSize, maxSize, ...props}) =>
@@ -35,7 +38,7 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
           {...props}
           direction={direction}
           isActive={isActive}
-          onDoubleClick={() => setPaneSizes(defaultPaneSizes)}
+          onDoubleClick={() => setPaneRatio(0.5)}
           style={direction === 'horizontal'
             ? {width: splitterThickness.horizontalLayout, height: '100%'}
             : {width: '100%', height: splitterThickness.verticalLayout}
