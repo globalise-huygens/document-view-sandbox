@@ -17,40 +17,42 @@ const defaultState: PageState = {
   error: null,
 };
 
-let abortController: AbortController | null = null;
-
 export const usePageStore = create<
   PageState & { load: (canvasId: Id, urls: string[]) => Promise<void> }
->((set) => ({
-  ...defaultState,
+>((set) => {
+  let abortController: AbortController;
 
-  load: async (canvasId, urls) => {
-    abortController?.abort();
-    abortController = new AbortController();
+  return ({
+    ...defaultState,
 
-    set({...defaultState, canvasId, isLoading: true});
+    load: async (canvasId, urls) => {
+      abortController?.abort();
+      abortController = new AbortController();
 
-    if (!urls.length) {
-      set({canvasId, pages: [], isLoading: false});
-      return;
-    }
+      set({...defaultState, canvasId, isLoading: true});
 
-    const {signal} = abortController;
-    try {
-      const pages = await Promise.all(
-        urls.map(url => fetch(url, {signal}).then(r => r.json()))
-      ) as AnnotationPage[];
-
-      set({pages, isLoading: false});
-    } catch (e) {
-      if (signal.aborted) {
+      if (!urls.length) {
+        set({canvasId, pages: [], isLoading: false});
         return;
       }
-      const error = e instanceof Error ? e.message : 'Unknown error';
-      set({isLoading: false, error});
-    }
-  },
-}));
+
+      const {signal} = abortController;
+      try {
+        const pages = await Promise.all(
+          urls.map(url => fetch(url, {signal}).then(r => r.json()))
+        ) as AnnotationPage[];
+
+        set({pages, isLoading: false});
+      } catch (e) {
+        if (signal.aborted) {
+          return;
+        }
+        const error = e instanceof Error ? e.message : 'Unknown error';
+        set({isLoading: false, error});
+      }
+    },
+  });
+});
 
 export function usePages() {
   const state = usePageStore();
