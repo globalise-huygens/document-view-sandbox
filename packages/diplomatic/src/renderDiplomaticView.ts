@@ -1,6 +1,6 @@
 import {
-  Annotation, createAnnotationRanges,
-  findResourceTarget,
+  Annotation, buildAnnotationHierarchy,
+  createAnnotationRanges,
   getEntityType,
   getPageText,
   isEntity,
@@ -15,7 +15,7 @@ import {
   orThrow,
   renderOriginalLayout
 } from '@knaw-huc/original-layout';
-import {segment, groupSegments} from '@knaw-huc/text-annotation-segmenter';
+import {groupSegments, segment} from '@knaw-huc/text-annotation-segmenter';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {createFragment} from './createFragment.ts';
@@ -50,7 +50,10 @@ export function renderDiplomaticView(
 ): View {
   $view.classList.add('original-layout');
 
-  const mergedConfig = {...defaultConfig, ...config};
+  const mergedConfig = {
+    onHover: () => {
+    }, ...defaultConfig, ...config
+  };
   const {showRegions, showEntities, onHover, onClick} = mergedConfig;
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
@@ -71,6 +74,12 @@ export function renderDiplomaticView(
     (a) => a.textGranularity === 'word',
   );
 
+  const {
+    wordsToLine,
+    linesToBlock,
+    blockToLines
+  } = buildAnnotationHierarchy(annotations);
+
   for (const group of groupedByWord) {
     const $word = $fragments[group.annotation.id];
     const $ranges: HTMLSpanElement[] = [];
@@ -90,35 +99,14 @@ export function renderDiplomaticView(
         }
       }
 
-      if (onHover) {
-        $range.addEventListener('mouseenter', () => onHover(group.annotation.id));
-        $range.addEventListener('mouseleave', () => onHover(null));
-      }
+      $range.addEventListener('mouseenter', () => onHover(group.annotation.id));
+      $range.addEventListener('mouseleave', () => onHover(null));
       if (onClick) {
         $range.addEventListener('click', () => onClick(group.annotation.id));
       }
     }
     $word.replaceChildren(...$ranges);
   }
-
-  const wordsToLine: Record<Id, Id> = {};
-  const linesToBlock: Record<Id, Id> = {};
-  const blockToLines: Record<Id, Id[]> = {};
-  Object.values(annotations).forEach((anno) => {
-    if (anno.textGranularity === 'word') {
-      wordsToLine[anno.id] = findResourceTarget(anno).id;
-    }
-    if (anno.textGranularity === 'line') {
-      linesToBlock[anno.id] = findResourceTarget(anno).id;
-    }
-    if (anno.textGranularity === 'line') {
-      const blockId = findResourceTarget(anno).id;
-      if (!blockToLines[blockId]) {
-        blockToLines[blockId] = [];
-      }
-      blockToLines[blockId].push(anno.id);
-    }
-  });
 
   const selectedRegions = new Set<Id>();
   let selectRegion: (id: Id) => void = () => console.warn('Not implemented');
@@ -167,9 +155,16 @@ export function renderDiplomaticView(
 
     for (const [blockId, $block] of Object.entries($blocks)) {
       const lineIds = blockToLines[blockId];
-      $block.on('mouseenter', () => enterRegion($block, lineIds, blockId));
-      $block.on('mouseleave', () => leaveRegion($block, lineIds, blockId));
+      $block.on('mouseenter', () => {
+        enterRegion($block, lineIds, blockId);
+        onHover(blockId);
+      });
+      $block.on('mouseleave', () => {
+        leaveRegion($block, lineIds, blockId);
+        onHover(null);
+      });
     }
+
     selectRegion = (id: Id) => {
       const $block = $blocks[id];
       if (!$block) {
@@ -220,7 +215,7 @@ export function renderDiplomaticView(
     }
   }
 
-  const selectedIds: Id[] = []
+  const selectedIds: Id[] = [];
 
   return {
     setSelected: (...ids: string[]) => {

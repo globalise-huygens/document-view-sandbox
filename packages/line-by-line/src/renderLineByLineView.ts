@@ -1,8 +1,9 @@
 import {renderNormalizedLayout} from './renderNormalizedLayout';
 import {renderBlocks} from './renderBlocks';
 import {Annotation, findResourceTarget, orThrow} from '@globalise/common/annotation';
+import {buildAnnotationHierarchy} from '@globalise/common/annotation';
 import {Id} from '@knaw-huc/original-layout';
-import {View} from "./View.ts";
+import {View} from './View.ts';
 
 type LineByLineViewProps = {
   $view: HTMLElement;
@@ -10,19 +11,15 @@ type LineByLineViewProps = {
   onHover?: (id: Id | null) => void;
   onClick?: (id: Id) => void;
 };
-
+const noop = () => {}
 export function renderLineByLineView(
-  {$view, annotations, onHover, onClick}: LineByLineViewProps
+  {$view, annotations, onHover = noop, onClick = noop}: LineByLineViewProps
 ): View {
   const layout = renderNormalizedLayout($view, annotations, {onHover, onClick});
   const {$ranges, $lines, ranges, $overlay} = layout;
 
-  const linesToBlock: Record<Id, Id> = {};
-  for (const anno of Object.values(annotations)) {
-    if (anno.textGranularity === 'line') {
-      linesToBlock[anno.id] = findResourceTarget(anno).id;
-    }
-  }
+  const {linesToBlock} = buildAnnotationHierarchy(annotations);
+
   const lineIds = Object.keys($lines);
   for (let i = 0; i < lineIds.length - 1; i++) {
     const currentId = lineIds[i];
@@ -60,12 +57,14 @@ export function renderLineByLineView(
         return;
       }
       $block.attr('opacity', 1);
+      onHover(blockId)
     });
     $line.addEventListener('mouseleave', () => {
       if (selectedRegions.has(blockId)) {
         return;
       }
       $block.attr('opacity', 0);
+      onHover(blockId)
     });
   }
 
@@ -117,7 +116,7 @@ export function renderLineByLineView(
     }
   }
 
-  const selectedIds: Id[] = []
+  const selectedIds: Id[] = [];
 
   return {
     setSelected: (...ids: string[]) => {

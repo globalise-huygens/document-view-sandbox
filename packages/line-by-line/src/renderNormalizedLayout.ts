@@ -3,11 +3,11 @@ import {D3El, Id} from '@knaw-huc/original-layout';
 import {segment, TextSegment} from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation, createAnnotationRanges,
-  findResourceTarget,
   getEntityType,
   getPageText,
   isEntity, orThrow, toClassName
 } from '@globalise/common/annotation';
+import {buildAnnotationHierarchy} from '@globalise/common/annotation';
 
 export type NormalizedLayoutConfig = {
   onHover?: (id: Id | null) => void;
@@ -30,7 +30,7 @@ export function renderNormalizedLayout(
   annotations: Record<Id, Annotation>,
   config?: NormalizedLayoutConfig,
 ): NormalizedLayoutResult {
-  const {onClick, onHover} = config ?? defaultConfig
+  const {onClick, onHover} = config ?? defaultConfig;
 
   const $view = document.createElement('div');
   $parent.append($view);
@@ -48,10 +48,7 @@ export function renderNormalizedLayout(
 
   const ranges = segment<Annotation>(pageText, annoRanges);
 
-  const wordsToLine: Record<Id, Id> = {};
-  for (const wordAnno of wordAnnos) {
-    wordsToLine[wordAnno.id] = findResourceTarget(wordAnno).id;
-  }
+  const {wordsToLine} = buildAnnotationHierarchy(annotations);
 
   const rangesByLine: Record<Id, TextSegment<Annotation>[]> = {};
   let lastLineId: Id | null = null;

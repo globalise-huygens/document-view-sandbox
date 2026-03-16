@@ -1,3 +1,4 @@
+export {buildAnnotationHierarchy} from "./buildAnnotationHierarchy.ts";
 export * from './PageStore.ts'
 export {createAnnotationRanges} from "./createAnnotationRanges.ts";
 

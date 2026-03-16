@@ -1,7 +1,11 @@
 import {useMemo} from 'react';
 import {create} from 'zustand';
-import {Id} from "./Id.ts";
-import {Annotation, AnnotationPage, PartOf} from "./AnnoModel.ts";
+import {Id} from './Id.ts';
+import {Annotation, AnnotationPage, PartOf} from './AnnoModel.ts';
+import {
+  buildAnnotationHierarchy,
+  AnnotationHierarchy
+} from './buildAnnotationHierarchy';
 
 export type PageState = {
   canvasId: Id | null;
@@ -88,4 +92,14 @@ export function usePartOf(): PartOf | null {
     }
     return pages[0]?.partOf ?? null;
   }, [pages, isReady]);
+}
+
+export function useAnnotationHierarchy(): AnnotationHierarchy | null {
+  const annotations = useAnnotations();
+  return useMemo(() => {
+    if (!annotations) {
+      return null;
+    }
+    return buildAnnotationHierarchy(annotations);
+  }, [annotations]);
 }
