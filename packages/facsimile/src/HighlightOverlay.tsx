@@ -3,9 +3,11 @@ import React, {useMemo, useState} from 'react';
 import {
   findSvgPath,
   findTextualBodyValue,
-  Id, isBlock,
+  Id,
+  isBlock,
   isWord,
-  parseSvgPath, useAnnotations, useAnnotationHierarchy,
+  parseSvgPath,
+  useAnnotations,
 } from '@globalise/common/annotation';
 import {Tooltip, TooltipProps} from './Tooltip';
 
@@ -20,7 +22,6 @@ export function HighlightOverlay(
 ) {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations();
-  const hierarchy = useAnnotationHierarchy();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
   const words = useMemo(() => {
@@ -49,16 +50,11 @@ export function HighlightOverlay(
   }, [annotations]);
 
   const activeBlockIds = useMemo(() => {
-    if (!hierarchy || !annotations) {
+    if (!annotations) {
       return [];
     }
-    const active = selected
-      .filter(id => annotations[id]?.textGranularity === 'block');
-    const activeThroughWords = selected
-      .map(id => hierarchy.wordToBlock[id])
-      .filter(Boolean);
-    return [...new Set([...activeThroughWords, ...active])];
-  }, [selected, hierarchy, annotations]);
+    return selected.filter(id => annotations[id]?.textGranularity === 'block');
+  }, [selected, annotations]);
 
   if (!imageInfo) {
     return null;
