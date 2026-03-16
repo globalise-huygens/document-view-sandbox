@@ -7,7 +7,7 @@ import {
   getPageText,
   isEntity, orThrow, toClassName
 } from '@globalise/common/annotation';
-import {buildAnnotationHierarchy} from '@globalise/common/annotation';
+import {indexTextGranularity} from '@globalise/common/annotation';
 import {noop} from "@globalise/common";
 
 export type NormalizedLayoutConfig = {
@@ -47,7 +47,7 @@ export function renderNormalizedLayout(
 
   const ranges = segment<Annotation>(pageText, annoRanges);
 
-  const {wordsToLine} = buildAnnotationHierarchy(annotations);
+  const {wordsToLine} = indexTextGranularity(annotations);
 
   const rangesByLine: Record<Id, TextSegment<Annotation>[]> = {};
   let lastLineId: Id | null = null;

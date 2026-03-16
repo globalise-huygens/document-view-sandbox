@@ -3,9 +3,9 @@ import {create} from 'zustand';
 import {Id} from './Id.ts';
 import {Annotation, AnnotationPage, PartOf} from './AnnoModel.ts';
 import {
-  buildAnnotationHierarchy,
-  AnnotationHierarchy
-} from './buildAnnotationHierarchy';
+  indexTextGranularity,
+  TextGranularityIndex
+} from './indexTextGranularity.ts';
 
 export type PageState = {
   canvasId: Id | null;
@@ -94,12 +94,12 @@ export function usePartOf(): PartOf | null {
   }, [pages, isReady]);
 }
 
-export function useAnnotationHierarchy(): AnnotationHierarchy | null {
+export function useTextGranularity(): TextGranularityIndex | null {
   const annotations = useAnnotations();
   return useMemo(() => {
     if (!annotations) {
       return null;
     }
-    return buildAnnotationHierarchy(annotations);
+    return indexTextGranularity(annotations);
   }, [annotations]);
 }

@@ -1,7 +1,7 @@
 import {renderNormalizedLayout} from './renderNormalizedLayout';
 import {renderBlocks} from './renderBlocks';
 import {Annotation, findResourceTarget, orThrow} from '@globalise/common/annotation';
-import {buildAnnotationHierarchy} from '@globalise/common/annotation';
+import {indexTextGranularity} from '@globalise/common/annotation';
 import {Id} from '@knaw-huc/original-layout';
 import {View} from './View.ts';
 import {noop} from "@globalise/common";
@@ -19,7 +19,7 @@ export function renderLineByLineView(
   const layout = renderNormalizedLayout($view, annotations, {onHover, onClick});
   const {$ranges, $lines, ranges, $overlay} = layout;
 
-  const {linesToBlock} = buildAnnotationHierarchy(annotations);
+  const {linesToBlock} = indexTextGranularity(annotations);
 
   const lineIds = Object.keys($lines);
   for (let i = 0; i < lineIds.length - 1; i++) {

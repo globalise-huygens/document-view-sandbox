@@ -1,4 +1,4 @@
-export {buildAnnotationHierarchy} from "./buildAnnotationHierarchy.ts";
+export {indexTextGranularity} from "./indexTextGranularity.ts";
 export * from './PageStore.ts'
 export {createAnnotationRanges} from "./createAnnotationRanges.ts";
 
@@ -28,5 +28,3 @@ export {isSpecificResourceTarget} from './isSpecificResourceTarget';
 export {isSvgSelector} from './isSvgSelector';
 export {getPageText} from './getPageText';
 export {toClassName} from './toClassName';
-export {linkTextGranularityAnnotations} from './linkTextGranularityAnnotations.ts';
-export type {TextGranularityRecords} from './linkTextGranularityAnnotations.ts';

@@ -2,16 +2,16 @@ import {Annotation} from './AnnoModel';
 import {Id} from './Id';
 import {findResourceTarget} from "./findResourceTarget.ts";
 
-export type AnnotationHierarchy = {
+export type TextGranularityIndex = {
   wordsToLine: Record<Id, Id>;
   linesToBlock: Record<Id, Id>;
   blockToLines: Record<Id, Id[]>;
   wordToBlock: Record<Id, Id>;
 };
 
-export function buildAnnotationHierarchy(
+export function indexTextGranularity(
   annotations: Record<Id, Annotation>
-): AnnotationHierarchy {
+): TextGranularityIndex {
   const wordsToLine: Record<Id, Id> = {};
   const linesToBlock: Record<Id, Id> = {};
   const blockToLines: Record<Id, Id[]> = {};

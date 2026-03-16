@@ -1,5 +1,5 @@
 import {
-  Annotation, buildAnnotationHierarchy,
+  Annotation, indexTextGranularity,
   createAnnotationRanges,
   getEntityType,
   getPageText,
@@ -74,7 +74,7 @@ export function renderDiplomaticView(
     (a) => a.textGranularity === 'word',
   );
 
-  const {blockToLines} = buildAnnotationHierarchy(annotations);
+  const {blockToLines} = indexTextGranularity(annotations);
 
   for (const group of groupedByWord) {
     const $word = $fragments[group.annotation.id];
