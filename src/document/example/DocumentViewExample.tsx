@@ -5,6 +5,7 @@ import {Id} from "@globalise/common/annotation";
 
 import {ManifestLoader} from "@globalise/facsimile";
 
+
 const defaultManifestUrl = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
 
