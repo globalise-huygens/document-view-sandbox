@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileViewer} from '@globalise/facsimile';
-import {Id, useLoadPages} from '@globalise/common/annotation';
+import {Id, useLoadPages, useAnnotationHierarchy} from '@globalise/common/annotation';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from './layout/DocumentLayout';
 
@@ -22,6 +22,7 @@ export function DocumentView(
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadPages();
+  const hierarchy = useAnnotationHierarchy();
 
   useEffect(() => {
     if (!isReady) {
@@ -60,11 +61,16 @@ export function DocumentView(
   }, []);
 
   const selectedIds = useMemo(() => {
-    if (!hoveredId) {
-      return clickedIds;
+    const hovered: Id[] = [];
+    if (hoveredId) {
+      hovered.push(hoveredId);
+      const blockId = hierarchy?.wordToBlock[hoveredId];
+      if (blockId) {
+        hovered.push(blockId);
+      }
     }
-    return [...new Set([...clickedIds, hoveredId])];
-  }, [clickedIds, hoveredId]);
+    return [...new Set([...clickedIds, ...hovered])];
+  }, [clickedIds, hoveredId, hierarchy?.wordToBlock]);
 
   if (!isInit) {
     return <div>Loading...</div>;

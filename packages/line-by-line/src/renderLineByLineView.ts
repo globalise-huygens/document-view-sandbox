@@ -11,7 +11,7 @@ type LineByLineViewProps = {
   onHover?: (id: Id | null) => void;
   onClick?: (id: Id) => void;
 };
-const noop = () => {}
+const noop = () => {};
 export function renderLineByLineView(
   {$view, annotations, onHover = noop, onClick = noop}: LineByLineViewProps
 ): View {
@@ -51,20 +51,11 @@ export function renderLineByLineView(
   for (const [lineId, $line] of Object.entries($lines)) {
     const line = annotations[lineId];
     const blockId = findResourceTarget(line).id;
-    const $block = $blocks[blockId];
     $line.addEventListener('mouseenter', () => {
-      if (selectedRegions.has(blockId)) {
-        return;
-      }
-      $block.attr('opacity', 1);
-      onHover(blockId)
+      onHover(blockId);
     });
     $line.addEventListener('mouseleave', () => {
-      if (selectedRegions.has(blockId)) {
-        return;
-      }
-      $block.attr('opacity', 0);
-      onHover(blockId)
+      onHover(null);
     });
   }
 

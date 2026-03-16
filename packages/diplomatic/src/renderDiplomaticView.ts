@@ -74,11 +74,7 @@ export function renderDiplomaticView(
     (a) => a.textGranularity === 'word',
   );
 
-  const {
-    wordsToLine,
-    linesToBlock,
-    blockToLines
-  } = buildAnnotationHierarchy(annotations);
+  const {blockToLines} = buildAnnotationHierarchy(annotations);
 
   for (const group of groupedByWord) {
     const $word = $fragments[group.annotation.id];
@@ -127,42 +123,9 @@ export function renderDiplomaticView(
       lines.forEach((l) => hideLine(l));
     }
 
-    function enterRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
-      if (selectedRegions.has(id)) {
-        return;
-      }
-      showRegion($block, lines);
-    }
-
-    function leaveRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
-      if (selectedRegions.has(id)) {
-        return;
-      }
-      hideRegion($block, lines);
-    }
-
-    for (const [wordId, $word] of Object.entries($fragments)) {
-      const blockId = linesToBlock[wordsToLine[wordId]];
-      const lineIds = blockToLines[blockId];
-      const $block = $blocks[blockId];
-      $word.addEventListener('mouseenter', () =>
-        enterRegion($block, lineIds, blockId),
-      );
-      $word.addEventListener('mouseleave', () =>
-        leaveRegion($block, lineIds, blockId),
-      );
-    }
-
     for (const [blockId, $block] of Object.entries($blocks)) {
-      const lineIds = blockToLines[blockId];
-      $block.on('mouseenter', () => {
-        enterRegion($block, lineIds, blockId);
-        onHover(blockId);
-      });
-      $block.on('mouseleave', () => {
-        leaveRegion($block, lineIds, blockId);
-        onHover(null);
-      });
+      $block.on('mouseenter', () => onHover(blockId));
+      $block.on('mouseleave', () => onHover(null));
     }
 
     selectRegion = (id: Id) => {
