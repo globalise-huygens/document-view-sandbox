@@ -4,6 +4,7 @@ import {Annotation, findResourceTarget, orThrow} from '@globalise/common/annotat
 import {buildAnnotationHierarchy} from '@globalise/common/annotation';
 import {Id} from '@knaw-huc/original-layout';
 import {View} from './View.ts';
+import {noop} from "@globalise/common";
 
 type LineByLineViewProps = {
   $view: HTMLElement;
@@ -11,7 +12,7 @@ type LineByLineViewProps = {
   onHover?: (id: Id | null) => void;
   onClick?: (id: Id) => void;
 };
-const noop = () => {};
+
 export function renderLineByLineView(
   {$view, annotations, onHover = noop, onClick = noop}: LineByLineViewProps
 ): View {

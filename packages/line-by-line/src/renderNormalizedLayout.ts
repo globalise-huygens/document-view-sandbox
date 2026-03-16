@@ -8,6 +8,7 @@ import {
   isEntity, orThrow, toClassName
 } from '@globalise/common/annotation';
 import {buildAnnotationHierarchy} from '@globalise/common/annotation';
+import {noop} from "@globalise/common";
 
 export type NormalizedLayoutConfig = {
   onHover?: (id: Id | null) => void;
@@ -21,8 +22,6 @@ export type NormalizedLayoutResult = {
   ranges: TextSegment<Annotation>[];
 };
 
-const noop = () => {
-};
 const defaultConfig = {onClick: noop, onHover: noop};
 
 export function renderNormalizedLayout(

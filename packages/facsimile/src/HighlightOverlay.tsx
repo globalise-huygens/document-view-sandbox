@@ -10,6 +10,7 @@ import {
   useAnnotations,
 } from '@globalise/common/annotation';
 import {Tooltip, TooltipProps} from './Tooltip';
+import {noop} from "@globalise/common";
 
 type HighlightOverlayProps = {
   selected: Id[];
@@ -18,7 +19,7 @@ type HighlightOverlayProps = {
 };
 
 export function HighlightOverlay(
-  {selected, onToggle, onHover = () => {}}: HighlightOverlayProps
+  {selected, onToggle, onHover = noop}: HighlightOverlayProps
 ) {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations();
@@ -100,17 +101,18 @@ type HighlightStyle = {
   fill: string;
   stroke?: string;
   strokeWidth?: number;
+  cursor?: string;
 };
 
 type HighlightProps = {
   points: string;
   highlightStyle: HighlightStyle;
-  onClick: () => void;
+  onClick?: () => void;
   onHover: (hovering: boolean, event: React.MouseEvent) => void;
 };
 
-function Highlight({points, highlightStyle, onClick, onHover}: HighlightProps) {
-  const {fill, stroke, strokeWidth} = highlightStyle;
+function Highlight({points, highlightStyle, onClick = noop, onHover}: HighlightProps) {
+  const {fill, stroke, strokeWidth, cursor} = highlightStyle;
 
   return (
     <polygon
@@ -118,7 +120,7 @@ function Highlight({points, highlightStyle, onClick, onHover}: HighlightProps) {
       fill={fill}
       stroke={stroke ?? 'none'}
       strokeWidth={strokeWidth ?? 0}
-      style={{pointerEvents: 'auto', cursor: 'pointer'}}
+      style={{pointerEvents: 'auto', cursor: cursor ?? 'default'}}
       onPointerDown={(e) => {
         e.stopPropagation();
         onClick();
@@ -134,12 +136,12 @@ type BlockHighlightProps = {
   id: Id;
   points: string;
   selected: boolean;
-  onToggle: (id: Id) => void;
   onHover: (id: Id | null) => void;
 };
 
 type WordHighlightProps = BlockHighlightProps & {
   text: string;
+  onToggle: (id: Id) => void;
   setTooltip: (tooltip: TooltipProps | null) => void;
 };
 
@@ -152,6 +154,7 @@ function WordHighlight(
     fill: selected ? 'rgba(0,255,0,0.35)'
       : hovered ? 'rgba(0,0,0,0.1)'
         : 'transparent',
+    cursor: 'pointer'
   };
 
   return (
@@ -173,7 +176,7 @@ function WordHighlight(
 }
 
 function BlockHighlight(
-  {id, points, selected, onToggle, onHover}: BlockHighlightProps
+  {id, points, selected, onHover}: BlockHighlightProps
 ) {
   const [hovered, setHovered] = useState(false);
 
@@ -189,7 +192,6 @@ function BlockHighlight(
     <Highlight
       points={points}
       highlightStyle={highlightStyle}
-      onClick={() => onToggle(id)}
       onHover={(hovering) => {
         setHovered(hovering);
         onHover(hovering ? id : null);
