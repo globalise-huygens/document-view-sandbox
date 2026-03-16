@@ -136,7 +136,7 @@ export function TranscriptionView(
                 selected={selected}
                 page={page}
                 showEntities={true}
-                showRegions={true}
+                showBlocks={true}
                 showScanMargin={showScanMargin}
                 fit={fit}
                 onHover={onHover}

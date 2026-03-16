@@ -49,7 +49,7 @@ export function HighlightOverlay(
       }));
   }, [annotations]);
 
-  const activeBlockIds = useMemo(() => {
+  const selectedBlockIds = useMemo(() => {
     if (!annotations) {
       return [];
     }
@@ -74,7 +74,7 @@ export function HighlightOverlay(
               key={id}
               id={id}
               points={path}
-              selected={activeBlockIds.includes(id)}
+              selected={selectedBlockIds.includes(id)}
               {...highlightProps}
             />
           ))}

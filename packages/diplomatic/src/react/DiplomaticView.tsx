@@ -13,7 +13,7 @@ export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
   page: {width: number; height: number};
   fit?: ViewFit;
-  showRegions?: boolean;
+  showBlocks?: boolean;
   showEntities?: boolean;
   showScanMargin?: boolean;
   selected?: Id[];
@@ -27,7 +27,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     annotations,
     page,
     fit,
-    showRegions,
+    showBlocks,
     showEntities,
     showScanMargin,
     selected = [],
@@ -48,7 +48,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     const view = renderDiplomaticView($view, annotations, {
       page,
       fit,
-      showRegions,
+      showBlocks: showBlocks,
       showEntities,
       showScanMargin,
       onHover,
@@ -56,7 +56,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     });
     view.setSelected(...selected);
     viewRef.current = view;
-  }, [annotations, page, fit, showRegions, showEntities, onHover]);
+  }, [annotations, page, fit, showBlocks, showEntities, onHover]);
 
   useLayoutEffect(() => {
     viewRef.current?.setSelected(...selected);

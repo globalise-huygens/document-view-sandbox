@@ -21,7 +21,7 @@ import {renderBlocks} from './renderBlocks';
 import {createFragment} from './createFragment.ts';
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
-  showRegions: boolean;
+  showBlocks: boolean;
   showEntities: boolean;
 };
 
@@ -33,7 +33,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
     height: 0,
     width: 0,
   },
-  showRegions: false,
+  showBlocks: false,
   showEntities: false,
 };
 
@@ -54,7 +54,7 @@ export function renderDiplomaticView(
     onHover: () => {
     }, ...defaultConfig, ...config
   };
-  const {showRegions, showEntities, onHover, onClick} = mergedConfig;
+  const {showBlocks, showEntities, onHover, onClick} = mergedConfig;
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
@@ -104,21 +104,21 @@ export function renderDiplomaticView(
     $word.replaceChildren(...$ranges);
   }
 
-  const selectedRegions = new Set<Id>();
-  let selectRegion: (id: Id) => void = () => console.warn('Not implemented');
-  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented');
+  const selectedBlocks = new Set<Id>();
+  let selectBlock: (id: Id) => void = () => console.warn('Not implemented');
+  let deselectBlock: (id: Id) => void = () => console.warn('Not implemented');
 
-  if (showRegions) {
+  if (showBlocks) {
     const {$blocks} = renderBlocks(annotations, $view, {scale, offset});
     const lineNumbers = renderLineNumbers(annotations, $view, {scale, offset});
     const {showLine, hideLine} = lineNumbers;
 
-    function showRegion($block: D3El<SVGGElement>, lines: Id[]) {
+    function showBlock($block: D3El<SVGGElement>, lines: Id[]) {
       $block.attr('opacity', 1);
       lines.forEach((l) => showLine(l));
     }
 
-    function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
+    function hideBlock($block: D3El<SVGGElement>, lines: Id[]) {
       $block.attr('opacity', 0);
       lines.forEach((l) => hideLine(l));
     }
@@ -128,29 +128,29 @@ export function renderDiplomaticView(
       $block.on('mouseleave', () => onHover(null));
     }
 
-    selectRegion = (id: Id) => {
+    selectBlock = (id: Id) => {
       const $block = $blocks[id];
       if (!$block) {
         return;
       }
-      if (selectedRegions.has(id)) {
+      if (selectedBlocks.has(id)) {
         return;
       }
-      selectedRegions.add(id);
+      selectedBlocks.add(id);
       const lines = blockToLines[id];
-      showRegion($block, lines);
+      showBlock($block, lines);
     };
-    deselectRegion = (id: Id) => {
+    deselectBlock = (id: Id) => {
       const $block = $blocks[id];
       if (!$block) {
         return;
       }
-      if (!selectedRegions.has(id)) {
+      if (!selectedBlocks.has(id)) {
         return;
       }
-      selectedRegions.delete(id);
+      selectedBlocks.delete(id);
       const lines = blockToLines[id];
-      hideRegion($block, lines);
+      hideBlock($block, lines);
     };
   }
 
@@ -160,7 +160,7 @@ export function renderDiplomaticView(
       const $word = $fragments[id];
       $word.classList.add('selected');
     } else if (annotation.textGranularity === 'block') {
-      selectRegion(id);
+      selectBlock(id);
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -172,7 +172,7 @@ export function renderDiplomaticView(
       const $word = $fragments[id];
       $word.classList.remove('selected');
     } else if (annotation.textGranularity === 'block') {
-      deselectRegion(id);
+      deselectBlock(id);
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }

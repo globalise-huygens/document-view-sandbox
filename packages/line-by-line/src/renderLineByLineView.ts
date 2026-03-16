@@ -25,7 +25,7 @@ export function renderLineByLineView(
     const currentId = lineIds[i];
     const nextId = lineIds[i + 1];
     if (linesToBlock[currentId] !== linesToBlock[nextId]) {
-      $lines[currentId].classList.add('region-end');
+      $lines[currentId].classList.add('block-end');
     }
   }
 
@@ -43,7 +43,7 @@ export function renderLineByLineView(
     }
   }
 
-  const selectedRegions = new Set<Id>();
+  const selectedBlocks = new Set<Id>();
 
   const blockConfig = {stroke: 'rgba(0,150,0,0.5)'};
   const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig);
@@ -59,27 +59,27 @@ export function renderLineByLineView(
     });
   }
 
-  function selectRegion(id: Id) {
+  function selectBlock(id: Id) {
     const $block = $blocks[id];
     if (!$block) {
       return;
     }
-    if (selectedRegions.has(id)) {
+    if (selectedBlocks.has(id)) {
       return;
     }
-    selectedRegions.add(id);
+    selectedBlocks.add(id);
     $block.attr('opacity', 1);
   }
 
-  function deselectRegion(id: Id) {
+  function deselectBlock(id: Id) {
     const $block = $blocks[id];
     if (!$block) {
       return;
     }
-    if (!selectedRegions.has(id)) {
+    if (!selectedBlocks.has(id)) {
       return;
     }
-    selectedRegions.delete(id);
+    selectedBlocks.delete(id);
     $block.attr('opacity', 0);
   }
 
@@ -89,7 +89,7 @@ export function renderLineByLineView(
       const ranges = annotationToRanges[id] ?? [];
       ranges.forEach(($r) => $r.classList.add('selected'));
     } else if (annotation.textGranularity === 'block') {
-      selectRegion(id);
+      selectBlock(id);
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -101,7 +101,7 @@ export function renderLineByLineView(
       const ranges = annotationToRanges[id] ?? [];
       ranges.forEach(($r) => $r.classList.remove('selected'));
     } else if (annotation.textGranularity === 'block') {
-      deselectRegion(id);
+      deselectBlock(id);
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
