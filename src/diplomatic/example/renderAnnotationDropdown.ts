@@ -1,5 +1,5 @@
-import { Annotation } from '../anno/AnnoModel';
-import { Id } from '../anno/Id';
+import {Annotation} from "@globalise/annotation";
+import {Id} from "@knaw-huc/original-layout";
 
 export function renderAnnotationDropdown(
   $parent: HTMLElement,

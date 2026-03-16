@@ -1,4 +1,7 @@
 import * as esbuild from 'esbuild'
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url)
+import path from 'path'
 
 const entryPoints = [
   'src/index.html',
@@ -7,19 +10,19 @@ const entryPoints = [
 
   'src/diplomatic/index.html',
   'src/diplomatic/index.ts',
-  'src/diplomatic/reset.css',
-  'src/diplomatic/diplomatic.css',
   'src/diplomatic/menu.css',
+  'src/diplomatic/highlight.css',
   'src/diplomatic/react/index.html',
   'src/diplomatic/react/index.tsx',
 
-  'src/highlight/index.html',
-  'src/highlight/index.ts',
-  'src/highlight/highlight.css',
-
   'src/normalized/index.html',
   'src/normalized/index.ts',
-  'src/normalized/normalized.css',
+
+  'src/facsimile/index.html',
+  'src/facsimile/index.tsx',
+
+  'src/document/index.html',
+  'src/document/index.tsx',
 ]
 
 const isDev = process.argv.includes('--dev')
@@ -32,16 +35,23 @@ const sharedConfig = {
   outbase: 'src',
   loader: {'.html': 'copy', '.tsx': 'tsx'},
   jsx: 'automatic',
-  define: {DEV}
+  define: {DEV},
+  alias: {
+    'react': require.resolve('react'),
+    'react-dom': path.dirname(require.resolve('react-dom/package.json')),
+    'react/jsx-runtime': require.resolve('react/jsx-runtime'),
+  },
 }
 
 if (isDev) {
   const context = await esbuild.context({
     ...sharedConfig,
-    sourcemap: true
+    sourcemap: true,
   })
   await context.watch()
-  await context.serve({servedir: './static'})
+  const host = '127.0.0.1';
+  const { port } = await context.serve({host, servedir: './static'})
+  console.log(`Running at: http://${host}:${port} `)
 } else {
   await esbuild.build(sharedConfig)
 }

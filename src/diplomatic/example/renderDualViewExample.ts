@@ -1,13 +1,15 @@
-import { AnnotationPage } from '../anno/AnnoModel';
-import { px } from '../px';
-import { renderDiplomaticView } from '../renderDiplomaticView';
-import { $ } from './$';
-import { mapAnnotationsById } from './mapAnnotationsById';
-import { renderLineByLineView } from '../../normalized/renderLineByLineView';
-import { renderAnnotationDropdown } from './renderAnnotationDropdown';
-import { findTextualBodyValue } from '../anno/findTextualBodyValue';
-import { findSourceLabel } from '../anno/findSourceLabel';
-import { combineViews } from './combineViews';
+import {mapAnnotationsById} from './mapAnnotationsById';
+import {renderAnnotationDropdown} from './renderAnnotationDropdown';
+import {combineViews} from './combineViews';
+import {renderDiplomaticView} from "@globalise/diplomatic";
+import {px} from "./px";
+import {$} from "./$";
+import {
+  AnnotationPage,
+  findSourceLabel,
+  findTextualBodyValue
+} from "@globalise/annotation";
+import {renderLineByLineView} from "@globalise/line-by-line";
 
 export async function renderDualViewExample($parent: HTMLElement) {
   console.log('dual-view');

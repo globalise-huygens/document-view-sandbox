@@ -1,13 +1,10 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {createPortal} from 'react-dom';
-import type {Id} from '../../anno/Id';
-import type {Annotation} from '../../anno/AnnoModel';
-import {useAnnotationPage} from '../useAnnotationPage';
-import {DiplomaticView} from '../DiplomaticView';
-import {LineByLineLayout} from '../LineByLineLayout';
-import {findTextualBodyValue} from '../../anno/findTextualBodyValue';
-import {findSourceLabel} from '../../anno/findSourceLabel';
 import {$} from '../../example/$';
+import {DiplomaticView, useAnnotationPage} from "@globalise/diplomatic";
+import {Id} from "@knaw-huc/original-layout";
+import {Controls} from "./Controls";
+import {LineByLineLayout} from "@globalise/line-by-line";
 
 export function DualViewExample() {
   const pagePath = '../../iiif/annotations/transcriptions/NL-HaNA_1.04.02_3598_0797.json';
@@ -73,57 +70,5 @@ export function DualViewExample() {
         />
       </div>
     </>
-  );
-}
-
-function Controls({words, regions, onToggleView, onToggleAnnotation}: {
-  words: Annotation[];
-  regions: Annotation[];
-  onToggleView: () => void;
-  onToggleAnnotation: (id: Id) => void;
-}) {
-  return (
-    <span className="controls">
-      <button onClick={onToggleView}>Toggle view</button>
-      <AnnotationDropdown
-        placeholder="Toggle words"
-        options={words}
-        toLabel={findTextualBodyValue}
-        onSelect={onToggleAnnotation}
-      />
-      <AnnotationDropdown
-        placeholder="Toggle regions"
-        options={regions}
-        toLabel={findSourceLabel}
-        onSelect={onToggleAnnotation}
-      />
-    </span>
-  );
-}
-
-function AnnotationDropdown({placeholder, options, toLabel, onSelect}: {
-  placeholder: string;
-  options: Annotation[];
-  toLabel: (a: Annotation) => string;
-  onSelect: (id: Id) => void;
-}) {
-  const selectRef = useRef<HTMLSelectElement>(null);
-
-  return (
-    <select
-      ref={selectRef}
-      defaultValue=""
-      onChange={(e) => {
-        onSelect(e.target.value);
-        if (selectRef.current) {
-          selectRef.current.selectedIndex = 0;
-        }
-      }}
-    >
-      <option value="" disabled>{placeholder}</option>
-      {options.map(a => (
-        <option key={a.id} value={a.id}>{toLabel(a)}</option>
-      ))}
-    </select>
   );
 }

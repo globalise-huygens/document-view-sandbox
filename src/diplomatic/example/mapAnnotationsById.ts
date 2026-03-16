@@ -1,5 +1,5 @@
-import {Annotation} from '../anno/AnnoModel';
-import {Id} from '../anno/Id';
+import {Id} from "@knaw-huc/original-layout";
+import {Annotation} from "@globalise/annotation";
 
 export function mapAnnotationsById(annotations: Annotation[]) {
   return annotations.reduce(

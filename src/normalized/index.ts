@@ -4,6 +4,8 @@ import { getNormalizedExampleFromUrl } from './example/Examples';
 import { renderMinimalExample } from './example/renderMinimalExample';
 import { renderLineWrappingExample } from './example/renderLineWrappingExample';
 
+import '@globalise/line-by-line/style.css';
+
 reloadOnEsBuild();
 
 main();

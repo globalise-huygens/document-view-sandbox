@@ -2,17 +2,9 @@
 
 Sandbox for trying out document view capabilities (IIIF + Transcriptions + Annotations)
 
-## Image & transcription viewer
+## Examples
 
-https://globalise-huygens.github.io/document-view-sandbox/viewer.html
-
-## Diplomatic view
-
-https://globalise-huygens.github.io/document-view-sandbox/diplomatic/index.html
-
-## Highlights
-
-https://globalise-huygens.github.io/document-view-sandbox/highlight/index.html
+https://globalise-huygens.github.io/document-view-sandbox/
 
 ## Local
 

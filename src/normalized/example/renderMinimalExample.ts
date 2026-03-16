@@ -1,7 +1,7 @@
-import { AnnotationPage } from '../../diplomatic/anno/AnnoModel';
-import { mapAnnotationsById } from '../../diplomatic/example/mapAnnotationsById';
-import { Benchmark } from '../../util/Benchmark';
-import { renderLineByLineView } from '../renderLineByLineView';
+import {mapAnnotationsById} from '../../diplomatic/example/mapAnnotationsById';
+import {Benchmark} from '../../util/Benchmark';
+import {renderLineByLineView} from '@globalise/line-by-line';
+import {AnnotationPage} from '@globalise/annotation';
 
 export async function renderMinimalExample($parent: HTMLElement) {
   const pagePath =
