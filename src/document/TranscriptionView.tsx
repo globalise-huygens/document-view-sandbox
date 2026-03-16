@@ -125,7 +125,7 @@ export function TranscriptionView(
       </ControlBar>
       <div className="content">
         <div
-          className={`diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
+          className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
           ref={viewportRef}
         >
           {hasSize && (
@@ -147,7 +147,7 @@ export function TranscriptionView(
           )}
         </div>
         <div
-          className={`line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
+          className={`viewport line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
         >
           <LineByLineLayout
             annotations={annotations}
