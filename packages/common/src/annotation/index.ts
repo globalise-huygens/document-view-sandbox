@@ -1,6 +1,6 @@
 export {indexTextGranularity} from "./indexTextGranularity.ts";
 export * from './PageStore.ts'
-export {createAnnotationRanges} from "./createAnnotationRanges.ts";
+export {createAnnotationSegments} from "./createAnnotationSegments.ts";
 
 export * from './AnnoModel';
 export * from './EntityModel';

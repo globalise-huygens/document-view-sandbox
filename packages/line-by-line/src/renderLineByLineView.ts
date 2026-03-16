@@ -17,7 +17,7 @@ export function renderLineByLineView(
   {$view, annotations, onHover = noop, onClick = noop}: LineByLineViewProps
 ): View {
   const layout = renderNormalizedLayout($view, annotations, {onHover, onClick});
-  const {$ranges, $lines, ranges, $overlay} = layout;
+  const {$segments, $lines, segments, $overlay} = layout;
 
   const {linesToBlock} = indexTextGranularity(annotations);
 
@@ -30,17 +30,17 @@ export function renderLineByLineView(
     }
   }
 
-  const annotationToRanges: Record<Id, HTMLElement[]> = {};
-  for (const range of ranges) {
-    const $range = $ranges[range.id];
-    if (!$range) {
+  const annotationToSegments: Record<Id, HTMLElement[]> = {};
+  for (const segment of segments) {
+    const $segment = $segments[segment.id];
+    if (!$segment) {
       continue;
     }
-    for (const annotation of range.annotations) {
-      if (!annotationToRanges[annotation.id]) {
-        annotationToRanges[annotation.id] = [];
+    for (const annotation of segment.annotations) {
+      if (!annotationToSegments[annotation.id]) {
+        annotationToSegments[annotation.id] = [];
       }
-      annotationToRanges[annotation.id].push($range);
+      annotationToSegments[annotation.id].push($segment);
     }
   }
 
@@ -87,8 +87,8 @@ export function renderLineByLineView(
   function selectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const ranges = annotationToRanges[id] ?? [];
-      ranges.forEach(($r) => $r.classList.add('selected'));
+      const segments = annotationToSegments[id] ?? [];
+      segments.forEach(($r) => $r.classList.add('selected'));
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
     } else {
@@ -99,8 +99,8 @@ export function renderLineByLineView(
   function deselectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const ranges = annotationToRanges[id] ?? [];
-      ranges.forEach(($r) => $r.classList.remove('selected'));
+      const segments = annotationToSegments[id] ?? [];
+      segments.forEach(($r) => $r.classList.remove('selected'));
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
     } else {

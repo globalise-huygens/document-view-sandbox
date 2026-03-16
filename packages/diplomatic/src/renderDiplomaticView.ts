@@ -1,6 +1,6 @@
 import {
   Annotation, indexTextGranularity,
-  createAnnotationRanges,
+  createAnnotationSegments,
   getEntityType,
   getPageText,
   isEntity,
@@ -66,7 +66,7 @@ export function renderDiplomaticView(
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
   const markedAnnos = [...wordAnnos, ...entityAnnos];
-  const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
+  const annoRanges = createAnnotationSegments(markedAnnos, pageAnnoId);
 
   const textSegments = segment<Annotation>(pageText, annoRanges);
   const groupedByWord = groupSegments(

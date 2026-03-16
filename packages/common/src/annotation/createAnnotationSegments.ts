@@ -2,11 +2,10 @@ import {Annotation, findTextPositionSelector} from "@globalise/common/annotation
 import {AnnotationSegment} from "@knaw-huc/text-annotation-segmenter";
 
 /**
- * Create annotation ranges from annotation text position selectors
- * linking to {@link pageAnnoId}.
+ * Create annotation ranges from annotation text position selectors linking to {@link pageAnnoId}.
  * When selector not found, log and skip annotation
  */
-export function createAnnotationRanges(
+export function createAnnotationSegments(
   markedAnnos: Annotation[],
   pageAnnoId: string
 ): AnnotationSegment<Annotation>[] {

@@ -2,7 +2,7 @@ import {select} from 'd3-selection';
 import {D3El, Id} from '@knaw-huc/original-layout';
 import {segment, TextSegment} from '@knaw-huc/text-annotation-segmenter';
 import {
-  Annotation, createAnnotationRanges,
+  Annotation, createAnnotationSegments,
   getEntityType,
   getPageText,
   isEntity, orThrow, toClassName
@@ -16,10 +16,10 @@ export type NormalizedLayoutConfig = {
 };
 
 export type NormalizedLayoutResult = {
-  $ranges: Record<Id, HTMLElement>;
+  $segments: Record<Id, HTMLElement>;
   $lines: Record<Id, HTMLElement>;
   $overlay: SVGSVGElement;
-  ranges: TextSegment<Annotation>[];
+  segments: TextSegment<Annotation>[];
 };
 
 const defaultConfig = {onClick: noop, onHover: noop};
@@ -29,7 +29,7 @@ export function renderNormalizedLayout(
   annotations: Record<Id, Annotation>,
   config?: NormalizedLayoutConfig,
 ): NormalizedLayoutResult {
-  const {onClick, onHover} = config ?? defaultConfig;
+  const {onClick, onHover} = {...defaultConfig, ...config};
 
   const $view = document.createElement('div');
   $parent.append($view);
@@ -43,37 +43,35 @@ export function renderNormalizedLayout(
   const entityAnnos = Object.values(annotations).filter(isEntity);
   const markedAnnos = [...wordAnnos, ...entityAnnos];
 
-  const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
-
-  const ranges = segment<Annotation>(pageText, annoRanges);
-
+  const annoSegments = createAnnotationSegments(markedAnnos, pageAnnoId);
+  const segments = segment<Annotation>(pageText, annoSegments);
   const {wordsToLine} = indexTextGranularity(annotations);
 
-  const rangesByLine: Record<Id, TextSegment<Annotation>[]> = {};
+  const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};
   let lastLineId: Id | null = null;
-  for (const range of ranges) {
-    const word = range.annotations.find((a) => a.id in wordsToLine);
+  for (const segment of segments) {
+    const word = segment.annotations.find((a) => a.id in wordsToLine);
     const lineId: Id | null = word ? wordsToLine[word.id] : lastLineId;
     if (!lineId) {
       continue;
     }
     lastLineId = lineId;
-    if (!rangesByLine[lineId]) {
-      rangesByLine[lineId] = [];
+    if (!segmentsByLine[lineId]) {
+      segmentsByLine[lineId] = [];
     }
-    rangesByLine[lineId].push(range);
+    segmentsByLine[lineId].push(segment);
   }
 
   const $text = document.createElement('div');
   $view.appendChild($text);
   $text.classList.add('text');
 
-  const $ranges: Record<Id, HTMLSpanElement> = {};
+  const $segments: Record<Id, HTMLSpanElement> = {};
   const $lines: Record<Id, HTMLElement> = {};
 
-  const lines = Object.keys(rangesByLine);
+  const lines = Object.keys(segmentsByLine);
   for (const [i, lineId] of lines.entries()) {
-    const lineRanges = rangesByLine[lineId];
+    const lineSegments = segmentsByLine[lineId];
     const $line = document.createElement('span');
     $line.classList.add('line');
 
@@ -86,32 +84,29 @@ export function renderNormalizedLayout(
     $content.classList.add('line-content');
     $line.append($content);
 
-    for (const range of lineRanges) {
-      const $range = document.createElement('span');
-      $range.classList.add('range');
-      $range.textContent = pageText.substring(range.begin, range.end);
-      for (const annotation of range.annotations) {
+    for (const segment of lineSegments) {
+      const $segment = document.createElement('span');
+      $segment.classList.add('segment');
+      $segment.textContent = pageText.substring(segment.begin, segment.end);
+      for (const annotation of segment.annotations) {
         if (isEntity(annotation)) {
           const entityType = getEntityType(annotation);
-          $range.classList.add(...['entity', toClassName(entityType)]);
-          $range.title = `${entityType} | ${annotation.id}`;
+          $segment.classList.add(...['entity', toClassName(entityType)]);
+          $segment.title = `${entityType} | ${annotation.id}`;
         }
       }
 
-      const word = range.annotations
+      const word = segment.annotations
         .find(a => a.textGranularity === 'word');
 
-      if (onHover && word) {
-        $range.addEventListener('mouseenter', () => onHover(word.id));
-        $range.addEventListener('mouseleave', () => onHover(null));
+      if (word) {
+        $segment.addEventListener('mouseenter', () => onHover(word.id));
+        $segment.addEventListener('mouseleave', () => onHover(null));
+        $segment.addEventListener('click', () => onClick(word.id));
       }
 
-      if (onClick && word) {
-        $range.addEventListener('click', () => onClick(word.id));
-      }
-
-      $ranges[range.id] = $range;
-      $content.appendChild($range);
+      $segments[segment.id] = $segment;
+      $content.appendChild($segment);
     }
     $lines[lineId] = $line;
   }
@@ -123,9 +118,9 @@ export function renderNormalizedLayout(
     .attr('class', 'overlay');
 
   return {
-    $ranges,
+    $segments,
     $lines,
-    ranges,
+    segments,
     $overlay: $overlay.node() ?? orThrow('No svg element'),
   };
 }
