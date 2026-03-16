@@ -94,11 +94,18 @@ export function usePartOf(): PartOf | null {
   }, [pages, isReady]);
 }
 
-export function useTextGranularity(): TextGranularityIndex | null {
+const emptyIndex: TextGranularityIndex = {
+  wordsToLine: {},
+  linesToBlock: {},
+  blockToLines: {},
+  wordToBlock: {},
+};
+
+export function useTextGranularity(): TextGranularityIndex {
   const annotations = useAnnotations();
   return useMemo(() => {
     if (!annotations) {
-      return null;
+      return emptyIndex;
     }
     return indexTextGranularity(annotations);
   }, [annotations]);

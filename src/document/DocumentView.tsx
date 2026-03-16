@@ -22,7 +22,7 @@ export function DocumentView(
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadPages();
-  const granularity = useTextGranularity();
+  const {wordToBlock} = useTextGranularity();
 
   useEffect(() => {
     if (!isReady) {
@@ -64,13 +64,13 @@ export function DocumentView(
     const hovered: Id[] = [];
     if (hoveredId) {
       hovered.push(hoveredId);
-      const blockId = granularity?.wordToBlock[hoveredId];
+      const blockId = wordToBlock[hoveredId];
       if (blockId) {
         hovered.push(blockId);
       }
     }
     return [...new Set([...clickedIds, ...hovered])];
-  }, [clickedIds, hoveredId, granularity?.wordToBlock]);
+  }, [clickedIds, hoveredId, wordToBlock]);
 
   if (!isInit) {
     return <div>Loading...</div>;
