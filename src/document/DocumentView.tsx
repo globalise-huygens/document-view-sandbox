@@ -1,7 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileViewer} from '@globalise/facsimile';
-import {Id, useLoadPages, useTextGranularity} from '@globalise/common/annotation';
+import {
+  Id,
+  useLoadPages,
+  useTextGranularity
+} from '@globalise/common/annotation';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from './layout/DocumentLayout';
 
@@ -18,7 +22,7 @@ export function DocumentView(
 ) {
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
-  const [clickedIds, setClickedIds] = useState<Id[]>([]);
+  const [clickedId, setClickedId] = useState<Id | null>(null);
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadPages();
@@ -49,31 +53,38 @@ export function DocumentView(
       .filter(a => a.type === 'AnnotationPage')
       .map(a => a.id);
     loadPages(current.id, urls);
-    setClickedIds([]);
+    setClickedId(null);
     setHoveredId(null);
     onPageChange(current.id);
   }, [current]);
 
-  const toggleClickedIds = useCallback((id: Id) => {
-    setClickedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  }, []);
-
   const selectedIds = useMemo(() => {
-    const hovered: Id[] = [];
+    const result = new Set<Id>();
     if (hoveredId) {
-      hovered.push(hoveredId);
+      result.add(hoveredId);
       const blockId = wordToBlock[hoveredId];
       if (blockId) {
-        hovered.push(blockId);
+        result.add(blockId);
       }
     }
-    return [...new Set([...clickedIds, ...hovered])];
-  }, [clickedIds, hoveredId, wordToBlock]);
+    if (clickedId) {
+      result.add(clickedId)
+    }
+    return [...result];
+  }, [clickedId, hoveredId, wordToBlock]);
 
   if (!isInit) {
     return <div>Loading...</div>;
+  }
+
+  function toggleClicked(id: Id) {
+    if (!id) {
+      setClickedId(null)
+    } else if (id === clickedId) {
+      setClickedId(null)
+    } else {
+      setClickedId(id)
+    }
   }
 
   return (
@@ -81,14 +92,14 @@ export function DocumentView(
       <FacsimileViewer
         manifestUrl={manifestUrl}
         selected={selectedIds}
-        onToggle={toggleClickedIds}
+        onToggle={toggleClicked}
         onHover={setHoveredId}
         style={{height: '100%'}}
       />
       <TranscriptionView
         selected={selectedIds}
         onHover={setHoveredId}
-        onClick={toggleClickedIds}
+        onClick={toggleClicked}
       />
     </DocumentLayout>
   );
