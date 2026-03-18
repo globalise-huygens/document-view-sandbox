@@ -1,24 +1,28 @@
-import {NestedSegment} from "./NestedSegment.tsx";
-import {AnnotationSegment} from "./AnnotationSegment.tsx";
-import {Annotation, Id, isEntity, isWord} from "@globalise/common/annotation";
-import {TextSegment} from "@knaw-huc/text-annotation-segmenter";
+import {TextSegment} from '@knaw-huc/text-annotation-segmenter';
+import {Annotation, Id, isEntity, isWord} from '@globalise/common/annotation';
+import {
+  useSelectedIds,
+  setHovered,
+  toggleClicked,
+} from '@globalise/common/DocumentStore';
+import {AnnotationSegment} from './AnnotationSegment';
+import {NestedSegment} from './NestedSegment';
 
 type TextProps = {
   blockId: Id | null;
   pageText: string;
   segments: TextSegment<Annotation>[];
-  selected: Id[];
-  onHover: (id: Id | null) => void;
-  onClick: (id: Id) => void;
 };
 
 export function SegmentedText(
-  {blockId, pageText, segments, selected, onHover, onClick}: TextProps
+  {blockId, pageText, segments}: TextProps
 ) {
+  const selectedIds = useSelectedIds();
+
   return <>
     {segments.map(segment => {
       const body = pageText.slice(segment.begin, segment.end);
-      const selectedId = selectAnnotation(segment.annotations)
+      const hoverId = selectAnnotation(segment.annotations)
         ?? blockId
         ?? null;
 
@@ -27,16 +31,16 @@ export function SegmentedText(
           key={segment.id}
           onMouseEnter={(e) => {
             e.stopPropagation();
-            onHover(selectedId);
+            setHovered(hoverId);
           }}
           onMouseLeave={(e) => {
             e.stopPropagation();
-            onHover(blockId);
+            setHovered(blockId);
           }}
           onClick={(e) => {
-            if (selectedId && selectedId !== blockId) {
+            if (hoverId && hoverId !== blockId) {
               e.stopPropagation();
-              onClick(selectedId);
+              toggleClicked(hoverId);
             }
           }}
         >
@@ -45,7 +49,7 @@ export function SegmentedText(
             annotation={(annotation, children) => (
               <AnnotationSegment
                 annotation={annotation}
-                selected={selected}
+                selected={selectedIds}
               >
                 {children}
               </AnnotationSegment>
@@ -60,7 +64,7 @@ export function SegmentedText(
 }
 
 /**
- * Which annotation in a segment to select?
+ * Which annotation to select?
  * entity > word
  */
 function selectAnnotation(annotations: Annotation[]): Id | undefined {

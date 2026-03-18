@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Id, useAnnotations, usePages, usePartOf} from '@globalise/common/annotation';
+import {useAnnotations, usePages, usePartOf} from '@globalise/common/annotation';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineLayout} from '@globalise/line-by-line';
 import {Size} from './Size';
@@ -16,17 +16,9 @@ import {layoutBreakpoint} from './layout/DocumentLayout';
 
 import './TranscriptionView.css';
 
-type TranscriptionViewProps = {
-  selected: Id[];
-  onHover: (id: Id | null) => void;
-  onClick: (id: Id) => void;
-};
-
 const emptyPageThreshold = 10;
 
-export function TranscriptionView(
-  {selected, onHover, onClick}: TranscriptionViewProps
-) {
+export function TranscriptionView() {
   const annotations = useAnnotations();
   const page = usePartOf();
   const {isReady, pages, error} = usePages();
@@ -133,13 +125,10 @@ export function TranscriptionView(
               <DiplomaticView
                 key={rerenderKey}
                 annotations={annotations}
-                selected={selected}
                 page={page}
                 showBlocks={true}
                 showScanMargin={showScanMargin}
                 fit={fit}
-                onHover={onHover}
-                onClick={onClick}
                 style={{height: '100%'}}
               />
             </div>
@@ -150,9 +139,6 @@ export function TranscriptionView(
         >
           <LineByLineLayout
             annotations={annotations}
-            selected={selected}
-            onHover={onHover}
-            onClick={onClick}
           />
         </div>
       </div>

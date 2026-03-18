@@ -24,7 +24,6 @@ export function indexEntityOverlap(
   const wordSelectors: { id: Id; start: number; end: number }[] = [];
   for (const annotation of Object.values(annotations)) {
     if (annotation.textGranularity === 'word') {
-      console.log('findTextPositionSelector(entity, pageAnnoId)', pageAnnoId)
       const {start, end} = findTextPositionSelector(annotation, pageAnnoId);
       wordSelectors.push({id: annotation.id, start, end});
     }
