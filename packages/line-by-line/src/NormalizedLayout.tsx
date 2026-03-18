@@ -19,6 +19,7 @@ export function NormalizedLayout(
   const selectedBlockIds = selected
     .filter(id => annotations[id]?.textGranularity === 'block');
 
+  let lineNumber = 0;
   return (
     <div className="normalized-view">
       <div className="text">
@@ -29,7 +30,7 @@ export function NormalizedLayout(
               key={blockId}
               className={`block-group ${isSelected ? 'selected' : ''}`}
             >
-              {lineIds.map((lineId, i) => {
+              {lineIds.map((lineId) => {
                 const segments = segmentsByLine[lineId];
                 if (!segments) {
                   return null;
@@ -37,7 +38,7 @@ export function NormalizedLayout(
                 return (
                   <SegmentedLine
                     key={lineId}
-                    lineNumber={i + 1}
+                    lineNumber={++lineNumber}
                     blockId={blockId}
                     pageText={pageText}
                     segments={segments}
