@@ -5,11 +5,12 @@ import {useLineSegments} from './useLineSegments';
 
 export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;
+  selected?: Id[];
   style?: React.CSSProperties;
 };
 
-export function LineByLineLayout(
-  {annotations, style}: LineByLineLayoutProps
+export function LineByLineView(
+  {annotations, selected = [], style}: LineByLineLayoutProps
 ) {
   const lineSegments = useLineSegments(annotations);
 
@@ -18,6 +19,7 @@ export function LineByLineLayout(
       <NormalizedLayout
         lineSegments={lineSegments}
         annotations={annotations}
+        selected={selected}
       />
     </div>
   );

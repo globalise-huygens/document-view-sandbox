@@ -1,7 +1,5 @@
 import {create} from 'zustand';
-import {useMemo} from 'react';
-import {Id} from './annotation/Id';
-import {useTextGranularity, useEntityOverlap} from './annotation/PageStore';
+import {Id} from './annotation';
 
 type DocumentState = {
   hoveredId: Id | null;
@@ -28,37 +26,4 @@ export function toggleClicked(id: Id) {
 
 export function clearSelection() {
   useDocumentStore.setState(defaultState);
-}
-
-export function useSelectedIds(): Id[] {
-  const {hoveredId, clickedId} = useDocumentStore();
-  const {wordToBlock} = useTextGranularity();
-  const {entityToWords, entityToBlock} = useEntityOverlap();
-
-  return useMemo(() => {
-    const result = new Set<Id>();
-    if (hoveredId) {
-      result.add(hoveredId);
-      const blockFromWord = wordToBlock[hoveredId];
-      if (blockFromWord) {
-        result.add(blockFromWord);
-      }
-      const wordIds = entityToWords[hoveredId];
-      if (wordIds) {
-        wordIds.forEach(w => result.add(w));
-        const blockFromEntity = entityToBlock[hoveredId];
-        if (blockFromEntity) {
-          result.add(blockFromEntity);
-        }
-      }
-    }
-    if (clickedId) {
-      result.add(clickedId);
-      const wordIds = entityToWords[clickedId];
-      if (wordIds) {
-        wordIds.forEach(w => result.add(w));
-      }
-    }
-    return [...result];
-  }, [clickedId, hoveredId, wordToBlock, entityToWords, entityToBlock]);
 }

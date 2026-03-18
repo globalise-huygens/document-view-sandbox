@@ -1,15 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {FacsimileViewer} from '@globalise/facsimile';
+import {FacsimileView} from '@globalise/facsimile';
 import {Id, useLoadPages} from '@globalise/common/annotation';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from './layout/DocumentLayout';
-import {
-  useSelectedIds,
-  setHovered,
-  toggleClicked,
-  clearSelection,
-} from '@globalise/common/DocumentStore';
+import {clearSelection} from '@globalise/common/DocumentStore';
 
 import './DocumentView.css';
 
@@ -20,13 +15,12 @@ type DocumentViewProps = {
 };
 
 export function DocumentView(
-  {manifestUrl, pageId, onPageChange}: DocumentViewProps
+  {pageId, onPageChange}: DocumentViewProps
 ) {
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadPages();
-  const selectedIds = useSelectedIds();
 
   useEffect(() => {
     if (!isReady) {
@@ -63,14 +57,8 @@ export function DocumentView(
 
   return (
     <DocumentLayout>
-      <FacsimileViewer
-        manifestUrl={manifestUrl}
-        selected={selectedIds}
-        onToggle={toggleClicked}
-        onHover={setHovered}
-        style={{height: '100%'}}
-      />
-      <TranscriptionView />
+      <FacsimileView style={{height: '100%'}}/>
+      <TranscriptionView/>
     </DocumentLayout>
   );
 }

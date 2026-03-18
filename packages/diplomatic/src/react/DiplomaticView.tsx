@@ -5,12 +5,8 @@ import {renderDiplomaticView} from '../renderDiplomaticView';
 
 import '@knaw-huc/original-layout/style.css';
 import {Annotation} from '@globalise/common/annotation';
-import {
-  setHovered,
-  toggleClicked,
-  useSelectedIds
-} from '@globalise/common/DocumentStore';
-import {View} from "@globalise/common";
+import {setHovered, toggleClicked} from '@globalise/common/DocumentStore';
+import {View} from '@globalise/common';
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -18,6 +14,7 @@ export type DiplomaticViewProps = {
   fit?: ViewFit;
   showBlocks?: boolean;
   showScanMargin?: boolean;
+  selected?: Id[];
   style?: React.CSSProperties;
 };
 
@@ -28,12 +25,12 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     fit,
     showBlocks,
     showScanMargin,
+    selected = [],
     style,
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<View>(null);
-  const selectedIds = useSelectedIds();
 
   useLayoutEffect(() => {
     const $view = containerRef.current;
@@ -49,13 +46,13 @@ export function DiplomaticView(props: DiplomaticViewProps) {
       onHover: setHovered,
       onClick: toggleClicked,
     });
-    view.setSelected(...selectedIds);
+    view.setSelected(...selected);
     viewRef.current = view;
   }, [annotations, page, fit, showBlocks]);
 
   useLayoutEffect(() => {
-    viewRef.current?.setSelected(...selectedIds);
-  }, [selectedIds]);
+    viewRef.current?.setSelected(...selected);
+  }, [selected]);
 
   return <div ref={containerRef} style={style} />;
 }

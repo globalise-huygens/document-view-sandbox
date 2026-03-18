@@ -1,2 +1,2 @@
-export { LineByLineLayout } from './LineByLineLayout';
-export type { LineByLineLayoutProps } from './LineByLineLayout';
+export { LineByLineView } from './LineByLineView.tsx';
+export type { LineByLineLayoutProps } from './LineByLineView.tsx';

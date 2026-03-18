@@ -8,10 +8,11 @@ type LineProps = {
   blockId: Id | null;
   pageText: string;
   segments: TextSegment<Annotation>[];
+  selected: Id[];
 };
 
 export function SegmentedLine(
-  {lineNumber, blockId, pageText, segments}: LineProps,
+  {lineNumber, blockId, pageText, segments, selected}: LineProps,
 ) {
   return (
     <span
@@ -31,6 +32,7 @@ export function SegmentedLine(
           blockId={blockId}
           pageText={pageText}
           segments={segments}
+          selected={selected}
         />
       </span>
     </span>

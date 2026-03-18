@@ -1,5 +1,4 @@
 import {Annotation, Id, useTextGranularity} from '@globalise/common/annotation';
-import {useSelectedIds} from '@globalise/common/DocumentStore';
 import {SegmentedLine} from './SegmentedLine';
 import {LineSegments} from './useLineSegments';
 
@@ -8,16 +7,16 @@ import './NormalizedLayout.css';
 type Props = {
   lineSegments: LineSegments;
   annotations: Record<Id, Annotation>;
+  selected: Id[];
 };
 
 export function NormalizedLayout(
-  {lineSegments, annotations}: Props,
+  {lineSegments, annotations, selected}: Props,
 ) {
   const {pageText, segmentsByLine} = lineSegments;
   const {blockToLines} = useTextGranularity();
-  const selectedIds = useSelectedIds();
 
-  const selectedBlockIds = selectedIds
+  const selectedBlockIds = selected
     .filter(id => annotations[id]?.textGranularity === 'block');
 
   return (
@@ -42,6 +41,7 @@ export function NormalizedLayout(
                     blockId={blockId}
                     pageText={pageText}
                     segments={segments}
+                    selected={selected}
                   />
                 );
               })}

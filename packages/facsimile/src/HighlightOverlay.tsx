@@ -6,24 +6,55 @@ import {
   Id,
   isBlock,
   isWord,
-  parseSvgPath,
   useAnnotations,
+  parseSvgPath,
+  useTextGranularity,
+  useEntityOverlap,
 } from '@globalise/common/annotation';
+import {useDocumentStore, setHovered, toggleClicked} from '@globalise/common/DocumentStore';
 import {Tooltip, TooltipProps} from './Tooltip';
-import {noop} from "@globalise/common";
+import {noop} from '@globalise/common';
 
-type HighlightOverlayProps = {
-  selected: Id[];
-  onToggle: (id: Id) => void;
-  onHover?: (id: Id | null) => void;
-};
-
-export function HighlightOverlay(
-  {selected, onToggle, onHover = noop}: HighlightOverlayProps
-) {
+export function HighlightOverlay() {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
+
+  const {hoveredId, clickedId} = useDocumentStore();
+  const {wordToBlock} = useTextGranularity();
+  const {entityToWords, entityToBlock} = useEntityOverlap();
+
+  /**
+   * Select:
+   * - entity --> words + block
+   * - word --> word + block
+   */
+  const selectedIds = useMemo(() => {
+    const selectedIds = new Set<Id>();
+    if (hoveredId) {
+      select(hoveredId);
+    }
+    if (clickedId) {
+      select(clickedId);
+    }
+    return [...selectedIds];
+
+    function select(id: Id) {
+      selectedIds.add(id);
+      const blockId = wordToBlock[id];
+      if (blockId) {
+        selectedIds.add(blockId);
+      }
+      const wordIds = entityToWords[id];
+      if (wordIds) {
+        wordIds.forEach(w => selectedIds.add(w));
+        const blockFromEntity = entityToBlock[id];
+        if (blockFromEntity) {
+          selectedIds.add(blockFromEntity);
+        }
+      }
+    }
+  }, [hoveredId, clickedId, wordToBlock, entityToWords, entityToBlock]);
 
   const words = useMemo(() => {
     if (!annotations) {
@@ -54,14 +85,12 @@ export function HighlightOverlay(
     if (!annotations) {
       return [];
     }
-    return selected.filter(id => annotations[id]?.textGranularity === 'block');
-  }, [selected, annotations]);
+    return selectedIds.filter(id => annotations[id]?.textGranularity === 'block');
+  }, [selectedIds, annotations]);
 
   if (!imageInfo) {
     return null;
   }
-
-  const highlightProps = {onToggle, onHover};
 
   return (
     <>
@@ -76,7 +105,6 @@ export function HighlightOverlay(
               id={id}
               points={path}
               selected={selectedBlockIds.includes(id)}
-              {...highlightProps}
             />
           ))}
           {words.map(({id, path, text}) => (
@@ -85,9 +113,8 @@ export function HighlightOverlay(
               id={id}
               points={path}
               text={text}
-              selected={selected.includes(id)}
+              selected={selectedIds.includes(id)}
               setTooltip={setTooltip}
-              {...highlightProps}
             />
           ))}
         </svg>
@@ -136,49 +163,12 @@ type BlockHighlightProps = {
   id: Id;
   points: string;
   selected: boolean;
-  onHover: (id: Id | null) => void;
 };
-
-type WordHighlightProps = BlockHighlightProps & {
-  text: string;
-  onToggle: (id: Id) => void;
-  setTooltip: (tooltip: TooltipProps | null) => void;
-};
-
-function WordHighlight(
-  {id, points, text, selected, onToggle, onHover, setTooltip}: WordHighlightProps
-) {
-  const [hovered, setHovered] = useState(false);
-
-  const highlightStyle: HighlightStyle = {
-    fill: selected ? 'rgba(0,255,0,0.35)'
-      : hovered ? 'rgba(0,0,0,0.1)'
-        : 'transparent',
-    cursor: 'pointer'
-  };
-
-  return (
-    <Highlight
-      points={points}
-      highlightStyle={highlightStyle}
-      onClick={() => onToggle(id)}
-      onHover={(hovering, e) => {
-        setHovered(hovering);
-        onHover(hovering ? id : null);
-        if (!hovering) {
-          setTooltip(null);
-        } else {
-          setTooltip({text, x: e.clientX, y: e.clientY});
-        }
-      }}
-    />
-  );
-}
 
 function BlockHighlight(
-  {id, points, selected, onHover}: BlockHighlightProps
+  {id, points, selected}: BlockHighlightProps
 ) {
-  const [hovered, setHovered] = useState(false);
+  const [hovered, setHoveredLocal] = useState(false);
 
   const highlightStyle: HighlightStyle = {
     fill: 'transparent',
@@ -193,8 +183,46 @@ function BlockHighlight(
       points={points}
       highlightStyle={highlightStyle}
       onHover={(hovering) => {
-        setHovered(hovering);
-        onHover(hovering ? id : null);
+        setHoveredLocal(hovering);
+        setHovered(hovering ? id : null);
+      }}
+    />
+  );
+}
+
+type WordHighlightProps = {
+  id: Id;
+  points: string;
+  text: string;
+  selected: boolean;
+  setTooltip: (tooltip: TooltipProps | null) => void;
+};
+
+function WordHighlight(
+  {id, points, text, selected, setTooltip}: WordHighlightProps
+) {
+  const [hovered, setHoveredLocal] = useState(false);
+
+  const highlightStyle: HighlightStyle = {
+    fill: selected ? 'rgba(0,255,0,0.35)'
+      : hovered ? 'rgba(0,0,0,0.1)'
+        : 'transparent',
+    cursor: 'pointer'
+  };
+
+  return (
+    <Highlight
+      points={points}
+      highlightStyle={highlightStyle}
+      onClick={() => toggleClicked(id)}
+      onHover={(hovering, e) => {
+        setHoveredLocal(hovering);
+        setHovered(hovering ? id : null);
+        if (!hovering) {
+          setTooltip(null);
+        } else {
+          setTooltip({text, x: e.clientX, y: e.clientY});
+        }
       }}
     />
   );

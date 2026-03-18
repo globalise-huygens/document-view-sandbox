@@ -1,6 +1,6 @@
 export {ControlBar} from './ControlBar';
-export {FacsimileViewer} from './FacsimileViewer';
-export type {FacsimileViewerProps} from './FacsimileViewer';
+export {FacsimileView} from './FacsimileView.tsx';
+export type {FacsimileViewerProps} from './FacsimileView.tsx';
 export {FacsimileControlBar} from './FacsimileControlBar';
 export {NavigationBar} from './NavigationBar';
 export {HighlightOverlay} from './HighlightOverlay';

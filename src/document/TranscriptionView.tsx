@@ -1,7 +1,15 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {useAnnotations, usePages, usePartOf} from '@globalise/common/annotation';
+import {
+  Id,
+  useAnnotations,
+  usePages,
+  usePartOf,
+  useTextGranularity,
+  useEntityOverlap,
+} from '@globalise/common/annotation';
+import {useDocumentStore} from '@globalise/common/DocumentStore';
 import {DiplomaticView} from '@globalise/diplomatic';
-import {LineByLineLayout} from '@globalise/line-by-line';
+import {LineByLineView} from '@globalise/line-by-line';
 import {Size} from './Size';
 import {ViewFit} from '@knaw-huc/original-layout';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
@@ -29,6 +37,38 @@ export function TranscriptionView() {
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
+
+  const {hoveredId, clickedId} = useDocumentStore();
+  const {wordToBlock} = useTextGranularity();
+  const {entityToBlock} = useEntityOverlap();
+
+  /**
+   * Select:
+   * - entity --> entity + block
+   * - word --> word + block
+   */
+  const selectedIds = useMemo(() => {
+    const selectedIds = new Set<Id>();
+    if (hoveredId) {
+      select(hoveredId);
+    }
+    if (clickedId) {
+      select(clickedId);
+    }
+    return [...selectedIds];
+
+    function select(id: Id) {
+      selectedIds.add(id);
+      const blockFromWord = wordToBlock[id];
+      if (blockFromWord) {
+        selectedIds.add(blockFromWord);
+      }
+      const blockFromEntity = entityToBlock[id];
+      if (blockFromEntity) {
+        selectedIds.add(blockFromEntity);
+      }
+    }
+  }, [hoveredId, clickedId, wordToBlock, entityToBlock]);
 
   const showScanMargin = useMemo(() => {
     if (!annotations) {
@@ -125,6 +165,7 @@ export function TranscriptionView() {
               <DiplomaticView
                 key={rerenderKey}
                 annotations={annotations}
+                selected={selectedIds}
                 page={page}
                 showBlocks={true}
                 showScanMargin={showScanMargin}
@@ -137,8 +178,9 @@ export function TranscriptionView() {
         <div
           className={`viewport line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
         >
-          <LineByLineLayout
+          <LineByLineView
             annotations={annotations}
+            selected={selectedIds}
           />
         </div>
       </div>
