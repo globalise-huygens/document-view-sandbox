@@ -1,4 +1,4 @@
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {create} from 'zustand';
 import {Id} from './Id.ts';
 import {Annotation, AnnotationPage, PartOf} from './AnnoModel.ts';
@@ -9,9 +9,8 @@ import {
 
 import {indexEntityOverlap, EntityOverlapIndex} from './indexEntityOverlap';
 import {getPageText} from './getPageText';
-import {findTextPositionSelector} from "./findTextPositionSelector.ts";
-import {tryOr} from "../util/tryOr.ts";
-import {isEntity} from "./EntityModel.ts";
+import {findTextPositionSelector} from './findTextPositionSelector';
+import {isEntity} from './EntityModel.ts';
 
 export type PageState = {
   canvasId: Id | null;
@@ -28,12 +27,17 @@ const defaultState: PageState = {
 };
 
 export const usePageStore = create<
-  PageState & { load: (canvasId: Id, urls: string[]) => Promise<void> }
+  PageState & {
+  load: (canvasId: Id, urls: string[]) => Promise<void>;
+  setError: (error: string) => void;
+}
 >((set) => {
   let abortController: AbortController;
 
   return ({
     ...defaultState,
+
+    setError: (error: string) => set({error}),
 
     load: async (canvasId, urls) => {
       abortController?.abort();
@@ -76,10 +80,13 @@ export function useLoadPages() {
 
 export function useAnnotations(): Record<Id, Annotation> | null {
   const {pages, isReady} = usePages();
-  return useMemo(() => {
+  const setError = usePageStore((s) => s.setError);
+
+  const {annotations, error} = useMemo(() => {
     if (!isReady) {
-      return null;
+      return {annotations: null, error: null};
     }
+
     const mapped: Record<Id, Annotation> = {};
     for (const page of pages) {
       for (const item of page.items) {
@@ -87,24 +94,35 @@ export function useAnnotations(): Record<Id, Annotation> | null {
       }
     }
 
-    /**
-     * TODO: remove when all entities have htr selectors:
-     */
-    const {id: pageId} = getPageText(mapped);
-    for (const id in mapped) {
-      const item = mapped[id]
-      if (!isEntity(item)) {
-        continue;
+    try {
+      const {id: pageId} = getPageText(mapped);
+      for (const id in mapped) {
+        const item = mapped[id];
+        if (!isEntity(item)) {
+          continue;
+        }
+        try {
+          findTextPositionSelector(item, pageId);
+        } catch {
+          console.debug(`Skip entity without htr selector: ${item.id}`);
+          delete mapped[item.id];
+        }
       }
-      const selector = tryOr(() => findTextPositionSelector(item, pageId));
-      if (!selector) {
-        console.debug(`Skip entity with htr selector: ${item.id}`)
-        delete mapped[item.id]
-      }
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Processing error';
+      return {annotations: null, error: msg};
     }
 
-    return mapped;
+    return {annotations: mapped, error: null};
   }, [pages, isReady]);
+
+  useEffect(() => {
+    if (error) {
+      setError(error);
+    }
+  }, [error, setError]);
+
+  return annotations;
 }
 
 export function usePartOf(): PartOf | null {

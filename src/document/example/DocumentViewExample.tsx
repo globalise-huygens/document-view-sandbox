@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {createPortal} from 'react-dom';
-import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
+import {useManifest, ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {DocumentView} from '../DocumentView';
-import {Id} from '@globalise/common/annotation';
+import {Id, useAnnotations, usePages} from '@globalise/common/annotation';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/HeaderContext';
 import {useHeaderRegion} from '@globalise/common/HeaderContext';
@@ -68,6 +68,7 @@ export function DocumentViewExample() {
     <HeaderProvider controlsMode={controlsMode}>
       <ViewerProvider>
         <ManifestLoader url={manifestUrl}>
+          <StateDebug />
           <ManifestPicker
             manifests={manifests}
             selected={manifestUrl}
@@ -82,4 +83,18 @@ export function DocumentViewExample() {
       </ViewerProvider>
     </HeaderProvider>
   );
+}
+
+export function StateDebug() {
+  const manifest = useManifest();
+  const pages = usePages()
+  useEffect(() => {
+    console.debug('Manifest state:', manifest);
+  }, [manifest]);
+
+  useEffect(() => {
+    console.debug('Pages state:', pages);
+  }, [pages]);
+
+  return null
 }

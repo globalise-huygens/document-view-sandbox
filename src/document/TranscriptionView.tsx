@@ -99,12 +99,12 @@ export function TranscriptionView() {
     return () => observer.disconnect();
   }
 
-  if (!isReady) {
-    return <div className="message">Loading...</div>;
+  if (error) {
+    return <div className="message error">Error: {error}</div>;
   }
 
-  if (error) {
-    return <div className="message">Error: {error}</div>;
+  if (!isReady) {
+    return <div className="message">Loading...</div>;
   }
 
   if (!pages.length) {
