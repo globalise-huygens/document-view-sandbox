@@ -1,19 +1,20 @@
 import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
-import React, {useMemo, useState} from 'react';
+import {useMemo, useState} from 'react';
 import {
   findSvgPath,
   findTextualBodyValue,
   Id,
   isBlock,
   isWord,
-  useAnnotations,
   parseSvgPath,
-  useTextGranularity,
+  useAnnotations,
   useEntityOverlap,
+  useTextGranularity,
 } from '@globalise/common/annotation';
-import {useDocumentStore, setHovered, toggleClicked} from '@globalise/common/DocumentStore';
+import {useDocumentStore} from '@globalise/common/DocumentStore';
 import {Tooltip, TooltipProps} from './Tooltip';
-import {noop} from '@globalise/common';
+import {BlockHighlight} from "./BlockHighlight.tsx";
+import {WordHighlight} from "./WordHighlight.tsx";
 
 export function HighlightOverlay() {
   const imageInfo = useImageInfo();
@@ -121,109 +122,5 @@ export function HighlightOverlay() {
       </Overlay>
       {tooltip && <Tooltip x={tooltip.x} y={tooltip.y} text={tooltip.text}/>}
     </>
-  );
-}
-
-type HighlightStyle = {
-  fill: string;
-  stroke?: string;
-  strokeWidth?: number;
-  cursor?: string;
-};
-
-type HighlightProps = {
-  points: string;
-  highlightStyle: HighlightStyle;
-  onClick?: () => void;
-  onHover: (hovering: boolean, event: React.MouseEvent) => void;
-};
-
-function Highlight({points, highlightStyle, onClick = noop, onHover}: HighlightProps) {
-  const {fill, stroke, strokeWidth, cursor} = highlightStyle;
-
-  return (
-    <polygon
-      points={points}
-      fill={fill}
-      stroke={stroke ?? 'none'}
-      strokeWidth={strokeWidth ?? 0}
-      style={{pointerEvents: 'auto', cursor: cursor ?? 'default'}}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
-      onMouseEnter={(e) => onHover(true, e)}
-      onMouseMove={(e) => onHover(true, e)}
-      onMouseLeave={(e) => onHover(false, e)}
-    />
-  );
-}
-
-type BlockHighlightProps = {
-  id: Id;
-  points: string;
-  selected: boolean;
-};
-
-function BlockHighlight(
-  {id, points, selected}: BlockHighlightProps
-) {
-  const [hovered, setHoveredLocal] = useState(false);
-
-  const highlightStyle: HighlightStyle = {
-    fill: 'transparent',
-    stroke: selected ? 'rgba(0,255,0,1)'
-      : hovered ? 'rgba(0,0,0,0.3)'
-        : 'transparent',
-    strokeWidth: 5,
-  };
-
-  return (
-    <Highlight
-      points={points}
-      highlightStyle={highlightStyle}
-      onHover={(hovering) => {
-        setHoveredLocal(hovering);
-        setHovered(hovering ? id : null);
-      }}
-    />
-  );
-}
-
-type WordHighlightProps = {
-  id: Id;
-  points: string;
-  text: string;
-  selected: boolean;
-  setTooltip: (tooltip: TooltipProps | null) => void;
-};
-
-function WordHighlight(
-  {id, points, text, selected, setTooltip}: WordHighlightProps
-) {
-  const [hovered, setHoveredLocal] = useState(false);
-
-  const highlightStyle: HighlightStyle = {
-    fill: selected ? 'rgba(0,255,0,0.35)'
-      : hovered ? 'rgba(0,0,0,0.1)'
-        : 'transparent',
-    cursor: 'pointer'
-  };
-
-  return (
-    <Highlight
-      points={points}
-      highlightStyle={highlightStyle}
-      onClick={() => toggleClicked(id)}
-      onHover={(hovering, e) => {
-        setHoveredLocal(hovering);
-        setHovered(hovering ? id : null);
-        if (!hovering) {
-          setTooltip(null);
-        } else {
-          setTooltip({text, x: e.clientX, y: e.clientY});
-        }
-      }}
-    />
   );
 }
