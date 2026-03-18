@@ -11,7 +11,7 @@ import './DocumentView.css';
 type DocumentViewProps = {
   manifestUrl: string;
   pageId?: string;
-  onPageChange: (id: Id) => void
+  onPageChange: (id: Id) => void;
 };
 
 export function DocumentView(

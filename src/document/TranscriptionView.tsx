@@ -1,4 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
 import {
   Id,
   useAnnotations,
@@ -21,6 +22,7 @@ import {
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
 import {layoutBreakpoint} from './layout/DocumentLayout';
+import {useHeaderRegion} from '@globalise/common/HeaderContext';
 
 import './TranscriptionView.css';
 
@@ -37,6 +39,7 @@ export function TranscriptionView() {
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
+  const headerRegion = useHeaderRegion('right');
 
   const {hoveredId, clickedId} = useDocumentStore();
   const {wordToBlock} = useTextGranularity();
@@ -118,43 +121,50 @@ export function TranscriptionView() {
 
   const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
 
+  const controls = (
+    <>
+      {showDiplomatic && (
+        <span className="zoom-slider">
+          <ZoomOutIcon
+            className="icon"
+            fontSize="small"
+            onClick={() => setDiplomaticViewScale(Math.max(30, scale - 10))}
+          />
+          <input
+            type="range"
+            min={30}
+            max={200}
+            value={scale}
+            onChange={(e) => setDiplomaticViewScale(parseInt(e.target.value))}
+          />
+          <ZoomInIcon
+            className="icon"
+            fontSize="small"
+            onClick={() => setDiplomaticViewScale(Math.min(200, scale + 10))}
+          />
+        </span>
+      )}
+      <button
+        className={showDiplomatic ? 'active' : ''}
+        onClick={() => setViewMode('diplomatic')}
+      >
+        Diplomatic
+      </button>
+      <button
+        className={!showDiplomatic ? 'active' : ''}
+        onClick={() => setViewMode('line-by-line')}
+      >
+        Line by line
+      </button>
+    </>
+  );
+
   return (
     <div className="transcription-view">
-      <ControlBar>
-        {showDiplomatic && (
-          <span className="zoom-slider">
-            <ZoomOutIcon
-              className="icon"
-              fontSize="small"
-              onClick={() => setDiplomaticViewScale(Math.max(30, scale - 10))}
-            />
-            <input
-              type="range"
-              min={30}
-              max={200}
-              value={scale}
-              onChange={(e) => setDiplomaticViewScale(parseInt(e.target.value))}
-            />
-            <ZoomInIcon
-              className="icon"
-              fontSize="small"
-              onClick={() => setDiplomaticViewScale(Math.min(200, scale + 10))}
-            />
-          </span>
-        )}
-        <button
-          className={showDiplomatic ? 'active' : ''}
-          onClick={() => setViewMode('diplomatic')}
-        >
-          Diplomatic
-        </button>
-        <button
-          className={!showDiplomatic ? 'active' : ''}
-          onClick={() => setViewMode('line-by-line')}
-        >
-          Line by line
-        </button>
-      </ControlBar>
+      {headerRegion
+        ? createPortal(controls, headerRegion)
+        : <ControlBar>{controls}</ControlBar>
+      }
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
