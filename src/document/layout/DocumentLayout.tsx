@@ -2,7 +2,7 @@ import React, {ReactNode, useCallback} from 'react';
 import {DividerProps, Pane, SplitPane} from 'react-split-pane';
 import {Splitter} from './Splitter';
 import {useLayoutDirection} from './useLayoutDirection';
-import {setPaneRatio, useSettings} from '../SettingsStore';
+import {resetScaling, setPaneRatio, useSettings} from '../SettingsStore';
 import {useControlsMode} from '@globalise/common/HeaderContext';
 import {HeaderBar} from './Header';
 import './DocumentLayout.css'
@@ -29,7 +29,7 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
       <Splitter
         {...props}
         direction={direction}
-        onDoubleClick={() => setPaneRatio(0.5)}
+        onDoubleClick={() => resetScaling()}
         style={direction === 'horizontal'
           ? {width: splitterThickness.horizontalLayout, height: '100%'}
           : {width: '100%', height: splitterThickness.verticalLayout}
