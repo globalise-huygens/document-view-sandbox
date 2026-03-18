@@ -5,6 +5,7 @@ import {useLayoutDirection} from './useLayoutDirection';
 import {setPaneRatio, useSettings} from '../SettingsStore';
 import {useControlsMode} from '@globalise/common/HeaderContext';
 import {HeaderBar} from './Header';
+import './DocumentLayout.css'
 
 type DocumentLayoutProps = {
   children: [ReactNode, ReactNode];
@@ -38,7 +39,7 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
   );
 
   return (
-    <>
+    <div className="document-layout">
       {controlsMode === 'header' && <HeaderBar />}
       {(
         <SplitPane
@@ -60,6 +61,6 @@ export function DocumentLayout({children}: DocumentLayoutProps) {
           </Pane>
         </SplitPane>
       )}
-    </>
+    </div>
   );
 }
