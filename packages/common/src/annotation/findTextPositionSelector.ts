@@ -1,7 +1,7 @@
 import {Annotation, SpecificResourceTarget} from './AnnoModel';
 import {isSpecificResourceTarget} from './isSpecificResourceTarget';
 import {TextPositionSelector} from '@iiif/presentation-3';
-import {orThrow} from "./orThrow.ts";
+import {orThrow} from "../util/orThrow.ts";
 import {Id} from './Id.ts';
 
 export function findTextPositionSelector(

@@ -135,7 +135,6 @@ export function TranscriptionView(
                 annotations={annotations}
                 selected={selected}
                 page={page}
-                showEntities={true}
                 showBlocks={true}
                 showScanMargin={showScanMargin}
                 fit={fit}

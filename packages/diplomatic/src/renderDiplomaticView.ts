@@ -6,13 +6,12 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
-import {View} from '@globalise/common';
+import {noop, orThrow, View} from '@globalise/common';
 import {
   D3El,
   FullOriginalLayoutConfig,
   Id,
   OriginalLayoutConfig,
-  orThrow,
   renderOriginalLayout
 } from '@knaw-huc/original-layout';
 import {groupSegments, segment} from '@knaw-huc/text-annotation-segmenter';
@@ -22,7 +21,6 @@ import {createFragment} from './createFragment.ts';
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
   showBlocks: boolean;
-  showEntities: boolean;
 };
 
 export const defaultConfig: FullDiplomaticViewConfig = {
@@ -34,7 +32,6 @@ export const defaultConfig: FullDiplomaticViewConfig = {
     width: 0,
   },
   showBlocks: false,
-  showEntities: false,
 };
 
 export type DiplomaticViewConfig = OriginalLayoutConfig &
@@ -51,10 +48,9 @@ export function renderDiplomaticView(
   $view.classList.add('original-layout');
 
   const mergedConfig = {
-    onHover: () => {
-    }, ...defaultConfig, ...config
+    onHover: noop, onClick: noop, ...defaultConfig, ...config
   };
-  const {showBlocks, showEntities, onHover, onClick} = mergedConfig;
+  const {showBlocks, onHover, onClick} = mergedConfig;
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
@@ -75,33 +71,35 @@ export function renderDiplomaticView(
   );
 
   const {blockToLines} = indexTextGranularity(annotations);
+  const $entityToRanges: Record<Id, HTMLSpanElement[]> = {};
 
   for (const group of groupedByWord) {
     const $word = $fragments[group.annotation.id];
-    const $ranges: HTMLSpanElement[] = [];
-    for (const range of group.segments) {
-      const $range = document.createElement('span');
-      $ranges.push($range);
-      $range.classList.add('range');
-      $range.textContent = pageText.substring(range.begin, range.end);
+    const $segments: HTMLSpanElement[] = [];
 
-      if (showEntities) {
-        for (const annotation of range.annotations) {
-          if (isEntity(annotation)) {
-            const entityType = getEntityType(annotation);
-            $range.classList.add(...['entity', toClassName(entityType)]);
-            $range.title = `${entityType} | ${annotation.id}`;
-          }
+    for (const segment of group.segments) {
+      const $segment = document.createElement('span');
+      $segments.push($segment);
+      $segment.classList.add('range');
+      $segment.textContent = pageText.substring(segment.begin, segment.end);
+      const entityAnno = segment.annotations.find(a => isEntity(a));
+
+      if (entityAnno) {
+        const entityType = getEntityType(entityAnno);
+        $segment.classList.add(...['entity', toClassName(entityType)]);
+        $segment.title = `${entityType} | ${entityAnno.id}`;
+
+        if (!$entityToRanges[entityAnno.id]) {
+          $entityToRanges[entityAnno.id] = [];
         }
-      }
+        $entityToRanges[entityAnno.id].push($segment);
 
-      $range.addEventListener('mouseenter', () => onHover(group.annotation.id));
-      $range.addEventListener('mouseleave', () => onHover(null));
-      if (onClick) {
-        $range.addEventListener('click', () => onClick(group.annotation.id));
+        $segment.addEventListener('click', () => onClick(entityAnno.id));
+        $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
+        $segment.addEventListener('mouseleave', () => onHover(null));
       }
     }
-    $word.replaceChildren(...$ranges);
+    $word.replaceChildren(...$segments);
   }
 
   const selectedBlocks = new Set<Id>();
@@ -161,6 +159,9 @@ export function renderDiplomaticView(
       $word.classList.add('selected');
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
+    } else if (isEntity(annotation)) {
+      const $segments = $entityToRanges[id];
+      $segments.forEach($r => $r.classList.add('selected'));
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -173,6 +174,13 @@ export function renderDiplomaticView(
       $word.classList.remove('selected');
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
+    } else if (isEntity(annotation)) {
+      const $ranges = $entityToRanges[id];
+      // TODO: should this happen?
+      if (!$ranges) {
+        return;
+      }
+      $ranges.forEach($r => $r.classList.remove('selected'));
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }

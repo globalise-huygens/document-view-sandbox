@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileViewer} from '@globalise/facsimile';
 import {
-  Id,
+  Id, useEntityOverlap,
   useLoadPages,
   useTextGranularity
 } from '@globalise/common/annotation';
@@ -27,6 +27,7 @@ export function DocumentView(
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadPages();
   const {wordToBlock} = useTextGranularity();
+  const {entityToWords, entityToBlock} = useEntityOverlap();
 
   useEffect(() => {
     if (!isReady) {
@@ -62,16 +63,28 @@ export function DocumentView(
     const result = new Set<Id>();
     if (hoveredId) {
       result.add(hoveredId);
-      const blockId = wordToBlock[hoveredId];
-      if (blockId) {
-        result.add(blockId);
+      const blockFromWord = wordToBlock[hoveredId];
+      if (blockFromWord) {
+        result.add(blockFromWord);
+      }
+      const wordIds = entityToWords[hoveredId];
+      if (wordIds) {
+        wordIds.forEach(w => result.add(w));
+        const blockFromEntity = entityToBlock[hoveredId];
+        if (blockFromEntity) {
+          result.add(blockFromEntity);
+        }
       }
     }
     if (clickedId) {
-      result.add(clickedId)
+      result.add(clickedId);
+      const wordIds = entityToWords[clickedId];
+      if (wordIds) {
+        wordIds.forEach(w => result.add(w));
+      }
     }
     return [...result];
-  }, [clickedId, hoveredId, wordToBlock]);
+  }, [clickedId, hoveredId, wordToBlock, entityToWords, entityToBlock]);
 
   if (!isInit) {
     return <div>Loading...</div>;

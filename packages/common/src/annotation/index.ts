@@ -5,7 +5,6 @@ export {createAnnotationSegments} from "./createAnnotationSegments.ts";
 export * from './AnnoModel';
 export * from './EntityModel';
 export type {Id} from './Id';
-export {orThrow} from './orThrow';
 export {parseSvgPath} from './parseSvgPath';
 export {findSvgPath} from './findSvgPath';
 export type {SvgPath} from './findSvgPath';

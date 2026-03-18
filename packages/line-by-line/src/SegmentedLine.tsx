@@ -47,13 +47,10 @@ export function SegmentedLine(
               annotation={(annotation, children) => (
                 <AnnotationSegment
                   annotation={annotation}
+                  blockId={blockId}
                   selected={selected}
                   onClick={onClick}
-                  onHover={(id) => {
-                    if (id) {
-                      onHover(id);
-                    }
-                  }}
+                  onHover={onHover}
                 >
                   {children}
                 </AnnotationSegment>
