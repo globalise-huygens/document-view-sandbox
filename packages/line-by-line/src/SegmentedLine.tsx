@@ -1,9 +1,8 @@
 import {TextSegment} from '@knaw-huc/text-annotation-segmenter';
 import {Annotation, Id} from '@globalise/common/annotation';
-import {AnnotationSegment} from './AnnotationSegment';
-import {NestedSegment} from './NestedSegment.tsx';
+import {SegmentedText} from "./SegmentedText.tsx";
 
-type Props = {
+type LineProps = {
   lineNumber: number;
   blockId: Id | null;
   pageText: string;
@@ -22,7 +21,7 @@ export function SegmentedLine(
     selected,
     onHover,
     onClick,
-  }: Props,
+  }: LineProps,
 ) {
   return (
     <span
@@ -38,28 +37,14 @@ export function SegmentedLine(
         {`${lineNumber}`.padStart(2, ' ')}
       </span>
       <span className="line-content">
-        {segments.map(segment => {
-          const body = pageText.slice(segment.begin, segment.end);
-          return (
-            <NestedSegment
-              key={segment.id}
-              annotations={segment.annotations}
-              annotation={(annotation, children) => (
-                <AnnotationSegment
-                  annotation={annotation}
-                  blockId={blockId}
-                  selected={selected}
-                  onClick={onClick}
-                  onHover={onHover}
-                >
-                  {children}
-                </AnnotationSegment>
-              )}
-            >
-              {body}
-            </NestedSegment>
-          );
-        })}
+        <SegmentedText
+          blockId={blockId}
+          pageText={pageText}
+          segments={segments}
+          selected={selected}
+          onHover={onHover}
+          onClick={onClick}
+        />
       </span>
     </span>
   );
