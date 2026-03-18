@@ -70,14 +70,15 @@ export function renderDiplomaticView(
     (a) => a.textGranularity === 'word',
   );
 
-  const {blockToLines} = indexTextGranularity(annotations);
+  const {blockToLines, wordToBlock} = indexTextGranularity(annotations);
   const $entityToRanges: Record<Id, HTMLSpanElement[]> = {};
 
-  for (const group of groupedByWord) {
-    const $word = $fragments[group.annotation.id];
+  for (const wordGroup of groupedByWord) {
+    const wordId = wordGroup.annotation.id;
+    const $word = $fragments[wordId];
     const $segments: HTMLSpanElement[] = [];
 
-    for (const segment of group.segments) {
+    for (const segment of wordGroup.segments) {
       const $segment = document.createElement('span');
       $segments.push($segment);
       $segment.classList.add('range');
@@ -97,6 +98,11 @@ export function renderDiplomaticView(
         $segment.addEventListener('click', () => onClick(entityAnno.id));
         $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
         $segment.addEventListener('mouseleave', () => onHover(null));
+      } else {
+        const blockId = wordToBlock[wordId];
+        $segment.addEventListener('click', () => onClick(wordId));
+        $segment.addEventListener('mouseenter', () => onHover(wordId));
+        $segment.addEventListener('mouseleave', () => onHover(blockId ?? null));
       }
     }
     $word.replaceChildren(...$segments);
