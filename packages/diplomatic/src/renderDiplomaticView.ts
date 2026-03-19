@@ -1,8 +1,9 @@
 import {
-  Annotation, indexTextGranularity,
+  Annotation,
   createAnnotationSegments,
   getEntityType,
   getPageText,
+  indexTextGranularity,
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
@@ -12,6 +13,7 @@ import {
   FullOriginalLayoutConfig,
   Id,
   OriginalLayoutConfig,
+  px,
   renderOriginalLayout
 } from '@knaw-huc/original-layout';
 import {groupSegments, segment} from '@knaw-huc/text-annotation-segmenter';
@@ -52,26 +54,33 @@ export function renderDiplomaticView(
   };
   const {showBlocks, onHover, onClick} = mergedConfig;
   $view.innerHTML = '';
+
+  const $layoutView = document.createElement('div');
+  $view.appendChild($layoutView);
+  if (showBlocks) {
+    $layoutView.classList.add('with-blocks')
+  }
+
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
   const fragments = wordAnnos.map(createFragment);
-  const originalLayout = renderOriginalLayout($view, fragments, config);
+  const originalLayout = renderOriginalLayout($layoutView, fragments, config);
   const {$fragments, scale, offset} = originalLayout;
 
   const {id: pageAnnoId, text: pageText} = getPageText(annotations);
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
   const markedAnnos = [...wordAnnos, ...entityAnnos];
-  const annoRanges = createAnnotationSegments(markedAnnos, pageAnnoId);
+  const annoSegments = createAnnotationSegments(markedAnnos, pageAnnoId);
 
-  const textSegments = segment<Annotation>(pageText, annoRanges);
+  const textSegments = segment<Annotation>(pageText, annoSegments);
   const groupedByWord = groupSegments(
     textSegments,
     (a) => a.textGranularity === 'word',
   );
 
   const {blockToLines, wordToBlock} = indexTextGranularity(annotations);
-  const $entityToRanges: Record<Id, HTMLSpanElement[]> = {};
+  const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   for (const wordGroup of groupedByWord) {
     const wordId = wordGroup.annotation.id;
@@ -81,7 +90,7 @@ export function renderDiplomaticView(
     for (const segment of wordGroup.segments) {
       const $segment = document.createElement('span');
       $segments.push($segment);
-      $segment.classList.add('range');
+      $segment.classList.add('segment');
       $segment.textContent = pageText.substring(segment.begin, segment.end);
       const entityAnno = segment.annotations.find(a => isEntity(a));
 
@@ -90,10 +99,10 @@ export function renderDiplomaticView(
         $segment.classList.add(...['entity', toClassName(entityType)]);
         $segment.title = `${entityType} | ${entityAnno.id}`;
 
-        if (!$entityToRanges[entityAnno.id]) {
-          $entityToRanges[entityAnno.id] = [];
+        if (!$entityToSegments[entityAnno.id]) {
+          $entityToSegments[entityAnno.id] = [];
         }
-        $entityToRanges[entityAnno.id].push($segment);
+        $entityToSegments[entityAnno.id].push($segment);
 
         $segment.addEventListener('click', () => onClick(entityAnno.id));
         $segment.addEventListener('mouseenter', () => onHover(entityAnno.id));
@@ -113,8 +122,22 @@ export function renderDiplomaticView(
   let deselectBlock: (id: Id) => void = () => console.warn('Not implemented');
 
   if (showBlocks) {
-    const {$blocks} = renderBlocks(annotations, $view, {scale, offset});
-    const lineNumbers = renderLineNumbers(annotations, $view, {scale, offset});
+    const lineCount = Object.values(annotations)
+      .filter(a => a.textGranularity === 'line').length;
+    const digitCount = String(lineCount).length;
+    const lineNumberGap = scale(30);
+    const lineNumberWidth = lineNumberGap + scale(30 * digitCount);
+
+    $layoutView.style.width = `calc(100% - ${lineNumberWidth}px)`;
+    $layoutView.style.marginLeft = px(lineNumberWidth);
+
+    const {$blocks} = renderBlocks(annotations, $layoutView, {scale, offset});
+    const lineNumbers = renderLineNumbers(annotations, $view, {
+      scale, gap: lineNumberGap, offset: {
+        left: offset.left + lineNumberWidth,
+        top: offset.top
+      },
+    });
     const {showLine, hideLine} = lineNumbers;
 
     function showBlock($block: D3El<SVGGElement>, lines: Id[]) {
@@ -166,7 +189,7 @@ export function renderDiplomaticView(
     } else if (annotation.textGranularity === 'block') {
       selectBlock(id);
     } else if (isEntity(annotation)) {
-      const $segments = $entityToRanges[id];
+      const $segments = $entityToSegments[id];
       $segments.forEach($r => $r.classList.add('selected'));
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
@@ -181,12 +204,8 @@ export function renderDiplomaticView(
     } else if (annotation.textGranularity === 'block') {
       deselectBlock(id);
     } else if (isEntity(annotation)) {
-      const $ranges = $entityToRanges[id];
-      // TODO: should this happen?
-      if (!$ranges) {
-        return;
-      }
-      $ranges.forEach($r => $r.classList.remove('selected'));
+      const $segments = $entityToSegments[id];
+      $segments.forEach($r => $r.classList.remove('selected'));
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
