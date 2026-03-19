@@ -11,7 +11,7 @@ import {indexEntityOverlap, EntityOverlapIndex} from './indexEntityOverlap';
 import {getPageText} from './getPageText';
 import {findTextPositionSelector} from './findTextPositionSelector';
 import {isEntity} from './EntityModel.ts';
-import {fetchJson} from '../util/fetchJson.ts';
+import {FetchError, fetchJson} from '../util/fetchJson.ts';
 
 export type PageState = {
   canvasId: Id | null;
@@ -55,11 +55,41 @@ export const usePageStore = create<
 
       const {signal} = abortController;
       try {
-        const pages = await Promise.all(
+        const results = await Promise.allSettled(
           urls.map(url => fetchJson<AnnotationPage>(url, {signal}))
         );
 
-        set({pages, isLoading: false});
+        const success: AnnotationPage[] = [];
+        const errors: Error[] = [];
+
+        for (let i = 0; i < results.length; i++) {
+          const result = results[i];
+          if (result.status === 'fulfilled') {
+            success.push(result.value);
+          } else {
+            errors.push(result.reason);
+          }
+        }
+
+        if (errors.length) {
+          /**
+           * TODO: remove when empty entity pages do not result in 403:
+           */
+          const isEntities403 = errors.every(e =>
+            e instanceof FetchError
+            && e.status === 403
+            && e.url.includes('entities')
+          );
+          if (isEntities403) {
+            console.warn('No entities page')
+            set({pages: success, isLoading: false});
+            return;
+          } else {
+            throw errors[0];
+          }
+        }
+
+        set({pages: success, isLoading: false});
       } catch (e) {
         if (signal.aborted) {
           return;

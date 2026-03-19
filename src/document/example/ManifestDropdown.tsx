@@ -14,7 +14,7 @@ type ManifestDropdownProps = {
 export function ManifestDropdown(
   {manifests, selected, onChange}: ManifestDropdownProps
 ) {
-  const sliceLength = 5;
+  const sliceLength = 20;
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
 
