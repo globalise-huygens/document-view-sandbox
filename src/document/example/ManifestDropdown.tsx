@@ -38,6 +38,7 @@ export function ManifestDropdown(
     <HeaderRegion region="center">
       <div className="manifest-dropdown">
         <input
+          title={selectedLabel}
           type="text"
           value={open ? search : selectedLabel}
           placeholder="Search manifests..."
