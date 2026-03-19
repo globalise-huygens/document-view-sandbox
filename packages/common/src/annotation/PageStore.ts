@@ -11,9 +11,11 @@ import {indexEntityOverlap, EntityOverlapIndex} from './indexEntityOverlap';
 import {getPageText} from './getPageText';
 import {findTextPositionSelector} from './findTextPositionSelector';
 import {isEntity} from './EntityModel.ts';
+import {fetchJson} from '../util/fetchJson.ts';
 
 export type PageState = {
   canvasId: Id | null;
+  urls: string[];
   pages: AnnotationPage[];
   isLoading: boolean;
   error: string | null;
@@ -21,6 +23,7 @@ export type PageState = {
 
 const defaultState: PageState = {
   canvasId: null,
+  urls: [],
   pages: [],
   isLoading: false,
   error: null,
@@ -43,18 +46,18 @@ export const usePageStore = create<
       abortController?.abort();
       abortController = new AbortController();
 
-      set({...defaultState, canvasId, isLoading: true});
+      set({...defaultState, canvasId, urls, isLoading: true});
 
       if (!urls.length) {
-        set({canvasId, pages: [], isLoading: false});
+        set({canvasId, urls, pages: [], isLoading: false});
         return;
       }
 
       const {signal} = abortController;
       try {
         const pages = await Promise.all(
-          urls.map(url => fetch(url, {signal}).then(r => r.json()))
-        ) as AnnotationPage[];
+          urls.map(url => fetchJson<AnnotationPage>(url, {signal}))
+        );
 
         set({pages, isLoading: false});
       } catch (e) {

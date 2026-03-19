@@ -1,20 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {createPortal} from 'react-dom';
 import {useManifest, ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {DocumentView} from '../DocumentView';
-import {Id, useAnnotations, usePages} from '@globalise/common/annotation';
+import {Id, usePages} from '@globalise/common/annotation';
 import {ManifestLoader} from '@globalise/facsimile';
-import {HeaderProvider} from '@globalise/common/HeaderContext';
-import {useHeaderRegion} from '@globalise/common/HeaderContext';
-import {
-  ManifestDropdown,
-  useCollectionManifests
-} from './ManifestDropdown';
+import {HeaderProvider} from '@globalise/common/header';
+import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';
 
-const defaultManifestUrl = 'https://globalise-huygens.github.io/' +
+const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
 
-const collectionUrl = 'https://data.globalise.huygens.knaw.nl/' +
+const collection = 'https://data.globalise.huygens.knaw.nl/' +
   'hdl:20.500.14722/inventory:collection';
 
 export type ManifestEntry = {
@@ -22,45 +17,33 @@ export type ManifestEntry = {
   label: string;
 };
 
-function ManifestPicker({manifests, selected, onChange}: {
-  manifests: ManifestEntry[];
-  selected: string;
-  onChange: (url: string) => void;
-}) {
-  const center = useHeaderRegion('center');
-  if (!center) {
-    return null;
-  }
-  return createPortal(
-    <ManifestDropdown
-      manifests={manifests}
-      selected={selected}
-      onChange={onChange}
-    />,
-    center
-  );
-}
+const MANIFEST = 'manifest';
+const CANVAS = 'canvas';
+const CONTROLS = 'controls';
 
 export function DocumentViewExample() {
   const params = new URLSearchParams(location.search);
-  const pageId = params.get('page') ?? undefined;
-  const controlsMode = params.get('controls') === 'inline'
+  const canvasId = params.get(CANVAS) ?? undefined;
+  const controlsMode = params.get(CONTROLS) === 'inline'
     ? 'inline'
     : 'header';
 
-  const [manifestUrl, setManifestUrl] = useState(defaultManifestUrl);
-  const manifests = useCollectionManifests(collectionUrl);
+  const [manifestUrl, setManifestUrl] = useState(
+    params.get(MANIFEST) ?? defaultManifest
+  );
+  const manifests = useCollectionManifests(collection);
 
   function handleManifestChange(url: string) {
     setManifestUrl(url);
     const newUrl = new URL(window.location.href);
-    newUrl.searchParams.delete('page');
+    newUrl.searchParams.set(MANIFEST, url);
+    newUrl.searchParams.delete(CANVAS);
     history.pushState({}, '', newUrl);
   }
 
   function handlePageChange(pageId: Id) {
     const url = new URL(window.location.href);
-    url.searchParams.set('page', pageId);
+    url.searchParams.set(CANVAS, pageId);
     history.pushState({}, '', url);
   }
 
@@ -69,14 +52,14 @@ export function DocumentViewExample() {
       <ViewerProvider>
         <ManifestLoader url={manifestUrl}>
           <StateDebug />
-          <ManifestPicker
+          <ManifestDropdown
             manifests={manifests}
             selected={manifestUrl}
             onChange={handleManifestChange}
           />
           <DocumentView
             manifestUrl={manifestUrl}
-            pageId={pageId}
+            canvasId={canvasId}
             onPageChange={handlePageChange}
           />
         </ManifestLoader>
@@ -96,5 +79,5 @@ export function StateDebug() {
     console.debug('Pages state:', pages);
   }, [pages]);
 
-  return null
+  return null;
 }

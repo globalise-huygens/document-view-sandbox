@@ -1,7 +1,6 @@
 import React, {useRef} from 'react';
-import {createPortal} from 'react-dom';
 import {Viewer} from '@knaw-huc/osd-iiif-viewer';
-import {useHeaderRegion} from '@globalise/common/HeaderContext';
+import {HeaderRegion, useControlsMode} from '@globalise/common/header';
 import {ControlBar} from './ControlBar';
 import {FacsimileControls} from './FacsimileControls.tsx';
 import {NavigationBar} from './NavigationBar';
@@ -15,7 +14,7 @@ export type FacsimileViewerProps = {
 
 export function FacsimileView({style}: FacsimileViewerProps) {
   const fullscreenRef = useRef<HTMLDivElement>(null);
-  const headerRegion = useHeaderRegion('left');
+  const controlsMode = useControlsMode();
   const controls = <FacsimileControls fullscreenRef={fullscreenRef}/>;
   return (
     <div
@@ -25,8 +24,8 @@ export function FacsimileView({style}: FacsimileViewerProps) {
     >
       <Viewer showControls={false}/>
       <HighlightOverlay/>
-      {headerRegion
-        ? createPortal(controls, headerRegion)
+      {controlsMode === 'header'
+        ? <HeaderRegion region="left">{controls}</HeaderRegion>
         : <ControlBar>{controls}</ControlBar>
       }
       <NavigationBar/>

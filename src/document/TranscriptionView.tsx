@@ -1,12 +1,11 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {createPortal} from 'react-dom';
 import {
   Id,
   useAnnotations,
+  useEntityOverlap,
   usePages,
   usePartOf,
   useTextGranularity,
-  useEntityOverlap,
 } from '@globalise/common/annotation';
 import {useDocumentStore} from '@globalise/common/DocumentStore';
 import {DiplomaticView} from '@globalise/diplomatic';
@@ -17,12 +16,13 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {ControlBar} from '@globalise/facsimile';
 import {
-  useSettings,
-  setDiplomaticViewScale, setViewMode
+  setDiplomaticViewScale,
+  setViewMode,
+  useSettings
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
 import {layoutBreakpoint} from './layout/DocumentLayout';
-import {useHeaderRegion} from '@globalise/common/HeaderContext';
+import {HeaderRegion, useControlsMode} from '@globalise/common/header';
 
 import './TranscriptionView.css';
 
@@ -39,17 +39,12 @@ export function TranscriptionView() {
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
-  const headerRegion = useHeaderRegion('right');
+  const controlsMode = useControlsMode();
 
   const {hoveredId, clickedId} = useDocumentStore();
   const {wordToBlock} = useTextGranularity();
   const {entityToBlock} = useEntityOverlap();
 
-  /**
-   * Select:
-   * - entity --> entity + block
-   * - word --> word + block
-   */
   const selectedIds = useMemo(() => {
     const selectedIds = new Set<Id>();
     if (hoveredId) {
@@ -161,8 +156,8 @@ export function TranscriptionView() {
 
   return (
     <div className="transcription-view">
-      {headerRegion
-        ? createPortal(controls, headerRegion)
+      {controlsMode === 'header'
+        ? <HeaderRegion region="right">{controls}</HeaderRegion>
         : <ControlBar>{controls}</ControlBar>
       }
       <div className="content">

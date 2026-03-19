@@ -3,7 +3,7 @@ import {DividerProps, Pane, SplitPane} from 'react-split-pane';
 import {Splitter} from './Splitter';
 import {useLayoutDirection} from './useLayoutDirection';
 import {resetScaling, setPaneRatio, useSettings} from '../SettingsStore';
-import {useControlsMode} from '@globalise/common/HeaderContext';
+import {useControlsMode} from '@globalise/common/header';
 import {HeaderBar} from './Header';
 import './DocumentLayout.css'
 

@@ -1,36 +1,80 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {ManifestEntry} from "./DocumentViewExample";
+import {Collection, Manifest} from '@iiif/presentation-3';
+import {HeaderRegion} from "@globalise/common/header";
 
 import './ManifestDropdown.css'
-import {Collection, Manifest} from '@iiif/presentation-3';
 
-export function ManifestDropdown({manifests, selected, onChange}: {
+type ManifestDropdownProps = {
   manifests: ManifestEntry[];
   selected: string;
   onChange: (url: string) => void;
-}) {
-  const selectRef = useRef<HTMLSelectElement>(null);
+};
+
+export function ManifestDropdown(
+  {manifests, selected, onChange}: ManifestDropdownProps
+) {
+  const [search, setSearch] = useState('');
+  const [open, setOpen] = useState(false);
+
+  const [filtered, totalCount] = useMemo(() => {
+    const terms = search
+      .toLowerCase()
+      .split(/\s+/)
+      .filter(term => !!term);
+    const matches = manifests.filter(m => {
+      const label = m.label.toLowerCase();
+      return terms.every(t => label.includes(t));
+    });
+    return [matches.slice(0, 50), matches.length];
+  }, [manifests, search]);
+
+
+  const selectedLabel = manifests
+    .find(m => m.id === selected)?.label ?? selected;
 
   return (
-    <select
-      className="manifest-dropdown"
-      ref={selectRef}
-      value={selected}
-      onChange={(e) => {
-        onChange(e.target.value);
-      }}
-    >
-      {!manifests.some(m => m.id === selected) && (
-        <option value={selected}>{selected}</option>
-      )}
-      {manifests.map(m => (
-        <option key={m.id} value={m.id}>{m.label}</option>
-      ))}
-    </select>
+    <HeaderRegion region="center">
+      <div className="manifest-dropdown">
+        <input
+          type="text"
+          value={open ? search : selectedLabel}
+          placeholder="Search manifests..."
+          onFocus={() => {
+            setOpen(true);
+            setSearch('');
+          }}
+          onBlur={() => {
+            setTimeout(() => setOpen(false), 150);
+          }}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+        {open && (
+          <ul>
+            {filtered.map(m => (
+              <li
+                key={m.id}
+                className={m.id === selected ? 'selected' : ''}
+                onMouseDown={() => {
+                  onChange(m.id);
+                  setOpen(false);
+                }}
+              >
+                {m.label}
+              </li>
+            ))}
+            {totalCount > 50 && (
+              <li className="more-info">Showing 50 of {totalCount}...</li>
+            )}
+          </ul>
+        )}
+      </div>
+    </HeaderRegion>
   );
 }
 
 const untitled = 'untitled';
+
 export function getLabel(label: unknown): string {
   if (!label) {
     return untitled;
@@ -42,7 +86,9 @@ export function getLabel(label: unknown): string {
   return values[0] ?? untitled;
 }
 
-export function useCollectionManifests(collectionUrl: string): ManifestEntry[] {
+export function useCollectionManifests(
+  collectionUrl: string
+): ManifestEntry[] {
   const [manifests, setManifests] = useState<ManifestEntry[]>([]);
 
   useEffect(() => {
