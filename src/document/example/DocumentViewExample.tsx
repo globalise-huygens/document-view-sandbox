@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useManifest, ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {DocumentView} from '../DocumentView';
-import {Id, usePages} from '@globalise/common/annotation';
+import {Id} from '@globalise/common/annotation';
+import {usePages} from '@globalise/common/document';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
 import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';

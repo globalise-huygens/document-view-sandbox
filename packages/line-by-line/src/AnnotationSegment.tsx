@@ -4,27 +4,26 @@ import {
   getEntityType,
   isEntity,
   toClassName,
-  Id,
   isWord,
 } from '@globalise/common/annotation';
+import {useIsSelectedInTranscription} from '@globalise/common/document';
 
 type AnnotationProps = {
   annotation: Annotation;
-  selected: Id[];
   children: ReactNode;
 };
 
 export function AnnotationSegment(
-  {annotation, selected, children}: AnnotationProps
+  {annotation, children}: AnnotationProps
 ) {
   if (isEntity(annotation)) {
-    return <EntitySegment annotation={annotation} selected={selected}>
+    return <EntitySegment annotation={annotation}>
       {children}
     </EntitySegment>;
   }
 
   if (isWord(annotation)) {
-    return <WordSegment annotation={annotation} selected={selected}>
+    return <WordSegment annotation={annotation}>
       {children}
     </WordSegment>;
   }
@@ -32,8 +31,8 @@ export function AnnotationSegment(
   return <>{children}</>;
 }
 
-function WordSegment({annotation, selected, children}: AnnotationProps) {
-  const isSelected = selected.includes(annotation.id);
+function WordSegment({annotation, children}: AnnotationProps) {
+  const isSelected = useIsSelectedInTranscription(annotation.id);
   return (
     <span className={`word${isSelected ? ' selected' : ''}`}>
       {children}
@@ -41,9 +40,9 @@ function WordSegment({annotation, selected, children}: AnnotationProps) {
   );
 }
 
-function EntitySegment({annotation, selected, children}: AnnotationProps) {
+function EntitySegment({annotation, children}: AnnotationProps) {
   const entityType = getEntityType(annotation);
-  const isSelected = selected.includes(annotation.id);
+  const isSelected = useIsSelectedInTranscription(annotation.id);
   return (
     <span
       className={`entity ${toClassName(entityType)}${isSelected ? ' selected' : ''}`}

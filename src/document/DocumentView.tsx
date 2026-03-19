@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileView} from '@globalise/facsimile';
-import {Id, useLoadPages} from '@globalise/common/annotation';
+import {Id} from '@globalise/common/annotation';
+import {useLoadPages} from '@globalise/common/document';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from './layout/DocumentLayout';
-import {clearSelection} from '@globalise/common/DocumentStore';
 
 import './DocumentView.css';
 
@@ -47,7 +47,6 @@ export function DocumentView(
       .filter(a => a.type === 'AnnotationPage')
       .map(a => a.id);
     loadPages(current.id, urls);
-    clearSelection();
     onPageChange(current.id);
   }, [current]);
 

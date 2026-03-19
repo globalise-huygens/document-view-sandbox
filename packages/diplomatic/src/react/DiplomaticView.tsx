@@ -5,7 +5,7 @@ import {renderDiplomaticView} from '../renderDiplomaticView';
 
 import '@knaw-huc/original-layout/style.css';
 import {Annotation} from '@globalise/common/annotation';
-import {setHovered, toggleClicked} from '@globalise/common/DocumentStore';
+import {setHovered, toggleClicked} from '@globalise/common/document';
 import {View} from '@globalise/common';
 
 export type DiplomaticViewProps = {

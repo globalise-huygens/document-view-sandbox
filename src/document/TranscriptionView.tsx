@@ -1,13 +1,14 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   Id,
+} from '@globalise/common/annotation';
+import {
   useAnnotations,
-  useEntityOverlap,
   usePages,
   usePartOf,
   useTextGranularity,
-} from '@globalise/common/annotation';
-import {useDocumentStore} from '@globalise/common/DocumentStore';
+} from '@globalise/common/document';
+import {useDocumentStore} from '@globalise/common/document';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineView} from '@globalise/line-by-line';
 import {Size} from './Size';
@@ -34,36 +35,37 @@ export function TranscriptionView() {
   const {isReady, pages, error} = usePages();
   const {viewMode, diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
-  const showDiplomatic = viewMode === 'diplomatic'
+  const showDiplomatic = viewMode === 'diplomatic';
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
   const controlsMode = useControlsMode();
 
-  const {hoveredId, clickedId} = useDocumentStore();
+  const hoveredId = useDocumentStore(s => s.hoveredId);
+  const clickedId = useDocumentStore(s => s.clickedId);
   const {wordToBlock} = useTextGranularity();
-  const {entityToBlock} = useEntityOverlap();
+  const {entityToBlock} = useDocumentStore(s => s.entityOverlap);
 
   const selectedIds = useMemo(() => {
-    const selectedIds = new Set<Id>();
+    const selected = new Set<Id>();
     if (hoveredId) {
       select(hoveredId);
     }
     if (clickedId) {
       select(clickedId);
     }
-    return [...selectedIds];
+    return [...selected];
 
     function select(id: Id) {
-      selectedIds.add(id);
+      selected.add(id);
       const blockFromWord = wordToBlock[id];
       if (blockFromWord) {
-        selectedIds.add(blockFromWord);
+        selected.add(blockFromWord);
       }
       const blockFromEntity = entityToBlock[id];
       if (blockFromEntity) {
-        selectedIds.add(blockFromEntity);
+        selected.add(blockFromEntity);
       }
     }
   }, [hoveredId, clickedId, wordToBlock, entityToBlock]);
@@ -183,10 +185,7 @@ export function TranscriptionView() {
         <div
           className={`viewport line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
         >
-          <LineByLineView
-            annotations={annotations}
-            selected={selectedIds}
-          />
+          <LineByLineView annotations={annotations} />
         </div>
       </div>
     </div>
