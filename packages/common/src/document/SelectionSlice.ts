@@ -1,5 +1,5 @@
 import {useDocumentStore, DocumentState} from './DocumentStore';
-import {Id} from "../annotation/Id.ts";
+import {Id} from "../annotation";
 
 export type SelectionSlice = {
   hoveredId: Id | null;
@@ -27,57 +27,64 @@ export function clearSelection() {
 }
 
 function isSelectedInTranscription(
-  id: Id,
-  activeId: Id | null,
+  currentId: Id,
+  selectedId: Id | null,
   s: DocumentState,
 ): boolean {
-  if (!activeId) {
+  if (!selectedId) {
     return false;
   }
-  if (id === activeId) {
+  if (currentId === selectedId) {
     return true;
   }
-  if (id === s.textGranularity.wordToBlock[activeId]) {
+  if (currentId === s.textGranularity.wordToBlock[selectedId]) {
     return true;
   }
-  if (id === s.entityOverlap.entityToBlock[activeId]) {
+  if (currentId === s.entityOverlap.entityToBlock[selectedId]) {
     return true;
   }
   return false;
 }
 
 function isSelectedInFacsimile(
-  id: Id,
-  activeId: Id | null,
+  currentId: Id,
+  selectedId: Id | null,
   s: DocumentState,
 ): boolean {
-  if (!activeId) {
+  if (!selectedId) {
     return false;
   }
-  if (id === activeId) {
+  if (currentId === selectedId) {
     return true;
   }
-  if (id === s.textGranularity.wordToBlock[activeId]) {
+  if (currentId === s.textGranularity.wordToBlock[selectedId]) {
     return true;
   }
-  const wordIds = s.entityOverlap.entityToWords[activeId];
-  if (wordIds && wordIds.includes(id)) {
+  /**
+   * Highlight related words when current is entity:
+   */
+  const wordIds = s.entityOverlap.entityToWords[selectedId];
+  if (wordIds && wordIds.includes(currentId)) {
     return true;
   }
-  if (id === s.entityOverlap.entityToBlock[activeId]) {
+  if (currentId === s.entityOverlap.entityToBlock[selectedId]) {
     return true;
   }
   return false;
 }
 
-export function useIsSelectedInTranscription(id: Id): boolean {
+export function useIsSelectedInTranscription(
+  id: Id
+): boolean {
   return useDocumentStore(s =>
     isSelectedInTranscription(id, s.hoveredId, s)
     || isSelectedInTranscription(id, s.clickedId, s)
   );
 }
 
-export function useIsSelectedInFacsimile(id: Id): boolean {
+export function useIsSelectedInFacsimile(
+  id: Id
+): boolean {
   return useDocumentStore(s =>
     isSelectedInFacsimile(id, s.hoveredId, s)
     || isSelectedInFacsimile(id, s.clickedId, s)
