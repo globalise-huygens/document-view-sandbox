@@ -26,6 +26,12 @@ export function clearSelection() {
   useDocumentStore.setState({hoveredId: null, clickedId: null});
 }
 
+/**
+ * Select current when it is:
+ * - hovered or clicked
+ * - block of selected word
+ * - block of selected entity
+ */
 function isSelectedInTranscription(
   currentId: Id,
   selectedId: Id | null,
@@ -46,6 +52,13 @@ function isSelectedInTranscription(
   return false;
 }
 
+/**
+ * Select current when it is:
+ * - hovered or clicked
+ * - block of selected word
+ * - block of selected entity
+ * - overlapping word of selected entity
+ */
 function isSelectedInFacsimile(
   currentId: Id,
   selectedId: Id | null,
