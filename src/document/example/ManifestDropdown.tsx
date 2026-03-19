@@ -14,6 +14,7 @@ type ManifestDropdownProps = {
 export function ManifestDropdown(
   {manifests, selected, onChange}: ManifestDropdownProps
 ) {
+  const sliceLength = 5;
   const [search, setSearch] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -26,7 +27,7 @@ export function ManifestDropdown(
       const label = m.label.toLowerCase();
       return terms.every(t => label.includes(t));
     });
-    return [matches.slice(0, 50), matches.length];
+    return [matches.slice(0, sliceLength), matches.length];
   }, [manifests, search]);
 
 
@@ -63,8 +64,8 @@ export function ManifestDropdown(
                 {m.label}
               </li>
             ))}
-            {totalCount > 50 && (
-              <li className="more-info">Showing 50 of {totalCount}...</li>
+            {totalCount > sliceLength && (
+              <li className="more-info">Showing {sliceLength} of {totalCount}...</li>
             )}
           </ul>
         )}
