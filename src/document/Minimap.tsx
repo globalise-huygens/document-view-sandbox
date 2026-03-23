@@ -1,23 +1,27 @@
-import React, {useState, useEffect, RefObject} from 'react';
+import React, {useState, useEffect, useMemo, RefObject} from 'react';
 import {Rnd} from 'react-rnd';
-import {Viewer} from '@knaw-huc/osd-iiif-viewer';
+import {Viewer, Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
+import {useAnnotations} from '@globalise/common/document';
+import {Id, findSvgPath, isLine, parseSvgPath} from '@globalise/common/annotation';
 
 const osdOptions = {
   showNavigationControl: false,
   mouseNavEnabled: false,
   gestureSettingsMouse: {clickToZoom: false, dblClickToZoom: false},
   gestureSettingsTouch: {clickToZoom: false, dblClickToZoom: false},
+  homeFillsViewer: true,
 };
 
 const minimapWidth = 200;
-const minimapHeight = 250;
+const minimapHeight = 300;
 const margin = 20;
 
 type MinimapProps = {
   parentRef: RefObject<HTMLDivElement | null>;
+  visibleLines: Set<Id>;
 };
 
-export function Minimap({parentRef}: MinimapProps) {
+export function Minimap({parentRef, visibleLines}: MinimapProps) {
   const [position, setPosition] = useState<{x: number; y: number} | null>(null);
 
   useEffect(() => {
@@ -64,7 +68,46 @@ export function Minimap({parentRef}: MinimapProps) {
     >
       <div style={{width: '100%', height: '100%'}}>
         <Viewer options={osdOptions} />
+        <MinimapHighlights visibleLines={visibleLines} />
       </div>
     </Rnd>
+  );
+}
+
+function MinimapHighlights({visibleLines}: {visibleLines: Set<Id>}) {
+  const viewImage = useImageInfo();
+  const annotations = useAnnotations();
+
+  const linePaths = useMemo(() => {
+    if (!annotations) {
+      return [];
+    }
+    return Object.values(annotations)
+      .filter(isLine)
+      .map(a => ({id: a.id, path: parseSvgPath(findSvgPath(a))}))
+      .filter(p => !!p);
+  }, [annotations]);
+
+  if (!viewImage || !linePaths.length) {
+    return null;
+  }
+
+  return (
+    <Overlay location={viewImage.location}>
+      <svg
+        viewBox={`0 0 ${viewImage.size.x} ${viewImage.size.y}`}
+        style={{width: '100%', height: '100%', pointerEvents: 'none'}}
+      >
+        {linePaths
+          .filter(({id}) => visibleLines.has(id))
+          .map(({id, path}) => (
+            <polygon
+              key={id}
+              points={path}
+              fill="rgba(0,255,0,0.25)"
+            />
+          ))}
+      </svg>
+    </Overlay>
   );
 }

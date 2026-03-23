@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {useAnnotations, usePages} from '@globalise/common/document';
-import {LineByLineView} from '@globalise/line-by-line';
+import {LineByLineView, useVisibleLines} from '@globalise/line-by-line';
 import {Minimap} from './Minimap';
 
 import './MinimapView.css';
@@ -9,6 +9,9 @@ export function MinimapView() {
   const ref = useRef<HTMLDivElement>(null);
   const annotations = useAnnotations();
   const {isReady, pages, error} = usePages();
+
+  const textRef = useRef<HTMLDivElement>(null);
+  const visibleLines = useVisibleLines(textRef);
 
   if (error) {
     return <div className="message error">Error: {error}</div>;
@@ -25,10 +28,10 @@ export function MinimapView() {
 
   return (
     <div className="minimap-view" ref={ref}>
-      <div className="text">
+      <div className="text" ref={textRef}>
         <LineByLineView annotations={annotations} />
       </div>
-      <Minimap parentRef={ref} />
+      <Minimap parentRef={ref} visibleLines={visibleLines} />
     </div>
   );
 }
