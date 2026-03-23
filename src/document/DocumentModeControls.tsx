@@ -4,11 +4,7 @@ import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import ImageIcon from '@mui/icons-material/Image';
 import SubjectIcon from '@mui/icons-material/Subject';
 import MapIcon from '@mui/icons-material/Map';
-
-type ViewModeToggleProps = {
-  mode: DocumentViewMode;
-  onClick: (mode: DocumentViewMode) => void;
-};
+import {setDocumentMode, useSettings} from "./SettingsStore";
 
 const modes: ViewMode[] = [
   {value: 'transcription', icon: SubjectIcon, title: 'Text-only view'},
@@ -17,14 +13,15 @@ const modes: ViewMode[] = [
   {value: 'minimap', icon: MapIcon, title: 'Minimap view'},
 ];
 
-export function ViewModeControls({mode, onClick}: ViewModeToggleProps) {
+export function DocumentModeControls() {
+  const {documentMode: mode} = useSettings()
   return (
     <HeaderRegion region="right">
       {modes.map(({value, icon: Icon, title}) => (
         <button
           key={value}
           className={value === mode ? 'active' : ''}
-          onClick={() => onClick(value)}
+          onClick={() => setDocumentMode(value)}
           title={title}
         >
           <Icon fontSize="small"/>
@@ -34,14 +31,14 @@ export function ViewModeControls({mode, onClick}: ViewModeToggleProps) {
   );
 }
 
-export type DocumentViewMode =
+export type DocumentMode =
   | 'split'
   | 'facsimile'
   | 'transcription'
   | 'minimap';
 
 type ViewMode = {
-  value: DocumentViewMode;
+  value: DocumentMode;
   icon: typeof ViewColumnIcon;
   title: string;
 };

@@ -18,7 +18,7 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {ControlBar} from '@globalise/facsimile';
 import {
   setDiplomaticViewScale,
-  setViewMode,
+  setTranscriptionMode,
   useSettings
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
@@ -32,9 +32,9 @@ export function TranscriptionView() {
   const annotations = useAnnotations();
   const page = usePartOf();
   const {isReady, pages, error} = usePages();
-  const {viewMode, diplomaticViewScale} = useSettings();
+  const {transcriptionMode, diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
-  const showDiplomatic = viewMode === 'diplomatic';
+  const showDiplomatic = transcriptionMode === 'diplomatic';
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
@@ -141,13 +141,13 @@ export function TranscriptionView() {
       )}
       <button
         className={showDiplomatic ? 'active' : ''}
-        onClick={() => setViewMode('diplomatic')}
+        onClick={() => setTranscriptionMode('diplomatic')}
       >
         Diplomatic
       </button>
       <button
         className={!showDiplomatic ? 'active' : ''}
-        onClick={() => setViewMode('line-by-line')}
+        onClick={() => setTranscriptionMode('line-by-line')}
       >
         Line by line
       </button>

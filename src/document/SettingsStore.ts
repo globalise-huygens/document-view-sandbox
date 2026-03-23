@@ -1,17 +1,20 @@
 import {create} from 'zustand';
 import {persist} from 'zustand/middleware';
+import {DocumentMode} from "./DocumentModeControls";
 
-export type ViewMode = 'diplomatic' | 'line-by-line';
+export type TranscriptionMode = 'diplomatic' | 'line-by-line';
 
 export type SettingsState = {
+  documentMode: DocumentMode
   paneRatio: number;
-  viewMode: ViewMode;
+  transcriptionMode: TranscriptionMode;
   diplomaticViewScale: number;
 };
 
 const defaultSettings: SettingsState = {
+  documentMode: 'split',
   paneRatio: 0.5,
-  viewMode: 'diplomatic',
+  transcriptionMode: 'diplomatic',
   diplomaticViewScale: 100,
 };
 
@@ -30,6 +33,9 @@ export function useSettings() {
   return useSettingsStore();
 }
 
+export function setDocumentMode(documentMode: DocumentMode) {
+  useSettingsStore.setState({documentMode});
+}
 export function setPaneRatio(paneRatio: number) {
   useSettingsStore.setState({paneRatio});
 }
@@ -38,8 +44,8 @@ export function setDiplomaticViewScale(diplomaticScale: number) {
   useSettingsStore.setState({diplomaticViewScale: diplomaticScale});
 }
 
-export function setViewMode(viewMode: ViewMode) {
-  useSettingsStore.setState({viewMode});
+export function setTranscriptionMode(transcriptionMode: TranscriptionMode) {
+  useSettingsStore.setState({transcriptionMode});
 }
 
 export function resetScaling() {
