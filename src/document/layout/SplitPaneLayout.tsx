@@ -18,7 +18,7 @@ const splitterThickness = {
 const defaultMinSize = '20%';
 export const layoutBreakpoint = 1024;
 
-export function DocumentLayout({children}: DocumentLayoutProps) {
+export function SplitPaneLayout({children}: DocumentLayoutProps) {
   const direction = useLayoutDirection(layoutBreakpoint);
   const controlsMode = useControlsMode();
   const {paneRatio} = useSettings();

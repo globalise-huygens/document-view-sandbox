@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useState} from "react";
-import {ManifestEntry} from "./DocumentViewExample";
+import {ManifestEntry} from "./SplitPaneViewExample";
 import {Collection, Manifest} from '@iiif/presentation-3';
 import {HeaderRegion} from "@globalise/common/header";
 

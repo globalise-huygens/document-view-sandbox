@@ -1,6 +1,6 @@
 import React from 'react';
 import {createRoot} from 'react-dom/client';
-import {DocumentViewExample} from './example/DocumentViewExample';
+import {SplitPaneViewExample} from './example/SplitPaneViewExample';
 import {reloadOnEsBuild} from "../util/reloadOnEsBuild";
 
 if(DEV) {
@@ -8,5 +8,5 @@ if(DEV) {
 }
 
 createRoot(document.getElementById('root')!).render(
-  <DocumentViewExample />
+  <SplitPaneViewExample />
 );

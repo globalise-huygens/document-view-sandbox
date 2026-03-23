@@ -22,7 +22,7 @@ import {
   useSettings
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
-import {layoutBreakpoint} from './layout/DocumentLayout';
+import {layoutBreakpoint} from './layout/SplitPaneLayout';
 import {HeaderRegion, useControlsMode} from '@globalise/common/header';
 
 import './TranscriptionView.css';

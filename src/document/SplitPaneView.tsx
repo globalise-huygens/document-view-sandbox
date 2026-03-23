@@ -4,18 +4,18 @@ import {FacsimileView} from '@globalise/facsimile';
 import {Id} from '@globalise/common/annotation';
 import {useLoadPages} from '@globalise/common/document';
 import {TranscriptionView} from './TranscriptionView';
-import {DocumentLayout} from './layout/DocumentLayout';
+import {SplitPaneLayout} from './layout/SplitPaneLayout';
 
-import './DocumentView.css';
+import './SplitPaneView.css';
 
-type DocumentViewProps = {
+type SplitPaneViewProps = {
   manifestUrl: string;
   canvasId?: string;
   onPageChange: (id: Id) => void;
 };
 
-export function DocumentView(
-  {canvasId, onPageChange}: DocumentViewProps
+export function SplitPaneView(
+  {canvasId, onPageChange}: SplitPaneViewProps
 ) {
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
@@ -55,9 +55,9 @@ export function DocumentView(
   }
 
   return (
-    <DocumentLayout>
+    <SplitPaneLayout>
       <FacsimileView style={{height: '100%'}}/>
       <TranscriptionView/>
-    </DocumentLayout>
+    </SplitPaneLayout>
   );
 }

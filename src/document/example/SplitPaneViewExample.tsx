@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {useManifest, ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {DocumentView} from '../DocumentView';
+import {SplitPaneView} from '../SplitPaneView';
 import {Id} from '@globalise/common/annotation';
-import {usePages} from '@globalise/common/document';
+import {useDocumentStore, usePages} from '@globalise/common/document';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
 import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';
@@ -22,7 +22,7 @@ const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 const CONTROLS = 'controls';
 
-export function DocumentViewExample() {
+export function SplitPaneViewExample() {
   const params = new URLSearchParams(location.search);
   const canvasId = params.get(CANVAS) ?? undefined;
   const controlsMode = params.get(CONTROLS) === 'inline'
@@ -58,7 +58,7 @@ export function DocumentViewExample() {
             selected={manifestUrl}
             onChange={handleManifestChange}
           />
-          <DocumentView
+          <SplitPaneView
             manifestUrl={manifestUrl}
             canvasId={canvasId}
             onPageChange={handlePageChange}
@@ -71,14 +71,14 @@ export function DocumentViewExample() {
 
 export function StateDebug() {
   const manifest = useManifest();
-  const pages = usePages()
+  const document = useDocumentStore()
   useEffect(() => {
     console.debug('Manifest state:', manifest);
   }, [manifest]);
 
   useEffect(() => {
-    console.debug('Pages state:', pages);
-  }, [pages]);
+    console.debug('Document state:', document);
+  }, [document]);
 
   return null;
 }
