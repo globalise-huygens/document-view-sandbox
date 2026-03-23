@@ -6,6 +6,7 @@ import {useDocumentStore, usePages} from '@globalise/common/document';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
 import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';
+import {StateDebug} from "./StateDebug";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
@@ -20,14 +21,10 @@ export type ManifestEntry = {
 
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
-const CONTROLS = 'controls';
 
 export function SplitPaneViewExample() {
   const params = new URLSearchParams(location.search);
   const canvasId = params.get(CANVAS) ?? undefined;
-  const controlsMode = params.get(CONTROLS) === 'inline'
-    ? 'inline'
-    : 'header';
 
   const [manifestUrl, setManifestUrl] = useState(
     params.get(MANIFEST) ?? defaultManifest
@@ -49,7 +46,7 @@ export function SplitPaneViewExample() {
   }
 
   return (
-    <HeaderProvider controlsMode={controlsMode}>
+    <HeaderProvider>
       <ViewerProvider>
         <ManifestLoader url={manifestUrl}>
           <StateDebug />
@@ -67,18 +64,4 @@ export function SplitPaneViewExample() {
       </ViewerProvider>
     </HeaderProvider>
   );
-}
-
-export function StateDebug() {
-  const manifest = useManifest();
-  const document = useDocumentStore()
-  useEffect(() => {
-    console.debug('Manifest state:', manifest);
-  }, [manifest]);
-
-  useEffect(() => {
-    console.debug('Document state:', document);
-  }, [document]);
-
-  return null;
 }

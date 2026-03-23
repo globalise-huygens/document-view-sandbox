@@ -23,7 +23,6 @@ import {
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
 import {layoutBreakpoint} from './layout/SplitPaneLayout';
-import {HeaderRegion, useControlsMode} from '@globalise/common/header';
 
 import './TranscriptionView.css';
 
@@ -40,7 +39,6 @@ export function TranscriptionView() {
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
-  const controlsMode = useControlsMode();
 
   const hoveredId = useDocumentStore(s => s.hoveredId);
   const clickedId = useDocumentStore(s => s.clickedId);
@@ -158,10 +156,7 @@ export function TranscriptionView() {
 
   return (
     <div className="transcription-view">
-      {controlsMode === 'header'
-        ? <HeaderRegion region="right">{controls}</HeaderRegion>
-        : <ControlBar>{controls}</ControlBar>
-      }
+      <ControlBar>{controls}</ControlBar>
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
