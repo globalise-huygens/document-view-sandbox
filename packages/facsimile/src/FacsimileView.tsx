@@ -22,7 +22,10 @@ export function FacsimileView(
       ref={fullscreenRef}
       style={{position: 'relative', width: '100%', height: '100%', ...style}}
     >
-      <Viewer showControls={false}/>
+      <Viewer options={{
+        showNavigationControl: false,
+        gestureSettingsMouse: {clickToZoom: false},
+      }} />
       <HighlightOverlay/>
       <ControlBar>
         <FacsimileControls fullscreenRef={fullscreenRef}/>
