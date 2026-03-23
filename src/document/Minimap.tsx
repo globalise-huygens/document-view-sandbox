@@ -13,8 +13,8 @@ const osdOptions = {
 };
 
 const minimapWidth = 200;
-const minimapHeight = 300;
-const margin = 20;
+const minimapHeight = 250;
+const margin = 10;
 
 type MinimapProps = {
   parentRef: RefObject<HTMLDivElement | null>;
