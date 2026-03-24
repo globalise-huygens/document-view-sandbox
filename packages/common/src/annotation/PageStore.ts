@@ -7,6 +7,12 @@ import {
   TextGranularityIndex
 } from './indexTextGranularity.ts';
 
+import {indexEntityOverlap, EntityOverlapIndex} from './indexEntityOverlap';
+import {getPageText} from './getPageText';
+import {findTextPositionSelector} from "./findTextPositionSelector.ts";
+import {tryOr} from "../util/tryOr.ts";
+import {isEntity} from "./EntityModel.ts";
+
 export type PageState = {
   canvasId: Id | null;
   pages: AnnotationPage[];
@@ -80,6 +86,23 @@ export function useAnnotations(): Record<Id, Annotation> | null {
         mapped[item.id] = item;
       }
     }
+
+    /**
+     * TODO: remove when all entities have htr selectors:
+     */
+    const {id: pageId} = getPageText(mapped);
+    for (const id in mapped) {
+      const item = mapped[id]
+      if (!isEntity(item)) {
+        continue;
+      }
+      const selector = tryOr(() => findTextPositionSelector(item, pageId));
+      if (!selector) {
+        console.debug(`Skip entity with htr selector: ${item.id}`)
+        delete mapped[item.id]
+      }
+    }
+
     return mapped;
   }, [pages, isReady]);
 }
@@ -94,12 +117,39 @@ export function usePartOf(): PartOf | null {
   }, [pages, isReady]);
 }
 
-export function useTextGranularity(): TextGranularityIndex | null {
+export type FullTextIndex = TextGranularityIndex & EntityOverlapIndex;
+
+const emptyEntityIndex: EntityOverlapIndex = {
+  entityToWords: {},
+  entityToBlock: {},
+};
+
+const emptyIndex: FullTextIndex = {
+  wordsToLine: {},
+  linesToBlock: {},
+  blockToLines: {},
+  wordToBlock: {},
+  ...emptyEntityIndex,
+};
+
+export function useTextGranularity(): TextGranularityIndex {
   const annotations = useAnnotations();
   return useMemo(() => {
     if (!annotations) {
-      return null;
+      return emptyIndex;
     }
     return indexTextGranularity(annotations);
   }, [annotations]);
+}
+
+export function useEntityOverlap(): EntityOverlapIndex {
+  const annotations = useAnnotations();
+  const {wordToBlock} = useTextGranularity();
+  return useMemo(() => {
+    if (!annotations) {
+      return emptyEntityIndex;
+    }
+    const {id: pageAnnoId} = getPageText(annotations);
+    return indexEntityOverlap(annotations, pageAnnoId, wordToBlock);
+  }, [annotations, wordToBlock]);
 }

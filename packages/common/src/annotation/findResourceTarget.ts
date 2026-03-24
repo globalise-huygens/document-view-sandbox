@@ -1,6 +1,6 @@
 import {Annotation, AnnotationResourceTarget} from './AnnoModel';
 import {isAnnotationResourceTarget} from './isAnnotationResourceTarget';
-import {orThrow} from "./orThrow.ts";
+import {orThrow} from "../util/orThrow.ts";
 
 export function findResourceTarget(
   annotation: Annotation,

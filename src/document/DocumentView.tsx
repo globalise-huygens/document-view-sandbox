@@ -1,9 +1,10 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
-import {FacsimileViewer} from '@globalise/facsimile';
-import {Id, useLoadPages, useTextGranularity} from '@globalise/common/annotation';
+import {FacsimileView} from '@globalise/facsimile';
+import {Id, useLoadPages} from '@globalise/common/annotation';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from './layout/DocumentLayout';
+import {clearSelection} from '@globalise/common/DocumentStore';
 
 import './DocumentView.css';
 
@@ -14,15 +15,12 @@ type DocumentViewProps = {
 };
 
 export function DocumentView(
-  {manifestUrl, pageId, onPageChange}: DocumentViewProps
+  {pageId, onPageChange}: DocumentViewProps
 ) {
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
-  const [clickedIds, setClickedIds] = useState<Id[]>([]);
-  const [hoveredId, setHoveredId] = useState<Id | null>(null);
   const {vault, url, isReady} = useManifest();
   const loadPages = useLoadPages();
-  const granularity = useTextGranularity();
 
   useEffect(() => {
     if (!isReady) {
@@ -49,28 +47,9 @@ export function DocumentView(
       .filter(a => a.type === 'AnnotationPage')
       .map(a => a.id);
     loadPages(current.id, urls);
-    setClickedIds([]);
-    setHoveredId(null);
+    clearSelection();
     onPageChange(current.id);
   }, [current]);
-
-  const toggleClickedIds = useCallback((id: Id) => {
-    setClickedIds(prev =>
-      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
-    );
-  }, []);
-
-  const selectedIds = useMemo(() => {
-    const hovered: Id[] = [];
-    if (hoveredId) {
-      hovered.push(hoveredId);
-      const blockId = granularity?.wordToBlock[hoveredId];
-      if (blockId) {
-        hovered.push(blockId);
-      }
-    }
-    return [...new Set([...clickedIds, ...hovered])];
-  }, [clickedIds, hoveredId, granularity?.wordToBlock]);
 
   if (!isInit) {
     return <div>Loading...</div>;
@@ -78,18 +57,8 @@ export function DocumentView(
 
   return (
     <DocumentLayout>
-      <FacsimileViewer
-        manifestUrl={manifestUrl}
-        selected={selectedIds}
-        onToggle={toggleClickedIds}
-        onHover={setHoveredId}
-        style={{height: '100%'}}
-      />
-      <TranscriptionView
-        selected={selectedIds}
-        onHover={setHoveredId}
-        onClick={toggleClickedIds}
-      />
+      <FacsimileView style={{height: '100%'}}/>
+      <TranscriptionView/>
     </DocumentLayout>
   );
 }
