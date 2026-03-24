@@ -1,4 +1,4 @@
-import {ReactNode} from 'react';
+import {ReactNode, useEffect, useRef} from 'react';
 import {
   Annotation,
   getEntityType,
@@ -6,7 +6,10 @@ import {
   toClassName,
   isWord,
 } from '@globalise/common/annotation';
-import {useIsSelectedInTranscription} from '@globalise/common/document';
+import {
+  useDocumentStore,
+  useIsSelectedInTranscription
+} from '@globalise/common/document';
 
 type AnnotationProps = {
   annotation: Annotation;
@@ -32,9 +35,20 @@ export function AnnotationSegment(
 }
 
 function WordSegment({annotation, children}: AnnotationProps) {
-  const isSelected = useIsSelectedInTranscription(annotation.id);
+  const isSelected = useDocumentStore(s => s.clickedId === annotation.id);
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (isSelected && ref.current) {
+      ref.current.scrollIntoView({behavior: 'smooth', block: 'center'});
+    }
+  }, [isSelected]);
+
   return (
-    <span className={`word${isSelected ? ' selected' : ''}`}>
+    <span
+      ref={ref}
+      className={`word${isSelected ? ' selected' : ''}`}
+    >
       {children}
     </span>
   );
