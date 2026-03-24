@@ -1,7 +1,7 @@
 import React from 'react';
 import {HeaderRegion} from '@globalise/common/header';
 import SplitscreenRounded from '@mui/icons-material/SplitscreenRounded';
-import ArtTrack from '@mui/icons-material/ArtTrack';
+import ImageIcon from '@mui/icons-material/Image';
 import SubjectIcon from '@mui/icons-material/Subject';
 import BrandingWatermarkIcon from '@mui/icons-material/BrandingWatermarkOutlined';
 import {setDocumentMode, useSettings} from './SettingsStore';
@@ -21,7 +21,7 @@ type ViewMode = {
 
 const modes: ViewMode[] = [
   {value: 'transcription', icon: SubjectIcon, title: 'Text-only view'},
-  {value: 'facsimile', icon: ArtTrack, title: 'Scan-only view'},
+  {value: 'facsimile', icon: ImageIcon, title: 'Scan-only view'},
   {value: 'split', icon: SplitscreenRounded, title: 'Scan + text view', sx: {transform: 'rotate(90deg)'}},
   {value: 'minimap', icon: BrandingWatermarkIcon, title: 'Minimap view'},
 ];
