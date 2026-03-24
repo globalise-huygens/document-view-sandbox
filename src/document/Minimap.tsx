@@ -8,12 +8,11 @@ const osdOptions = {
   showNavigationControl: false,
   mouseNavEnabled: false,
   gestureSettingsMouse: {clickToZoom: false, dblClickToZoom: false},
-  gestureSettingsTouch: {clickToZoom: false, dblClickToZoom: false},
   homeFillsViewer: true,
 };
 
-const minimapWidth = 200;
-const minimapHeight = 250;
+const minimapWidth = 300;
+const minimapHeight = 200;
 const margin = 10;
 
 type MinimapProps = {
@@ -30,7 +29,7 @@ export function Minimap({parentRef, visibleLines}: MinimapProps) {
       return;
     }
 
-    function update(parent: HTMLDivElement) {
+    function updatePosition(parent: HTMLDivElement) {
       const rect = parent.getBoundingClientRect();
       if (rect.width === 0 || rect.height === 0) {
         return;
@@ -41,12 +40,12 @@ export function Minimap({parentRef, visibleLines}: MinimapProps) {
       });
     }
 
-    update(parent);
+    updatePosition(parent);
 
-    const ro = new ResizeObserver(() => update(parent));
-    ro.observe(parent);
+    const resizeObserver = new ResizeObserver(() => updatePosition(parent));
+    resizeObserver.observe(parent);
 
-    return () => ro.disconnect();
+    return () => resizeObserver.disconnect();
   }, [parentRef]);
 
   if (!position) {
@@ -68,27 +67,26 @@ export function Minimap({parentRef, visibleLines}: MinimapProps) {
     >
       <div style={{width: '100%', height: '100%'}}>
         <Viewer options={osdOptions} />
-        <MinimapHighlights visibleLines={visibleLines} />
+        <MinimapHighlights lines={visibleLines} />
       </div>
     </Rnd>
   );
 }
 
-function MinimapHighlights({visibleLines}: {visibleLines: Set<Id>}) {
+function MinimapHighlights({lines}: {lines: Set<Id>}) {
   const viewImage = useImageInfo();
   const annotations = useAnnotations();
 
-  const linePaths = useMemo(() => {
+  const paths = useMemo(() => {
     if (!annotations) {
       return [];
     }
     return Object.values(annotations)
       .filter(isLine)
       .map(a => ({id: a.id, path: parseSvgPath(findSvgPath(a))}))
-      .filter(p => !!p);
   }, [annotations]);
 
-  if (!viewImage || !linePaths.length) {
+  if (!viewImage || !paths.length) {
     return null;
   }
 
@@ -98,8 +96,8 @@ function MinimapHighlights({visibleLines}: {visibleLines: Set<Id>}) {
         viewBox={`0 0 ${viewImage.size.x} ${viewImage.size.y}`}
         style={{width: '100%', height: '100%', pointerEvents: 'none'}}
       >
-        {linePaths
-          .filter(({id}) => visibleLines.has(id))
+        {paths
+          .filter(({id}) => lines.has(id))
           .map(({id, path}) => (
             <polygon
               key={id}
