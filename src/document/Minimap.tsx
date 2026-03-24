@@ -42,7 +42,7 @@ export function Minimap({visibleLines}: MinimapProps) {
         minWidth={100}
         minHeight={100}
         className="rnd"
-        dragHandleClassName="rnd-handle"
+        dragHandleClassName="handle"
       >
         <div className="viewport">
           <div
