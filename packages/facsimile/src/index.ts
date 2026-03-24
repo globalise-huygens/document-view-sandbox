@@ -4,6 +4,6 @@ export {FacsimileView} from './FacsimileView.tsx';
 export type {FacsimileViewerProps} from './FacsimileView.tsx';
 export {FacsimileControls} from './FacsimileControls.tsx';
 export {CanvasControls} from './CanvasControls.tsx';
-export {HighlightOverlay} from './HighlightOverlay';
+export {FacsimileOverlay} from './FacsimileOverlay.tsx';
 export type {TooltipProps} from './Tooltip';
 export {ManifestLoader} from './ManifestLoader';

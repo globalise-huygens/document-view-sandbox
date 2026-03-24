@@ -3,7 +3,7 @@ import {Viewer} from '@knaw-huc/osd-iiif-viewer';
 import {ControlBar} from './ControlBar';
 import {FacsimileControls} from './FacsimileControls.tsx';
 import {CanvasControls} from './CanvasControls.tsx';
-import {HighlightOverlay} from './HighlightOverlay';
+import {FacsimileOverlay} from './FacsimileOverlay.tsx';
 
 import './FacsimileView.css';
 
@@ -26,7 +26,7 @@ export function FacsimileView(
         showNavigationControl: false,
         gestureSettingsMouse: {clickToZoom: false},
       }} />
-      <HighlightOverlay/>
+      <FacsimileOverlay/>
       <ControlBar>
         <FacsimileControls fullscreenRef={fullscreenRef}/>
       </ControlBar>

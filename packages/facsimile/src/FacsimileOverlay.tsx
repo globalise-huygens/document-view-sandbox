@@ -14,7 +14,7 @@ import {Tooltip, TooltipProps} from './Tooltip';
 import {BlockHighlight} from './BlockHighlight.tsx';
 import {WordHighlight} from './WordHighlight.tsx';
 
-export function HighlightOverlay() {
+export function FacsimileOverlay() {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);

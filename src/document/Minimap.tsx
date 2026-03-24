@@ -1,30 +1,21 @@
-import React, {useMemo} from 'react';
+import React from 'react';
 import {Rnd} from 'react-rnd';
-import {Overlay, useImageInfo, Viewer} from '@knaw-huc/osd-iiif-viewer';
-import {useAnnotations, usePartOf} from '@globalise/common/document';
-import {
-  findSvgPath,
-  Id,
-  isLine,
-  parseSvgPath,
-  PartOf
-} from '@globalise/common/annotation';
+import {Viewer} from '@knaw-huc/osd-iiif-viewer';
+import {usePartOf} from '@globalise/common/document';
+import {PartOf} from '@globalise/common/annotation';
+import {MinimapOverlay} from './MinimapOverlay';
 
 const osdOptions = {
   showNavigationControl: false,
   homeFillsViewer: true,
 };
 
-type MinimapProps = {
-  visibleLines: Set<Id>;
-};
-
-export function Minimap({visibleLines}: MinimapProps) {
-  const minimapRatio = 0.2;
+export function Minimap() {
+  const minimapScreenRatio = 0.2;
   const margin = 10;
 
   const pageSize = usePartOf();
-  const {width, height} = calcMinimapSize(pageSize, minimapRatio, margin);
+  const {width, height} = calcMinimapSize(pageSize, minimapScreenRatio, margin);
 
   return (
     <div style={{
@@ -45,12 +36,10 @@ export function Minimap({visibleLines}: MinimapProps) {
         dragHandleClassName="handle"
       >
         <div className="viewport">
-          <div
-            className="handle"
-          />
+          <div className="handle" />
           <div style={{flex: 1, overflow: 'hidden'}}>
-            <Viewer options={osdOptions}/>
-            <MinimapHighlights lines={visibleLines}/>
+            <Viewer options={osdOptions} />
+            <MinimapOverlay />
           </div>
         </div>
       </Rnd>
@@ -60,7 +49,7 @@ export function Minimap({visibleLines}: MinimapProps) {
 
 function calcMinimapSize(
   pageSize: PartOf | null,
-  minimapRatio: number,
+  minimapScreenRatio: number,
   margin: number
 ) {
   const maxWidth = window.innerWidth - margin;
@@ -70,10 +59,10 @@ function calcMinimapSize(
 
   let width, height;
   if (isLandscape) {
-    width = window.innerWidth * minimapRatio;
+    width = window.innerWidth * minimapScreenRatio;
     height = width * pageRatio;
   } else {
-    height = window.innerHeight * minimapRatio;
+    height = window.innerHeight * minimapScreenRatio;
     width = height / pageRatio;
   }
 
@@ -87,41 +76,4 @@ function calcMinimapSize(
   }
 
   return {width, height};
-}
-
-function MinimapHighlights({lines}: { lines: Set<Id> }) {
-  const viewImage = useImageInfo();
-  const annotations = useAnnotations();
-
-  const paths = useMemo(() => {
-    if (!annotations) {
-      return [];
-    }
-    return Object.values(annotations)
-      .filter(isLine)
-      .map(a => ({id: a.id, path: parseSvgPath(findSvgPath(a))}));
-  }, [annotations]);
-
-  if (!viewImage || !paths.length) {
-    return null;
-  }
-
-  return (
-    <Overlay location={viewImage.location}>
-      <svg
-        viewBox={`0 0 ${viewImage.size.x} ${viewImage.size.y}`}
-        style={{width: '100%', height: '100%', pointerEvents: 'none'}}
-      >
-        {paths
-          .filter(({id}) => lines.has(id))
-          .map(({id, path}) => (
-            <polygon
-              key={id}
-              points={path}
-              fill="rgba(0,255,0,0.25)"
-            />
-          ))}
-      </svg>
-    </Overlay>
-  );
 }
