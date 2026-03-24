@@ -9,7 +9,7 @@ import {useCanvasPages} from './useCanvasPages';
 
 import './DocumentView.css';
 import {HeaderCanvasControls} from "./HeaderCanvasControls";
-import {MinimapView} from "./MinimapView";
+import {MinimapView} from "./minimap/MinimapView";
 import {useSettings} from "./SettingsStore";
 
 type DocumentViewProps = {
