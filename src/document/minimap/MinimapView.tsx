@@ -9,9 +9,8 @@ import './MinimapView.css';
 export function MinimapView() {
   const annotations = useAnnotations();
   const {isReady, pages, error} = usePages();
-  const textRef = useRef<HTMLDivElement>(null);
 
-  useZoomToClicked(textRef);
+  useZoomToClicked();
 
   if (error) {
     return <div className="message error">Error: {error}</div>;
@@ -28,10 +27,8 @@ export function MinimapView() {
 
   return (
     <div className="minimap-view">
-      <div className="text" ref={textRef}>
-        <LineByLineView annotations={annotations} />
-      </div>
-      <Minimap />
+      <LineByLineView annotations={annotations}/>
+      <Minimap/>
     </div>
   );
 }

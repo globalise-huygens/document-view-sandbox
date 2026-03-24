@@ -14,9 +14,7 @@ import {
 } from '@globalise/common/annotation';
 import {calcBoundingBox, createPoints} from '@knaw-huc/original-layout';
 
-export function useZoomToClicked(
-  textRef: RefObject<HTMLDivElement | null>
-) {
+export function useZoomToClicked() {
   const pageSize = usePartOf();
   const viewer = useViewer();
   const annotations = useAnnotations();
@@ -47,7 +45,7 @@ export function useZoomToClicked(
       bbox.height + padding * 2,
     );
     viewer.viewport.fitBounds(zoomViewport);
-    }, [clickedId, annotations, viewer, wordsToLine, entityToWords, pageSize, textRef]
+    }, [clickedId, annotations, viewer, wordsToLine, entityToWords, pageSize]
   );
 }
 
