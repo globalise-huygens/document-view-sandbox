@@ -1,69 +1,95 @@
-import React, {useState, useEffect, useMemo, RefObject} from 'react';
+import React, {useMemo} from 'react';
 import {Rnd} from 'react-rnd';
-import {Viewer, Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
-import {useAnnotations} from '@globalise/common/document';
-import {Id, findSvgPath, isLine, parseSvgPath} from '@globalise/common/annotation';
+import {Overlay, useImageInfo, Viewer} from '@knaw-huc/osd-iiif-viewer';
+import {useAnnotations, usePartOf} from '@globalise/common/document';
+import {
+  findSvgPath,
+  Id,
+  isLine,
+  parseSvgPath,
+  PartOf
+} from '@globalise/common/annotation';
 
 const osdOptions = {
   showNavigationControl: false,
-  mouseNavEnabled: false,
-  gestureSettingsMouse: {clickToZoom: false, dblClickToZoom: false},
   homeFillsViewer: true,
 };
-
-const minimapWidth = 300;
-const minimapHeight = 200;
-const margin = 10;
 
 type MinimapProps = {
   visibleLines: Set<Id>;
 };
 
 export function Minimap({visibleLines}: MinimapProps) {
-  const [position, setPosition] = useState<{x: number; y: number} | null>(null);
+  const minimapRatio = 0.2;
+  const margin = 10;
 
-  useEffect(() => {
-    function updatePosition() {
-      setPosition({
-        x: window.innerWidth - minimapWidth - margin,
-        y: window.innerHeight - minimapHeight - margin,
-      });
-    }
-
-    updatePosition();
-
-    const resizeObserver = new ResizeObserver(updatePosition);
-    resizeObserver.observe(document.body);
-
-    return () => resizeObserver.disconnect();
-  }, []);
-
-  if (!position) {
-    return null;
-  }
+  const pageSize = usePartOf();
+  const {width, height} = calcMinimapSize(pageSize, minimapRatio, margin);
 
   return (
-    <Rnd
-      default={{
-        x: position.x,
-        y: position.y,
-        width: minimapWidth,
-        height: minimapHeight,
-      }}
-      minWidth={100}
-      minHeight={100}
-      bounds="parent"
-      className="rnd"
-    >
-      <div style={{width: '100%', height: '100%'}}>
-        <Viewer options={osdOptions} />
-        <MinimapHighlights lines={visibleLines} />
-      </div>
-    </Rnd>
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      pointerEvents: 'none',
+    }}>
+      <Rnd
+        default={{
+          x: window.innerWidth - width - margin,
+          y: window.innerHeight - height - margin,
+          width,
+          height,
+        }}
+        minWidth={100}
+        minHeight={100}
+        className="rnd"
+        dragHandleClassName="rnd-handle"
+      >
+        <div className="viewport">
+          <div
+            className="handle"
+          />
+          <div style={{flex: 1, overflow: 'hidden'}}>
+            <Viewer options={osdOptions}/>
+            <MinimapHighlights lines={visibleLines}/>
+          </div>
+        </div>
+      </Rnd>
+    </div>
   );
 }
 
-function MinimapHighlights({lines}: {lines: Set<Id>}) {
+function calcMinimapSize(
+  pageSize: PartOf | null,
+  minimapRatio: number,
+  margin: number
+) {
+  const maxWidth = window.innerWidth - margin;
+  const maxHeight = window.innerHeight - margin;
+  const pageRatio = pageSize ? pageSize.height / pageSize.width : 1;
+  const isLandscape = window.innerHeight < window.innerWidth;
+
+  let width, height;
+  if (isLandscape) {
+    width = window.innerWidth * minimapRatio;
+    height = width * pageRatio;
+  } else {
+    height = window.innerHeight * minimapRatio;
+    width = height / pageRatio;
+  }
+
+  if (height > maxHeight) {
+    height = maxHeight;
+    width = height / pageRatio;
+  }
+  if (width > maxWidth) {
+    width = maxWidth;
+    height = width * pageRatio;
+  }
+
+  return {width, height};
+}
+
+function MinimapHighlights({lines}: { lines: Set<Id> }) {
   const viewImage = useImageInfo();
   const annotations = useAnnotations();
 
@@ -73,7 +99,7 @@ function MinimapHighlights({lines}: {lines: Set<Id>}) {
     }
     return Object.values(annotations)
       .filter(isLine)
-      .map(a => ({id: a.id, path: parseSvgPath(findSvgPath(a))}))
+      .map(a => ({id: a.id, path: parseSvgPath(findSvgPath(a))}));
   }, [annotations]);
 
   if (!viewImage || !paths.length) {
