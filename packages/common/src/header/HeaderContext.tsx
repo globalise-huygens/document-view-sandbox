@@ -8,11 +8,9 @@ type HeaderBarRegions = {
   setLeft: (el: HTMLDivElement | null) => void;
   setCenter: (el: HTMLDivElement | null) => void;
   setRight: (el: HTMLDivElement | null) => void;
-  controlsMode: 'inline' | 'header';
 };
 
 export const HeaderContext = createContext<HeaderBarRegions>({
-  controlsMode: 'header',
   left: null,
   center: null,
   right: null,
@@ -27,4 +25,3 @@ export function useHeaderRegion(region: HeaderRegions) {
   const regions = useContext(HeaderContext);
   return regions[region];
 }
-

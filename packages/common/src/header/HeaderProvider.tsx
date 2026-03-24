@@ -1,25 +1,16 @@
-import {ReactNode, useState} from "react";
-import { HeaderContext } from "./HeaderContext";
+import {ReactNode, useState} from 'react';
+import {HeaderContext} from './HeaderContext';
 
-export function HeaderProvider(
-  {children, controlsMode = 'header'}: {
-    children: ReactNode;
-    controlsMode?: 'inline' | 'header';
-  }
-) {
+export function HeaderProvider({children}: {children: ReactNode}) {
   const [left, setLeft] = useState<HTMLDivElement | null>(null);
   const [center, setCenter] = useState<HTMLDivElement | null>(null);
   const [right, setRight] = useState<HTMLDivElement | null>(null);
 
   return (
     <HeaderContext.Provider value={{
-      left,
-      center,
-      right,
-      setLeft,
-      setCenter,
-      setRight,
-      controlsMode
+      left, setLeft,
+      center, setCenter,
+      right, setRight,
     }}>
       {children}
     </HeaderContext.Provider>

@@ -5,6 +5,7 @@ import {setHovered} from '@globalise/common/document';
 import {SegmentedText} from './SegmentedText';
 
 type LineProps = {
+  lineId: Id;
   lineNumber: number;
   blockId: Id | null;
   pageText: string;
@@ -12,11 +13,12 @@ type LineProps = {
 };
 
 export const SegmentedLine = React.memo(function SegmentedLine(
-  {lineNumber, blockId, pageText, segments}: LineProps,
+  {lineId, lineNumber, blockId, pageText, segments}: LineProps,
 ) {
   return (
     <span
       className="line"
+      data-line-id={lineId}
       onMouseEnter={() => {
         if (blockId) {
           setHovered(blockId);
