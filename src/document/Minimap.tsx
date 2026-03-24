@@ -16,37 +16,27 @@ const minimapHeight = 200;
 const margin = 10;
 
 type MinimapProps = {
-  parentRef: RefObject<HTMLDivElement | null>;
   visibleLines: Set<Id>;
 };
 
-export function Minimap({parentRef, visibleLines}: MinimapProps) {
+export function Minimap({visibleLines}: MinimapProps) {
   const [position, setPosition] = useState<{x: number; y: number} | null>(null);
 
   useEffect(() => {
-    const parent = parentRef.current;
-    if (!parent) {
-      return;
-    }
-
-    function updatePosition(parent: HTMLDivElement) {
-      const rect = parent.getBoundingClientRect();
-      if (rect.width === 0 || rect.height === 0) {
-        return;
-      }
+    function updatePosition() {
       setPosition({
-        x: rect.width - minimapWidth - margin,
-        y: rect.height - minimapHeight - margin,
+        x: window.innerWidth - minimapWidth - margin,
+        y: window.innerHeight - minimapHeight - margin,
       });
     }
 
-    updatePosition(parent);
+    updatePosition();
 
-    const resizeObserver = new ResizeObserver(() => updatePosition(parent));
-    resizeObserver.observe(parent);
+    const resizeObserver = new ResizeObserver(updatePosition);
+    resizeObserver.observe(document.body);
 
     return () => resizeObserver.disconnect();
-  }, [parentRef]);
+  }, []);
 
   if (!position) {
     return null;

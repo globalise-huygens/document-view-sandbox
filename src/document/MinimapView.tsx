@@ -6,7 +6,6 @@ import {Minimap} from './Minimap';
 import './MinimapView.css';
 
 export function MinimapView() {
-  const ref = useRef<HTMLDivElement>(null);
   const annotations = useAnnotations();
   const {isReady, pages, error} = usePages();
 
@@ -27,11 +26,11 @@ export function MinimapView() {
   }
 
   return (
-    <div className="minimap-view" ref={ref}>
+    <div className="minimap-view">
       <div className="text" ref={textRef}>
         <LineByLineView annotations={annotations} />
       </div>
-      <Minimap parentRef={ref} visibleLines={visibleLines} />
+      <Minimap visibleLines={visibleLines} />
     </div>
   );
 }
