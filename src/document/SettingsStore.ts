@@ -41,3 +41,8 @@ export function setDiplomaticViewScale(diplomaticScale: number) {
 export function setViewMode(viewMode: ViewMode) {
   useSettingsStore.setState({viewMode});
 }
+
+export function resetScaling() {
+  const {diplomaticViewScale, paneRatio} = defaultSettings;
+  useSettingsStore.setState({diplomaticViewScale, paneRatio});
+}

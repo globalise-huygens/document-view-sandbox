@@ -14,15 +14,16 @@ import {Scale} from '@knaw-huc/original-layout';
 import {createBlockBoundaries} from './createBlockBoundaries.ts';
 import {Offset} from '@knaw-huc/original-layout';
 
-type LineNumbersConfig = {
+export type LineNumbersConfig = {
   scale: Scale;
   offset: Offset;
+  gap: number;
 };
 
 export function renderLineNumbers(
   annotations: Record<Id, Annotation>,
   $view: HTMLElement,
-  {scale, offset}: LineNumbersConfig,
+  {scale, offset, gap}: LineNumbersConfig,
 ) {
   const $container = document.createElement('div');
   $view.appendChild($container);
@@ -83,14 +84,14 @@ export function renderLineNumbers(
     const $lineNumber = document.createElement('span');
     $container.appendChild($lineNumber);
     $lineNumber.classList.add('line-number');
-    $lineNumber.textContent = `${i + 1}`.padStart(2, '\u00A0');
+    $lineNumber.textContent = `${i + 1}`;
     $lineNumber.style.display = 'none';
     Object.assign($lineNumber.style, {
-      left: px(blockTopLeft[0]),
+      left: px(blockTopLeft[0] - gap),
       top: px(leftMostWord.top + leftMostWord.height / 2),
-      marginLeft: px(-scale(100)),
+      transform: 'translateX(-100%)',
       marginTop: px(-scale(40)),
-      fontSize: px(scale(60)),
+      fontSize: px(scale(50)),
     });
 
     $lineNumbers[line.id] = $lineNumber;
@@ -98,14 +99,14 @@ export function renderLineNumbers(
 
   function showLine(lineId: Id) {
     const $lineNumber = $lineNumbers[lineId];
-    if($lineNumber) {
+    if ($lineNumber) {
       $lineNumber.style.display = 'block';
     }
   }
 
   function hideLine(lineId: Id) {
     const $lineNumber = $lineNumbers[lineId];
-    if($lineNumber) {
+    if ($lineNumber) {
       $lineNumber.style.display = 'none';
     }
   }

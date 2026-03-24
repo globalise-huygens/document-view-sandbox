@@ -25,10 +25,7 @@ export function Highlight(
       stroke={stroke ?? 'none'}
       strokeWidth={strokeWidth ?? 0}
       style={{pointerEvents: 'auto', cursor: cursor ?? 'default'}}
-      onPointerDown={(e) => {
-        e.stopPropagation();
-        onClick();
-      }}
+      onClick={() => onClick()}
       onMouseEnter={(e) => onHover(true, e)}
       onMouseMove={(e) => onHover(true, e)}
       onMouseLeave={(e) => onHover(false, e)}

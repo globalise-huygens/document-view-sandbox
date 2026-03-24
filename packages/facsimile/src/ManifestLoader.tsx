@@ -18,10 +18,6 @@ export function ManifestLoader(
   const manifest = useManifest();
 
   useEffect(() => {
-    console.log('Manifest state:', manifest);
-  }, [manifest]);
-
-  useEffect(() => {
     loadManifest(url);
   }, [loadManifest, url]);
 

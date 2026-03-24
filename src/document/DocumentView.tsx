@@ -1,21 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileView} from '@globalise/facsimile';
-import {Id, useLoadPages} from '@globalise/common/annotation';
+import {Id} from '@globalise/common/annotation';
+import {useLoadPages} from '@globalise/common/document';
 import {TranscriptionView} from './TranscriptionView';
 import {DocumentLayout} from './layout/DocumentLayout';
-import {clearSelection} from '@globalise/common/DocumentStore';
 
 import './DocumentView.css';
 
 type DocumentViewProps = {
   manifestUrl: string;
-  pageId?: string;
-  onPageChange: (id: Id) => void
+  canvasId?: string;
+  onPageChange: (id: Id) => void;
 };
 
 export function DocumentView(
-  {pageId, onPageChange}: DocumentViewProps
+  {canvasId, onPageChange}: DocumentViewProps
 ) {
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
@@ -28,8 +28,8 @@ export function DocumentView(
     }
     const manifest = vault.get({id: url, type: 'Manifest'});
     const canvases = vault.get(manifest.items);
-    if (pageId) {
-      const index = canvases.findIndex(c => c.id === pageId);
+    if (canvasId) {
+      const index = canvases.findIndex(c => c.id === canvasId);
       if (index >= 0) {
         goTo(index);
       }
@@ -37,7 +37,7 @@ export function DocumentView(
       goTo(0);
     }
     setInit(true);
-  }, [isReady, url, vault, pageId, isInit, goTo]);
+  }, [isReady, url, vault, canvasId, isInit, goTo]);
 
   useEffect(() => {
     if (!current) {
@@ -47,7 +47,6 @@ export function DocumentView(
       .filter(a => a.type === 'AnnotationPage')
       .map(a => a.id);
     loadPages(current.id, urls);
-    clearSelection();
     onPageChange(current.id);
   }, [current]);
 

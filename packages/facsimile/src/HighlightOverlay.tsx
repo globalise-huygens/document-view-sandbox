@@ -3,59 +3,21 @@ import {useMemo, useState} from 'react';
 import {
   findSvgPath,
   findTextualBodyValue,
-  Id,
   isBlock,
   isWord,
   parseSvgPath,
-  useAnnotations,
-  useEntityOverlap,
-  useTextGranularity,
 } from '@globalise/common/annotation';
-import {useDocumentStore} from '@globalise/common/DocumentStore';
+import {
+  useAnnotations,
+} from '@globalise/common/document';
 import {Tooltip, TooltipProps} from './Tooltip';
-import {BlockHighlight} from "./BlockHighlight.tsx";
-import {WordHighlight} from "./WordHighlight.tsx";
+import {BlockHighlight} from './BlockHighlight.tsx';
+import {WordHighlight} from './WordHighlight.tsx';
 
 export function HighlightOverlay() {
   const imageInfo = useImageInfo();
   const annotations = useAnnotations();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
-
-  const {hoveredId, clickedId} = useDocumentStore();
-  const {wordToBlock} = useTextGranularity();
-  const {entityToWords, entityToBlock} = useEntityOverlap();
-
-  /**
-   * Select:
-   * - entity --> words + block
-   * - word --> word + block
-   */
-  const selectedIds = useMemo(() => {
-    const selectedIds = new Set<Id>();
-    if (hoveredId) {
-      select(hoveredId);
-    }
-    if (clickedId) {
-      select(clickedId);
-    }
-    return [...selectedIds];
-
-    function select(id: Id) {
-      selectedIds.add(id);
-      const blockId = wordToBlock[id];
-      if (blockId) {
-        selectedIds.add(blockId);
-      }
-      const wordIds = entityToWords[id];
-      if (wordIds) {
-        wordIds.forEach(w => selectedIds.add(w));
-        const blockFromEntity = entityToBlock[id];
-        if (blockFromEntity) {
-          selectedIds.add(blockFromEntity);
-        }
-      }
-    }
-  }, [hoveredId, clickedId, wordToBlock, entityToWords, entityToBlock]);
 
   const words = useMemo(() => {
     if (!annotations) {
@@ -82,13 +44,6 @@ export function HighlightOverlay() {
       }));
   }, [annotations]);
 
-  const selectedBlockIds = useMemo(() => {
-    if (!annotations) {
-      return [];
-    }
-    return selectedIds.filter(id => annotations[id]?.textGranularity === 'block');
-  }, [selectedIds, annotations]);
-
   if (!imageInfo) {
     return null;
   }
@@ -105,7 +60,6 @@ export function HighlightOverlay() {
               key={id}
               id={id}
               points={path}
-              selected={selectedBlockIds.includes(id)}
             />
           ))}
           {words.map(({id, path, text}) => (
@@ -114,7 +68,6 @@ export function HighlightOverlay() {
               id={id}
               points={path}
               text={text}
-              selected={selectedIds.includes(id)}
               setTooltip={setTooltip}
             />
           ))}

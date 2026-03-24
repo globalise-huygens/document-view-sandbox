@@ -1,6 +1,6 @@
 import {TextSegment} from '@knaw-huc/text-annotation-segmenter';
 import {Annotation, Id, isEntity, isWord} from '@globalise/common/annotation';
-import {setHovered, toggleClicked} from '@globalise/common/DocumentStore';
+import {setHovered, toggleClicked} from '@globalise/common/document';
 import {AnnotationSegment} from './AnnotationSegment';
 import {NestedSegment} from './NestedSegment';
 
@@ -8,11 +8,10 @@ type TextProps = {
   blockId: Id | null;
   pageText: string;
   segments: TextSegment<Annotation>[];
-  selected: Id[];
 };
 
 export function SegmentedText(
-  {blockId, pageText, segments, selected}: TextProps
+  {blockId, pageText, segments}: TextProps
 ) {
   return <>
     {segments.map(segment => {
@@ -44,7 +43,6 @@ export function SegmentedText(
             annotation={(annotation, children) => (
               <AnnotationSegment
                 annotation={annotation}
-                selected={selected}
               >
                 {children}
               </AnnotationSegment>
@@ -58,10 +56,6 @@ export function SegmentedText(
   </>;
 }
 
-/**
- * Which annotation to select?
- * entity > word
- */
 function selectAnnotation(annotations: Annotation[]): Id | undefined {
   const entity = annotations.find(a => isEntity(a));
   if (entity) {

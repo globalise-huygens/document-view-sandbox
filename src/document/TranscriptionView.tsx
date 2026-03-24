@@ -1,13 +1,14 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   Id,
+} from '@globalise/common/annotation';
+import {
   useAnnotations,
   usePages,
   usePartOf,
   useTextGranularity,
-  useEntityOverlap,
-} from '@globalise/common/annotation';
-import {useDocumentStore} from '@globalise/common/DocumentStore';
+} from '@globalise/common/document';
+import {useDocumentStore} from '@globalise/common/document';
 import {DiplomaticView} from '@globalise/diplomatic';
 import {LineByLineView} from '@globalise/line-by-line';
 import {Size} from './Size';
@@ -16,11 +17,13 @@ import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {ControlBar} from '@globalise/facsimile';
 import {
-  useSettings,
-  setDiplomaticViewScale, setViewMode
+  setDiplomaticViewScale,
+  setViewMode,
+  useSettings
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
 import {layoutBreakpoint} from './layout/DocumentLayout';
+import {HeaderRegion, useControlsMode} from '@globalise/common/header';
 
 import './TranscriptionView.css';
 
@@ -32,40 +35,37 @@ export function TranscriptionView() {
   const {isReady, pages, error} = usePages();
   const {viewMode, diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
-  const showDiplomatic = viewMode === 'diplomatic'
+  const showDiplomatic = viewMode === 'diplomatic';
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
+  const controlsMode = useControlsMode();
 
-  const {hoveredId, clickedId} = useDocumentStore();
+  const hoveredId = useDocumentStore(s => s.hoveredId);
+  const clickedId = useDocumentStore(s => s.clickedId);
   const {wordToBlock} = useTextGranularity();
-  const {entityToBlock} = useEntityOverlap();
+  const {entityToBlock} = useDocumentStore(s => s.entityOverlap);
 
-  /**
-   * Select:
-   * - entity --> entity + block
-   * - word --> word + block
-   */
   const selectedIds = useMemo(() => {
-    const selectedIds = new Set<Id>();
+    const selected = new Set<Id>();
     if (hoveredId) {
       select(hoveredId);
     }
     if (clickedId) {
       select(clickedId);
     }
-    return [...selectedIds];
+    return [...selected];
 
     function select(id: Id) {
-      selectedIds.add(id);
+      selected.add(id);
       const blockFromWord = wordToBlock[id];
       if (blockFromWord) {
-        selectedIds.add(blockFromWord);
+        selected.add(blockFromWord);
       }
       const blockFromEntity = entityToBlock[id];
       if (blockFromEntity) {
-        selectedIds.add(blockFromEntity);
+        selected.add(blockFromEntity);
       }
     }
   }, [hoveredId, clickedId, wordToBlock, entityToBlock]);
@@ -96,12 +96,12 @@ export function TranscriptionView() {
     return () => observer.disconnect();
   }
 
-  if (!isReady) {
-    return <div className="message">Loading...</div>;
+  if (error) {
+    return <div className="message error">Error: {error}</div>;
   }
 
-  if (error) {
-    return <div className="message">Error: {error}</div>;
+  if (!isReady) {
+    return <div className="message">Loading...</div>;
   }
 
   if (!pages.length) {
@@ -118,43 +118,50 @@ export function TranscriptionView() {
 
   const rerenderKey = `${scale}-${viewportSize.width}-${viewportSize.height}`;
 
+  const controls = (
+    <>
+      {showDiplomatic && (
+        <span className="zoom-slider">
+          <ZoomOutIcon
+            className="icon"
+            fontSize="small"
+            onClick={() => setDiplomaticViewScale(Math.max(30, scale - 10))}
+          />
+          <input
+            type="range"
+            min={30}
+            max={200}
+            value={scale}
+            onChange={(e) => setDiplomaticViewScale(parseInt(e.target.value))}
+          />
+          <ZoomInIcon
+            className="icon"
+            fontSize="small"
+            onClick={() => setDiplomaticViewScale(Math.min(200, scale + 10))}
+          />
+        </span>
+      )}
+      <button
+        className={showDiplomatic ? 'active' : ''}
+        onClick={() => setViewMode('diplomatic')}
+      >
+        Diplomatic
+      </button>
+      <button
+        className={!showDiplomatic ? 'active' : ''}
+        onClick={() => setViewMode('line-by-line')}
+      >
+        Line by line
+      </button>
+    </>
+  );
+
   return (
     <div className="transcription-view">
-      <ControlBar>
-        {showDiplomatic && (
-          <span className="zoom-slider">
-            <ZoomOutIcon
-              className="icon"
-              fontSize="small"
-              onClick={() => setDiplomaticViewScale(Math.max(30, scale - 10))}
-            />
-            <input
-              type="range"
-              min={30}
-              max={200}
-              value={scale}
-              onChange={(e) => setDiplomaticViewScale(parseInt(e.target.value))}
-            />
-            <ZoomInIcon
-              className="icon"
-              fontSize="small"
-              onClick={() => setDiplomaticViewScale(Math.min(200, scale + 10))}
-            />
-          </span>
-        )}
-        <button
-          className={showDiplomatic ? 'active' : ''}
-          onClick={() => setViewMode('diplomatic')}
-        >
-          Diplomatic
-        </button>
-        <button
-          className={!showDiplomatic ? 'active' : ''}
-          onClick={() => setViewMode('line-by-line')}
-        >
-          Line by line
-        </button>
-      </ControlBar>
+      {controlsMode === 'header'
+        ? <HeaderRegion region="right">{controls}</HeaderRegion>
+        : <ControlBar>{controls}</ControlBar>
+      }
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}
@@ -178,10 +185,7 @@ export function TranscriptionView() {
         <div
           className={`viewport line-by-line-viewport ${!showDiplomatic ? 'active' : ''}`}
         >
-          <LineByLineView
-            annotations={annotations}
-            selected={selectedIds}
-          />
+          <LineByLineView annotations={annotations} />
         </div>
       </div>
     </div>
