@@ -1,22 +1,16 @@
+import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
+import React, {useMemo, useState} from 'react';
 import {
-  useCanvas,
-  Overlay,
-  useImageInfo,
-} from '@knaw-huc/osd-iiif-viewer';
-import React, {useEffect, useState} from 'react';
-import {
-  type AnnotationPage,
-  type Annotation,
-  findTextualBodyValue,
   findSvgPath,
-  parseSvgPath, Id,
-} from '@globalise/annotation';
-
-type Fragment = {
-  id: string;
-  path: string;
-  text: string;
-};
+  findTextualBodyValue,
+  Id,
+  isBlock,
+  isWord,
+  parseSvgPath,
+  useAnnotations,
+} from '@globalise/common/annotation';
+import {Tooltip, TooltipProps} from './Tooltip';
+import {noop} from "@globalise/common";
 
 type HighlightOverlayProps = {
   selected: Id[];
@@ -25,34 +19,49 @@ type HighlightOverlayProps = {
 };
 
 export function HighlightOverlay(
-  {selected, onToggle, onHover}: HighlightOverlayProps
+  {selected, onToggle, onHover = noop}: HighlightOverlayProps
 ) {
-  const {current} = useCanvas();
   const imageInfo = useImageInfo();
-  const [fragments, setFragments] = useState<Fragment[]>([]);
+  const annotations = useAnnotations();
   const [tooltip, setTooltip] = useState<TooltipProps | null>(null);
 
-  useEffect(() => {
-    const url = current?.annotationPageIds[0];
-    if (!url) {
-      setFragments([]);
-      return;
+  const words = useMemo(() => {
+    if (!annotations) {
+      return [];
     }
-    fetch(url)
-      .then((r) => r.json())
-      .then((page: AnnotationPage) => {
-        const lines = page.items.filter(isSupplementingLine);
-        setFragments(lines.map((a) => {
-          const path = parseSvgPath(findSvgPath(a));
-          const text = findTextualBodyValue(a);
-          return {id: a.id, path, text};
-        }));
-      });
-  }, [current]);
+    return Object.values(annotations)
+      .filter(isWord)
+      .map(a => ({
+        id: a.id,
+        path: parseSvgPath(findSvgPath(a)),
+        text: findTextualBodyValue(a),
+      }));
+  }, [annotations]);
+
+  const blocks = useMemo(() => {
+    if (!annotations) {
+      return [];
+    }
+    return Object.values(annotations)
+      .filter(isBlock)
+      .map(a => ({
+        id: a.id,
+        path: parseSvgPath(findSvgPath(a)),
+      }));
+  }, [annotations]);
+
+  const selectedBlockIds = useMemo(() => {
+    if (!annotations) {
+      return [];
+    }
+    return selected.filter(id => annotations[id]?.textGranularity === 'block');
+  }, [selected, annotations]);
 
   if (!imageInfo) {
     return null;
   }
+
+  const highlightProps = {onToggle, onHover};
 
   return (
     <>
@@ -61,20 +70,24 @@ export function HighlightOverlay(
           viewBox={`0 0 ${imageInfo.size.x} ${imageInfo.size.y}`}
           style={{width: '100%', height: '100%', pointerEvents: 'none'}}
         >
-          {fragments.map((fragment) => (
-            <Highlight
-              key={fragment.id}
-              points={fragment.path}
-              selected={selected.includes(fragment.id)}
-              onClick={() => onToggle(fragment.id)}
-              onHover={(hovering, e) => {
-                onHover?.(hovering ? fragment.id : null);
-                if (!hovering) {
-                  setTooltip(null);
-                  return;
-                }
-                setTooltip({text: fragment.text, x: e.clientX, y: e.clientY});
-              }}
+          {blocks.map(({id, path}) => (
+            <BlockHighlight
+              key={id}
+              id={id}
+              points={path}
+              selected={selectedBlockIds.includes(id)}
+              {...highlightProps}
+            />
+          ))}
+          {words.map(({id, path, text}) => (
+            <WordHighlight
+              key={id}
+              id={id}
+              points={path}
+              text={text}
+              selected={selected.includes(id)}
+              setTooltip={setTooltip}
+              {...highlightProps}
             />
           ))}
         </svg>
@@ -84,53 +97,105 @@ export function HighlightOverlay(
   );
 }
 
+type HighlightStyle = {
+  fill: string;
+  stroke?: string;
+  strokeWidth?: number;
+  cursor?: string;
+};
+
 type HighlightProps = {
   points: string;
-  selected: boolean;
-  onClick: () => void;
+  highlightStyle: HighlightStyle;
+  onClick?: () => void;
   onHover: (hovering: boolean, event: React.MouseEvent) => void;
 };
 
-function Highlight({points, selected, onClick, onHover}: HighlightProps) {
-  const [hovered, setHovered] = useState(false);
-
-  const fill = selected ? 'rgba(0,255,0,0.35)'
-    : hovered ? 'rgba(0, 0, 0, 0.1)'
-      : 'transparent';
+function Highlight({points, highlightStyle, onClick = noop, onHover}: HighlightProps) {
+  const {fill, stroke, strokeWidth, cursor} = highlightStyle;
 
   return (
     <polygon
       points={points}
       fill={fill}
-      style={{pointerEvents: 'auto', cursor: 'pointer'}}
+      stroke={stroke ?? 'none'}
+      strokeWidth={strokeWidth ?? 0}
+      style={{pointerEvents: 'auto', cursor: cursor ?? 'default'}}
       onPointerDown={(e) => {
         e.stopPropagation();
         onClick();
       }}
-      onMouseEnter={(e) => {
-        setHovered(true);
-        onHover(true, e);
-      }}
+      onMouseEnter={(e) => onHover(true, e)}
       onMouseMove={(e) => onHover(true, e)}
-      onMouseLeave={(e) => {
-        setHovered(false);
-        onHover(false, e);
+      onMouseLeave={(e) => onHover(false, e)}
+    />
+  );
+}
+
+type BlockHighlightProps = {
+  id: Id;
+  points: string;
+  selected: boolean;
+  onHover: (id: Id | null) => void;
+};
+
+type WordHighlightProps = BlockHighlightProps & {
+  text: string;
+  onToggle: (id: Id) => void;
+  setTooltip: (tooltip: TooltipProps | null) => void;
+};
+
+function WordHighlight(
+  {id, points, text, selected, onToggle, onHover, setTooltip}: WordHighlightProps
+) {
+  const [hovered, setHovered] = useState(false);
+
+  const highlightStyle: HighlightStyle = {
+    fill: selected ? 'rgba(0,255,0,0.35)'
+      : hovered ? 'rgba(0,0,0,0.1)'
+        : 'transparent',
+    cursor: 'pointer'
+  };
+
+  return (
+    <Highlight
+      points={points}
+      highlightStyle={highlightStyle}
+      onClick={() => onToggle(id)}
+      onHover={(hovering, e) => {
+        setHovered(hovering);
+        onHover(hovering ? id : null);
+        if (!hovering) {
+          setTooltip(null);
+        } else {
+          setTooltip({text, x: e.clientX, y: e.clientY});
+        }
       }}
     />
   );
 }
 
-export type TooltipProps = { text: string; x: number; y: number };
+function BlockHighlight(
+  {id, points, selected, onHover}: BlockHighlightProps
+) {
+  const [hovered, setHovered] = useState(false);
 
-function Tooltip({x, y, text}: TooltipProps) {
+  const highlightStyle: HighlightStyle = {
+    fill: 'transparent',
+    stroke: selected ? 'rgba(0,255,0,1)'
+      : hovered ? 'rgba(0,0,0,0.3)'
+        : 'transparent',
+    strokeWidth: 5,
+  };
+
   return (
-    <div className="tooltip" style={{left: x + 10, top: y - 30}}>
-      {text}
-    </div>
+    <Highlight
+      points={points}
+      highlightStyle={highlightStyle}
+      onHover={(hovering) => {
+        setHovered(hovering);
+        onHover(hovering ? id : null);
+      }}
+    />
   );
-}
-
-function isSupplementingLine(a: Annotation): boolean {
-  return a.motivation === 'supplementing' &&
-    a.textGranularity === 'word';
 }

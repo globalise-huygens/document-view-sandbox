@@ -1,16 +1,11 @@
 import React, {useLayoutEffect, useRef} from 'react';
 import {renderLineByLineView} from '../renderLineByLineView';
-import {
-  Id,
-  useSelectedIds,
-  useVisibility,
-  View
-} from '@knaw-huc/original-layout';
-import {Annotation} from '@globalise/annotation';
+import {Id} from '@knaw-huc/original-layout';
+import {Annotation} from '@globalise/common/annotation';
+import {View} from "../View.ts";
 
 export type LineByLineLayoutProps = {
   annotations: Record<Id, Annotation>;
-  visible?: boolean;
   selected?: Id[];
   onHover?: (id: Id | null) => void;
   onClick?: (id: Id) => void;
@@ -20,7 +15,6 @@ export type LineByLineLayoutProps = {
 export function LineByLineLayout(props: LineByLineLayoutProps) {
   const {
     annotations,
-    visible = true,
     selected = [],
     onHover,
     onClick,
@@ -38,11 +32,14 @@ export function LineByLineLayout(props: LineByLineLayoutProps) {
 
     $view.innerHTML = '';
     const lineByLineProps = {$view, annotations, onHover, onClick};
-    viewRef.current = renderLineByLineView(lineByLineProps);
+    const view = renderLineByLineView(lineByLineProps);
+    view.setSelected(...selected);
+    viewRef.current = view;
   }, [annotations, onHover, onClick]);
 
-  useVisibility(containerRef, visible);
-  useSelectedIds(viewRef, selected);
+  useLayoutEffect(() => {
+    viewRef.current?.setSelected(...selected);
+  }, [selected]);
 
   return <div ref={containerRef} style={style}/>;
 }

@@ -1,22 +1,21 @@
 import React, {useLayoutEffect, useRef} from 'react';
 import type {Id} from '@knaw-huc/original-layout';
-import type {View} from '@knaw-huc/original-layout';
+import {
+  ViewFit
+} from '@knaw-huc/original-layout';
 import {renderDiplomaticView} from '../renderDiplomaticView';
-import {ViewFit} from '@knaw-huc/original-layout';
-import {useVisibility} from '@knaw-huc/original-layout';
-import {useSelectedIds} from '@knaw-huc/original-layout';
-import {Annotation} from '@globalise/annotation';
-import {Benchmark} from "../../../../src/util/Benchmark.ts";
 
-const bench = new Benchmark(renderDiplomaticView.name)
+import '@knaw-huc/original-layout/style.css';
+import {Annotation} from "@globalise/common/annotation";
+import {View} from "@globalise/common";
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
   page: {width: number; height: number};
   fit?: ViewFit;
-  showRegions?: boolean;
+  showBlocks?: boolean;
   showEntities?: boolean;
-  visible?: boolean;
+  showScanMargin?: boolean;
   selected?: Id[];
   onHover?: (id: Id | null) => void;
   onClick?: (id: Id) => void;
@@ -28,9 +27,9 @@ export function DiplomaticView(props: DiplomaticViewProps) {
     annotations,
     page,
     fit,
-    showRegions,
+    showBlocks,
     showEntities,
-    visible = true,
+    showScanMargin,
     selected = [],
     onHover,
     onClick,
@@ -41,26 +40,27 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   const viewRef = useRef<View>(null);
 
   useLayoutEffect(() => {
-    function render() {
-      const $view = containerRef.current;
-      if (!$view) {
-        return;
-      }
-      $view.innerHTML = '';
-      viewRef.current = renderDiplomaticView($view, annotations, {
-        page,
-        fit,
-        showRegions,
-        showEntities,
-        onHover,
-        onClick
-      });
+    const $view = containerRef.current;
+    if (!$view) {
+      return;
     }
-    bench.run(() => render());
-  }, [annotations, page, fit, showRegions, showEntities, onHover]);
+    $view.innerHTML = '';
+    const view = renderDiplomaticView($view, annotations, {
+      page,
+      fit,
+      showBlocks: showBlocks,
+      showEntities,
+      showScanMargin,
+      onHover,
+      onClick
+    });
+    view.setSelected(...selected);
+    viewRef.current = view;
+  }, [annotations, page, fit, showBlocks, showEntities, onHover]);
 
-  useVisibility(containerRef, visible);
-  useSelectedIds(viewRef, selected);
+  useLayoutEffect(() => {
+    viewRef.current?.setSelected(...selected);
+  }, [selected]);
 
   return <div ref={containerRef} style={style} />;
 }

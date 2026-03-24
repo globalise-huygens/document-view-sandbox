@@ -1,10 +1,10 @@
 import {renderNormalizedLayout} from './renderNormalizedLayout';
 import {renderBlocks} from './renderBlocks';
-import {
-  Annotation,
-  findResourceTarget, orThrow
-} from '@globalise/annotation';
-import {Id, View} from '@knaw-huc/original-layout';
+import {Annotation, findResourceTarget, orThrow} from '@globalise/common/annotation';
+import {indexTextGranularity} from '@globalise/common/annotation';
+import {Id} from '@knaw-huc/original-layout';
+import {View} from './View.ts';
+import {noop} from "@globalise/common";
 
 type LineByLineViewProps = {
   $view: HTMLElement;
@@ -14,49 +14,37 @@ type LineByLineViewProps = {
 };
 
 export function renderLineByLineView(
-  {$view, annotations, onHover, onClick}: LineByLineViewProps
+  {$view, annotations, onHover = noop, onClick = noop}: LineByLineViewProps
 ): View {
-  function show() {
-    $view.style.visibility = 'visible';
-  }
-
-  function hide() {
-    $view.style.visibility = 'hidden';
-  }
-
   const layout = renderNormalizedLayout($view, annotations, {onHover, onClick});
-  const {$ranges, $lines, ranges, $overlay} = layout;
+  const {$segments, $lines, segments, $overlay} = layout;
 
-  const linesToBlock: Record<Id, Id> = {};
-  for (const anno of Object.values(annotations)) {
-    if (anno.textGranularity === 'line') {
-      linesToBlock[anno.id] = findResourceTarget(anno).id;
-    }
-  }
+  const {linesToBlock} = indexTextGranularity(annotations);
+
   const lineIds = Object.keys($lines);
   for (let i = 0; i < lineIds.length - 1; i++) {
     const currentId = lineIds[i];
     const nextId = lineIds[i + 1];
     if (linesToBlock[currentId] !== linesToBlock[nextId]) {
-      $lines[currentId].classList.add('region-end');
+      $lines[currentId].classList.add('block-end');
     }
   }
 
-  const annotationToRanges: Record<Id, HTMLElement[]> = {};
-  for (const range of ranges) {
-    const $range = $ranges[range.id];
-    if (!$range) {
+  const annotationToSegments: Record<Id, HTMLElement[]> = {};
+  for (const segment of segments) {
+    const $segment = $segments[segment.id];
+    if (!$segment) {
       continue;
     }
-    for (const annotation of range.annotations) {
-      if (!annotationToRanges[annotation.id]) {
-        annotationToRanges[annotation.id] = [];
+    for (const annotation of segment.annotations) {
+      if (!annotationToSegments[annotation.id]) {
+        annotationToSegments[annotation.id] = [];
       }
-      annotationToRanges[annotation.id].push($range);
+      annotationToSegments[annotation.id].push($segment);
     }
   }
 
-  const selectedRegions = new Set<Id>();
+  const selectedBlocks = new Set<Id>();
 
   const blockConfig = {stroke: 'rgba(0,150,0,0.5)'};
   const {$blocks} = renderBlocks($lines, $overlay, annotations, blockConfig);
@@ -64,52 +52,45 @@ export function renderLineByLineView(
   for (const [lineId, $line] of Object.entries($lines)) {
     const line = annotations[lineId];
     const blockId = findResourceTarget(line).id;
-    const $block = $blocks[blockId];
     $line.addEventListener('mouseenter', () => {
-      if (selectedRegions.has(blockId)) {
-        return;
-      }
-      $block.attr('opacity', 1);
+      onHover(blockId);
     });
     $line.addEventListener('mouseleave', () => {
-      if (selectedRegions.has(blockId)) {
-        return;
-      }
-      $block.attr('opacity', 0);
+      onHover(null);
     });
   }
 
-  function selectRegion(id: Id) {
+  function selectBlock(id: Id) {
     const $block = $blocks[id];
     if (!$block) {
       return;
     }
-    if (selectedRegions.has(id)) {
+    if (selectedBlocks.has(id)) {
       return;
     }
-    selectedRegions.add(id);
+    selectedBlocks.add(id);
     $block.attr('opacity', 1);
   }
 
-  function deselectRegion(id: Id) {
+  function deselectBlock(id: Id) {
     const $block = $blocks[id];
     if (!$block) {
       return;
     }
-    if (!selectedRegions.has(id)) {
+    if (!selectedBlocks.has(id)) {
       return;
     }
-    selectedRegions.delete(id);
+    selectedBlocks.delete(id);
     $block.attr('opacity', 0);
   }
 
   function selectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const ranges = annotationToRanges[id] ?? [];
-      ranges.forEach(($r) => $r.classList.add('selected'));
+      const segments = annotationToSegments[id] ?? [];
+      segments.forEach(($r) => $r.classList.add('selected'));
     } else if (annotation.textGranularity === 'block') {
-      selectRegion(id);
+      selectBlock(id);
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -118,19 +99,27 @@ export function renderLineByLineView(
   function deselectAnnotation(id: Id) {
     const annotation = annotations[id] ?? orThrow('Not found');
     if (annotation.textGranularity === 'word') {
-      const ranges = annotationToRanges[id] ?? [];
-      ranges.forEach(($r) => $r.classList.remove('selected'));
+      const segments = annotationToSegments[id] ?? [];
+      segments.forEach(($r) => $r.classList.remove('selected'));
     } else if (annotation.textGranularity === 'block') {
-      deselectRegion(id);
+      deselectBlock(id);
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
+  const selectedIds: Id[] = [];
+
   return {
-    selectAnnotation,
-    deselectAnnotation,
-    hide,
-    show,
+    setSelected: (...ids: string[]) => {
+      const selected = ids.filter(id => !selectedIds.includes(id));
+      const deselected = selectedIds.filter(id => !ids.includes(id));
+
+      selected.forEach(id => selectAnnotation(id));
+      deselected.forEach(id => deselectAnnotation(id));
+
+      selectedIds.length = 0;
+      selectedIds.push(...ids);
+    }
   };
 }

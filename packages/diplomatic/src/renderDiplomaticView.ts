@@ -1,27 +1,27 @@
 import {
-  Annotation, createAnnotationRanges,
-  findResourceTarget,
+  Annotation, indexTextGranularity,
+  createAnnotationSegments,
   getEntityType,
   getPageText,
   isEntity,
   toClassName,
-} from '@globalise/annotation';
+} from '@globalise/common/annotation';
+import {View} from '@globalise/common';
 import {
   D3El,
   FullOriginalLayoutConfig,
   Id,
   OriginalLayoutConfig,
   orThrow,
-  renderOriginalLayout,
-  View
+  renderOriginalLayout
 } from '@knaw-huc/original-layout';
-import {segment, groupSegments} from '@knaw-huc/text-annotation-segmenter';
+import {groupSegments, segment} from '@knaw-huc/text-annotation-segmenter';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {createFragment} from './createFragment.ts';
 
 export type FullDiplomaticViewConfig = FullOriginalLayoutConfig & {
-  showRegions: boolean;
+  showBlocks: boolean;
   showEntities: boolean;
 };
 
@@ -33,7 +33,7 @@ export const defaultConfig: FullDiplomaticViewConfig = {
     height: 0,
     width: 0,
   },
-  showRegions: false,
+  showBlocks: false,
   showEntities: false,
 };
 
@@ -50,16 +50,11 @@ export function renderDiplomaticView(
 ): View {
   $view.classList.add('original-layout');
 
-  function show() {
-    $view.style.visibility = 'visible';
-  }
-
-  function hide() {
-    $view.style.visibility = 'hidden';
-  }
-
-  const mergedConfig = {...defaultConfig, ...config};
-  const {showRegions, showEntities, onHover, onClick} = mergedConfig;
+  const mergedConfig = {
+    onHover: () => {
+    }, ...defaultConfig, ...config
+  };
+  const {showBlocks, showEntities, onHover, onClick} = mergedConfig;
   $view.innerHTML = '';
   const wordAnnos = Object.values(annotations)
     .filter((a) => a.textGranularity === 'word');
@@ -71,13 +66,15 @@ export function renderDiplomaticView(
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
   const markedAnnos = [...wordAnnos, ...entityAnnos];
-  const annoRanges = createAnnotationRanges(markedAnnos, pageAnnoId);
+  const annoRanges = createAnnotationSegments(markedAnnos, pageAnnoId);
 
   const textSegments = segment<Annotation>(pageText, annoRanges);
   const groupedByWord = groupSegments(
     textSegments,
     (a) => a.textGranularity === 'word',
   );
+
+  const {blockToLines} = indexTextGranularity(annotations);
 
   for (const group of groupedByWord) {
     const $word = $fragments[group.annotation.id];
@@ -98,10 +95,8 @@ export function renderDiplomaticView(
         }
       }
 
-      if (onHover) {
-        $range.addEventListener('mouseenter', () => onHover(group.annotation.id));
-        $range.addEventListener('mouseleave', () => onHover(null));
-      }
+      $range.addEventListener('mouseenter', () => onHover(group.annotation.id));
+      $range.addEventListener('mouseleave', () => onHover(null));
       if (onClick) {
         $range.addEventListener('click', () => onClick(group.annotation.id));
       }
@@ -109,98 +104,53 @@ export function renderDiplomaticView(
     $word.replaceChildren(...$ranges);
   }
 
-  const wordsToLine: Record<Id, Id> = {};
-  const linesToBlock: Record<Id, Id> = {};
-  const blockToLines: Record<Id, Id[]> = {};
-  Object.values(annotations).forEach((anno) => {
-    if (anno.textGranularity === 'word') {
-      wordsToLine[anno.id] = findResourceTarget(anno).id;
-    }
-    if (anno.textGranularity === 'line') {
-      linesToBlock[anno.id] = findResourceTarget(anno).id;
-    }
-    if (anno.textGranularity === 'line') {
-      const blockId = findResourceTarget(anno).id;
-      if (!blockToLines[blockId]) {
-        blockToLines[blockId] = [];
-      }
-      blockToLines[blockId].push(anno.id);
-    }
-  });
+  const selectedBlocks = new Set<Id>();
+  let selectBlock: (id: Id) => void = () => console.warn('Not implemented');
+  let deselectBlock: (id: Id) => void = () => console.warn('Not implemented');
 
-  const selectedRegions = new Set<Id>();
-  let selectRegion: (id: Id) => void = () => console.warn('Not implemented');
-  let deselectRegion: (id: Id) => void = () => console.warn('Not implemented');
-
-  if (showRegions) {
+  if (showBlocks) {
     const {$blocks} = renderBlocks(annotations, $view, {scale, offset});
     const lineNumbers = renderLineNumbers(annotations, $view, {scale, offset});
     const {showLine, hideLine} = lineNumbers;
 
-    function showRegion($block: D3El<SVGGElement>, lines: Id[]) {
+    function showBlock($block: D3El<SVGGElement>, lines: Id[]) {
       $block.attr('opacity', 1);
       lines.forEach((l) => showLine(l));
     }
 
-    function hideRegion($block: D3El<SVGGElement>, lines: Id[]) {
+    function hideBlock($block: D3El<SVGGElement>, lines: Id[]) {
       $block.attr('opacity', 0);
       lines.forEach((l) => hideLine(l));
     }
 
-    function enterRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
-      if (selectedRegions.has(id)) {
-        return;
-      }
-      showRegion($block, lines);
-    }
-
-    function leaveRegion($block: D3El<SVGGElement>, lines: Id[], id: Id) {
-      if (selectedRegions.has(id)) {
-        return;
-      }
-      hideRegion($block, lines);
-    }
-
-    for (const [wordId, $word] of Object.entries($fragments)) {
-      const blockId = linesToBlock[wordsToLine[wordId]];
-      const lineIds = blockToLines[blockId];
-      const $block = $blocks[blockId];
-      $word.addEventListener('mouseenter', () =>
-        enterRegion($block, lineIds, blockId),
-      );
-      $word.addEventListener('mouseleave', () =>
-        leaveRegion($block, lineIds, blockId),
-      );
-    }
-
     for (const [blockId, $block] of Object.entries($blocks)) {
-      const lineIds = blockToLines[blockId];
-      $block.on('mouseenter', () => enterRegion($block, lineIds, blockId));
-      $block.on('mouseleave', () => leaveRegion($block, lineIds, blockId));
+      $block.on('mouseenter', () => onHover(blockId));
+      $block.on('mouseleave', () => onHover(null));
     }
-    selectRegion = (id: Id) => {
+
+    selectBlock = (id: Id) => {
       const $block = $blocks[id];
       if (!$block) {
         return;
       }
-      if (selectedRegions.has(id)) {
+      if (selectedBlocks.has(id)) {
         return;
       }
-      selectedRegions.add(id);
+      selectedBlocks.add(id);
       const lines = blockToLines[id];
-      showRegion($block, lines);
+      showBlock($block, lines);
     };
-    deselectRegion = (id: Id) => {
+    deselectBlock = (id: Id) => {
       const $block = $blocks[id];
       if (!$block) {
         return;
       }
-      if (!selectedRegions.has(id)) {
+      if (!selectedBlocks.has(id)) {
         return;
       }
-      selectedRegions.delete(id);
+      selectedBlocks.delete(id);
       const lines = blockToLines[id];
-      hideRegion($block, lines);
+      hideBlock($block, lines);
     };
   }
 
@@ -210,7 +160,7 @@ export function renderDiplomaticView(
       const $word = $fragments[id];
       $word.classList.add('selected');
     } else if (annotation.textGranularity === 'block') {
-      selectRegion(id);
+      selectBlock(id);
     } else {
       console.warn(`Select not implemented: ${annotation.textGranularity}`);
     }
@@ -222,16 +172,24 @@ export function renderDiplomaticView(
       const $word = $fragments[id];
       $word.classList.remove('selected');
     } else if (annotation.textGranularity === 'block') {
-      deselectRegion(id);
+      deselectBlock(id);
     } else {
       console.warn(`Deselect not implemented: ${annotation.textGranularity}`);
     }
   }
 
+  const selectedIds: Id[] = [];
+
   return {
-    selectAnnotation,
-    deselectAnnotation,
-    hide,
-    show,
+    setSelected: (...ids: string[]) => {
+      const selected = ids.filter(id => !selectedIds.includes(id));
+      const deselected = selectedIds.filter(id => !ids.includes(id));
+
+      selected.forEach(id => selectAnnotation(id));
+      deselected.forEach(id => deselectAnnotation(id));
+
+      selectedIds.length = 0;
+      selectedIds.push(...ids);
+    }
   };
 }

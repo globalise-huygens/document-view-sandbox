@@ -14,6 +14,7 @@ export function ManifestLoader(
   {children, url}: ManifestLoaderProps
 ) {
   const loadManifest = useLoadManifest();
+
   const manifest = useManifest();
 
   useEffect(() => {
@@ -25,12 +26,12 @@ export function ManifestLoader(
   }, [loadManifest, url]);
 
   if (manifest.isLoading) {
-    return <>Loading manifest</>;
+    return <>Loading manifest...</>;
   }
   if (manifest.error) {
     return <>Error: {manifest.error}</>;
   }
-  if (!manifest.data) {
+  if (!manifest.isReady) {
     return null;
   }
 

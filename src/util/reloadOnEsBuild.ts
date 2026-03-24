@@ -1,7 +1,5 @@
 export function reloadOnEsBuild() {
-  if (DEV) {
-    new EventSource('/esbuild').addEventListener('change', () =>
-      location.reload(),
-    );
-  }
+  const esbuildEvent = new EventSource('/esbuild');
+  window.addEventListener('beforeunload', () => esbuildEvent.close());
+  esbuildEvent.addEventListener('change', () => location.reload());
 }

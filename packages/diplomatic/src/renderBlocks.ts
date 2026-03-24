@@ -1,4 +1,4 @@
-import {Annotation, findSourceLabel} from '@globalise/annotation';
+import {Annotation, findSourceLabel} from '@globalise/common/annotation';
 import {Point} from '@knaw-huc/original-layout';
 import {calcBoundingCorners, padCorners} from '@knaw-huc/original-layout';
 import {createPath} from '@knaw-huc/original-layout';

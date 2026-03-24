@@ -1,8 +1,11 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {useCanvas, useLoadManifest, useManifest} from '@knaw-huc/osd-iiif-viewer';
+import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
 import {FacsimileViewer} from '@globalise/facsimile';
-import {Id} from '@globalise/annotation';
+import {Id, useLoadPages, useTextGranularity} from '@globalise/common/annotation';
 import {TranscriptionView} from './TranscriptionView';
+import {DocumentLayout} from './layout/DocumentLayout';
+
+import './DocumentView.css';
 
 type DocumentViewProps = {
   manifestUrl: string;
@@ -13,18 +16,20 @@ type DocumentViewProps = {
 export function DocumentView(
   {manifestUrl, pageId, onPageChange}: DocumentViewProps
 ) {
-  const loadManifest = useLoadManifest();
-  const manifest = useManifest();
   const {current, goTo} = useCanvas();
   const [isInit, setInit] = useState(false);
   const [clickedIds, setClickedIds] = useState<Id[]>([]);
   const [hoveredId, setHoveredId] = useState<Id | null>(null);
+  const {vault, url, isReady} = useManifest();
+  const loadPages = useLoadPages();
+  const granularity = useTextGranularity();
 
   useEffect(() => {
-    if (!manifest.data || isInit) {
+    if (!isReady) {
       return;
     }
-    const canvases = manifest.data.canvases;
+    const manifest = vault.get({id: url, type: 'Manifest'});
+    const canvases = vault.get(manifest.items);
     if (pageId) {
       const index = canvases.findIndex(c => c.id === pageId);
       if (index >= 0) {
@@ -34,12 +39,16 @@ export function DocumentView(
       goTo(0);
     }
     setInit(true);
-  }, [manifest.data, pageId, isInit, goTo]);
+  }, [isReady, url, vault, pageId, isInit, goTo]);
 
   useEffect(() => {
     if (!current) {
       return;
     }
+    const urls = current.annotations
+      .filter(a => a.type === 'AnnotationPage')
+      .map(a => a.id);
+    loadPages(current.id, urls);
     setClickedIds([]);
     setHoveredId(null);
     onPageChange(current.id);
@@ -52,18 +61,23 @@ export function DocumentView(
   }, []);
 
   const selectedIds = useMemo(() => {
-    if (!hoveredId) {
-      return clickedIds;
+    const hovered: Id[] = [];
+    if (hoveredId) {
+      hovered.push(hoveredId);
+      const blockId = granularity?.wordToBlock[hoveredId];
+      if (blockId) {
+        hovered.push(blockId);
+      }
     }
-    return [...new Set([...clickedIds, hoveredId])];
-  }, [clickedIds, hoveredId]);
+    return [...new Set([...clickedIds, ...hovered])];
+  }, [clickedIds, hoveredId, granularity?.wordToBlock]);
 
   if (!isInit) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="document-view">
+    <DocumentLayout>
       <FacsimileViewer
         manifestUrl={manifestUrl}
         selected={selectedIds}
@@ -76,6 +90,6 @@ export function DocumentView(
         onHover={setHoveredId}
         onClick={toggleClickedIds}
       />
-    </div>
+    </DocumentLayout>
   );
 }

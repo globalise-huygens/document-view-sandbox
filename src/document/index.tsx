@@ -3,7 +3,9 @@ import {createRoot} from 'react-dom/client';
 import {DocumentViewExample} from './example/DocumentViewExample';
 import {reloadOnEsBuild} from "../util/reloadOnEsBuild";
 
-reloadOnEsBuild()
+if(DEV) {
+  reloadOnEsBuild()
+}
 
 createRoot(document.getElementById('root')!).render(
   <DocumentViewExample />

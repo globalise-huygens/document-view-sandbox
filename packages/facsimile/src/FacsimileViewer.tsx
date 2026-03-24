@@ -1,12 +1,11 @@
 import React, {useRef} from 'react';
 import {Viewer} from '@knaw-huc/osd-iiif-viewer';
-import {ControlBar} from './ControlBar';
+import {FacsimileControlBar} from './FacsimileControlBar';
 import {NavigationBar} from './NavigationBar';
 import {HighlightOverlay} from './HighlightOverlay';
-import {Id} from '@globalise/annotation';
+import {Id} from '@globalise/common/annotation';
 
-import './facsimile.css';
-import './tooltip.css';
+import './FacsimileViewer.css';
 
 export type FacsimileViewerProps = {
   manifestUrl: string;
@@ -38,7 +37,7 @@ export function FacsimileViewer(
         onToggle={onToggle}
         onHover={onHover}
       />
-      <ControlBar fullscreenRef={fullscreenRef}/>
+      <FacsimileControlBar fullscreenRef={fullscreenRef}/>
       <NavigationBar/>
     </div>
   );

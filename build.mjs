@@ -1,5 +1,5 @@
 import * as esbuild from 'esbuild'
-import { createRequire } from 'module'
+import {createRequire} from 'module'
 const require = createRequire(import.meta.url)
 import path from 'path'
 
@@ -7,19 +7,6 @@ const entryPoints = [
   'src/index.html',
   'src/viewer.html',
   'src/viewer.js',
-
-  'src/diplomatic/index.html',
-  'src/diplomatic/index.ts',
-  'src/diplomatic/menu.css',
-  'src/diplomatic/highlight.css',
-  'src/diplomatic/react/index.html',
-  'src/diplomatic/react/index.tsx',
-
-  'src/normalized/index.html',
-  'src/normalized/index.ts',
-
-  'src/facsimile/index.html',
-  'src/facsimile/index.tsx',
 
   'src/document/index.html',
   'src/document/index.tsx',
@@ -50,7 +37,7 @@ if (isDev) {
   })
   await context.watch()
   const host = '127.0.0.1';
-  const { port } = await context.serve({host, servedir: './static'})
+  const {port} = await context.serve({host, servedir: './static'})
   console.log(`Running at: http://${host}:${port} `)
 } else {
   await esbuild.build(sharedConfig)
