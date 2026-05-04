@@ -2,12 +2,15 @@ import { useMemo } from 'react';
 import { segment, TextSegment } from '@knaw-huc/text-annotation-segmenter';
 import {
   Annotation,
-  createAnnotationSegments,
+  findTextPositionSelector,
   getPageText,
   Id,
   indexTextGranularity,
   isEntity,
 } from '@globalise/common/annotation';
+import {
+  filterAnnotationsWithSelector
+} from "@globalise/common/annotation";
 
 export type LineSegments = {
   pageText: string;
@@ -26,10 +29,11 @@ export function useLineSegments(
       (a) => a.textGranularity === 'word',
     );
     const entityAnnos = Object.values(annotations).filter(isEntity);
-    const annos = [...wordAnnos, ...entityAnnos];
-
-    const annoSegments = createAnnotationSegments(annos, pageAnnoId);
-    const segments = segment<Annotation>(pageText, annoSegments);
+    const annos = filterAnnotationsWithSelector([...wordAnnos, ...entityAnnos], pageAnnoId);
+    const segments = segment(pageText, annos, (a) => {
+      const selector = findTextPositionSelector(a, pageAnnoId);
+      return { begin: selector.start, end: selector.end };
+    });
     const { wordsToLine, linesToBlock } = indexTextGranularity(annotations);
 
     const segmentsByLine: Record<Id, TextSegment<Annotation>[]> = {};

@@ -1,5 +1,5 @@
 export {indexTextGranularity} from './indexTextGranularity.ts';
-export {createAnnotationSegments} from './createAnnotationSegments.ts';
+export {filterAnnotationsWithSelector} from './filterAnnotationsWithSelector.ts';
 
 export * from './AnnoModel';
 export * from './EntityModel';

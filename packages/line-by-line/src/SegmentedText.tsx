@@ -22,7 +22,7 @@ export function SegmentedText(
 
       return (
         <span
-          key={segment.id}
+          key={segment.index}
           onMouseEnter={(e) => {
             e.stopPropagation();
             setHovered(hoverId);

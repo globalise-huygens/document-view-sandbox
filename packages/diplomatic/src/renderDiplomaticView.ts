@@ -1,6 +1,7 @@
 import {
   Annotation,
-  createAnnotationSegments,
+  filterAnnotationsWithSelector,
+  findTextPositionSelector,
   getEntityType,
   getPageText,
   indexTextGranularity,
@@ -16,7 +17,11 @@ import {
   px,
   renderOriginalLayout
 } from '@knaw-huc/original-layout';
-import {groupSegments, segment} from '@knaw-huc/text-annotation-segmenter';
+import {
+  collectGroupSegments,
+  groupSegments,
+  segment
+} from '@knaw-huc/text-annotation-segmenter';
 import {renderLineNumbers} from './renderLineNumbers';
 import {renderBlocks} from './renderBlocks';
 import {createFragment} from './createFragment.ts';
@@ -70,24 +75,35 @@ export function renderDiplomaticView(
   const {id: pageAnnoId, text: pageText} = getPageText(annotations);
 
   const entityAnnos = Object.values(annotations).filter(isEntity);
-  const markedAnnos = [...wordAnnos, ...entityAnnos];
-  const annoSegments = createAnnotationSegments(markedAnnos, pageAnnoId);
+  const markedAnnos = filterAnnotationsWithSelector(
+    [...wordAnnos, ...entityAnnos],
+    pageAnnoId,
+  );
 
-  const textSegments = segment<Annotation>(pageText, annoSegments);
+  const textSegments = segment(pageText, markedAnnos, (a) => {
+    const selector = findTextPositionSelector(a, pageAnnoId);
+    return {begin: selector.start, end: selector.end};
+  });
   const groupedByWord = groupSegments(
     textSegments,
     (a) => a.textGranularity === 'word',
+    (a) => a.id,
   );
 
   const {blockToLines, wordToBlock} = indexTextGranularity(annotations);
   const $entityToSegments: Record<Id, HTMLSpanElement[]> = {};
 
   for (const wordGroup of groupedByWord) {
+    if (!wordGroup.isGroup) {
+      continue;
+    }
+
     const wordId = wordGroup.annotation.id;
     const $word = $fragments[wordId];
+    const wordSegments = collectGroupSegments(wordGroup);
     const $segments: HTMLSpanElement[] = [];
 
-    for (const segment of wordGroup.segments) {
+    for (const segment of wordSegments) {
       const $segment = document.createElement('span');
       $segments.push($segment);
       $segment.classList.add('segment');
