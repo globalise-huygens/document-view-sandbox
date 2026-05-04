@@ -18,12 +18,11 @@ import ZoomOutIcon from '@mui/icons-material/ZoomOut';
 import {ControlBar} from '@globalise/facsimile';
 import {
   setDiplomaticViewScale,
-  setViewMode,
+  setTranscriptionMode,
   useSettings
 } from './SettingsStore';
 import {useLayoutDirection} from './layout/useLayoutDirection';
-import {layoutBreakpoint} from './layout/DocumentLayout';
-import {HeaderRegion, useControlsMode} from '@globalise/common/header';
+import {layoutBreakpoint} from './layout/SplitPaneLayout';
 
 import './TranscriptionView.css';
 
@@ -33,14 +32,13 @@ export function TranscriptionView() {
   const annotations = useAnnotations();
   const page = usePartOf();
   const {isReady, pages, error} = usePages();
-  const {viewMode, diplomaticViewScale} = useSettings();
+  const {transcriptionMode, diplomaticViewScale} = useSettings();
   const scale = diplomaticViewScale;
-  const showDiplomatic = viewMode === 'diplomatic';
+  const showDiplomatic = transcriptionMode === 'diplomatic';
   const viewportRef = useRef<HTMLDivElement>(null);
   const [viewportSize, setViewportSize] = useState({width: 0, height: 0});
   const direction = useLayoutDirection(layoutBreakpoint);
   const fit: ViewFit = direction === 'vertical' ? 'width' : 'contain';
-  const controlsMode = useControlsMode();
 
   const hoveredId = useDocumentStore(s => s.hoveredId);
   const clickedId = useDocumentStore(s => s.clickedId);
@@ -143,13 +141,13 @@ export function TranscriptionView() {
       )}
       <button
         className={showDiplomatic ? 'active' : ''}
-        onClick={() => setViewMode('diplomatic')}
+        onClick={() => setTranscriptionMode('diplomatic')}
       >
         Diplomatic
       </button>
       <button
         className={!showDiplomatic ? 'active' : ''}
-        onClick={() => setViewMode('line-by-line')}
+        onClick={() => setTranscriptionMode('line-by-line')}
       >
         Line by line
       </button>
@@ -158,10 +156,7 @@ export function TranscriptionView() {
 
   return (
     <div className="transcription-view">
-      {controlsMode === 'header'
-        ? <HeaderRegion region="right">{controls}</HeaderRegion>
-        : <ControlBar>{controls}</ControlBar>
-      }
+      <ControlBar>{controls}</ControlBar>
       <div className="content">
         <div
           className={`viewport diplomatic-viewport ${showDiplomatic ? 'active' : ''}`}

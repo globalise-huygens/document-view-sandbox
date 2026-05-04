@@ -1,1 +1,0 @@
-export type LoadingStatus = 'loading' | 'ready' | 'no-transcription';

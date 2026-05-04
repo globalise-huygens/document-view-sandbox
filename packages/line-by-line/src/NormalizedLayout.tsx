@@ -65,6 +65,7 @@ function BlockGroup(
         return (
           <SegmentedLine
             key={lineId}
+            lineId={lineId}
             lineNumber={lineNumberStart + count - 1}
             blockId={blockId}
             pageText={pageText}

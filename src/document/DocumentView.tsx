@@ -1,12 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {useCanvas, useManifest} from '@knaw-huc/osd-iiif-viewer';
+import React, {useState} from 'react';
 import {FacsimileView} from '@globalise/facsimile';
 import {Id} from '@globalise/common/annotation';
-import {useLoadPages} from '@globalise/common/document';
+import {DocumentMode, DocumentModeControls} from './DocumentModeControls';
+import {SplitPaneLayout} from './layout/SplitPaneLayout';
 import {TranscriptionView} from './TranscriptionView';
-import {DocumentLayout} from './layout/DocumentLayout';
+import {SinglePaneLayout} from './layout/SinglePaneLayout';
+import {useCanvasPages} from './useCanvasPages';
 
 import './DocumentView.css';
+import {HeaderCanvasControls} from "./HeaderCanvasControls";
+import {MinimapView} from "./minimap/MinimapView";
+import {useSettings} from "./SettingsStore";
 
 type DocumentViewProps = {
   manifestUrl: string;
@@ -17,47 +21,39 @@ type DocumentViewProps = {
 export function DocumentView(
   {canvasId, onPageChange}: DocumentViewProps
 ) {
-  const {current, goTo} = useCanvas();
-  const [isInit, setInit] = useState(false);
-  const {vault, url, isReady} = useManifest();
-  const loadPages = useLoadPages();
+  const {documentMode: mode} = useSettings()
+  const isPageInit = useCanvasPages(canvasId, onPageChange);
 
-  useEffect(() => {
-    if (!isReady) {
-      return;
-    }
-    const manifest = vault.get({id: url, type: 'Manifest'});
-    const canvases = vault.get(manifest.items);
-    if (canvasId) {
-      const index = canvases.findIndex(c => c.id === canvasId);
-      if (index >= 0) {
-        goTo(index);
-      }
-    } else if (canvases.length > 0) {
-      goTo(0);
-    }
-    setInit(true);
-  }, [isReady, url, vault, canvasId, isInit, goTo]);
-
-  useEffect(() => {
-    if (!current) {
-      return;
-    }
-    const urls = current.annotations
-      .filter(a => a.type === 'AnnotationPage')
-      .map(a => a.id);
-    loadPages(current.id, urls);
-    onPageChange(current.id);
-  }, [current]);
-
-  if (!isInit) {
+  if (!isPageInit) {
     return <div>Loading...</div>;
   }
 
   return (
-    <DocumentLayout>
-      <FacsimileView style={{height: '100%'}}/>
-      <TranscriptionView/>
-    </DocumentLayout>
+    <div className="document-view" style={{height: '100%'}}>
+      <HeaderCanvasControls />
+      <DocumentModeControls />
+      {mode === 'split' && (
+        <SplitPaneLayout>
+          <FacsimileView showNavigation={false} style={{height: '100%'}} />
+          <TranscriptionView />
+        </SplitPaneLayout>
+      )}
+      {mode === 'facsimile' && (
+        <SinglePaneLayout>
+          <FacsimileView showNavigation={false} style={{height: '100%'}} />
+        </SinglePaneLayout>
+      )}
+      {mode === 'transcription' && (
+        <SinglePaneLayout>
+          <TranscriptionView />
+        </SinglePaneLayout>
+      )}
+      {mode === 'minimap' && (
+        <SinglePaneLayout>
+          <MinimapView />
+        </SinglePaneLayout>
+      )}
+    </div>
   );
 }
+

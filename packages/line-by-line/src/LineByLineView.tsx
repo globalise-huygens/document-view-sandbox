@@ -9,13 +9,9 @@ export type LineByLineLayoutProps = {
 };
 
 export const LineByLineView = React.memo(function LineByLineView(
-  {annotations, style}: LineByLineLayoutProps
+  {annotations}: LineByLineLayoutProps
 ) {
   const lineSegments = useLineSegments(annotations);
 
-  return (
-    <div style={style}>
-      <NormalizedLayout lineSegments={lineSegments} />
-    </div>
-  );
+  return <NormalizedLayout lineSegments={lineSegments}/>;
 });
