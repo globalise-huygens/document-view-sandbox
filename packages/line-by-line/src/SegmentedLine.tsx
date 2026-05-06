@@ -1,4 +1,4 @@
-import React from 'react';
+import {memo} from 'react';
 import {TextSegment} from '@knaw-huc/text-annotation-segmenter';
 import {Annotation, Id} from '@globalise/common/annotation';
 import {setHovered} from '@globalise/common/document';
@@ -8,12 +8,11 @@ type LineProps = {
   lineId: Id;
   lineNumber: number;
   blockId: Id | null;
-  pageText: string;
   segments: TextSegment<Annotation>[];
 };
 
-export const SegmentedLine = React.memo(function SegmentedLine(
-  {lineId, lineNumber, blockId, pageText, segments}: LineProps,
+export const SegmentedLine = memo(function SegmentedLine(
+  {lineId, lineNumber, blockId, segments}: LineProps,
 ) {
   return (
     <span
@@ -32,7 +31,6 @@ export const SegmentedLine = React.memo(function SegmentedLine(
       <span className="line-content">
         <SegmentedText
           blockId={blockId}
-          pageText={pageText}
           segments={segments}
         />
       </span>

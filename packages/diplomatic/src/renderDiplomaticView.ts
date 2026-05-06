@@ -82,7 +82,7 @@ export function renderDiplomaticView(
 
   const textSegments = segment(pageText, markedAnnos, (a) => {
     const selector = findTextPositionSelector(a, pageAnnoId);
-    return {begin: selector.start, end: selector.end};
+    return {start: selector.start, end: selector.end};
   });
   const groupedByWord = groupSegments(
     textSegments,
@@ -107,7 +107,7 @@ export function renderDiplomaticView(
       const $segment = document.createElement('span');
       $segments.push($segment);
       $segment.classList.add('segment');
-      $segment.textContent = pageText.substring(segment.begin, segment.end);
+      $segment.textContent = pageText.substring(segment.start, segment.end);
       const entityAnno = segment.annotations.find(a => isEntity(a));
 
       if (entityAnno) {

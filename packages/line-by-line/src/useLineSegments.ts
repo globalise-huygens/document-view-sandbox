@@ -32,7 +32,7 @@ export function useLineSegments(
     const annos = filterAnnotationsWithSelector([...wordAnnos, ...entityAnnos], pageAnnoId);
     const segments = segment(pageText, annos, (a) => {
       const selector = findTextPositionSelector(a, pageAnnoId);
-      return { begin: selector.start, end: selector.end };
+      return { start: selector.start, end: selector.end };
     });
     const { wordsToLine, linesToBlock } = indexTextGranularity(annotations);
 

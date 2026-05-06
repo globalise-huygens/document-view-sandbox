@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useMemo} from 'react';
 import {Id} from '@globalise/common/annotation';
 import {useTextGranularity} from '@globalise/common/document';
 import {useIsSelectedInTranscription} from '@globalise/common/document';
@@ -14,22 +14,31 @@ type Props = {
 export const NormalizedLayout = React.memo(function NormalizedLayout(
   {lineSegments}: Props,
 ) {
-  const {pageText, segmentsByLine} = lineSegments;
+  const {segmentsByLine} = lineSegments;
   const {blockToLines} = useTextGranularity();
 
-  let lineNumber = 0;
+  const blockEntries = useMemo(() => Object.entries(blockToLines), [blockToLines]);
+
+  const blockLineNumberStarts = useMemo(() => {
+    const starts: number[] = [];
+    let count = 0;
+    for (const [, lineIds] of blockEntries) {
+      starts.push(count);
+      count += lineIds.filter((id) => segmentsByLine[id]).length;
+    }
+    return starts;
+  }, [blockEntries, segmentsByLine]);
+
   return (
     <div className="normalized-view">
       <div className="text">
-        {Object.entries(blockToLines).map(([blockId, lineIds]) => (
+        {blockEntries.map(([blockId, lineIds], i) => (
           <BlockGroup
             key={blockId}
             blockId={blockId}
             lineIds={lineIds}
             segmentsByLine={segmentsByLine}
-            pageText={pageText}
-            lineNumberStart={lineNumber + 1}
-            onLineNumberAdvance={(count) => { lineNumber += count; }}
+            lineNumberStart={blockLineNumberStarts[i] + 1}
           />
         ))}
       </div>
@@ -41,18 +50,15 @@ type BlockGroupProps = {
   blockId: Id;
   lineIds: Id[];
   segmentsByLine: LineSegments['segmentsByLine'];
-  pageText: string;
   lineNumberStart: number;
-  onLineNumberAdvance: (count: number) => void;
 };
 
 function BlockGroup(
-  {blockId, lineIds, segmentsByLine, pageText, lineNumberStart, onLineNumberAdvance}: BlockGroupProps,
+  {blockId, lineIds, segmentsByLine, lineNumberStart}: BlockGroupProps,
 ) {
   const isSelected = useIsSelectedInTranscription(blockId);
 
   let count = 0;
-  onLineNumberAdvance(count);
 
   return (
     <div className={`block-group ${isSelected ? 'selected' : ''}`}>
@@ -68,7 +74,6 @@ function BlockGroup(
             lineId={lineId}
             lineNumber={lineNumberStart + count - 1}
             blockId={blockId}
-            pageText={pageText}
             segments={segments}
           />
         );

@@ -6,16 +6,15 @@ import {NestedSegment} from './NestedSegment';
 
 type TextProps = {
   blockId: Id | null;
-  pageText: string;
   segments: TextSegment<Annotation>[];
 };
 
 export function SegmentedText(
-  {blockId, pageText, segments}: TextProps
+  {blockId, segments}: TextProps
 ) {
   return <>
     {segments.map(segment => {
-      const body = pageText.slice(segment.begin, segment.end);
+      const body = segment.value;
       const hoverId = selectAnnotation(segment.annotations)
         ?? blockId
         ?? null;
