@@ -1,4 +1,3 @@
-import React from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {Id} from '@globalise/common/annotation';
 import {ManifestLoader} from '@globalise/facsimile';

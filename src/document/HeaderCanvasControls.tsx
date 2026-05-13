@@ -1,4 +1,3 @@
-import React from 'react';
 import {HeaderRegion} from '@globalise/common/header';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';

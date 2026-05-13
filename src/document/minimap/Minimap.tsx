@@ -1,4 +1,3 @@
-import React from 'react';
 import {Rnd} from 'react-rnd';
 import {Viewer} from '@knaw-huc/osd-iiif-viewer';
 import {usePartOf} from '@globalise/common/document';

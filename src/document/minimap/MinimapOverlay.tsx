@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import {useMemo} from 'react';
 import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
 import {useAnnotations} from '@globalise/common/document';
 import {

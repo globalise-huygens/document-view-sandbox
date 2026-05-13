@@ -1,4 +1,4 @@
-import {useEffect, RefObject} from 'react';
+import {useEffect} from 'react';
 import {useViewer} from '@knaw-huc/osd-iiif-viewer';
 import {
   useAnnotations,
