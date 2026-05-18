@@ -1,6 +1,6 @@
 import {createRoot} from 'react-dom/client';
-import {SplitPaneViewExample} from './example/SplitPaneViewExample';
-import {DocumentViewExample} from './example/DocumentViewExample';
+import {SplitPaneViewExample} from './SplitPaneViewExample';
+import {DocumentViewExample} from './DocumentViewExample';
 import {getExampleFromUrl} from '../util/getExampleFromUrl';
 import {reloadOnEsBuild} from '../util/reloadOnEsBuild';
 

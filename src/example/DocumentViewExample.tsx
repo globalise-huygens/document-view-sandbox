@@ -1,42 +1,20 @@
-import {useState} from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {SplitPaneView} from '../SplitPaneView';
 import {Id} from '@globalise/common/annotation';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
-import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';
+import {DocumentView} from "@globalise/document";
 import {StateDebug} from "./StateDebug";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
 
-const collection = 'https://data.globalise.huygens.knaw.nl/' +
-  'hdl:20.500.14722/inventory:collection';
-
-export type ManifestEntry = {
-  id: string;
-  label: string;
-};
-
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
-export function SplitPaneViewExample() {
+export function DocumentViewExample() {
   const params = new URLSearchParams(location.search);
   const canvasId = params.get(CANVAS) ?? undefined;
-
-  const [manifestUrl, setManifestUrl] = useState(
-    params.get(MANIFEST) ?? defaultManifest
-  );
-  const manifests = useCollectionManifests(collection);
-
-  function handleManifestChange(url: string) {
-    setManifestUrl(url);
-    const newUrl = new URL(window.location.href);
-    newUrl.searchParams.set(MANIFEST, url);
-    newUrl.searchParams.delete(CANVAS);
-    history.pushState({}, '', newUrl);
-  }
+  const manifestUrl = params.get(MANIFEST) ?? defaultManifest;
 
   function handlePageChange(pageId: Id) {
     const url = new URL(window.location.href);
@@ -49,12 +27,7 @@ export function SplitPaneViewExample() {
       <ViewerProvider>
         <ManifestLoader url={manifestUrl}>
           <StateDebug />
-          <ManifestDropdown
-            manifests={manifests}
-            selected={manifestUrl}
-            onChange={handleManifestChange}
-          />
-          <SplitPaneView
+          <DocumentView
             manifestUrl={manifestUrl}
             canvasId={canvasId}
             onPageChange={handlePageChange}
@@ -64,3 +37,4 @@ export function SplitPaneViewExample() {
     </HeaderProvider>
   );
 }
+

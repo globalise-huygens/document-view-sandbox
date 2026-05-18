@@ -1,20 +1,42 @@
+import {useState} from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
+import {SplitPaneView} from '@globalise/document';
 import {Id} from '@globalise/common/annotation';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
-import {DocumentView} from "../DocumentView";
+import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';
 import {StateDebug} from "./StateDebug";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
   'document-view-sandbox/iiif/manifest.json';
 
+const collection = 'https://data.globalise.huygens.knaw.nl/' +
+  'hdl:20.500.14722/inventory:collection';
+
+export type ManifestEntry = {
+  id: string;
+  label: string;
+};
+
 const MANIFEST = 'manifest';
 const CANVAS = 'canvas';
 
-export function DocumentViewExample() {
+export function SplitPaneViewExample() {
   const params = new URLSearchParams(location.search);
   const canvasId = params.get(CANVAS) ?? undefined;
-  const manifestUrl = params.get(MANIFEST) ?? defaultManifest;
+
+  const [manifestUrl, setManifestUrl] = useState(
+    params.get(MANIFEST) ?? defaultManifest
+  );
+  const manifests = useCollectionManifests(collection);
+
+  function handleManifestChange(url: string) {
+    setManifestUrl(url);
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set(MANIFEST, url);
+    newUrl.searchParams.delete(CANVAS);
+    history.pushState({}, '', newUrl);
+  }
 
   function handlePageChange(pageId: Id) {
     const url = new URL(window.location.href);
@@ -27,7 +49,12 @@ export function DocumentViewExample() {
       <ViewerProvider>
         <ManifestLoader url={manifestUrl}>
           <StateDebug />
-          <DocumentView
+          <ManifestDropdown
+            manifests={manifests}
+            selected={manifestUrl}
+            onChange={handleManifestChange}
+          />
+          <SplitPaneView
             manifestUrl={manifestUrl}
             canvasId={canvasId}
             onPageChange={handlePageChange}
@@ -37,4 +64,3 @@ export function DocumentViewExample() {
     </HeaderProvider>
   );
 }
-
