@@ -1,7 +1,7 @@
 import React, {useLayoutEffect, useRef} from 'react';
 import type {Id} from '@knaw-huc/original-layout';
 import {ViewFit} from '@knaw-huc/original-layout';
-import {renderDiplomaticView} from '../renderDiplomaticView';
+import {renderDiplomaticView} from './renderDiplomaticView';
 
 import '@knaw-huc/original-layout/style.css';
 import {Annotation} from '@globalise/common/annotation';
