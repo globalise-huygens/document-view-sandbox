@@ -1,19 +1,22 @@
-import type {Annotation} from './AnnoModel';
-import {isSpecificResourceTarget} from './isSpecificResourceTarget';
-import {assertSpecificResourceTarget} from './assertSpecificResourceTarget';
-import {assertSvgSelector} from './assertSvgSelector';
+import type { Annotation } from './AnnoModel';
+import { asArray } from './asArray.ts';
+import { isSpecificResourceTarget } from './isSpecificResourceTarget.ts';
+import { isSvgSelector } from './isSvgSelector.ts';
 
 export type SvgPath = string;
 
-export function findSvgPath(annotation: Annotation): SvgPath {
+export function findSvgPath(annotation: Annotation): SvgPath | undefined {
   if (!annotation.target || !annotation.target.length) {
-    throw new Error('Annotation missing target');
+    return undefined;
   }
-  const target = Array.isArray(annotation.target)
-    ? annotation.target.find(isSpecificResourceTarget)
-    : annotation.target;
-  assertSpecificResourceTarget(target);
-  const selector = target.selector;
-  assertSvgSelector(selector);
+  const targets = asArray(annotation.target);
+  const resourceTarget = targets.find((t) => isSpecificResourceTarget(t));
+  if (!resourceTarget) {
+    return;
+  }
+  const selector = resourceTarget.selector;
+  if (!isSvgSelector(selector)) {
+    return;
+  }
   return selector.value;
 }

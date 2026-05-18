@@ -13,6 +13,7 @@ import {
   Annotation
 } from '@globalise/common/annotation';
 import {calcBoundingBox, createPoints} from '@knaw-huc/original-layout';
+import { orThrow } from '@globalise/common';
 
 export function useZoomToClicked() {
   const pageSize = usePartOf();
@@ -34,7 +35,8 @@ export function useZoomToClicked() {
     }
 
     const allPoints = ids.flatMap(id => {
-      return createPoints(parseSvgPath(findSvgPath(annotations[id])));
+      const svgPath = findSvgPath(annotations[id]) ?? orThrow('No svg path');
+      return createPoints(parseSvgPath(svgPath),);
     });
     const bbox = calcBoundingBox(allPoints);
     const padding = pageSize ? pageSize.width * 0.05 : 100;

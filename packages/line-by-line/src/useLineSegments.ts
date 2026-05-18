@@ -11,6 +11,7 @@ import {
 import {
   filterAnnotationsWithSelector
 } from "@globalise/common/annotation";
+import { orThrow } from '@globalise/common';
 
 export type LineSegments = {
   pageText: string;
@@ -31,7 +32,8 @@ export function useLineSegments(
     const entityAnnos = Object.values(annotations).filter(isEntity);
     const annos = filterAnnotationsWithSelector([...wordAnnos, ...entityAnnos], pageAnnoId);
     const segments = segment(pageText, annos, (a) => {
-      const selector = findTextPositionSelector(a, pageAnnoId);
+      const selector = findTextPositionSelector(a, pageAnnoId)
+        ?? orThrow('No selector');
       return { start: selector.start, end: selector.end };
     });
     const { wordsToLine, linesToBlock } = indexTextGranularity(annotations);

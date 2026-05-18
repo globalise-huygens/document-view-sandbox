@@ -6,7 +6,6 @@ import {renderDiplomaticView} from '../renderDiplomaticView';
 import '@knaw-huc/original-layout/style.css';
 import {Annotation} from '@globalise/common/annotation';
 import {setHovered, toggleClicked} from '@globalise/common/document';
-import {View} from '@globalise/common';
 
 export type DiplomaticViewProps = {
   annotations: Record<Id, Annotation>;
@@ -30,7 +29,7 @@ export function DiplomaticView(props: DiplomaticViewProps) {
   } = props;
 
   const containerRef = useRef<HTMLDivElement>(null);
-  const viewRef = useRef<View>(null);
+  const viewRef = useRef<ReturnType<typeof renderDiplomaticView>>(null);
 
   useLayoutEffect(() => {
     const $view = containerRef.current;

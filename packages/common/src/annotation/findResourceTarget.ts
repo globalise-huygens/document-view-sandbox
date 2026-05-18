@@ -1,18 +1,12 @@
-import {Annotation, AnnotationResourceTarget} from './AnnoModel';
-import {isAnnotationResourceTarget} from './isAnnotationResourceTarget';
-import {orThrow} from "../util/orThrow.ts";
+import { Annotation, AnnotationResourceTarget } from './AnnoModel';
+import { isAnnotationResourceTarget } from './isAnnotationResourceTarget';
+import { asArray } from './asArray.ts';
 
 export function findResourceTarget(
   annotation: Annotation,
-): AnnotationResourceTarget {
+): AnnotationResourceTarget | undefined {
   if (!annotation.target) {
-    throw new Error('No target');
   }
-  if (!Array.isArray(annotation.target)) {
-    throw new Error('Target is not an array');
-  }
-  return (
-    annotation.target.find((t) => isAnnotationResourceTarget(t)) ??
-    orThrow('No annotation resource target')
-  );
+  const targets = asArray(annotation.target);
+  return targets.find(isAnnotationResourceTarget);
 }

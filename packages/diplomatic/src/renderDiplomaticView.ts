@@ -8,7 +8,7 @@ import {
   isEntity,
   toClassName,
 } from '@globalise/common/annotation';
-import {noop, orThrow, View} from '@globalise/common';
+import {noop, orThrow} from '@globalise/common';
 import {
   D3El,
   FullOriginalLayoutConfig,
@@ -51,7 +51,7 @@ export function renderDiplomaticView(
   $view: HTMLDivElement,
   annotations: Record<Id, Annotation>,
   config: DiplomaticViewConfig,
-): View {
+) {
   $view.classList.add('original-layout');
 
   const mergedConfig = {
@@ -81,7 +81,8 @@ export function renderDiplomaticView(
   );
 
   const textSegments = segment(pageText, markedAnnos, (a) => {
-    const selector = findTextPositionSelector(a, pageAnnoId);
+    const selector = findTextPositionSelector(a, pageAnnoId)
+      ?? orThrow('No selector');
     return {start: selector.start, end: selector.end};
   });
   const groupedByWord = groupSegments(

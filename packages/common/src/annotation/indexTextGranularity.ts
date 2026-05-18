@@ -17,11 +17,16 @@ export function indexTextGranularity(
   const blockToLines: Record<Id, Id[]> = {};
 
   for (const anno of Object.values(annotations)) {
+    const target = findResourceTarget(anno);
+    if(!target) {
+      console.debug(`No resource target for ${anno.id}`);
+      continue;
+    }
     if (anno.textGranularity === 'word') {
-      wordsToLine[anno.id] = findResourceTarget(anno).id;
+      wordsToLine[anno.id] = target.id;
     }
     if (anno.textGranularity === 'line') {
-      const blockId = findResourceTarget(anno).id;
+      const blockId = target.id;
       linesToBlock[anno.id] = blockId;
       if (!blockToLines[blockId]) {
         blockToLines[blockId] = [];

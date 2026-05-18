@@ -2,6 +2,7 @@ import {Id} from './Id';
 import {Annotation} from './AnnoModel';
 import {isEntity} from './EntityModel';
 import {findTextPositionSelector} from './findTextPositionSelector';
+import { orThrow } from '../util/orThrow.ts';
 
 export type EntityOverlapIndex = {
   entityToWords: Record<Id, Id[]>;
@@ -24,7 +25,9 @@ export function indexEntityOverlap(
   const wordSelectors: { id: Id; start: number; end: number }[] = [];
   for (const annotation of Object.values(annotations)) {
     if (annotation.textGranularity === 'word') {
-      const {start, end} = findTextPositionSelector(annotation, pageAnnoId);
+      const { start, end } =
+        findTextPositionSelector(annotation, pageAnnoId) ??
+        orThrow('No selector');
       wordSelectors.push({id: annotation.id, start, end});
     }
   }
@@ -36,7 +39,9 @@ export function indexEntityOverlap(
       continue;
     }
 
-    const {start, end} = findTextPositionSelector(entity, pageAnnoId);
+    const { start, end } =
+      findTextPositionSelector(entity, pageAnnoId)
+      ?? orThrow('No selector');
     const overlapping = wordSelectors
       .filter(word => word.start < end && word.end > start)
       .map(w => w.id);

@@ -68,9 +68,8 @@ function processPages(pages: AnnotationPage[]) {
     if (!isEntity(item)) {
       continue;
     }
-    try {
-      findTextPositionSelector(item, pageId);
-    } catch {
+    const foundSelector = findTextPositionSelector(item, pageId);
+    if (!foundSelector) {
       console.debug(`Skip entity without htr selector: ${item.id}`);
       delete mapped[id];
     }
