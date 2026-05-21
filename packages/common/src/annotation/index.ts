@@ -19,8 +19,6 @@ export {isLine} from './isLine';
 export {isAnnotationResourceTarget} from './isAnnotationResourceTarget';
 export {isWord} from './isWord';
 export {getBody} from './getBody';
-export {assertSpecificResourceTarget} from './assertSpecificResourceTarget';
-export {assertSvgSelector} from './assertSvgSelector';
 export {assertTextualBody} from './assertTextualBody';
 export {isSpecificResourceTarget} from './isSpecificResourceTarget';
 export {isSvgSelector} from './isSvgSelector';

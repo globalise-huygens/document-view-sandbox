@@ -1,4 +1,4 @@
-import React, {ReactNode, useCallback} from 'react';
+import {ReactNode, useCallback} from 'react';
 import {DividerProps, Pane, SplitPane} from 'react-split-pane';
 import {Splitter} from './Splitter';
 import {useLayoutDirection} from './useLayoutDirection';

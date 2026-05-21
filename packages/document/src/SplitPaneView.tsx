@@ -1,4 +1,3 @@
-import React from 'react';
 import {FacsimileView} from '@globalise/facsimile';
 import {Id} from '@globalise/common/annotation';
 import {TranscriptionView} from './TranscriptionView';

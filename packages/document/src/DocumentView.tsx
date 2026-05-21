@@ -1,7 +1,6 @@
-import React, {useState} from 'react';
 import {FacsimileView} from '@globalise/facsimile';
 import {Id} from '@globalise/common/annotation';
-import {DocumentMode, DocumentModeControls} from './DocumentModeControls';
+import {DocumentModeControls} from './DocumentModeControls';
 import {SplitPaneLayout} from './layout/SplitPaneLayout';
 import {TranscriptionView} from './TranscriptionView';
 import {SinglePaneLayout} from './layout/SinglePaneLayout';

@@ -1,29 +1,25 @@
-import {Annotation, SpecificResourceTarget} from './AnnoModel';
-import {isSpecificResourceTarget} from './isSpecificResourceTarget';
-import {TextPositionSelector} from '@iiif/presentation-3';
-import {orThrow} from "../util/orThrow.ts";
-import {Id} from './Id.ts';
+import { Annotation, SpecificResourceTarget } from './AnnoModel';
+import { isSpecificResourceTarget } from './isSpecificResourceTarget';
+import { TextPositionSelector } from '@iiif/presentation-3';
+import { Id } from './Id.ts';
+import { asArray } from './asArray.ts';
 
 export function findTextPositionSelector(
   annotation: Annotation,
   targetId: Id,
-): TextPositionSelector {
+): TextPositionSelector | undefined {
   if (!annotation.target) {
-    throw new Error('No target');
+    return;
   }
-  if (!Array.isArray(annotation.target)) {
-    throw new Error('Target is not an array');
+  const targets = asArray(annotation.target);
+  const resourceTarget = targets.find((t) => {
+    return isSpecificResourceTarget(t) && t.source.id === targetId;
+  }) as SpecificResourceTarget;
+  if(!resourceTarget) {
+    return;
   }
-  const target = annotation.target.find((t) => {
-      return isSpecificResourceTarget(t) && t.source.id === targetId;
-    }) as SpecificResourceTarget
-    ?? orThrow('No annotation resource target found');
-  const selector = target.selector;
-  if (!Array.isArray(selector)) {
-    throw new Error('Array expected');
-  }
-  return selector.find(isTextPositionSelector)
-    ?? orThrow('No selector found');
+  const selectors = asArray(resourceTarget.selector)
+  return selectors.find(isTextPositionSelector);
 }
 
 export function isTextPositionSelector(

@@ -8,8 +8,8 @@ const entryPoints = [
   'src/viewer.html',
   'src/viewer.js',
 
-  'src/document/index.html',
-  'src/document/index.tsx',
+  'src/example/index.html',
+  'src/example/index.tsx',
 ]
 
 const isDev = process.argv.includes('--dev')

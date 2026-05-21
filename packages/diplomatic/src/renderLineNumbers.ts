@@ -40,7 +40,7 @@ export function renderLineNumbers(
 
   const wordsByLine: Map<Id, Annotation[]> = new Map();
   for (const wordAnno of wordAnnos) {
-    const target = findResourceTarget(wordAnno);
+    const target = findResourceTarget(wordAnno) || orThrow('No target');
     if (!wordsByLine.has(target.id)) {
       wordsByLine.set(target.id, []);
     }
@@ -48,7 +48,7 @@ export function renderLineNumbers(
   }
   const lineToBlock: Record<Id, Id> = {};
   for (const line of lineAnnos) {
-    const block = findResourceTarget(line);
+    const block = findResourceTarget(line) || orThrow('No target');
     lineToBlock[line.id] = block.id;
   }
 
@@ -120,8 +120,9 @@ function findLeftMostWord(
 ): Rect {
   let leftMost: Rect | null = null;
   for (const word of words) {
+    const svgPath = findSvgPath(word) || orThrow('No svg path');
     const bbox = calcBoundingBox(
-      scale.path(createPoints(parseSvgPath(findSvgPath(word)))),
+      scale.path(createPoints(parseSvgPath(svgPath))),
     );
     if (!leftMost || bbox.left < leftMost.left) {
       leftMost = bbox;

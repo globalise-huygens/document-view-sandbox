@@ -13,6 +13,7 @@ import {
 import {Tooltip, TooltipProps} from './Tooltip';
 import {BlockHighlight} from './BlockHighlight.tsx';
 import {WordHighlight} from './WordHighlight.tsx';
+import { orThrow } from '@globalise/common';
 
 export function FacsimileOverlay() {
   const imageInfo = useImageInfo();
@@ -25,10 +26,10 @@ export function FacsimileOverlay() {
     }
     return Object.values(annotations)
       .filter(isWord)
-      .map(a => ({
+      .map((a) => ({
         id: a.id,
-        path: parseSvgPath(findSvgPath(a)),
-        text: findTextualBodyValue(a),
+        path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
+        text: findTextualBodyValue(a) || orThrow('No body value'),
       }));
   }, [annotations]);
 
@@ -38,9 +39,9 @@ export function FacsimileOverlay() {
     }
     return Object.values(annotations)
       .filter(isBlock)
-      .map(a => ({
+      .map((a) => ({
         id: a.id,
-        path: parseSvgPath(findSvgPath(a)),
+        path: parseSvgPath(findSvgPath(a) ?? orThrow('No svg path')),
       }));
   }, [annotations]);
 

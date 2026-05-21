@@ -1,4 +1,4 @@
-import {createPoints, Id} from "@knaw-huc/original-layout";
+import {createPoints, Id, orThrow } from "@knaw-huc/original-layout";
 import {Point} from "@knaw-huc/original-layout";
 import {
   Annotation,
@@ -13,12 +13,15 @@ export function createBlockBoundaries(
 ) {
   const blockBoundaries: Record<Id, Point[]> = {};
   for (const word of words) {
-    const line = annotations[findResourceTarget(word).id];
-    const block = annotations[findResourceTarget(line).id];
+    const wordTarget = findResourceTarget(word) || orThrow('No word target');
+    const line = annotations[wordTarget.id];
+    const lineTarget = findResourceTarget(line) || orThrow('No word target');
+    const block = annotations[lineTarget.id];
     if (!blockBoundaries[block.id]) {
       blockBoundaries[block.id] = [];
     }
-    const fragmentPoints = createPoints(parseSvgPath(findSvgPath(word)));
+    const svgPath = findSvgPath(word) || orThrow('No svg path');
+    const fragmentPoints = createPoints(parseSvgPath(svgPath));
     blockBoundaries[block.id].push(...fragmentPoints);
   }
   return blockBoundaries;

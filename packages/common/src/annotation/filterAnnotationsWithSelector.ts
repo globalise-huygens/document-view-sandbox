@@ -9,13 +9,12 @@ export function filterAnnotationsWithSelector(
   pageAnnoId: string,
 ): Annotation[] {
   return annotations.filter((annotation) => {
-    try {
-      findTextPositionSelector(annotation, pageAnnoId);
+      const found = findTextPositionSelector(annotation, pageAnnoId);
+      if(!found) {
+        const context = { annotation, pageAnnoId };
+        console.debug('Skipping: no text position selector', context);
+        return false;
+      }
       return true;
-    } catch (error) {
-      const context = {annotation, pageAnnoId};
-      console.debug('Skipping: no text position selector', context)
-      return false;
-    }
   });
 }

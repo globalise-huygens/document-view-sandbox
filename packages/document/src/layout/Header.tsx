@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import {useContext} from 'react';
 import {HeaderContext} from '@globalise/common/header';
 
 import './Header.css';

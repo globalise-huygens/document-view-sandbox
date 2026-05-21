@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import {useMemo} from 'react';
 import {Overlay, useImageInfo} from '@knaw-huc/osd-iiif-viewer';
 import {useAnnotations} from '@globalise/common/document';
 import {
@@ -12,6 +12,7 @@ import {
   isWord,
   parseSvgPath,
 } from '@globalise/common/annotation';
+import { orThrow } from '@globalise/common';
 
 export function MinimapOverlay() {
   const viewImage = useImageInfo();
@@ -23,7 +24,9 @@ export function MinimapOverlay() {
     }
     return Object.values(annotations)
       .filter(isWord)
-      .map(a => ({id: a.id, path: parseSvgPath(findSvgPath(a))}));
+      .map(a => {
+        const svgPath = findSvgPath(a) ?? orThrow('No svg path');
+        return ({id: a.id, path: parseSvgPath(svgPath)});});
   }, [annotations]);
 
   if (!viewImage || !words.length) {

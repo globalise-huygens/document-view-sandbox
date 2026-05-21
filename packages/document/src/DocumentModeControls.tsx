@@ -1,4 +1,3 @@
-import React from 'react';
 import {HeaderRegion} from '@globalise/common/header';
 import SplitscreenRounded from '@mui/icons-material/SplitscreenRounded';
 import ImageIcon from '@mui/icons-material/Image';

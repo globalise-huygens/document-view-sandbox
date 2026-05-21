@@ -1,4 +1,3 @@
-import React, {HTMLAttributes} from 'react';
 import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import {DividerProps} from 'react-split-pane';
 import {Direction} from './useLayoutDirection';

@@ -1,4 +1,3 @@
-import React, {useRef} from 'react';
 import {useAnnotations, usePages} from '@globalise/common/document';
 import {LineByLineView} from '@globalise/line-by-line';
 import {Minimap} from './Minimap';

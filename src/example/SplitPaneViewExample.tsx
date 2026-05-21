@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
-import {useManifest, ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
-import {SplitPaneView} from '../SplitPaneView';
+import {useState} from 'react';
+import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
+import {SplitPaneView} from '@globalise/document';
 import {Id} from '@globalise/common/annotation';
-import {useDocumentStore, usePages} from '@globalise/common/document';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
 import {ManifestDropdown, useCollectionManifests} from './ManifestDropdown';

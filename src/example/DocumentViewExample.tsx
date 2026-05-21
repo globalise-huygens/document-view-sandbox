@@ -1,9 +1,8 @@
-import React from 'react';
 import {ViewerProvider} from '@knaw-huc/osd-iiif-viewer';
 import {Id} from '@globalise/common/annotation';
 import {ManifestLoader} from '@globalise/facsimile';
 import {HeaderProvider} from '@globalise/common/header';
-import {DocumentView} from "../DocumentView";
+import {DocumentView} from "@globalise/document";
 import {StateDebug} from "./StateDebug";
 
 const defaultManifest = 'https://globalise-huygens.github.io/' +
